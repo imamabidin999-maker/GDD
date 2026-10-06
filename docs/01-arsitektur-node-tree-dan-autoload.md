@@ -57,8 +57,7 @@ BattleScene (Node)                          ← battle_scene.gd · composition r
 │   ├── ActionQueue (Node)                  ← antrean Command, eksekusi berurutan + tunggu animasi
 │   ├── DeckController (Node)               ← draw pile & discard pile
 │   ├── HandManager (Node)                  ← urutan kartu di tangan, geser, ganti hasil merge
-│   ├── APController (Node)                 ← Action Points per turn
-│   ├── MoxieController (Node)              ← energi Ultimate 0–200%
+│   ├── PlayerState (Node)                  ← AP, Moxie 0–200%, Evolutionary Chain
 │   ├── TargetSelector (Node)               ← musuh yang sedang dikunci sebagai target
 │   └── EnemyDirector (Node)                ← atur intent & giliran semua Buto
 │
@@ -290,14 +289,11 @@ Mengunci input di luar `PlayerAction` adalah cara paling murah untuk mencegah bu
   - Fokus + Taktik → **Flow State**
 - Dipanggil oleh `MoveCardCommand` setelah kartu digeser, dan dipakai `HandView` untuk menyalakan `MergeGlow`.
 
-### APController
-- Menyimpan AP sekarang dan AP maksimal (dari `BattleConfig`). Isi ulang di `TurnStart`.
-- Menyediakan pengecekan "cukup atau tidak" dan pemotongan AP. Main kartu = 1 AP, geser kartu = 1 AP.
-
-### MoxieController
-- Nilai 0–200. Ambang 100 = Ultimate bisa dipakai, 200 = Overcharge penuh.
-- Sumber Moxie dibaca dari efek kartu (terutama Fokus, Crimson Focus, Flow State), bukan di-hardcode di controller.
-- Saat Ultimate dipakai, controller ini menentukan tingkat Overcharge (100–199 vs 200) untuk dikirim ke efek Ultimate.
+### PlayerState
+Menggabungkan APController dan MoxieController dari rancangan awal, karena game ini memakai satu karakter. HP tetap diurus `HealthComponent` milik `HeroUnit`.
+- **AP:** menyimpan AP sekarang dan AP maksimal, lalu mengisi ulang di `TurnStart`. `consume_ap()` menolak aksi kalau AP tidak cukup. Main kartu = 1 AP, geser kartu = 1 AP.
+- **Moxie:** nilai 0–200. Ambang 100 = Ultimate bisa dipakai, di atas 100 = overcharge, 200 = penuh. Untuk sementara, Moxie dari kartu yang mengandung Fokus diatur lewat tabel per rank. Nantinya dipindah ke `MoxieGainEffect`.
+- **Evolutionary Chain:** kalau dalam satu turn pemain memainkan 3 kartu ★3, `ultimate_damage_multiplier` naik permanen sampai battle selesai. Maksimal sekali per turn dan ada batas atasnya.
 
 ### TargetSelector
 - Gaya Reverse: 1999: pemain mengetuk Buto untuk mengunci target, lalu semua kartu serang diarahkan ke situ. Jadi tidak perlu pilih target setiap kali main kartu.
@@ -363,7 +359,7 @@ res://
 │   ├── battle/
 │   │   ├── states/              ← battle_state.gd (base) + 8 state
 │   │   ├── commands/            ← command.gd (base) + turunannya
-│   │   └── systems/             ← deck_controller, hand_manager, ap, moxie, target, enemy_director, action_queue
+│   │   └── systems/             ← deck_controller, hand_manager, player_state, target, enemy_director, action_queue
 │   ├── cards/                   ← card_instance.gd, merge_resolver.gd, damage_calculator.gd
 │   └── components/              ← health_component.gd, status_component.gd
 ├── data/
@@ -400,13 +396,13 @@ res://
 
 1. Pemain men-drag sebuah `CardView` ke posisi lain. `HandView` hanya mengirim permintaan "geser dari slot 1 ke slot 3".
 2. State `PlayerAction` menerima permintaan itu, membuat `MoveCardCommand`, memasukkannya ke `ActionQueue`, lalu pindah ke `Resolving` (input terkunci).
-3. **Validate**: `APController` masih punya minimal 1 AP? Posisi tujuan valid?
+3. **Validate**: `PlayerState` masih punya minimal 1 AP? Posisi tujuan valid?
 4. **Execute**: AP dipotong 1, lalu `HandManager` memindahkan kartu. `MergeResolver` mengecek kartu di kiri dan kanan posisi baru.
 5. Ternyata tetangganya Fokus rank 1, kartu yang digeser Serang rank 1. Resep ditemukan di `CardDB`, maka `HandManager` mengganti dua kartu itu menjadi satu **Crimson Focus** (yang menyimpan kedua kartu asalnya).
 6. `EventBus` mengirim `card_moved` lalu `cards_merged`. `HandView` memainkan animasi merge, `AudioManager` membunyikan "dung" bedug disusul "krek" korek (asal-usul nama Dongkrek, cocok dijadikan SFX merge).
 7. **Present** selesai, `Resolving` mengecek menang/kalah, lalu kembali ke `PlayerAction`.
 
-Alur main kartu kurang lebih sama: `PlayCardCommand` → potong 1 AP → jalankan setiap `CardEffect` ke target dari `TargetSelector` → `MoxieController` menambah Moxie jika ada efeknya → `DeckController` membuang kartu (hybrid dipecah jadi dua) → cek menang/kalah.
+Alur main kartu kurang lebih sama: `PlayCardCommand` → potong 1 AP → jalankan setiap `CardEffect` ke target dari `TargetSelector` → `PlayerState` menambah Moxie jika ada efeknya dan mengecek Evolutionary Chain → `DeckController` membuang kartu (hybrid dipecah jadi dua) → cek menang/kalah.
 
 ---
 
