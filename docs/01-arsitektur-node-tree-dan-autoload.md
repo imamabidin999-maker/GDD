@@ -295,7 +295,8 @@ Menggabungkan APController dan MoxieController dari rancangan awal, karena game 
 
 ### BattleManager
 - State machine battle (bagian 5.2), sekaligus pintu masuk semua input pemain: `request_play_card()`, `request_move_card()`, `request_merge()`, `request_ultimate()`, `request_end_turn()`, dan `select_target()`. Semua request ditolak di luar `PLAYER_TURN`.
-- Request yang dipanggil dari dalam listener signal (misalnya dari `ap_changed` atau `state_changed`) juga ditolak. Tanpa aturan ini, aturan otomatis seperti "End Turn kalau AP habis" bisa menjalankan giliran musuh di tengah request main kartu. Aturan semacam itu didengarkan dari signal `player_input_ready`, yang terpancar setiap kali `PLAYER_TURN` sudah stabil.
+- Request yang dipanggil dari dalam listener signal (misalnya dari `ap_changed` atau `state_changed`) juga ditolak. Tanpa aturan ini, aturan otomatis seperti "End Turn kalau AP habis" bisa menjalankan giliran musuh di tengah request main kartu. Aturan semacam itu didengarkan dari signal `player_input_ready`, yang terpancar secara deferred setiap kali `PLAYER_TURN` sudah stabil. Karena deferred, auto-battle dengan `presentation_delay = 0` tidak menumpuk rekursi.
+- `start_battle()` juga ditolak kalau dipanggil langsung dari listener signal battle (misalnya `battle_ended`). Untuk tombol "Coba Lagi" otomatis, panggil lewat `call_deferred`.
 - Menyimpan antrean `BattleAction` dan target yang sedang dikunci. Gayanya seperti Reverse: 1999: pemain mengetuk Buto sekali, lalu semua serangan diarahkan ke situ. Kalau target mati, otomatis pindah ke Buto lain yang masih hidup.
 - Geser kartu diselesaikan langsung di `PLAYER_TURN` tanpa lewat antrean, karena tidak ada damage dan tidak bisa mengubah hasil menang/kalah.
 

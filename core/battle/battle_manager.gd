@@ -15,8 +15,8 @@ extends Node
 ##   dua kali.
 ## - Request yang dipanggil dari dalam listener signal (misalnya dari ap_changed
 ##   atau state_changed) juga ditolak, supaya battle tidak loncat state di tengah
-##   request lain. Aturan otomatis seperti "End Turn kalau AP habis" sebaiknya
-##   didengarkan dari signal player_input_ready.
+##   request lain. Aturan otomatis seperti "End Turn kalau AP habis" didengarkan
+##   dari signal player_input_ready, yang sengaja dipancarkan secara deferred.
 ## - State hanya berpindah lewat _change_state(). Signal dipakai untuk
 ##   MENGUMUMKAN perpindahan itu ke UI, audio, dan sistem lain.
 ## - RESOLVE_ACTIONS menyelesaikan SATU aksi per kunjungan, lalu selalu lewat
@@ -41,8 +41,11 @@ signal state_changed(previous: State, current: State)
 signal turn_started(turn_number: int)
 ## Pemain menekan End Turn. Dipancarkan sebelum masuk ENEMY_TURN.
 signal turn_ended(turn_number: int)
-## PLAYER_TURN sudah stabil dan request baru boleh dikirim. Cocok untuk
-## menyalakan tombol UI atau aturan otomatis seperti auto End Turn.
+## Input pemain baru saja terbuka (PLAYER_TURN sudah stabil). Dipancarkan secara
+## deferred, yaitu setelah fungsi yang sedang berjalan selesai, jadi listener boleh
+## langsung mengirim request, misalnya untuk auto End Turn atau auto-battle.
+## Kalau ada beberapa listener, listener yang tersambung lebih dulu bisa saja sudah
+## memindahkan state. Listener berikutnya sebaiknya mengecek is_accepting_input().
 signal player_input_ready
 signal enemy_turn_started
 signal action_queued(action: BattleAction)
@@ -85,6 +88,8 @@ var _needs_turn_setup: bool = false
 # nomor ini untuk memastikan battle-nya masih battle yang sama.
 var _battle_id: int = 0
 var _is_handling_request: bool = false
+var _is_starting_battle: bool = false
+var _input_ready_queued: bool = false
 
 # Dipakai _change_state() supaya perpindahan state tidak saling bersarang.
 var _is_changing_state: bool = false
@@ -102,6 +107,9 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	if is_battle_running():
 		push_error("BattleManager: battle masih berjalan.")
 		return false
+	if _is_changing_state or _is_starting_battle:
+		push_error("BattleManager: start_battle() dipanggil dari dalam listener signal battle. Pakai call_deferred.")
+		return false
 	if not _has_required_references() or not _is_valid_enemy_list(enemy_list):
 		return false
 	if hero_health.is_dead():
@@ -110,6 +118,9 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	if not deck.build_deck(card_list):
 		return false
 
+	# Selama persiapan, start_battle() yang dipanggil dari listener (misalnya
+	# battle_started) ditolak supaya battle tidak dimulai dua kali.
+	_is_starting_battle = true
 	# build_deck() sudah membuat 15 kartu baru, jadi sisa kartu di tangan dari
 	# battle sebelumnya cukup dibuang.
 	hand.take_all_cards()
@@ -121,6 +132,7 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	player.begin_battle() # nanti: oper Moxie awal & multiplier dari GameState
 	_refresh_target()
 	battle_started.emit()
+	_is_starting_battle = false
 
 	_needs_turn_setup = true
 	_change_state(State.PLAYER_TURN)
@@ -260,10 +272,12 @@ func request_end_turn() -> bool:
 ## Mengunci target serangan (gaya Reverse: 1999). Gagal di luar PLAYER_TURN,
 ## atau kalau Buto itu bukan bagian dari battle ini atau sudah mati.
 func select_target(enemy: EnemyUnit) -> bool:
-	if not is_accepting_input() or not _enemies.has(enemy) or not EnemyUnit.is_valid_alive(enemy):
+	if not _begin_request():
 		return false
+	if not _enemies.has(enemy) or not EnemyUnit.is_valid_alive(enemy):
+		return _end_request(false)
 	_set_target(enemy)
-	return true
+	return _end_request(true)
 
 
 # Mengunci input selama satu request diproses. Signal yang terpancar di tengah
@@ -277,16 +291,33 @@ func _begin_request() -> bool:
 
 
 # Membuka kunci, lalu pindah ke next_state kalau request diterima. Kalau
-# state-nya tetap PLAYER_TURN (geser/merge), player_input_ready dipancarkan lagi
-# supaya UI tahu input sudah terbuka.
+# state-nya tetap PLAYER_TURN (geser, merge, pilih target), player_input_ready
+# dijadwalkan lagi supaya UI tahu input sudah terbuka.
 func _end_request(accepted: bool, next_state: State = State.PLAYER_TURN) -> bool:
 	_is_handling_request = false
 	if accepted:
 		if next_state == State.PLAYER_TURN:
-			player_input_ready.emit()
+			_queue_input_ready()
 		else:
 			_change_state(next_state)
 	return accepted
+
+
+# player_input_ready dipancarkan secara deferred dan digabung kalau diminta
+# berkali-kali. Tanpa ini, listener yang langsung mengirim request baru (misalnya
+# auto-battle dengan presentation_delay = 0) membuat rekursi tanpa batas sampai
+# stack overflow.
+func _queue_input_ready() -> void:
+	if _input_ready_queued:
+		return
+	_input_ready_queued = true
+	_emit_input_ready.call_deferred()
+
+
+func _emit_input_ready() -> void:
+	_input_ready_queued = false
+	if is_accepting_input():
+		player_input_ready.emit()
 
 #endregion
 
@@ -299,8 +330,9 @@ func _end_request(accepted: bool, next_state: State = State.PLAYER_TURN) -> bool
 func present_action(action: BattleAction) -> void:
 	action_presentation_started.emit(action)
 	if presentation_delay > 0.0 and is_inside_tree():
-		# process_always = false: timer ikut berhenti saat game di-pause.
-		await get_tree().create_timer(presentation_delay, false).timeout
+		# Tween milik node ini mengikuti process_mode node: ikut berhenti saat
+		# game di-pause, dan ikut hilang kalau node di-free.
+		await create_tween().tween_interval(presentation_delay).finished
 
 #endregion
 
@@ -343,7 +375,7 @@ func _change_state(next: State) -> void:
 	_is_changing_state = false
 
 	if _state == State.PLAYER_TURN:
-		player_input_ready.emit()
+		_queue_input_ready()
 
 
 func _enter_state(state: State) -> void:

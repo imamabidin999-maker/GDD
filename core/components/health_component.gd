@@ -12,6 +12,8 @@ signal died
 
 ## Mengubah max_hp saat HP sedang penuh akan ikut mengisi penuh HP.
 ## Jadi Buto yang max_hp-nya diatur di Inspector tetap mulai dengan HP penuh.
+## hp_changed hanya dipancarkan setelah node siap (_ready sudah jalan). Sebelum
+## itu, view (HP bar) cukup membaca current_hp dan max_hp di _ready miliknya.
 @export_range(1, 9999) var max_hp: int = 100:
 	set(value):
 		var old_max := max_hp
@@ -19,7 +21,7 @@ signal died
 		max_hp = maxi(value, 1)
 		if old_hp == old_max or current_hp > max_hp:
 			current_hp = max_hp
-		if max_hp != old_max or current_hp != old_hp:
+		if is_node_ready() and (max_hp != old_max or current_hp != old_hp):
 			hp_changed.emit(current_hp, max_hp)
 
 var current_hp: int = 100
