@@ -2,9 +2,8 @@ class_name EnemyUnit
 extends Node2D
 ## Satu Buto di medan tempur.
 ##
-## AI-nya masih yang paling sederhana: selalu menyerang hero. Nantinya
-## decide_action() menyerahkan keputusan ke AIBrain dari EnemyData, supaya
-## Buto Kuning, Hijau, Merah, Putih, dan Hitam punya pola masing-masing.
+## AI dasarnya paling sederhana: selalu menyerang hero. Mekanik khusus tiap
+## warna Buto ada di turunannya, EnemyButo.
 ##
 ## Buto yang mati jangan di-queue_free() selama battle masih berjalan. Cukup
 ## sembunyikan setelah animasi matinya selesai, lalu bersihkan setelah
@@ -25,6 +24,13 @@ static func is_valid_alive(enemy: Variant) -> bool:
 
 func is_alive() -> bool:
 	return health != null and not health.is_dead()
+
+
+## Dipanggil BattleManager.start_battle() untuk setiap musuh, sebelum turn
+## pertama. Turunan boleh meng-override untuk mereset state per battle atau
+## menyambungkan signal ke sistem battle.
+func on_battle_started(_battle: BattleManager) -> void:
+	pass
 
 
 ## Dipanggil BattleManager di awal ENEMY_TURN. Boleh mengembalikan null kalau

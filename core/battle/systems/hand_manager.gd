@@ -14,6 +14,10 @@ signal card_removed(card: CardInstance, index: int)
 signal card_moved(card: CardInstance, from_index: int, to_index: int)
 ## result menempati posisi index. Dua kartu bahannya ada di result.components.
 signal cards_merged(result: CardInstance, index: int)
+## Kartu terkunci atau terbuka lagi (skill LockCard Buto Putih).
+signal card_lock_changed(card: CardInstance, locked: bool)
+## Urutan tangan diacak paksa (skill ForceShuffle Buto Hitam).
+signal hand_shuffled
 ## Dipancarkan setelah setiap perubahan. Cocok untuk UI yang cukup menggambar
 ## ulang seluruh tangan.
 signal hand_changed
@@ -96,6 +100,7 @@ func remove_card_at(index: int) -> CardInstance:
 	if not is_valid_index(index):
 		return null
 	var card: CardInstance = _cards.pop_at(index)
+	card.lock_turns = 0 # kunci hanya berlaku selama kartu ada di tangan
 	card_removed.emit(card, index)
 	hand_changed.emit()
 	return card
@@ -110,18 +115,27 @@ func remove_card(card: CardInstance) -> bool:
 func take_all_cards() -> Array[CardInstance]:
 	var taken: Array[CardInstance] = _cards.duplicate()
 	_cards.clear()
+	for card: CardInstance in taken:
+		card.lock_turns = 0
 	hand_changed.emit()
 	return taken
 
 
+## true kalau kartu di from_index boleh digeser ke to_index: kedua index valid,
+## berbeda, dan kartu yang digeser tidak sedang terkunci.
+func can_move_card(from_index: int, to_index: int) -> bool:
+	if not is_valid_index(from_index) or not is_valid_index(to_index):
+		return false
+	return from_index != to_index and not _cards[from_index].is_locked()
+
+
 ## Menggeser kartu dari from_index sehingga berakhir di to_index.
-## Kartu lain otomatis bergeser mengisi tempat kosong.
+## Kartu lain otomatis bergeser mengisi tempat kosong, termasuk kartu yang
+## terkunci: kunci melarang kartu itu DIGESER pemain, bukan menahan slotnya.
 ## Fungsi ini tidak otomatis melakukan merge. BattleManager.request_move_card()
 ## yang memutuskan apakah merge_with_neighbor() dipanggil setelahnya.
 func move_card(from_index: int, to_index: int) -> bool:
-	if not is_valid_index(from_index) or not is_valid_index(to_index):
-		return false
-	if from_index == to_index:
+	if not can_move_card(from_index, to_index):
 		return false
 	var card: CardInstance = _cards.pop_at(from_index)
 	_cards.insert(to_index, card)
@@ -148,10 +162,13 @@ func has_same_rank(index_a: int, index_b: int) -> bool:
 	return _get_resolver().is_same_rank(_cards[index_a], _cards[index_b])
 
 
-## Pengecekan lengkap: bersebelahan, rank sama, tipe dasar berbeda, dan resepnya ada.
-## Bisa dipakai UI untuk menyalakan MergeGlow tanpa mengubah apa pun.
+## Pengecekan lengkap: bersebelahan, tidak terkunci, rank sama, tipe dasar
+## berbeda, dan resepnya ada. Bisa dipakai UI untuk menyalakan MergeGlow tanpa
+## mengubah apa pun.
 func can_merge_at(index_a: int, index_b: int) -> bool:
 	if not are_adjacent(index_a, index_b):
+		return false
+	if _cards[index_a].is_locked() or _cards[index_b].is_locked():
 		return false
 	return _get_resolver().can_merge(_cards[index_a], _cards[index_b])
 
@@ -191,5 +208,88 @@ func merge_with_neighbor(index: int) -> CardInstance:
 	if partner == NO_PARTNER:
 		return null
 	return merge_at(index, partner)
+
+#endregion
+
+
+#region Kunci kartu & acak paksa (skill Buto)
+
+func is_locked_at(index: int) -> bool:
+	return is_valid_index(index) and _cards[index].is_locked()
+
+
+func has_lockable_card() -> bool:
+	for card: CardInstance in _cards:
+		if not card.is_locked():
+			return true
+	return false
+
+
+## Mengunci kartu di index ini selama `turns` turn pemain. Kunci menempel di
+## kartunya, bukan di nomor slot, karena index bergeser setiap kali ada kartu
+## yang dimainkan. Kalau kartunya sudah terkunci, durasi yang lebih panjang dipakai.
+func lock_card_at(index: int, turns: int) -> bool:
+	if not is_valid_index(index) or turns <= 0:
+		return false
+	var card := _cards[index]
+	var was_locked := card.is_locked()
+	card.lock_turns = maxi(card.lock_turns, turns)
+	if not was_locked:
+		card_lock_changed.emit(card, true)
+	hand_changed.emit()
+	return true
+
+
+## Mengunci satu kartu acak yang belum terkunci. Mengembalikan index-nya,
+## atau -1 kalau tidak ada kartu yang bisa dikunci.
+func lock_random_card(rng: RandomNumberGenerator, turns: int) -> int:
+	if turns <= 0:
+		return -1
+	var candidates: Array[int] = []
+	for i: int in _cards.size():
+		if not _cards[i].is_locked():
+			candidates.append(i)
+	if candidates.is_empty():
+		return -1
+	var index := candidates[rng.randi_range(0, candidates.size() - 1)]
+	lock_card_at(index, turns)
+	return index
+
+
+## Mengurangi sisa durasi kunci semua kartu sebanyak satu turn.
+## Dipanggil BattleManager setiap kali pemain menekan End Turn.
+func tick_card_locks() -> void:
+	var changed := false
+	for card: CardInstance in _cards:
+		if card.lock_turns > 0:
+			card.lock_turns -= 1
+			if card.lock_turns == 0:
+				card_lock_changed.emit(card, false)
+				changed = true
+	if changed:
+		hand_changed.emit()
+
+
+## Mengacak urutan kartu di tangan. Kartu yang terkunci tetap di posisinya,
+## hanya kartu yang bebas yang saling bertukar tempat.
+func shuffle_cards(rng: RandomNumberGenerator) -> void:
+	var free_slots: Array[int] = []
+	var free_cards: Array[CardInstance] = []
+	for i: int in _cards.size():
+		if not _cards[i].is_locked():
+			free_slots.append(i)
+			free_cards.append(_cards[i])
+
+	# Fisher-Yates pada kartu yang bebas saja.
+	for i: int in range(free_cards.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var temp := free_cards[i]
+		free_cards[i] = free_cards[j]
+		free_cards[j] = temp
+
+	for k: int in free_slots.size():
+		_cards[free_slots[k]] = free_cards[k]
+	hand_shuffled.emit()
+	hand_changed.emit()
 
 #endregion

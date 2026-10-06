@@ -18,6 +18,9 @@ var uid: int
 var data: CardData
 ## Kosong untuk kartu dasar. Berisi dua kartu bahan untuk kartu hybrid.
 var components: Array[CardInstance] = []
+## Sisa turn pemain kartu ini terkunci (skill LockCard Buto Putih). 0 = bebas.
+## Jangan diubah langsung; pakai fungsi kunci di HandManager supaya signal-nya jalan.
+var lock_turns: int = 0
 
 
 func _init(card_data: CardData) -> void:
@@ -44,6 +47,11 @@ func get_type() -> CardData.CardType:
 
 func is_hybrid() -> bool:
 	return not data.is_base_type()
+
+
+## Kartu terkunci tidak bisa digeser atau digabung, tapi tetap bisa dimainkan.
+func is_locked() -> bool:
+	return lock_turns > 0
 
 
 ## Mengembalikan kartu-kartu dasar penyusun kartu ini.

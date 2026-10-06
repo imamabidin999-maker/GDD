@@ -12,6 +12,8 @@ extends Node
 signal deck_built(card_count: int)
 signal card_drawn(card: CardInstance)
 signal deck_reshuffled(card_count: int)
+## Sisa draw pile diacak ulang tanpa menyentuh discard pile (ForceShuffle Buto Hitam).
+signal draw_pile_shuffled(card_count: int)
 signal piles_changed(draw_count: int, discard_count: int)
 
 const DECK_SIZE: int = 15
@@ -139,6 +141,13 @@ func reshuffle_discard_into_draw() -> void:
 	_shuffle(_draw_pile)
 	deck_reshuffled.emit(_draw_pile.size())
 	_emit_piles_changed()
+
+
+## Mengacak ulang sisa draw pile. Discard pile tidak disentuh.
+## Dipakai efek yang mengacak paksa deck, seperti ForceShuffle Buto Hitam.
+func shuffle_draw_pile() -> void:
+	_shuffle(_draw_pile)
+	draw_pile_shuffled.emit(_draw_pile.size())
 
 
 ## Fisher-Yates shuffle memakai RNG milik node ini (bukan RNG global),

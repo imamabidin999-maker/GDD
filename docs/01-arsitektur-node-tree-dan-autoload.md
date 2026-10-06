@@ -126,13 +126,15 @@ ButoHitam.tscn     ← extends ButoUnit (khusus boss)
 
 Pemetaan 5 Buto:
 
-| Buto | Scene | Data | Contoh peran (bisa diganti) |
+| Buto | Scene | Data | Peran |
 |---|---|---|---|
-| Buto Kuning | `ButoUnit.tscn` | `buto_kuning.tres` | Cepat, serangan ringan beruntun |
-| Buto Hijau | `ButoUnit.tscn` | `buto_hijau.tres` | Debuff / racun |
-| Buto Merah | `ButoUnit.tscn` | `buto_merah.tres` | Serangan berat, butuh ancang-ancang |
-| Buto Putih | `ButoUnit.tscn` | `buto_putih.tres` | Support: heal / shield untuk Buto lain |
-| Buto Hitam | `ButoHitam.tscn` | `buto_hitam.tres` | Boss multi-fase |
+| Buto Kuning | `ButoUnit.tscn` | `buto_kuning.tres` | **Sudah ada:** setiap serangannya menguras Moxie Overcharge pemain |
+| Buto Hijau | `ButoUnit.tscn` | `buto_hijau.tres` | Rencana: debuff / racun (sekarang menyerang biasa) |
+| Buto Merah | `ButoUnit.tscn` | `buto_merah.tres` | Rencana: serangan berat dengan ancang-ancang (sekarang menyerang biasa) |
+| Buto Putih | `ButoUnit.tscn` | `buto_putih.tres` | **Sudah ada:** skill LockCard, mengunci 1 kartu acak di tangan |
+| Buto Hitam | `ButoHitam.tscn` | `buto_hitam.tres` | **Sudah ada:** boss; di fase 2 (HP ≤ 50%) memakai ForceShuffle |
+
+Mekaniknya ditulis di `scenes/units/enemy_buto.gd` (kelas `EnemyButo`, turunan `EnemyUnit`), dipilih lewat export `buto_type`.
 
 Empat minion cukup satu scene, bedanya hanya di file data. Jadi kalau nanti mau tambah Buto baru, cukup bikin `.tres` baru tanpa menyentuh scene.
 
@@ -310,8 +312,13 @@ Setiap aksi melewati tiga tahap:
 
 Manfaatnya: animasi tidak tumpang tindih, cek AP hanya di satu tempat, dan ada titik yang jelas untuk mencatat log aksi.
 
-### EnemyUnit & AI musuh
-- Untuk sekarang setiap Buto memilih aksinya sendiri lewat `decide_action()` di awal `ENEMY_TURN`, dan isinya selalu menyerang hero.
+### EnemyUnit, EnemyButo & AI musuh
+- Setiap Buto memilih aksinya sendiri lewat `decide_action()` di awal `ENEMY_TURN`. `EnemyUnit` selalu menyerang hero; `EnemyButo` memilih skill sesuai warnanya.
+- Skill tidak dijalankan saat memilih. `ButoSkillAction` menjalankannya di `RESOLVE_ACTIONS` lewat `EnemyButo.perform_skill()`, jadi tetap diantre, punya jeda animasi, dan diikuti cek HP.
+- **Kuning:** serangan + signal `overcharge_drain_requested`, yang disambungkan otomatis ke `PlayerState.drain_overcharge()` saat `start_battle()` (lewat hook `on_battle_started()`). Moxie di bawah 100% tidak ikut terkuras.
+- **Putih:** `lock_card()` memanggil `HandManager.lock_random_card()`. Kunci menempel di kartunya: kartu itu tidak bisa digeser atau digabung, tapi tetap bisa dimainkan. Durasinya dihitung per End Turn pemain.
+- **Hitam:** begitu HP ≤ `phase_two_hp_ratio`, `phase_changed(2)` langsung terpancar. Di turn musuh berikutnya `force_shuffle()` mengacak sisa draw pile (`DeckController.shuffle_draw_pile()`) dan urutan tangan (`HandManager.shuffle_cards()`). Kartu yang sedang terkunci tetap di tempatnya.
+- Putih dan Hitam memakai cooldown `skill_cooldown_turns` (bawaan: skill setiap 2 turn musuh).
 - Nantinya keputusan itu diserahkan ke `AIBrain` dari `EnemyData`, dan intent dipilih di awal `PLAYER_TURN` supaya `IntentIcon` bisa menampilkan niat musuh. Kalau logikanya sudah besar, baru dipisah menjadi node `EnemyDirector`.
 
 ### Helper logika murni (RefCounted)
@@ -358,7 +365,7 @@ res://
 ├── core/                        ← logika, tidak menyentuh UI
 │   ├── battle/
 │   │   ├── battle_manager.gd    ← state machine battle
-│   │   ├── actions/             ← battle_action.gd (base), play_card, ultimate, enemy_attack
+│   │   ├── actions/             ← battle_action.gd (base), play_card, ultimate, enemy_attack, buto_skill
 │   │   └── systems/             ← deck_controller, hand_manager, player_state
 │   ├── cards/                   ← card_instance.gd, merge_resolver.gd, damage_calculator.gd
 │   └── components/              ← health_component.gd, status_component.gd
@@ -377,7 +384,7 @@ res://
 │   ├── main_menu/
 │   ├── stage_map/
 │   ├── battle/                  ← battle_scene.tscn
-│   ├── units/                   ← unit, hero_unit, buto_unit, buto_hitam (+ enemy_unit.gd)
+│   ├── units/                   ← unit, hero_unit, buto_unit, buto_hitam (+ enemy_unit.gd, enemy_buto.gd)
 │   └── pustaka/
 ├── ui/
 │   ├── battle_hud/

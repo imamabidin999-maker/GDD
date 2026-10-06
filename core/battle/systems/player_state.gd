@@ -21,6 +21,8 @@ signal ultimate_ready
 ## Moxie baru saja menyentuh 200%.
 signal overcharge_full
 signal evolutionary_chain_triggered(stacks: int, multiplier: float)
+## Moxie Overcharge berkurang karena efek musuh (misalnya serangan Buto Kuning).
+signal overcharge_drained(amount: float)
 
 const AP_COST_PLAY_CARD: int = 1
 const AP_COST_MOVE_CARD: int = 1
@@ -148,6 +150,20 @@ func is_ultimate_ready() -> bool:
 
 func is_overcharged() -> bool:
 	return moxie > MOXIE_NORMAL_CAP
+
+
+## Mengurangi bagian Overcharge saja, yaitu Moxie di atas 100%. Lewat fungsi
+## ini Moxie tidak pernah turun di bawah 100%, jadi Ultimate yang sudah siap
+## tetap siap. Mengembalikan jumlah yang benar-benar terkuras.
+## Disambungkan ke signal overcharge_drain_requested milik Buto Kuning.
+func drain_overcharge(amount: float) -> float:
+	if amount <= 0.0 or moxie <= MOXIE_NORMAL_CAP:
+		return 0.0
+	var before := moxie
+	moxie = maxf(moxie - amount, MOXIE_NORMAL_CAP)
+	var drained := before - moxie
+	overcharge_drained.emit(drained)
+	return drained
 
 
 ## Menghabiskan seluruh Moxie untuk Ultimate. Mengembalikan jumlah yang dipakai

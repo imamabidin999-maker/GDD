@@ -130,6 +130,8 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	turn_number = 0
 	_battle_id += 1
 	player.begin_battle() # nanti: oper Moxie awal & multiplier dari GameState
+	for enemy: EnemyUnit in _enemies:
+		enemy.on_battle_started(self)
 	_refresh_target()
 	battle_started.emit()
 	_is_starting_battle = false
@@ -227,7 +229,8 @@ func request_play_card(hand_index: int) -> bool:
 func request_move_card(from_index: int, to_index: int) -> bool:
 	if not _begin_request():
 		return false
-	if not hand.is_valid_index(from_index) or not hand.is_valid_index(to_index) or from_index == to_index:
+	# Dicek sebelum AP dipotong: kartu yang terkunci (LockCard) tidak bisa digeser.
+	if not hand.can_move_card(from_index, to_index):
 		return _end_request(false)
 	if not player.consume_ap(PlayerState.AP_COST_MOVE_CARD):
 		return _end_request(false)
@@ -263,6 +266,7 @@ func request_ultimate() -> bool:
 func request_end_turn() -> bool:
 	if not _begin_request():
 		return false
+	hand.tick_card_locks() # durasi LockCard dihitung per turn pemain
 	if discard_hand_on_turn_end:
 		deck.discard_cards(hand.take_all_cards())
 	turn_ended.emit(turn_number)
