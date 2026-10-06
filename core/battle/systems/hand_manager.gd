@@ -100,7 +100,7 @@ func remove_card_at(index: int) -> CardInstance:
 	if not is_valid_index(index):
 		return null
 	var card: CardInstance = _cards.pop_at(index)
-	card.lock_turns = 0 # kunci hanya berlaku selama kartu ada di tangan
+	_clear_lock(card) # kunci hanya berlaku selama kartu ada di tangan
 	card_removed.emit(card, index)
 	hand_changed.emit()
 	return card
@@ -116,7 +116,7 @@ func take_all_cards() -> Array[CardInstance]:
 	var taken: Array[CardInstance] = _cards.duplicate()
 	_cards.clear()
 	for card: CardInstance in taken:
-		card.lock_turns = 0
+		_clear_lock(card)
 	hand_changed.emit()
 	return taken
 
@@ -219,10 +219,15 @@ func is_locked_at(index: int) -> bool:
 
 
 func has_lockable_card() -> bool:
+	return count_unlocked() > 0
+
+
+func count_unlocked() -> int:
+	var count := 0
 	for card: CardInstance in _cards:
 		if not card.is_locked():
-			return true
-	return false
+			count += 1
+	return count
 
 
 ## Mengunci kartu di index ini selama `turns` turn pemain. Kunci menempel di
@@ -258,27 +263,31 @@ func lock_random_card(rng: RandomNumberGenerator, turns: int) -> int:
 
 ## Mengurangi sisa durasi kunci semua kartu sebanyak satu turn.
 ## Dipanggil BattleManager setiap kali pemain menekan End Turn.
+## hand_changed terpancar setiap ada durasi yang berkurang, supaya angka sisa
+## turn di ikon gembok ikut ter-update.
 func tick_card_locks() -> void:
 	var changed := false
 	for card: CardInstance in _cards:
 		if card.lock_turns > 0:
 			card.lock_turns -= 1
+			changed = true
 			if card.lock_turns == 0:
 				card_lock_changed.emit(card, false)
-				changed = true
 	if changed:
 		hand_changed.emit()
 
 
 ## Mengacak urutan kartu di tangan. Kartu yang terkunci tetap di posisinya,
-## hanya kartu yang bebas yang saling bertukar tempat.
-func shuffle_cards(rng: RandomNumberGenerator) -> void:
+## hanya kartu yang bebas yang saling bertukar tempat. Mengembalikan true kalau
+## urutannya benar-benar berubah.
+func shuffle_cards(rng: RandomNumberGenerator) -> bool:
 	var free_slots: Array[int] = []
 	var free_cards: Array[CardInstance] = []
 	for i: int in _cards.size():
 		if not _cards[i].is_locked():
 			free_slots.append(i)
 			free_cards.append(_cards[i])
+	var original := free_cards.duplicate()
 
 	# Fisher-Yates pada kartu yang bebas saja.
 	for i: int in range(free_cards.size() - 1, 0, -1):
@@ -291,5 +300,13 @@ func shuffle_cards(rng: RandomNumberGenerator) -> void:
 		_cards[free_slots[k]] = free_cards[k]
 	hand_shuffled.emit()
 	hand_changed.emit()
+	return free_cards != original
+
+
+# Membuka kunci kartu yang keluar dari tangan, dan memberi tahu view-nya.
+func _clear_lock(card: CardInstance) -> void:
+	if card.is_locked():
+		card.lock_turns = 0
+		card_lock_changed.emit(card, false)
 
 #endregion

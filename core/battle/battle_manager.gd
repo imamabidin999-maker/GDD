@@ -404,6 +404,8 @@ func _setup_new_player_turn() -> void:
 	turn_number += 1
 	player.start_turn()
 	deck.fill_hand(hand)
+	for enemy: EnemyUnit in get_living_enemies():
+		enemy.on_player_turn_started(self)
 
 
 ## ENEMY_TURN: setiap Buto yang masih hidup memilih aksi, lalu semuanya diantre.

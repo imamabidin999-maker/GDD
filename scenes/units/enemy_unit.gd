@@ -33,6 +33,13 @@ func on_battle_started(_battle: BattleManager) -> void:
 	pass
 
 
+## Dipanggil BattleManager di awal setiap turn baru pemain, setelah kartu
+## ditarik, untuk setiap musuh yang masih hidup. Cocok untuk efek yang menunggu
+## tangan baru, atau nanti untuk memilih intent yang ditampilkan ke pemain.
+func on_player_turn_started(_battle: BattleManager) -> void:
+	pass
+
+
 ## Dipanggil BattleManager di awal ENEMY_TURN. Boleh mengembalikan null kalau
 ## Buto ini tidak beraksi di turn ini, misalnya sedang terkena stun. Override
 ## boleh memakai await; BattleManager menunggunya sebelum lanjut.

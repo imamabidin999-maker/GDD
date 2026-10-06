@@ -8,8 +8,14 @@ extends BattleAction
 
 var buto: EnemyButo
 var skill: EnemyButo.Skill
+## Hasil skill, diisi EnemyButo.perform_skill() untuk ditampilkan view.
 ## false kalau skill gagal berefek, misalnya tidak ada kartu yang bisa dikunci.
 var succeeded: bool = false
+## Damage ke hero (serangan Kuning, hantaman Hitam, atau serangan cadangan Putih).
+var damage_dealt: int = 0
+## Kartu yang dikunci LockCard. null kalau tidak ada, atau kuncinya ditunda ke
+## tangan berikutnya karena tangan sedang kosong.
+var locked_card: CardInstance
 
 
 func _init(user: EnemyButo, used_skill: EnemyButo.Skill) -> void:
@@ -23,4 +29,4 @@ func is_valid() -> bool:
 
 
 func _apply(battle: BattleManager) -> void:
-	succeeded = buto.perform_skill(skill, battle)
+	buto.perform_skill(self, battle)

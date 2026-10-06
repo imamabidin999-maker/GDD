@@ -120,7 +120,7 @@ ButoUnit.tscn      ← extends Unit
 └── + InfoAnchor/MiniHPBar (TextureProgressBar)
 
 ButoHitam.tscn     ← extends ButoUnit (khusus boss)
-├── + PhaseController (Node)                ← ganti fase saat HP melewati ambang tertentu
+├── + PhaseController (Node)                ← rencana; untuk sekarang fase diurus EnemyButo sendiri
 └── + AuraVFX (CPUParticles2D)
 ```
 
@@ -132,11 +132,11 @@ Pemetaan 5 Buto:
 | Buto Hijau | `ButoUnit.tscn` | `buto_hijau.tres` | Rencana: debuff / racun (sekarang menyerang biasa) |
 | Buto Merah | `ButoUnit.tscn` | `buto_merah.tres` | Rencana: serangan berat dengan ancang-ancang (sekarang menyerang biasa) |
 | Buto Putih | `ButoUnit.tscn` | `buto_putih.tres` | **Sudah ada:** skill LockCard, mengunci 1 kartu acak di tangan |
-| Buto Hitam | `ButoHitam.tscn` | `buto_hitam.tres` | **Sudah ada:** boss; di fase 2 (HP ≤ 50%) memakai ForceShuffle |
+| Buto Hitam | `ButoHitam.tscn` | `buto_hitam.tres` | **Sudah ada:** boss; di fase 2 (HP ≤ 50%) memakai ForceShuffle: menghantam hero lalu mengacak deck & tangan |
 
 Mekaniknya ditulis di `scenes/units/enemy_buto.gd` (kelas `EnemyButo`, turunan `EnemyUnit`), dipilih lewat export `buto_type`.
 
-Empat minion cukup satu scene, bedanya hanya di file data. Jadi kalau nanti mau tambah Buto baru, cukup bikin `.tres` baru tanpa menyentuh scene.
+Empat minion cukup satu scene, bedanya hanya di file data. Jadi kalau nanti mau tambah Buto baru, cukup bikin `.tres` baru tanpa menyentuh scene. Catatan: selama `EnemyData`/`AIBrain` belum dibuat, warna dan mekaniknya masih dipilih lewat export `buto_type` di node `EnemyButo`, jadi Buto dengan mekanik baru tetap perlu tambahan di `enemy_buto.gd`.
 
 ### 3.2 CardView
 
@@ -303,7 +303,7 @@ Menggabungkan APController dan MoxieController dari rancangan awal, karena game 
 - Geser kartu diselesaikan langsung di `PLAYER_TURN` tanpa lewat antrean, karena tidak ada damage dan tidak bisa mengubah hasil menang/kalah.
 
 ### BattleAction (pola Command)
-Aksi yang memengaruhi HP dibungkus menjadi `BattleAction`: `PlayCardAction`, `UltimateAction`, dan `EnemyAttackAction`.
+Aksi yang memengaruhi HP dibungkus menjadi `BattleAction`: `PlayCardAction`, `UltimateAction`, `EnemyAttackAction`, dan `ButoSkillAction`.
 
 Setiap aksi melewati tiga tahap:
 1. **Validate**: dicek `BattleManager` sebelum aksi masuk antrean (AP cukup? kartu masih ada?), lalu `is_valid()` tepat sebelum dijalankan (pelakunya masih hidup?).
@@ -316,8 +316,8 @@ Manfaatnya: animasi tidak tumpang tindih, cek AP hanya di satu tempat, dan ada t
 - Setiap Buto memilih aksinya sendiri lewat `decide_action()` di awal `ENEMY_TURN`. `EnemyUnit` selalu menyerang hero; `EnemyButo` memilih skill sesuai warnanya.
 - Skill tidak dijalankan saat memilih. `ButoSkillAction` menjalankannya di `RESOLVE_ACTIONS` lewat `EnemyButo.perform_skill()`, jadi tetap diantre, punya jeda animasi, dan diikuti cek HP.
 - **Kuning:** serangan + signal `overcharge_drain_requested`, yang disambungkan otomatis ke `PlayerState.drain_overcharge()` saat `start_battle()` (lewat hook `on_battle_started()`). Moxie di bawah 100% tidak ikut terkuras.
-- **Putih:** `lock_card()` memanggil `HandManager.lock_random_card()`. Kunci menempel di kartunya: kartu itu tidak bisa digeser atau digabung, tapi tetap bisa dimainkan. Durasinya dihitung per End Turn pemain.
-- **Hitam:** begitu HP ≤ `phase_two_hp_ratio`, `phase_changed(2)` langsung terpancar. Di turn musuh berikutnya `force_shuffle()` mengacak sisa draw pile (`DeckController.shuffle_draw_pile()`) dan urutan tangan (`HandManager.shuffle_cards()`). Kartu yang sedang terkunci tetap di tempatnya.
+- **Putih:** `lock_card()` memanggil `HandManager.lock_random_card()`. Kunci menempel di kartunya: kartu itu tidak bisa digeser atau digabung, tapi tetap bisa dimainkan. Durasinya dihitung per End Turn pemain. Kalau tangan sedang kosong (misalnya mode buang-tangan gaya FGO), kuncinya dipasang ke tangan baru lewat hook `on_player_turn_started()`. Kalau semua kartu sudah terkunci (misalnya oleh Putih lain), Putih menyerang biasa dan skill-nya siap lagi turn berikutnya.
+- **Hitam:** begitu HP ≤ `phase_two_hp_ratio` × max HP, `phase_changed(2)` langsung terpancar. Di turn musuh berikutnya ForceShuffle menghantam hero, lalu `force_shuffle()` mengacak sisa draw pile (`DeckController.shuffle_draw_pile()`) dan urutan tangan (`HandManager.shuffle_cards()`). Kartu yang sedang terkunci tetap di tempatnya. Skill ini hanya dipilih kalau ada minimal 2 kartu bebas di tangan; kalau tidak, Hitam menyerang biasa. Acakan draw pile belum terasa bagi pemain karena isinya memang sudah acak dan tersembunyi; efek ini baru berarti kalau nanti ada kartu yang mengintip atau menata kartu teratas.
 - Putih dan Hitam memakai cooldown `skill_cooldown_turns` (bawaan: skill setiap 2 turn musuh).
 - Nantinya keputusan itu diserahkan ke `AIBrain` dari `EnemyData`, dan intent dipilih di awal `PLAYER_TURN` supaya `IntentIcon` bisa menampilkan niat musuh. Kalau logikanya sudah besar, baru dipisah menjadi node `EnemyDirector`.
 
