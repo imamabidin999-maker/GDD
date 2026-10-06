@@ -45,21 +45,10 @@ Perpindahan scene selalu lewat `SceneRouter` (autoload) supaya transisi fade dan
 BattleScene (Node)                          ← battle_scene.gd · composition root, menyambungkan semua sistem
 │
 ├── Systems (Node)                          ← logika murni, tidak ada visual sama sekali
-│   ├── BattleStateMachine (Node)
-│   │   ├── BattleStart (Node)
-│   │   ├── TurnStart (Node)
-│   │   ├── PlayerAction (Node)
-│   │   ├── Resolving (Node)
-│   │   ├── TurnEnd (Node)
-│   │   ├── EnemyTurn (Node)
-│   │   ├── Victory (Node)
-│   │   └── Defeat (Node)
-│   ├── ActionQueue (Node)                  ← antrean Command, eksekusi berurutan + tunggu animasi
+│   ├── BattleManager (Node)                ← state machine battle, antrean aksi, target yang dikunci
 │   ├── DeckController (Node)               ← draw pile & discard pile
 │   ├── HandManager (Node)                  ← urutan kartu di tangan, geser, ganti hasil merge
-│   ├── PlayerState (Node)                  ← AP, Moxie 0–200%, Evolutionary Chain
-│   ├── TargetSelector (Node)               ← musuh yang sedang dikunci sebagai target
-│   └── EnemyDirector (Node)                ← atur intent & giliran semua Buto
+│   └── PlayerState (Node)                  ← AP, Moxie 0–200%, Evolutionary Chain
 │
 ├── World (Node2D)                          ← semua yang ada "di dunia" game
 │   ├── Background (Parallax2D)             ← Parallax2D tersedia sejak 4.3
@@ -197,7 +186,7 @@ Peringatan khas Godot 4: jangan beri `class_name` pada script autoload dengan na
 
 ### 4.1 Isi EventBus (nama signal saja)
 
-Aturannya: **EventBus dipakai untuk memberi tahu, bukan untuk menyuruh.** Sistem yang perlu menyuruh sistem lain memakai Command (bagian 6), bukan signal global.
+Aturannya: **EventBus dipakai untuk memberi tahu, bukan untuk menyuruh.** Sistem yang perlu menyuruh sistem lain memanggil fungsinya langsung lewat `BattleManager` atau `BattleAction` (bagian 6), bukan lewat signal global.
 
 | Kelompok | Signal |
 |---|---|
@@ -239,32 +228,29 @@ BOOT ──► MENU ──► MAP ──► BATTLE ──► MAP ...
 
 Lapis ini sederhana. Cukup enum di `GameState` yang diubah oleh `SceneRouter` setiap kali pindah scene.
 
-### 5.2 Lapis battle (BattleStateMachine)
+### 5.2 Lapis battle (BattleManager)
 
-Node-based state machine: setiap state adalah child Node dengan script turunan satu base `BattleState`. Hanya satu state yang aktif dalam satu waktu.
+State machine sederhana berbasis enum di satu script, `core/battle/battle_manager.gd`. Rancangan awal memakai satu child Node per state. Untuk empat state inti, enum lebih ringkas dan alurnya lebih mudah diikuti. Kalau nanti logika tiap state membengkak (status effect, intent musuh, fase boss), state-state itu bisa dipecah lagi menjadi node.
 
 ```
-BattleStart ──► TurnStart ──► PlayerAction ◄──► Resolving
-                   ▲                │                │
-                   │            (End Turn)     (HP semua Buto habis) ──► Victory
-                   │                ▼
-                   │            TurnEnd
-                   │                │
-                   │                ▼
-                   └──────────── EnemyTurn ──(HP hero habis)──► Defeat
+PLAYER_TURN ──main kartu / Ultimate──► RESOLVE_ACTIONS ──► CHECK_WIN_LOSE
+PLAYER_TURN ──End Turn──► ENEMY_TURN ──► RESOLVE_ACTIONS ──► CHECK_WIN_LOSE
+
+CHECK_WIN_LOSE ──► VICTORY / DEFEAT
+               ──► RESOLVE_ACTIONS   (antrean aksi belum habis)
+               ──► PLAYER_TURN       (lanjut menunggu input, atau turn baru setelah giliran musuh)
 ```
 
-| State | Kapan masuk | Yang dikerjakan |
-|---|---|---|
-| `BattleStart` | Scene siap | Spawn Buto dari `EncounterData`, buat 15 `CardInstance`, kocok deck, putar BGM |
-| `TurnStart` | Awal setiap turn | Isi ulang AP, tarik kartu sampai batas hand, Buto memilih intent lalu ditampilkan, proses durasi status |
-| `PlayerAction` | Menunggu input | **Satu-satunya state yang menerima input.** Pilih target, mainkan kartu, geser kartu, Ultimate, End Turn |
-| `Resolving` | Ada Command di antrean | Input dikunci, tunggu `ActionQueue` kosong (termasuk animasi), lalu cek menang/kalah |
-| `TurnEnd` | Pemain tekan End Turn | Urus sisa kartu di tangan (dibuang/disimpan sesuai aturan), efek akhir turn |
-| `EnemyTurn` | Setelah TurnEnd | Setiap Buto menjalankan intent-nya lewat `ActionQueue`, satu per satu |
-| `Victory` / `Defeat` | Kondisi terpenuhi | Tampilkan `ResultPanel`, update `GameState`, minta `SaveManager` menyimpan |
+| State | Yang dikerjakan |
+|---|---|
+| `IDLE` | Belum ada battle. `start_battle()` membangun deck 15 kartu dan menyiapkan `PlayerState` |
+| `PLAYER_TURN` | Di awal turn baru: isi ulang AP dan tarik kartu sampai tangan penuh. Lalu menunggu input. **Satu-satunya state yang menerima input**: main kartu, geser kartu, Ultimate, pilih target, End Turn |
+| `RESOLVE_ACTIONS` | Ambil **satu** aksi dari antrean, hitung dan terapkan damage-nya, lalu tunggu animasinya |
+| `CHECK_WIN_LOSE` | Cek HP hero dan semua Buto, lalu pilih state berikutnya |
+| `ENEMY_TURN` | Setiap Buto yang masih hidup memilih aksi, lalu semuanya masuk antrean |
+| `VICTORY` / `DEFEAT` | Antrean dikosongkan dan `battle_ended` dipancarkan. Pendengarnya yang menampilkan `ResultPanel`, meng-update `GameState`, dan memanggil `SaveManager` |
 
-Mengunci input di luar `PlayerAction` adalah cara paling murah untuk mencegah bug klasik, misalnya pemain klik kartu dua kali dengan cepat lalu AP terpotong dua kali.
+Mengunci input di luar `PLAYER_TURN` adalah cara paling murah untuk mencegah bug klasik, misalnya pemain klik kartu dua kali dengan cepat lalu AP terpotong dua kali. Karena `RESOLVE_ACTIONS` hanya menyelesaikan satu aksi lalu selalu lewat `CHECK_WIN_LOSE`, Buto berikutnya tidak sempat menyerang kalau hero sudah tumbang.
 
 ---
 
@@ -279,7 +265,7 @@ Mengunci input di luar `PlayerAction` adalah cara paling murah untuk mencegah bu
 ### HandManager
 - Menyimpan isi tangan sebagai **array berurutan**. Urutan itu penting karena merge didasarkan pada kartu yang bersebelahan.
 - Operasi: tambah, ambil, geser dari posisi A ke B, ganti dua kartu bersebelahan dengan satu kartu hasil merge.
-- **Tidak** mengecek AP. Pengecekan AP dilakukan di Command, supaya aturan biaya ada di satu tempat.
+- **Tidak** mengecek AP. Pengecekan AP dilakukan `BattleManager` sebelum memanggil HandManager, supaya aturan biaya ada di satu tempat.
 
 ### MergeResolver (RefCounted, bukan Node)
 - Logika murni: menerima dua `CardInstance`, mengembalikan kartu hasil merge atau "tidak bisa".
@@ -287,32 +273,32 @@ Mengunci input di luar `PlayerAction` adalah cara paling murah untuk mencegah bu
   - Serang + Fokus → **Crimson Focus**
   - Serang + Taktik → **Piercing Strike**
   - Fokus + Taktik → **Flow State**
-- Dipanggil oleh `MoveCardCommand` setelah kartu digeser, dan dipakai `HandView` untuk menyalakan `MergeGlow`.
+- Dipanggil lewat `HandManager.merge_with_neighbor()` setelah `BattleManager.request_move_card()` menggeser kartu, dan dipakai `HandView` untuk menyalakan `MergeGlow`.
 
 ### PlayerState
 Menggabungkan APController dan MoxieController dari rancangan awal, karena game ini memakai satu karakter. HP tetap diurus `HealthComponent` milik `HeroUnit`.
-- **AP:** menyimpan AP sekarang dan AP maksimal, lalu mengisi ulang di `TurnStart`. `consume_ap()` menolak aksi kalau AP tidak cukup. Main kartu = 1 AP, geser kartu = 1 AP.
+- **AP:** menyimpan AP sekarang dan AP maksimal, lalu mengisi ulang di awal `PLAYER_TURN`. `consume_ap()` menolak aksi kalau AP tidak cukup. Main kartu = 1 AP, geser kartu = 1 AP.
 - **Moxie:** nilai 0–200. Ambang 100 = Ultimate bisa dipakai, di atas 100 = overcharge, 200 = penuh. Untuk sementara, Moxie dari kartu yang mengandung Fokus diatur lewat tabel per rank. Nantinya dipindah ke `MoxieGainEffect`.
 - **Evolutionary Chain:** kalau dalam satu turn pemain memainkan 3 kartu ★3, `ultimate_damage_multiplier` naik permanen sampai battle selesai. Maksimal sekali per turn dan ada batas atasnya.
 
-### TargetSelector
-- Gaya Reverse: 1999: pemain mengetuk Buto untuk mengunci target, lalu semua kartu serang diarahkan ke situ. Jadi tidak perlu pilih target setiap kali main kartu.
-- Kalau target mati, otomatis pindah ke Buto lain yang masih hidup.
+### BattleManager
+- State machine battle (bagian 5.2), sekaligus pintu masuk semua input pemain: `request_play_card()`, `request_move_card()`, `request_ultimate()`, `request_end_turn()`, dan `select_target()`. Semua request ditolak di luar `PLAYER_TURN`.
+- Menyimpan antrean `BattleAction` dan target yang sedang dikunci. Gayanya seperti Reverse: 1999: pemain mengetuk Buto sekali, lalu semua serangan diarahkan ke situ. Kalau target mati, otomatis pindah ke Buto lain yang masih hidup.
+- Geser kartu diselesaikan langsung di `PLAYER_TURN` tanpa lewat antrean, karena tidak ada damage dan tidak bisa mengubah hasil menang/kalah.
 
-### EnemyDirector
-- Saat `TurnStart`: meminta `Brain` setiap Buto memilih intent berikutnya, lalu `IntentIcon` ditampilkan agar pemain bisa membaca niat musuh.
-- Saat `EnemyTurn`: mengubah intent menjadi Command dan memasukkannya ke `ActionQueue`.
+### BattleAction (pola Command)
+Aksi yang memengaruhi HP dibungkus menjadi `BattleAction`: `PlayCardAction`, `UltimateAction`, dan `EnemyAttackAction`.
 
-### ActionQueue + Command
-Semua aksi, dari pemain maupun musuh, dibungkus menjadi Command:
-`PlayCardCommand`, `MoveCardCommand`, `UltimateCommand`, `EnemyActionCommand`, `EndTurnCommand`.
+Setiap aksi melewati tiga tahap:
+1. **Validate**: dicek `BattleManager` sebelum aksi masuk antrean (AP cukup? kartu masih ada?), lalu `is_valid()` tepat sebelum dijalankan (pelakunya masih hidup?).
+2. **Apply**: `_apply()` menghitung dan menerapkan efeknya (HP, Moxie, discard).
+3. **Present**: `BattleManager.present_action()` menunggu animasi selesai sebelum aksi berikutnya jalan.
 
-Setiap Command melewati tiga tahap:
-1. **Validate**: AP cukup? target valid? kartu masih ada di tangan?
-2. **Execute**: mengubah data (AP, hand, HP, Moxie).
-3. **Present**: menunggu animasi selesai sebelum Command berikutnya jalan.
+Manfaatnya: animasi tidak tumpang tindih, cek AP hanya di satu tempat, dan ada titik yang jelas untuk mencatat log aksi.
 
-Manfaatnya: animasi tidak tumpang tindih, cek AP hanya di satu tempat, ada log aksi untuk debugging, dan fitur undo geser kartu jadi mudah kalau nanti diinginkan.
+### EnemyUnit & AI musuh
+- Untuk sekarang setiap Buto memilih aksinya sendiri lewat `decide_action()` di awal `ENEMY_TURN`, dan isinya selalu menyerang hero.
+- Nantinya keputusan itu diserahkan ke `AIBrain` dari `EnemyData`, dan intent dipilih di awal `PLAYER_TURN` supaya `IntentIcon` bisa menampilkan niat musuh. Kalau logikanya sudah besar, baru dipisah menjadi node `EnemyDirector`.
 
 ### Helper logika murni (RefCounted)
 - `DamageCalculator`: base power × rank × buff/debuff × crit.
@@ -357,9 +343,9 @@ res://
 │   └── audio_manager.tscn (+ .gd)
 ├── core/                        ← logika, tidak menyentuh UI
 │   ├── battle/
-│   │   ├── states/              ← battle_state.gd (base) + 8 state
-│   │   ├── commands/            ← command.gd (base) + turunannya
-│   │   └── systems/             ← deck_controller, hand_manager, player_state, target, enemy_director, action_queue
+│   │   ├── battle_manager.gd    ← state machine battle
+│   │   ├── actions/             ← battle_action.gd (base), play_card, ultimate, enemy_attack
+│   │   └── systems/             ← deck_controller, hand_manager, player_state
 │   ├── cards/                   ← card_instance.gd, merge_resolver.gd, damage_calculator.gd
 │   └── components/              ← health_component.gd, status_component.gd
 ├── data/
@@ -377,7 +363,7 @@ res://
 │   ├── main_menu/
 │   ├── stage_map/
 │   ├── battle/                  ← battle_scene.tscn
-│   ├── units/                   ← unit, hero_unit, buto_unit, buto_hitam
+│   ├── units/                   ← unit, hero_unit, buto_unit, buto_hitam (+ enemy_unit.gd)
 │   └── pustaka/
 ├── ui/
 │   ├── battle_hud/
@@ -395,14 +381,14 @@ res://
 ## 9. Contoh Alur: Geser Kartu Lalu Terjadi Merge
 
 1. Pemain men-drag sebuah `CardView` ke posisi lain. `HandView` hanya mengirim permintaan "geser dari slot 1 ke slot 3".
-2. State `PlayerAction` menerima permintaan itu, membuat `MoveCardCommand`, memasukkannya ke `ActionQueue`, lalu pindah ke `Resolving` (input terkunci).
-3. **Validate**: `PlayerState` masih punya minimal 1 AP? Posisi tujuan valid?
-4. **Execute**: AP dipotong 1, lalu `HandManager` memindahkan kartu. `MergeResolver` mengecek kartu di kiri dan kanan posisi baru.
-5. Ternyata tetangganya Fokus rank 1, kartu yang digeser Serang rank 1. Resep ditemukan di `CardDB`, maka `HandManager` mengganti dua kartu itu menjadi satu **Crimson Focus** (yang menyimpan kedua kartu asalnya).
-6. `EventBus` mengirim `card_moved` lalu `cards_merged`. `HandView` memainkan animasi merge, `AudioManager` membunyikan "dung" bedug disusul "krek" korek (asal-usul nama Dongkrek, cocok dijadikan SFX merge).
-7. **Present** selesai, `Resolving` mengecek menang/kalah, lalu kembali ke `PlayerAction`.
+2. `BattleManager.request_move_card()` menerima permintaan itu. Kalau state sedang bukan `PLAYER_TURN`, permintaan langsung ditolak.
+3. **Validate**: kedua posisi valid? `PlayerState` masih punya minimal 1 AP?
+4. **Execute**: AP dipotong 1, `HandManager` memindahkan kartu, lalu `merge_with_neighbor()` mengecek kartu di kiri dan kanan posisi baru.
+5. Ternyata tetangganya Fokus rank 1, kartu yang digeser Serang rank 1. Resepnya ada, maka `HandManager` mengganti dua kartu itu menjadi satu **Crimson Focus** (yang menyimpan kedua kartu asalnya).
+6. `HandManager` memancarkan `card_moved` lalu `cards_merged` (nanti diteruskan ke `EventBus`). `HandView` memainkan animasi merge, `AudioManager` membunyikan "dung" bedug disusul "krek" korek (asal-usul nama Dongkrek, cocok dijadikan SFX merge).
+7. Karena geser kartu tidak memengaruhi HP, state tetap `PLAYER_TURN` dan pemain bisa langsung beraksi lagi.
 
-Alur main kartu kurang lebih sama: `PlayCardCommand` → potong 1 AP → jalankan setiap `CardEffect` ke target dari `TargetSelector` → `PlayerState` menambah Moxie jika ada efeknya dan mengecek Evolutionary Chain → `DeckController` membuang kartu (hybrid dipecah jadi dua) → cek menang/kalah.
+Alur main kartu: `request_play_card()` → potong 1 AP dan angkat kartu dari tangan → `PlayCardAction` masuk antrean → `RESOLVE_ACTIONS`: damage ke target yang dikunci, `PlayerState` menambah Moxie dan mengecek Evolutionary Chain, `DeckController` membuang kartu (hybrid dipecah jadi dua), lalu tunggu animasi → `CHECK_WIN_LOSE` → kembali ke `PLAYER_TURN`, atau `VICTORY` kalau Buto terakhir tumbang.
 
 ---
 
