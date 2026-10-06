@@ -14,10 +14,13 @@ signal died
 ## Jadi Buto yang max_hp-nya diatur di Inspector tetap mulai dengan HP penuh.
 @export_range(1, 9999) var max_hp: int = 100:
 	set(value):
-		var was_full := current_hp == max_hp
+		var old_max := max_hp
+		var old_hp := current_hp
 		max_hp = maxi(value, 1)
-		if was_full or current_hp > max_hp:
+		if old_hp == old_max or current_hp > max_hp:
 			current_hp = max_hp
+		if max_hp != old_max or current_hp != old_hp:
+			hp_changed.emit(current_hp, max_hp)
 
 var current_hp: int = 100
 

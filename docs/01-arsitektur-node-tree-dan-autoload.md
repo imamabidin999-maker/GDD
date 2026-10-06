@@ -4,7 +4,7 @@ Game Turn-Based RPG Pixel Art bertema Dongkrek Madiun
 Engine: Godot 4.x (GDScript)
 Mekanik inti: **Tactical Cycle Synthesis**
 
-Dokumen ini baru sebatas rancangan struktur. Belum ada kode fungsi.
+Dokumen ini menggambarkan arsitektur yang dituju. Sebagian sudah ada kodenya (deck, tangan, PlayerState, BattleManager); bagian lain seperti autoload, UI, dan data Buto masih berupa rancangan.
 
 ---
 
@@ -198,6 +198,18 @@ Aturannya: **EventBus dipakai untuk memberi tahu, bukan untuk menyuruh.** Sistem
 
 Pendengar utamanya: HUD, AudioManager, sistem tutorial, dan pencatat Pustaka. Mereka bisa bereaksi tanpa harus tahu letak node `HandManager` di tree.
 
+EventBus belum dibuat. Nanti `BattleScene` cukup meneruskan signal yang sudah ada:
+
+| Signal EventBus | Diteruskan dari |
+|---|---|
+| `battle_started`, `turn_started`, `turn_ended`, `target_changed` | signal bernama sama di `BattleManager` |
+| `battle_ended(result)` | `BattleManager.battle_ended(player_won)` |
+| `card_drawn`, `deck_reshuffled`, `pile_count_changed` | `DeckController.card_drawn`, `deck_reshuffled`, `piles_changed` |
+| `card_played` | `BattleManager.action_resolved` yang aksinya `PlayCardAction` |
+| `card_moved`, `cards_merged` | signal bernama sama di `HandManager` |
+| `ap_changed`, `moxie_changed`, `ultimate_ready`, `overcharge_full` | signal bernama sama di `PlayerState` |
+| `unit_damaged`, `unit_healed`, `unit_died` | `HealthComponent.damaged`, `healed`, `died` milik tiap unit |
+
 ### 4.2 Kenapa DeckController & HandManager tidak dijadikan Autoload
 
 Ini sengaja. Ada empat alasan:
@@ -244,7 +256,7 @@ CHECK_WIN_LOSE ──► VICTORY / DEFEAT
 | State | Yang dikerjakan |
 |---|---|
 | `IDLE` | Belum ada battle. `start_battle()` membangun deck 15 kartu dan menyiapkan `PlayerState` |
-| `PLAYER_TURN` | Di awal turn baru: isi ulang AP dan tarik kartu sampai tangan penuh. Lalu menunggu input. **Satu-satunya state yang menerima input**: main kartu, geser kartu, Ultimate, pilih target, End Turn |
+| `PLAYER_TURN` | Di awal turn baru: isi ulang AP dan tarik kartu sampai tangan penuh, **sebelum** `state_changed` diumumkan. Lalu menunggu input. **Satu-satunya state yang menerima input**: main kartu, geser kartu, Ultimate, pilih target, End Turn |
 | `RESOLVE_ACTIONS` | Ambil **satu** aksi dari antrean, hitung dan terapkan damage-nya, lalu tunggu animasinya |
 | `CHECK_WIN_LOSE` | Cek HP hero dan semua Buto, lalu pilih state berikutnya |
 | `ENEMY_TURN` | Setiap Buto yang masih hidup memilih aksi, lalu semuanya masuk antrean |
@@ -282,7 +294,8 @@ Menggabungkan APController dan MoxieController dari rancangan awal, karena game 
 - **Evolutionary Chain:** kalau dalam satu turn pemain memainkan 3 kartu ★3, `ultimate_damage_multiplier` naik permanen sampai battle selesai. Maksimal sekali per turn dan ada batas atasnya.
 
 ### BattleManager
-- State machine battle (bagian 5.2), sekaligus pintu masuk semua input pemain: `request_play_card()`, `request_move_card()`, `request_ultimate()`, `request_end_turn()`, dan `select_target()`. Semua request ditolak di luar `PLAYER_TURN`.
+- State machine battle (bagian 5.2), sekaligus pintu masuk semua input pemain: `request_play_card()`, `request_move_card()`, `request_merge()`, `request_ultimate()`, `request_end_turn()`, dan `select_target()`. Semua request ditolak di luar `PLAYER_TURN`.
+- Request yang dipanggil dari dalam listener signal (misalnya dari `ap_changed` atau `state_changed`) juga ditolak. Tanpa aturan ini, aturan otomatis seperti "End Turn kalau AP habis" bisa menjalankan giliran musuh di tengah request main kartu. Aturan semacam itu didengarkan dari signal `player_input_ready`, yang terpancar setiap kali `PLAYER_TURN` sudah stabil.
 - Menyimpan antrean `BattleAction` dan target yang sedang dikunci. Gayanya seperti Reverse: 1999: pemain mengetuk Buto sekali, lalu semua serangan diarahkan ke situ. Kalau target mati, otomatis pindah ke Buto lain yang masih hidup.
 - Geser kartu diselesaikan langsung di `PLAYER_TURN` tanpa lewat antrean, karena tidak ada damage dan tidak bisa mengubah hasil menang/kalah.
 
@@ -320,7 +333,7 @@ Keduanya cocok dites dengan GUT atau gdUnit4 karena tidak butuh scene.
 | `AIBrain` (base) | Turunan: `PatternBrain` (urutan tetap), `WeightedBrain` (acak berbobot), `BossPhaseBrain` | dipasang di `EnemyData` |
 | `StatusEffectData` | nama, ikon, durasi, stack, efek per turn | `status_terbakar.tres` |
 | `EncounterData` | daftar Buto + slot, background, BGM | `stage_03.tres` |
-| `BattleConfig` | AP per turn, batas kartu di tangan, Moxie maksimal, ambang Ultimate | `default_battle.tres` |
+| `BattleConfig` | AP per turn, batas kartu di tangan, Moxie maksimal, ambang Ultimate. **Belum dibuat**: untuk sekarang nilainya ada di export `PlayerState.max_ap`, `HandManager.max_hand_size`, dan konstanta `PlayerState.MOXIE_MAX` / `MOXIE_NORMAL_CAP` | `default_battle.tres` |
 
 ### CardInstance (RefCounted, bukan Resource)
 
@@ -405,16 +418,18 @@ Alur main kartu: `request_play_card()` → potong 1 AP dan angkat kartu dari tan
 
 ---
 
-## 11. Keputusan Desain yang Perlu Dikunci Sebelum Menulis Kode
+## 11. Keputusan Desain yang Masih Terbuka
 
-Pertanyaan berikut berpengaruh langsung ke struktur di atas, jadi sebaiknya dijawab dulu:
+Pertanyaan berikut berpengaruh langsung ke struktur di atas. Sebagian sudah punya jawaban **sementara** di kode, berupa export yang bisa diubah dari Inspector:
 
-1. **Pemicu merge:** otomatis saat dua kartu cocok bersebelahan, atau pemain harus menekan sesuatu?
-2. **Rank hasil hybrid:** tetap sama dengan rank asal atau naik satu?
-3. **Merge lanjutan:** apakah kartu hybrid bisa digabung lagi? Apakah sesama tipe dengan rank sama juga bisa naik rank seperti di Reverse: 1999?
-4. **Sisa kartu di akhir turn:** dibuang semua (gaya FGO) atau disimpan ke turn berikutnya (gaya Reverse: 1999)?
-5. **AP & hand:** berapa AP per turn dan berapa batas kartu di tangan?
-6. **Ultimate:** memakan AP atau tidak? Apa beda efek di 100%, 150%, dan 200%?
-7. **Jumlah karakter:** satu hero saja, atau party? Kalau party, kartu perlu tahu siapa pemiliknya dan `PlayerSide` berisi beberapa Unit.
+| # | Pertanyaan | Jawaban sementara di kode |
+|---|---|---|
+| 1 | **Pemicu merge:** otomatis saat dua kartu cocok bersebelahan, atau pemain harus menekan sesuatu? | Otomatis setelah kartu digeser (`BattleManager.auto_merge_on_move = true`). Merge manual tersedia lewat `request_merge()`, gratis AP |
+| 2 | **Rank hasil hybrid:** tetap sama dengan rank asal atau naik satu? | Tetap sama (resep dicari berdasarkan rank bahan) |
+| 3 | **Merge lanjutan:** apakah kartu hybrid bisa digabung lagi? Apakah sesama tipe dengan rank sama juga bisa naik rank seperti di Reverse: 1999? | Belum bisa keduanya |
+| 4 | **Sisa kartu di akhir turn:** dibuang semua (gaya FGO) atau disimpan ke turn berikutnya (gaya Reverse: 1999)? | Disimpan (`BattleManager.discard_hand_on_turn_end = false`) |
+| 5 | **AP & hand:** berapa AP per turn dan berapa batas kartu di tangan? | 4 AP (`PlayerState.max_ap`), 7 kartu (`HandManager.max_hand_size`) |
+| 6 | **Ultimate:** memakan AP atau tidak? Apa beda efek di 100%, 150%, dan 200%? | 0 AP (`BattleManager.ultimate_ap_cost`). Damage dikali Moxie yang terpakai / 100, jadi 200% = 2× |
+| 7 | **Jumlah karakter:** satu hero saja, atau party? Kalau party, kartu perlu tahu siapa pemiliknya dan `PlayerSide` berisi beberapa Unit. | Satu hero |
 
-Setelah ketujuh poin ini jelas, langkah paling masuk akal berikutnya adalah membuat script definisi Resource (`CardData`, `CardEffect`, `MergeRecipe`, `EnemyData`), karena semua sistem lain bergantung pada bentuk datanya.
+Kalau jawaban finalnya berbeda, sebagian besar cukup mengubah nilai export tersebut.

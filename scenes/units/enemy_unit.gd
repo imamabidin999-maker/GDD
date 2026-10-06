@@ -28,6 +28,7 @@ func is_alive() -> bool:
 
 
 ## Dipanggil BattleManager di awal ENEMY_TURN. Boleh mengembalikan null kalau
-## Buto ini tidak beraksi di turn ini, misalnya sedang terkena stun.
+## Buto ini tidak beraksi di turn ini, misalnya sedang terkena stun. Override
+## boleh memakai await; BattleManager menunggunya sebelum lanjut.
 func decide_action(battle: BattleManager) -> BattleAction:
 	return EnemyAttackAction.new(self, battle.hero_health, attack_power)

@@ -9,7 +9,8 @@ extends RefCounted
 
 ## Dipanggil BattleManager. Yang di-override di turunan adalah _apply(), bukan fungsi ini.
 func execute(battle: BattleManager) -> void:
-	_apply(battle)
+	@warning_ignore("redundant_await")
+	await _apply(battle)
 	await battle.present_action(self)
 
 
@@ -20,5 +21,7 @@ func is_valid() -> bool:
 
 
 ## Hitung dan terapkan efek aksi. Override di turunan.
+## Boleh memakai await, misalnya untuk serangan beruntun Buto Kuning. Selama
+## itu state tetap RESOLVE_ACTIONS sehingga input pemain tetap terkunci.
 func _apply(_battle: BattleManager) -> void:
 	pass

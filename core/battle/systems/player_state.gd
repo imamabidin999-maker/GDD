@@ -3,15 +3,14 @@ extends Node
 ## Variabel karakter pemain selama SATU battle: Action Points, Moxie, dan
 ## Evolutionary Chain.
 ##
-## Node ini menggantikan APController dan MoxieController di dokumen arsitektur.
-## Karena game ini memakai satu karakter, keduanya cukup digabung di sini.
-## HP tetap diurus HealthComponent milik HeroUnit.
+## Node ini menggabungkan APController dan MoxieController dari rancangan awal,
+## karena game ini memakai satu karakter. HP diurus HealthComponent milik hero.
 ##
-## Urutan pemakaian dalam satu battle:
-##   begin_battle()          sekali, di state BattleStart
-##   start_turn()            setiap TurnStart: AP diisi ulang, riwayat turn direset
-##   consume_ap()            dipanggil Command sebelum aksi dijalankan
-##   register_card_played()  dipanggil PlayCardCommand setelah kartu dimainkan
+## Siapa memanggil apa (semuanya dari BattleManager):
+##   begin_battle()          sekali, di start_battle()
+##   start_turn()            di awal setiap turn baru PLAYER_TURN: AP diisi ulang, riwayat turn direset
+##   consume_ap()            di request_play_card() / request_move_card() / request_ultimate()
+##   register_card_played()  di PlayCardAction._apply() setelah kartu dimainkan
 
 signal ap_changed(current: int, maximum: int)
 ## Aksi ditolak karena AP kurang. Bisa dipakai UI untuk membuat pip AP berkedip.

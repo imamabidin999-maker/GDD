@@ -6,8 +6,8 @@ extends Node
 ## Urutan ini penting karena Hybrid Merging hanya bisa terjadi pada dua kartu
 ## yang bersebelahan.
 ##
-## Node ini sengaja tidak mengecek AP. Biaya AP dicek oleh Command
-## (MoveCardCommand, PlayCardCommand) sebelum fungsi di sini dipanggil.
+## Node ini sengaja tidak mengecek AP. Biaya AP dicek BattleManager
+## (request_play_card, request_move_card) sebelum fungsi di sini dipanggil.
 
 signal card_added(card: CardInstance, index: int)
 signal card_removed(card: CardInstance, index: int)
@@ -116,8 +116,8 @@ func take_all_cards() -> Array[CardInstance]:
 
 ## Menggeser kartu dari from_index sehingga berakhir di to_index.
 ## Kartu lain otomatis bergeser mengisi tempat kosong.
-## Fungsi ini tidak otomatis melakukan merge. Command yang memutuskan
-## apakah merge_with_neighbor() dipanggil setelahnya.
+## Fungsi ini tidak otomatis melakukan merge. BattleManager.request_move_card()
+## yang memutuskan apakah merge_with_neighbor() dipanggil setelahnya.
 func move_card(from_index: int, to_index: int) -> bool:
 	if not is_valid_index(from_index) or not is_valid_index(to_index):
 		return false
