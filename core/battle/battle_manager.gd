@@ -49,6 +49,9 @@ signal turn_ended(turn_number: int)
 signal player_input_ready
 signal enemy_turn_started
 signal action_queued(action: BattleAction)
+## Aksi mulai di-resolve, SEBELUM efeknya diterapkan. View memakai ini untuk
+## tahu aksi mana yang sedang berjalan saat signal HP terpancar.
+signal action_started(action: BattleAction)
 ## View memutar animasi aksi ini. Lihat present_action().
 signal action_presentation_started(action: BattleAction)
 signal action_resolved(action: BattleAction)
@@ -442,6 +445,7 @@ func _enter_resolve_actions() -> void:
 	var battle_id := _battle_id
 	var action: BattleAction = _action_queue.pop_front()
 	if action.is_valid():
+		action_started.emit(action)
 		await action.execute(self)
 		if _is_stale(battle_id, State.RESOLVE_ACTIONS):
 			return

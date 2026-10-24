@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scenes/battle/battle_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://core/battle/systems/deck_controller.gd" id="2_deck"]
+[ext_resource type="Script" path="res://core/battle/systems/hand_manager.gd" id="3_hand"]
+[ext_resource type="Script" path="res://core/battle/systems/player_state.gd" id="4_player"]
+[ext_resource type="Script" path="res://core/battle/battle_manager.gd" id="5_bm"]
+[ext_resource type="Script" path="res://core/components/health_component.gd" id="6_health"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/battle_candi.png" id="7_bg"]
+[ext_resource type="Script" path="res://ui/battle/battle_hud.gd" id="8_hud"]
+[ext_resource type="Script" path="res://ui/battle/hand_view.gd" id="9_hand_view"]
+[ext_resource type="Script" path="res://ui/common/tooltip.gd" id="10_tooltip"]
+
+[node name="BattleScene" type="Node2D"]
+script = ExtResource("1_scene")
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="DeckController" type="Node" parent="Systems"]
+script = ExtResource("2_deck")
+
+[node name="HandManager" type="Node" parent="Systems"]
+script = ExtResource("3_hand")
+
+[node name="PlayerState" type="Node" parent="Systems"]
+script = ExtResource("4_player")
+
+[node name="BattleManager" type="Node" parent="Systems" node_paths=PackedStringArray("deck", "hand", "player", "hero_health")]
+script = ExtResource("5_bm")
+deck = NodePath("../DeckController")
+hand = NodePath("../HandManager")
+player = NodePath("../PlayerState")
+hero_health = NodePath("../../World/Hero/Health")
+presentation_delay = 0.55
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Background" type="Sprite2D" parent="World"]
+texture = ExtResource("7_bg")
+centered = false
+position = Vector2(0, -250)
+
+[node name="Hero" type="Node2D" parent="World"]
+position = Vector2(150, 238)
+
+[node name="Health" type="Node" parent="World/Hero"]
+script = ExtResource("6_health")
+max_hp = 70
+
+[node name="Enemies" type="Node2D" parent="World"]
+
+[node name="Effects" type="Node2D" parent="World"]
+z_index = 40
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="BattleHUD" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_hud")
+
+[node name="HandView" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 86.0
+offset_top = 254.0
+offset_right = 556.0
+offset_bottom = 360.0
+mouse_filter = 2
+script = ExtResource("9_hand_view")
+
+[node name="Tooltip" type="PanelContainer" parent="HUD"]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("10_tooltip")
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 20
