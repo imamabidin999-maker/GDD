@@ -98,6 +98,8 @@ Tes otomatis:
 for t in tests/test_*.gd; do godot --headless -s "$t"; done
 ```
 
+`test_campaign_flow.gd` menamatkan seluruh kampanye dengan klik mouse sungguhan, dari menu utama sampai ending (sekitar 25 detik).
+
 Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` memang disengaja: tes itu sengaja memberi input salah untuk memastikan input tersebut ditolak.
 
 ### Keseimbangan

@@ -18,6 +18,9 @@ const STARTER_DECK: Array[String] = [
 	"taktik:1", "taktik:1", "taktik:2", "taktik:2", "taktik:3",
 ]
 
+## Tes otomatis mengganti ini supaya simpanan pemain tidak tertimpa.
+var save_path: String = SAVE_PATH
+
 ## Jenis berkah (hadiah setelah menang) yang bisa dipilih pemain.
 enum Blessing { TEMPA_SERANG, ILMU_FOKUS, SIASAT_TAKTIK, JAMU }
 
@@ -232,12 +235,12 @@ func save_game() -> void:
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
 	cfg.set_value("settings", "fullscreen", fullscreen)
-	cfg.save(SAVE_PATH)
+	cfg.save(save_path)
 
 
 func load_game() -> void:
 	var cfg := ConfigFile.new()
-	if cfg.load(SAVE_PATH) != OK:
+	if cfg.load(save_path) != OK:
 		return
 	unlocked_stage = clampi(int(cfg.get_value("progress", "unlocked_stage", 1)), 1, STAGE_COUNT)
 	cleared_stages.assign(cfg.get_value("progress", "cleared_stages", []))

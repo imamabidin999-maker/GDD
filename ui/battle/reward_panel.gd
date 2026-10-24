@@ -57,8 +57,15 @@ func _make_choice(blessing: GameState.Blessing) -> Button:
 	inner.offset_top = 6
 	inner.offset_bottom = -6
 	inner.alignment = BoxContainer.ALIGNMENT_CENTER
-	var ic := UIKit.icon(BLESS_ICONS[blessing])
+	var tex: Texture2D = BLESS_ICONS[blessing]
+	var ic := UIKit.icon(tex)
 	ic.custom_minimum_size = Vector2(0, 30)
+	if tex.get_width() < 20:
+		# Ikon kecil (hati 12px) diperbesar 2x supaya sejajar dengan ikon kartu.
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ic.custom_minimum_size = Vector2(tex.get_width() * 2, 30)
+		ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	inner.add_child(ic)
 	var name_label := UIKit.label(tr(BLESS_KEYS[blessing]), &"", UIKit.COLOR_GOLD)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

@@ -95,4 +95,5 @@ Tambahan selama pengembangan:
 ## 6. Pengujian
 
 - `tests/`: 284 cek untuk deck, tangan, PlayerState, BattleManager, semua Buto, dan konten game.
+- `tests/test_campaign_flow.gd`: menamatkan kampanye lewat scene asli dengan klik mouse sungguhan (menu, prolog, 5 battle, berkah, ending, kembali ke menu). Simpanan pemain tidak tersentuh karena tes memakai `user://test_save.cfg`.
 - `tools/simulate_balance.gd`: bot memainkan tiap stage 200 kali. Hasilnya ada di README.

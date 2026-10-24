@@ -199,6 +199,8 @@ func _run() -> void:
 
 	print("[Berkah GameState]")
 	var gs := game_state()
+	gs.set("save_path", "user://test_save.cfg")
+	gs.call("new_game") # mulai dari deck awal, apa pun isi simpanan pemain
 	var saved_deck: Array = (gs.get("deck") as Array).duplicate()
 	var saved_hp: int = gs.get("max_hp")
 	var serang_before := 0
