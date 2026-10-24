@@ -1,7 +1,6 @@
-[gd_resource type="Theme" load_steps=16 format=3]
+[gd_resource type="Theme" load_steps=15 format=3]
 
-[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Regular.ttf" id="1_regular"]
-[ext_resource type="FontFile" path="res://assets/fonts/PixelifySans-Bold.ttf" id="2_bold"]
+[ext_resource type="FontFile" path="res://assets/fonts/Tiny5-Regular.ttf" id="1_regular"]
 [ext_resource type="FontFile" path="res://assets/fonts/Silkscreen-Regular.ttf" id="3_small"]
 
 [sub_resource type="StyleBoxFlat" id="panel"]
@@ -138,7 +137,11 @@ anti_aliasing = false
 
 [resource]
 default_font = ExtResource("1_regular")
-default_font_size = 11
+default_font_size = 8
+BigButton/base_type = &"Button"
+BigButton/font_sizes/font_size = 16
+BigLabel/base_type = &"Label"
+BigLabel/font_sizes/font_size = 16
 Button/colors/font_color = Color(0.92549, 0.901961, 0.835294, 1)
 Button/colors/font_disabled_color = Color(0.45098, 0.454902, 0.52549, 1)
 Button/colors/font_focus_color = Color(1, 0.890196, 0.596078, 1)
@@ -157,7 +160,7 @@ HSlider/styles/slider = SubResource("slider")
 HeaderLabel/base_type = &"Label"
 HeaderLabel/colors/font_color = Color(1, 0.862745, 0.501961, 1)
 HeaderLabel/font_sizes/font_size = 16
-HeaderLabel/fonts/font = ExtResource("2_bold")
+HeaderLabel/fonts/font = ExtResource("1_regular")
 Label/colors/font_color = Color(0.92549, 0.901961, 0.835294, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0.627451)
 Label/constants/shadow_offset_x = 1
@@ -167,7 +170,7 @@ PanelContainer/styles/panel = SubResource("panel")
 ProgressBar/styles/background = SubResource("bar_bg")
 ProgressBar/styles/fill = SubResource("bar_fill")
 RichTextLabel/colors/default_color = Color(0.92549, 0.901961, 0.835294, 1)
-RichTextLabel/fonts/bold_font = ExtResource("2_bold")
+RichTextLabel/fonts/bold_font = ExtResource("1_regular")
 RichTextLabel/fonts/normal_font = ExtResource("1_regular")
 SmallLabel/base_type = &"Label"
 SmallLabel/font_sizes/font_size = 8
@@ -177,8 +180,8 @@ TitleLabel/colors/font_color = Color(1, 0.862745, 0.501961, 1)
 TitleLabel/colors/font_outline_color = Color(0.0470588, 0.0509804, 0.0941176, 1)
 TitleLabel/constants/outline_size = 4
 TitleLabel/font_sizes/font_size = 24
-TitleLabel/fonts/font = ExtResource("2_bold")
+TitleLabel/fonts/font = ExtResource("1_regular")
 TooltipLabel/colors/font_color = Color(0.92549, 0.901961, 0.835294, 1)
-TooltipLabel/font_sizes/font_size = 11
+TooltipLabel/font_sizes/font_size = 8
 TooltipLabel/fonts/font = ExtResource("1_regular")
 TooltipPanel/styles/panel = SubResource("tooltip")

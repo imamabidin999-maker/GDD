@@ -7,7 +7,7 @@ extends Label
 static func spawn(parent: Node, text: String, at: Vector2, color: Color, big: bool = false) -> FloatingText:
 	var ft := FloatingText.new()
 	ft.text = text
-	ft.theme_type_variation = &"HeaderLabel" if big else &""
+	ft.add_theme_font_size_override("font_size", 24 if big else 16)
 	ft.add_theme_color_override("font_color", color)
 	ft.add_theme_color_override("font_outline_color", Color(0.04, 0.04, 0.08))
 	ft.add_theme_constant_override("outline_size", 3)

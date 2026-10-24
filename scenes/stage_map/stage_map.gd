@@ -182,7 +182,7 @@ func _fill_info(node: StageNode) -> void:
 	_info_col.add_child(filler)
 	if node.state == StageNode.State.CLEARED:
 		_info_col.add_child(UIKit.small_label(tr("MAP_REPLAY"), UIKit.COLOR_DIM))
-	var fight := UIKit.button(tr("BTN_FIGHT"), 120)
+	var fight := UIKit.button(tr("BTN_FIGHT"), 120, true)
 	fight.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	fight.pressed.connect(_start_battle)
 	_info_col.add_child(fight)
@@ -292,7 +292,7 @@ func _open_deck() -> void:
 			continue
 		grid.add_child(_card_with_tooltip(data))
 
-	var close := UIKit.button(tr("BTN_CLOSE"), 120)
+	var close := UIKit.button(tr("BTN_CLOSE"), 120, true)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	close.pressed.connect(func() -> void:
 		AudioManager.play_sfx("click")
@@ -331,9 +331,9 @@ func _open_menu() -> void:
 	var title := UIKit.label(tr("MAP_MENU"), &"HeaderLabel")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
-	var resume := UIKit.button(tr("BTN_CLOSE"), 160)
-	var settings := UIKit.button(tr("MENU_SETTINGS"), 160)
-	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 160)
+	var resume := UIKit.button(tr("BTN_CLOSE"), 160, true)
+	var settings := UIKit.button(tr("MENU_SETTINGS"), 160, true)
+	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 160, true)
 	for b: Button in [resume, settings, to_menu]:
 		col.add_child(b)
 	resume.pressed.connect(func() -> void:

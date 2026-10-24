@@ -119,6 +119,6 @@ Angka HP dan serangan Buto ada di `tools/generate_data.gd`.
 ## Kredit
 
 - Desain karakter, kartu, dan latar: pemilik proyek (lihat `docs/desain_asli/`)
-- Font: Pixelify Sans dan Silkscreen, lisensi SIL Open Font License (`assets/fonts/OFL.txt`)
+- Font: Tiny5 dan Silkscreen, lisensi SIL Open Font License (`assets/fonts/OFL.txt`)
 - Mesin: Godot Engine 4.3
 - Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur

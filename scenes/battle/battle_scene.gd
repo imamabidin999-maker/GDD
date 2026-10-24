@@ -493,10 +493,10 @@ func _open_pause() -> void:
 	help.custom_minimum_size = Vector2(260, 0)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(help)
-	var resume := UIKit.button(tr("BTN_RESUME"), 160)
-	var settings := UIKit.button(tr("MENU_SETTINGS"), 160)
-	var to_map := UIKit.button(tr("BTN_TO_MAP"), 160)
-	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 160)
+	var resume := UIKit.button(tr("BTN_RESUME"), 160, true)
+	var settings := UIKit.button(tr("MENU_SETTINGS"), 160, true)
+	var to_map := UIKit.button(tr("BTN_TO_MAP"), 160, true)
+	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 160, true)
 	for b: Button in [resume, settings, to_map, to_menu]:
 		b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		col.add_child(b)
@@ -560,15 +560,15 @@ func _defeat() -> void:
 	var title := UIKit.label(tr("BATTLE_DEFEAT"), &"TitleLabel", UIKit.COLOR_RED)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
-	var hint := UIKit.label(tr("BATTLE_DEFEAT_HINT"), &"", UIKit.COLOR_TEXT)
+	var hint := UIKit.label(tr("BATTLE_DEFEAT_HINT"), &"BigLabel", UIKit.COLOR_TEXT)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(240, 0)
+	hint.custom_minimum_size = Vector2(300, 0)
 	col.add_child(hint)
 	var row := UIKit.hbox(8)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var retry := UIKit.button(tr("BTN_RETRY"), 100)
-	var to_map := UIKit.button(tr("BTN_TO_MAP"), 100)
+	var retry := UIKit.button(tr("BTN_RETRY"), 110, true)
+	var to_map := UIKit.button(tr("BTN_TO_MAP"), 110, true)
 	row.add_child(retry)
 	row.add_child(to_map)
 	col.add_child(row)

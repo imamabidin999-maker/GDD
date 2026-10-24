@@ -10,8 +10,11 @@ const COLOR_BLUE := Color(0.45, 0.72, 1.0)
 const COLOR_GREEN := Color(0.5, 0.86, 0.5)
 const COLOR_PURPLE := Color(0.8, 0.5, 0.95)
 
+## Tiny5 dirancang di kisi 8 piksel, jadi hanya kelipatan 8 yang tajam.
+const TEXT_LARGE := 16
+
 const FONT_SMALL := preload("res://assets/fonts/Silkscreen-Regular.ttf")
-const FONT_BOLD := preload("res://assets/fonts/PixelifySans-Bold.ttf")
+const FONT_BOLD := preload("res://assets/fonts/Tiny5-Regular.ttf")
 
 
 static func label(text: String, variation: StringName = &"", color: Color = Color(0, 0, 0, 0)) -> Label:
@@ -29,9 +32,13 @@ static func small_label(text: String, color: Color = COLOR_TEXT) -> Label:
 	return label(text, &"SmallLabel", color)
 
 
-static func button(text: String, min_width: float = 0.0) -> Button:
+## Tombol biasa memakai huruf 8 piksel; `big` memakai 16 piksel (BigButton)
+## untuk menu dan panel yang lega.
+static func button(text: String, min_width: float = 0.0, big: bool = false) -> Button:
 	var b := Button.new()
 	b.text = text
+	if big:
+		b.theme_type_variation = &"BigButton"
 	b.focus_mode = Control.FOCUS_NONE
 	if min_width > 0.0:
 		b.custom_minimum_size.x = min_width
@@ -58,6 +65,15 @@ static func vbox(separation: int = 2) -> VBoxContainer:
 	v.add_theme_constant_override("separation", separation)
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return v
+
+
+## Huruf 16 piksel untuk teks yang dibaca santai (cerita, Pustaka, kredit).
+static func enlarge(control: Control) -> void:
+	if control is RichTextLabel:
+		for item: String in ["normal_font_size", "bold_font_size", "italics_font_size", "bold_italics_font_size", "mono_font_size"]:
+			control.add_theme_font_size_override(item, TEXT_LARGE)
+	else:
+		control.add_theme_font_size_override("font_size", TEXT_LARGE)
 
 
 ## Panel yang menutupi seluruh layar dengan warna gelap transparan.

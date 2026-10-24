@@ -53,7 +53,7 @@ func _build_scenery() -> void:
 	var world := Node2D.new()
 	add_child(world)
 	world.add_child(Ambient.fireflies(Vector2(420, 220), Vector2(240, 120), 22))
-	var boss := Ambient.breathing_sprite(BOSS, Vector2(556, 330), true, 1.15)
+	var boss := Ambient.breathing_sprite(BOSS, Vector2(556, 330), false, 1.15)
 	boss.modulate = Color(0.85, 0.85, 0.95)
 	world.add_child(boss)
 	world.add_child(Ambient.breathing_sprite(HERO, Vector2(410, 332)))
@@ -98,7 +98,7 @@ func _build_ui() -> void:
 
 
 func _add_menu_button(parent: Control, text: String, action: Callable) -> void:
-	var b := UIKit.button(text, 170)
+	var b := UIKit.button(text, 170, true)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.pressed.connect(func() -> void:
@@ -139,15 +139,15 @@ func _confirm(message: String, on_yes: Callable) -> void:
 	root.add_child(UIKit.center(panel))
 	var col := UIKit.vbox(10)
 	panel.add_child(col)
-	var text := UIKit.label(message, &"", UIKit.COLOR_TEXT)
+	var text := UIKit.label(message, &"BigLabel", UIKit.COLOR_TEXT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.custom_minimum_size = Vector2(220, 0)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(text)
 	var row := UIKit.hbox(8)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var yes := UIKit.button(tr("BTN_YES"), 80)
-	var no := UIKit.button(tr("BTN_NO"), 80)
+	var yes := UIKit.button(tr("BTN_YES"), 80, true)
+	var no := UIKit.button(tr("BTN_NO"), 80, true)
 	row.add_child(yes)
 	row.add_child(no)
 	col.add_child(row)

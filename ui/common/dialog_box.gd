@@ -83,6 +83,7 @@ func _ready() -> void:
 	_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	UIKit.enlarge(_text)
 	col.add_child(_text)
 
 	_hint = UIKit.small_label(tr("HINT_CLICK_CONTINUE"), UIKit.COLOR_DIM)
@@ -116,7 +117,6 @@ func _show_line() -> void:
 	var has_portrait := PORTRAITS.has(speaker)
 	_portrait_frame.visible = has_portrait
 	_portrait.texture = PORTRAITS.get(speaker)
-	_portrait.flip_h = speaker.begins_with("buto")
 	_name.text = tr("SPEAKER_" + speaker.to_upper())
 	_name.add_theme_color_override("font_color", NAME_COLORS.get(speaker, Color(0.95, 0.55, 0.5)))
 	var body := tr(key)

@@ -79,18 +79,18 @@ func _show_credits() -> void:
 	var credits_title := UIKit.label(tr("CREDITS_TITLE"), &"HeaderLabel")
 	credits_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(credits_title)
-	var text := UIKit.label(tr("CREDITS_TEXT"), &"", UIKit.COLOR_TEXT)
+	var text := UIKit.label(tr("CREDITS_TEXT"), &"BigLabel", UIKit.COLOR_TEXT)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.custom_minimum_size = Vector2(380, 0)
+	text.custom_minimum_size = Vector2(500, 0)
 	col.add_child(text)
 	var end := UIKit.label(tr("ENDING_THANKS"), &"HeaderLabel", UIKit.COLOR_GOLD)
 	end.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(end)
 	var row := UIKit.hbox(8)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 120)
-	var to_map := UIKit.button(tr("BTN_TO_MAP"), 120)
+	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 120, true)
+	var to_map := UIKit.button(tr("BTN_TO_MAP"), 120, true)
 	row.add_child(to_map)
 	row.add_child(to_menu)
 	col.add_child(row)

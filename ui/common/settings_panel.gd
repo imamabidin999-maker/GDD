@@ -38,11 +38,11 @@ func _ready() -> void:
 	grid.add_theme_constant_override("v_separation", 8)
 	col.add_child(grid)
 
-	_lang_label = UIKit.label("")
+	_lang_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_lang_label)
 	var lang_row := UIKit.hbox(4)
-	_lang_id = UIKit.button("ID", 44)
-	_lang_en = UIKit.button("EN", 44)
+	_lang_id = UIKit.button("ID", 44, true)
+	_lang_en = UIKit.button("EN", 44, true)
 	_lang_id.toggle_mode = true
 	_lang_en.toggle_mode = true
 	_lang_id.pressed.connect(func() -> void: _set_locale("id"))
@@ -51,25 +51,31 @@ func _ready() -> void:
 	lang_row.add_child(_lang_en)
 	grid.add_child(lang_row)
 
-	_music_label = UIKit.label("")
+	_music_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_music_label)
 	grid.add_child(_make_slider(GameState.music_volume, func(v: float) -> void: GameState.set_music_volume(v)))
 
-	_sfx_label = UIKit.label("")
+	_sfx_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_sfx_label)
 	grid.add_child(_make_slider(GameState.sfx_volume, func(v: float) -> void:
 		GameState.set_sfx_volume(v)
 		AudioManager.play_sfx("kentongan", 0.05)))
 
-	_full_label = UIKit.label("")
+	_full_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_full_label)
 	var full := CheckBox.new()
 	full.button_pressed = GameState.fullscreen
 	full.focus_mode = Control.FOCUS_NONE
+	# CheckBox mewarisi gaya Button; tanpa ini ia tampil sebagai kotak lebar.
+	full.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
+		full.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	full.add_theme_icon_override("unchecked", _check_icon(false))
+	full.add_theme_icon_override("checked", _check_icon(true))
 	full.toggled.connect(func(on: bool) -> void: GameState.set_fullscreen(on))
 	grid.add_child(full)
 
-	_close = UIKit.button("", 120)
+	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_close.pressed.connect(func() -> void:
 		AudioManager.play_sfx("click")
@@ -77,6 +83,18 @@ func _ready() -> void:
 		queue_free())
 	col.add_child(_close)
 	_refresh_texts()
+
+
+## Kotak centang 12x12 bergaya piksel: bingkai emas, isi emas saat dicentang.
+static func _check_icon(checked: bool) -> ImageTexture:
+	var img := Image.create(12, 12, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.07, 0.07, 0.13))
+	for i: int in 12:
+		for edge: Vector2i in [Vector2i(i, 0), Vector2i(i, 11), Vector2i(0, i), Vector2i(11, i)]:
+			img.set_pixelv(edge, UIKit.COLOR_GOLD)
+	if checked:
+		img.fill_rect(Rect2i(3, 3, 6, 6), UIKit.COLOR_GOLD)
+	return ImageTexture.create_from_image(img)
 
 
 func _make_slider(value: float, on_change: Callable) -> HSlider:

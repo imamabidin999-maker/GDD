@@ -67,7 +67,7 @@ func _make_choice(blessing: GameState.Blessing) -> Button:
 		ic.custom_minimum_size = Vector2(tex.get_width() * 2, 30)
 		ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	inner.add_child(ic)
-	var name_label := UIKit.label(tr(BLESS_KEYS[blessing]), &"", UIKit.COLOR_GOLD)
+	var name_label := UIKit.label(tr(BLESS_KEYS[blessing]), &"BigLabel", UIKit.COLOR_GOLD)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	inner.add_child(name_label)
 	var desc := UIKit.label(tr(BLESS_KEYS[blessing] + "_DESC"), &"", UIKit.COLOR_TEXT)
@@ -102,7 +102,7 @@ func _choose(blessing: GameState.Blessing) -> void:
 	var result := UIKit.label(msg, &"", UIKit.COLOR_TEXT)
 	result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(result)
-	var cont := UIKit.button(tr("BTN_CONTINUE"), 120)
+	var cont := UIKit.button(tr("BTN_CONTINUE"), 120, true)
 	cont.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	cont.pressed.connect(func() -> void:
 		done.emit()

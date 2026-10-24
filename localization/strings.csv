@@ -177,12 +177,12 @@ ENDING_5,Terima kasih sudah menemani perjalanan Eyang Palang.,Thank you for join
 CREDITS_TITLE,Kredit,Credits
 CREDITS_TEXT,"Desain karakter, kartu, dan latar: pemilik proyek
 Pemrograman, aset tambahan, musik, dan efek suara: dibuat bersama Claude
-Font: Pixelify Sans & Silkscreen (SIL Open Font License)
+Font: Tiny5 & Silkscreen (SIL Open Font License)
 Mesin: Godot Engine
 
 Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur.","Character, card, and background design: project owner
 Programming, extra assets, music, and sound: made together with Claude
-Fonts: Pixelify Sans & Silkscreen (SIL Open Font License)
+Fonts: Tiny5 & Silkscreen (SIL Open Font License)
 Engine: Godot Engine
 
 Inspired by the Dongkrek folk art of Mejayan, Madiun Regency, East Java."
@@ -193,15 +193,15 @@ PUSTAKA_DONGKREK_TEXT,"Dongkrek adalah kesenian dari Mejayan, Kabupaten Madiun, 
 
 Menurut cerita turun-temurun, kesenian ini lahir sekitar tahun 1867 untuk mengusir pagebluk yang melanda desa. Pertunjukannya menampilkan para Buto bertopeng, Roro Ayu dan Roro Perot, serta Eyang Palang yang akhirnya menaklukkan para Buto.
 
-Kisah di game ini terinspirasi dari cerita tersebut. Beberapa bagiannya dikarang untuk kebutuhan permainan.","Dongkrek is a folk art from Mejayan in Madiun Regency, East Java. Its name comes from the sound of the bedug drum (dung) and the korek (krek), a notched wooden instrument that is scraped.
+Kisah di game ini terinspirasi dari cerita tersebut, tetapi beberapa bagiannya dikarang untuk kebutuhan permainan. Desa Mejayan memang ada, sedangkan rumpun bambu, sendang, gapura, dan candi di peta adalah tempat rekaan. Warna dan ilmu tiap Buto juga dibuat khusus untuk game ini.","Dongkrek is a folk art from Mejayan in Madiun Regency, East Java. Its name comes from the sound of the bedug drum (dung) and the korek (krek), a notched wooden instrument that is scraped.
 
 According to local tradition, it was created around 1867 to drive away a plague that struck the village. Performances feature masked Buto giants, Roro Ayu and Roro Perot, and Eyang Palang, who finally subdues the Buto.
 
-The story in this game is inspired by that tale. Some parts were invented for the sake of the game."
+The story in this game is inspired by that tale, but some parts were invented for the game. Mejayan is a real village, while the bamboo grove, spring, gate, and temple on the map are fictional places. Each Buto's color and skill were also created for this game."
 PUSTAKA_EYANG,Eyang Palang,Eyang Palang
-PUSTAKA_EYANG_TEXT,"Sesepuh desa yang berwibawa, selalu membawa tongkat. Dalam pertunjukan Dongkrek, dialah yang menaklukkan para Buto dan mengembalikan ketenteraman desa.
+PUSTAKA_EYANG_TEXT,"Sesepuh desa yang berwibawa, selalu membawa tongkat. Dalam cerita asal-usul Dongkrek, tokoh ini dikenal sebagai Raden Ngabehi Lo Prawirodipuro dari Mejayan. Lewat semedi ia mendapat petunjuk untuk membuat tarian yang mengiringi keluarnya makhluk jahat dari desa. Dalam pertunjukan Dongkrek, dialah yang menaklukkan para Buto dan mengembalikan ketenteraman desa.
 
-Di game ini Eyang Palang bertarung dengan tiga jenis jurus: Serang (merah), Fokus (biru), dan Taktik (hijau).","A dignified village elder who always carries a staff. In Dongkrek performances, he is the one who subdues the Buto and restores peace to the village.
+Di game ini Eyang Palang bertarung dengan tiga jenis jurus: Serang (merah), Fokus (biru), dan Taktik (hijau).","A dignified village elder who always carries a staff. In the origin story of Dongkrek, he is known as Raden Ngabehi Lo Prawirodipuro of Mejayan. Through meditation he received guidance to create a dance that would lead the evil beings out of the village. In Dongkrek performances, he is the one who subdues the Buto and restores peace to the village.
 
 In this game Eyang Palang fights with three kinds of techniques: Attack (red), Focus (blue), and Tactic (green)."
 PUSTAKA_BUTO_KUNING_TEXT,"Buto paling rakus. Setiap serangannya menghisap semangat lawan: Moxie di atas 100% berkurang. Moxie di bawah 100% aman.

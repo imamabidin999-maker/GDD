@@ -151,7 +151,7 @@ func _show_cards() -> void:
 				row.add_child(_card_with_tooltip(data, []))
 		var first := CardDB.get_card(family, 1)
 		if first != null:
-			var text := UIKit.label("%s\n%s" % [tr(first.display_name), tr(first.display_name + "_DESC")], &"", UIKit.COLOR_TEXT)
+			var text := UIKit.label("%s\n%s" % [tr(first.display_name), tr(first.display_name + "_DESC")], &"BigLabel", UIKit.COLOR_TEXT)
 			text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			text.custom_minimum_size = Vector2(200, 0)
 			text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -207,6 +207,7 @@ func _paragraph(text: String) -> void:
 	r.custom_minimum_size = Vector2(440, 0)
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	r.add_theme_color_override("default_color", UIKit.COLOR_TEXT)
+	UIKit.enlarge(r)
 	r.text = text
 	_content.add_child(r)
 
@@ -235,6 +236,7 @@ func _figure(texture: Texture2D, title: String, facts: Array[String], text: Stri
 	r.custom_minimum_size = Vector2(270, 0)
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	r.add_theme_color_override("default_color", UIKit.COLOR_DIM if silhouette else UIKit.COLOR_TEXT)
+	UIKit.enlarge(r)
 	r.text = text
 	col.add_child(r)
 	row.add_child(col)
