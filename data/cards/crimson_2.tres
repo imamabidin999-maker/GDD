@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_crimson.png" id="1_yv7v6"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_crimson.png" id="2_52g4f"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_e4vm1"]
+
+[resource]
+script = ExtResource("3_e4vm1")
+id = &"crimson_2"
+display_name = "CARD_CRIMSON"
+card_type = 3
+rank = 2
+base_power = 17
+shield = 0
+ap_gain = 0
+icon = ExtResource("2_52g4f")
+frame = ExtResource("1_yv7v6")
+description = ""

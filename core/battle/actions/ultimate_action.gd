@@ -1,27 +1,30 @@
 class_name UltimateAction
 extends BattleAction
-## Ultimate pemain. Moxie sudah dihabiskan BattleManager saat request, jadi
-## aksi ini tinggal menghitung damage.
+## Ultimate Eyang Palang: "Gebrakan Palang", menghantam SEMUA Buto.
+## Moxie sudah dihabiskan BattleManager saat request, jadi aksi ini tinggal
+## menghitung damage.
 ##
-## Rumus sementara:
+## Rumus:
 ##   base_damage × ultimate_damage_multiplier × (moxie_spent / 100)
 ## Moxie 100% memberi pengali 1×, overcharge penuh 200% memberi 2×.
+## ultimate_damage_multiplier naik lewat Evolutionary Chain.
 
-var target: EnemyUnit
 var moxie_spent: float
 var base_damage: int
+## Damage per Buto (sama untuk semua) dan totalnya, untuk ditampilkan view.
+var damage_per_target: int = 0
 var damage_dealt: int = 0
+var targets: Array[EnemyUnit] = []
 
 
-func _init(target_enemy: EnemyUnit, spent_moxie: float, ultimate_base_damage: int) -> void:
-	target = target_enemy
+func _init(spent_moxie: float, ultimate_base_damage: int) -> void:
 	moxie_spent = spent_moxie
 	base_damage = ultimate_base_damage
 
 
 func _apply(battle: BattleManager) -> void:
-	if not EnemyUnit.is_valid_alive(target):
-		return
 	var overcharge_factor := moxie_spent / PlayerState.MOXIE_NORMAL_CAP
-	var damage := roundi(base_damage * battle.player.ultimate_damage_multiplier * overcharge_factor)
-	damage_dealt = target.health.take_damage(damage)
+	damage_per_target = roundi(base_damage * battle.player.ultimate_damage_multiplier * overcharge_factor)
+	targets = battle.get_living_enemies()
+	for enemy: EnemyUnit in targets:
+		damage_dealt += enemy.health.take_damage(damage_per_target)

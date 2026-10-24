@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="StageData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_ku37c"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_qbj2t"]
+
+[sub_resource type="Resource" id="Resource_7lfm6"]
+script = ExtResource("1_ku37c")
+buto_type = 3
+max_hp = 58
+attack_power = 7
+skill_cooldown_turns = 2
+sprite_scale = 1.0
+
+[sub_resource type="Resource" id="Resource_ujqk7"]
+script = ExtResource("1_ku37c")
+buto_type = 2
+max_hp = 52
+attack_power = 6
+skill_cooldown_turns = 2
+sprite_scale = 0.9
+
+[resource]
+script = ExtResource("2_qbj2t")
+stage_number = 4
+title_key = "STAGE_4_TITLE"
+enemies = Array[ExtResource("1_ku37c")]([SubResource("Resource_7lfm6"), SubResource("Resource_ujqk7")])
+music = "battle"
+is_boss = false
+map_position = Vector2(438, 188)
+background_tint = Color(1, 0.9, 0.82, 1)
+intro_dialog = PackedStringArray("narator|S4_INTRO_1", "buto_putih|S4_INTRO_2", "eyang|S4_INTRO_3")
+victory_dialog = PackedStringArray("eyang|S4_WIN_1", "narator|S4_WIN_2")
+tutorial_dialog = PackedStringArray()

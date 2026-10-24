@@ -7,8 +7,11 @@ extends BattleAction
 
 var card: CardInstance
 var target: EnemyUnit
-## Damage yang benar-benar masuk, untuk angka damage di UI.
+## Hasil untuk ditampilkan view (angka damage, tameng, AP, Moxie).
 var damage_dealt: int = 0
+var shield_gained: int = 0
+var ap_gained: int = 0
+var moxie_gained: float = 0.0
 
 
 func _init(played_card: CardInstance, target_enemy: EnemyUnit) -> void:
@@ -17,10 +20,16 @@ func _init(played_card: CardInstance, target_enemy: EnemyUnit) -> void:
 
 
 func _apply(battle: BattleManager) -> void:
-	# Untuk sementara damage = base_power kartu.
-	# Nanti diganti CardEffect + DamageCalculator.
-	if card.data.base_power > 0 and EnemyUnit.is_valid_alive(target):
-		damage_dealt = target.health.take_damage(card.data.base_power)
+	var data := card.data
+	if data.base_power > 0 and EnemyUnit.is_valid_alive(target):
+		damage_dealt = target.health.take_damage(data.base_power)
+	if data.shield > 0:
+		battle.hero_health.gain_block(data.shield)
+		shield_gained = data.shield
+	if data.ap_gain > 0:
+		ap_gained = battle.player.gain_ap(data.ap_gain)
 
+	var moxie_before := battle.player.moxie
 	battle.player.register_card_played(card) # Moxie + Evolutionary Chain
+	moxie_gained = battle.player.moxie - moxie_before
 	battle.deck.discard_card(card) # kartu hybrid dipecah lagi jadi 2 kartu dasar

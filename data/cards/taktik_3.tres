@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_taktik.png" id="1_rbffy"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_taktik.png" id="2_csov8"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_5kkdi"]
+
+[resource]
+script = ExtResource("3_5kkdi")
+id = &"taktik_3"
+display_name = "CARD_TAKTIK"
+card_type = 2
+rank = 3
+base_power = 0
+shield = 12
+ap_gain = 0
+icon = ExtResource("2_csov8")
+frame = ExtResource("1_rbffy")
+description = ""

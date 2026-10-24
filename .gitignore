@@ -1,0 +1,11 @@
+# Cache editor Godot
+.godot/
+*.tmp
+
+# Hasil export
+export/
+build/
+
+# Python
+__pycache__/
+*.pyc

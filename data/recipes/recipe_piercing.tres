@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MergeRecipe" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="1_obcgk"]
+[ext_resource type="Resource" path="res://data/cards/piercing_1.tres" id="2_ag7b7"]
+[ext_resource type="Resource" path="res://data/cards/piercing_2.tres" id="3_kdnpv"]
+[ext_resource type="Resource" path="res://data/cards/piercing_3.tres" id="4_el6wk"]
+[ext_resource type="Script" path="res://data/definitions/merge_recipe.gd" id="5_h4qq6"]
+
+[resource]
+script = ExtResource("5_h4qq6")
+type_a = 0
+type_b = 2
+results = Array[ExtResource("1_obcgk")]([ExtResource("2_ag7b7"), ExtResource("3_kdnpv"), ExtResource("4_el6wk")])

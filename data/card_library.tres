@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="CardLibrary" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="1_vv8pn"]
+[ext_resource type="Resource" path="res://data/cards/serang_1.tres" id="2_li07l"]
+[ext_resource type="Resource" path="res://data/cards/serang_2.tres" id="3_amdh3"]
+[ext_resource type="Resource" path="res://data/cards/serang_3.tres" id="4_hxwb4"]
+[ext_resource type="Resource" path="res://data/cards/fokus_1.tres" id="5_wnquf"]
+[ext_resource type="Resource" path="res://data/cards/fokus_2.tres" id="6_asmlu"]
+[ext_resource type="Resource" path="res://data/cards/fokus_3.tres" id="7_7c0pi"]
+[ext_resource type="Resource" path="res://data/cards/taktik_1.tres" id="8_rdf7p"]
+[ext_resource type="Resource" path="res://data/cards/taktik_2.tres" id="9_ki041"]
+[ext_resource type="Resource" path="res://data/cards/taktik_3.tres" id="10_hwr3d"]
+[ext_resource type="Resource" path="res://data/cards/crimson_1.tres" id="11_eec5g"]
+[ext_resource type="Resource" path="res://data/cards/crimson_2.tres" id="12_myfu3"]
+[ext_resource type="Resource" path="res://data/cards/crimson_3.tres" id="13_q8awj"]
+[ext_resource type="Resource" path="res://data/cards/piercing_1.tres" id="14_0fgj5"]
+[ext_resource type="Resource" path="res://data/cards/piercing_2.tres" id="15_2u1nb"]
+[ext_resource type="Resource" path="res://data/cards/piercing_3.tres" id="16_f6uq2"]
+[ext_resource type="Resource" path="res://data/cards/flow_1.tres" id="17_fc833"]
+[ext_resource type="Resource" path="res://data/cards/flow_2.tres" id="18_07h42"]
+[ext_resource type="Resource" path="res://data/cards/flow_3.tres" id="19_1bc1o"]
+[ext_resource type="Script" path="res://data/definitions/merge_recipe.gd" id="20_v7rvm"]
+[ext_resource type="Resource" path="res://data/recipes/recipe_crimson.tres" id="21_tvgo1"]
+[ext_resource type="Resource" path="res://data/recipes/recipe_piercing.tres" id="22_gda24"]
+[ext_resource type="Resource" path="res://data/recipes/recipe_flow.tres" id="23_40hrh"]
+[ext_resource type="Script" path="res://data/definitions/card_library.gd" id="24_pehva"]
+
+[resource]
+script = ExtResource("24_pehva")
+cards = Array[ExtResource("1_vv8pn")]([ExtResource("2_li07l"), ExtResource("3_amdh3"), ExtResource("4_hxwb4"), ExtResource("5_wnquf"), ExtResource("6_asmlu"), ExtResource("7_7c0pi"), ExtResource("8_rdf7p"), ExtResource("9_ki041"), ExtResource("10_hwr3d"), ExtResource("11_eec5g"), ExtResource("12_myfu3"), ExtResource("13_q8awj"), ExtResource("14_0fgj5"), ExtResource("15_2u1nb"), ExtResource("16_f6uq2"), ExtResource("17_fc833"), ExtResource("18_07h42"), ExtResource("19_1bc1o")])
+recipes = Array[ExtResource("20_v7rvm")]([ExtResource("21_tvgo1"), ExtResource("22_gda24"), ExtResource("23_40hrh")])

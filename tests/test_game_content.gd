@@ -1,0 +1,228 @@
+extends SceneTree
+## Tes konten game: kartu dari CardDB, Tameng, Racun, pola Buto, niat musuh,
+## Ultimate area, data stage, dan berkah GameState.
+##   godot --headless -s tests/test_game_content.gd
+
+var _failures: int = 0
+var _checks: int = 0
+
+
+class Fixture:
+	var bm: BattleManager
+	var deck: DeckController
+	var hand: HandManager
+	var player: PlayerState
+	var hero: HealthComponent
+	var enemies: Array[EnemyUnit] = []
+	var deck_list: Array[CardData] = []
+
+
+func check(condition: bool, label: String) -> void:
+	_checks += 1
+	if condition:
+		print("  ok   ", label)
+	else:
+		_failures += 1
+		print("  FAIL ", label)
+
+
+func card_db() -> Node:
+	return root.get_node("CardDB")
+
+
+func game_state() -> Node:
+	return root.get_node("GameState")
+
+
+func make_buto(type: EnemyButo.ButoType, hp: int, attack: int) -> EnemyButo:
+	var b := EnemyButo.new()
+	b.buto_type = type
+	b.rng_seed = 5
+	b.attack_power = attack
+	var h := HealthComponent.new()
+	h.max_hp = hp
+	b.add_child(h)
+	b.health = h
+	return b
+
+
+func make_fixture(butos: Array[EnemyUnit], hero_hp: int) -> Fixture:
+	var f := Fixture.new()
+	var holder := Node.new()
+	f.deck = DeckController.new()
+	f.deck.shuffle_seed = 3
+	f.hand = HandManager.new()
+	f.hand.merge_recipes = card_db().call("get_recipes")
+	f.player = PlayerState.new()
+	f.hero = HealthComponent.new()
+	f.hero.max_hp = hero_hp
+	f.bm = BattleManager.new()
+	f.bm.deck = f.deck
+	f.bm.hand = f.hand
+	f.bm.player = f.player
+	f.bm.hero_health = f.hero
+	f.bm.presentation_delay = 0.0
+	for n: Node in [f.deck, f.hand, f.player, f.hero, f.bm]:
+		holder.add_child(n)
+	for b: EnemyUnit in butos:
+		holder.add_child(b)
+		f.enemies.append(b)
+	root.add_child(holder)
+	var specs: Array[String] = []
+	specs.assign(game_state().get("STARTER_DECK"))
+	f.deck_list = card_db().call("build_deck_list", specs)
+	return f
+
+
+# Cari kartu dengan keluarga tertentu di tangan. -1 kalau tidak ada.
+func find_family(hand: HandManager, family: String) -> int:
+	for i: int in hand.get_card_count():
+		if hand.get_card(i).data.get_family() == family:
+			return i
+	return -1
+
+
+# Masukkan kartu tertentu langsung ke tangan (untuk tes efek).
+func give_card(f: Fixture, spec: String) -> int:
+	var card := CardInstance.new(card_db().call("card_from_spec", spec))
+	if f.hand.is_full():
+		f.hand.remove_card_at(f.hand.get_card_count() - 1)
+	f.hand.add_card(card)
+	return f.hand.get_card_count() - 1
+
+
+func _initialize() -> void:
+	_run()
+
+
+func _run() -> void:
+	await process_frame
+
+	print("[CardDB & deck awal]")
+	check((card_db().call("get_all_cards") as Array).size() == 18, "18 kartu (6 keluarga x 3 bintang)")
+	check((card_db().call("get_recipes") as Array).size() == 3, "3 resep merge")
+	var crimson2: CardData = card_db().call("card_from_spec", "crimson:2")
+	check(crimson2 != null and crimson2.base_power == 17 and not crimson2.is_base_type(), "crimson:2 ditemukan")
+	var f := make_fixture([make_buto(EnemyButo.ButoType.KUNING, 200, 6)] as Array[EnemyUnit], 70)
+	check(f.deck_list.size() == 15, "deck awal 15 kartu")
+	check(f.bm.start_battle(f.deck_list, f.enemies), "battle dengan deck asli bisa dimulai")
+
+	print("[Tameng]")
+	var ti := give_card(f, "taktik:2")
+	check(f.bm.request_play_card(ti) and f.hero.block == 8, "Taktik bintang 2 -> Tameng 8")
+	f.hero.take_damage(5)
+	check(f.hero.block == 3 and f.hero.current_hp == 70, "damage 5 diserap Tameng")
+	f.hero.take_damage(10)
+	check(f.hero.block == 0 and f.hero.current_hp == 63, "sisa damage tembus ke HP")
+	var pi := give_card(f, "piercing:1")
+	f.bm.request_play_card(pi)
+	check(f.hero.block == 4 and f.enemies[0].health.current_hp == 190, "Piercing Strike: damage 10 + Tameng 4")
+	f.bm.request_end_turn()
+	check(f.hero.block == 0, "Tameng hilang di awal turn berikutnya")
+
+	print("[Flow State: AP kembali]")
+	var ap_before := f.player.current_ap
+	var fi := give_card(f, "flow:1")
+	f.bm.request_play_card(fi)
+	check(f.player.current_ap == ap_before, "main Flow State (1 AP) mengembalikan 1 AP")
+	check(f.hero.block == 5, "dan memberi Tameng 5")
+
+	print("[Ultimate area]")
+	var f2 := make_fixture([make_buto(EnemyButo.ButoType.KUNING, 300, 6), make_buto(EnemyButo.ButoType.MERAH, 300, 6)] as Array[EnemyUnit], 70)
+	f2.bm.start_battle(f2.deck_list, f2.enemies)
+	f2.player.gain_moxie(200.0)
+	check(f2.bm.request_ultimate(), "Ultimate diterima")
+	check(f2.enemies[0].health.current_hp == 240 and f2.enemies[1].health.current_hp == 240, "kedua Buto kena 30 x 2 = 60")
+
+	print("[Buto Hijau: Racun]")
+	var hijau := make_buto(EnemyButo.ButoType.HIJAU, 300, 6)
+	var f3 := make_fixture([hijau] as Array[EnemyUnit], 70)
+	f3.bm.start_battle(f3.deck_list, f3.enemies)
+	var intent := hijau.get_intent(f3.bm)
+	check(intent.kind == EnemyIntent.Kind.POISON and intent.damage == 3 and intent.extra == 3, "niat: semburan 3 + Racun 3")
+	f3.bm.request_end_turn()
+	check(f3.player.poison == 2 and f3.hero.current_hp == 70 - 3 - 3, "semburan 3, racun langsung bekerja 3, sisa 2 tumpukan")
+	check(hijau.get_intent(f3.bm).kind == EnemyIntent.Kind.ATTACK, "turn berikutnya cooldown: serangan biasa")
+	var ti3 := give_card(f3, "taktik:3")
+	f3.bm.request_play_card(ti3)
+	f3.bm.request_end_turn()
+	check(f3.hero.current_hp == 64 - 2 and f3.player.poison == 1, "racun menembus Tameng (serangan 6 diserap)")
+	var f4 := make_fixture([make_buto(EnemyButo.ButoType.HIJAU, 300, 6)] as Array[EnemyUnit], 5)
+	f4.bm.start_battle(f4.deck_list, f4.enemies)
+	f4.bm.request_end_turn()
+	check(f4.bm.get_state() == BattleManager.State.DEFEAT, "kalah karena racun ikut dicek")
+
+	print("[Buto Merah: serang, ancang-ancang, pukulan berat]")
+	var merah := make_buto(EnemyButo.ButoType.MERAH, 300, 8)
+	var f5 := make_fixture([merah] as Array[EnemyUnit], 100)
+	f5.bm.start_battle(f5.deck_list, f5.enemies)
+	var kinds: Array[String] = []
+	var hp_log: Array[int] = []
+	for i: int in 4:
+		kinds.append(EnemyIntent.Kind.find_key(merah.get_intent(f5.bm).kind))
+		f5.bm.request_end_turn()
+		hp_log.append(f5.hero.current_hp)
+	check(kinds == ["ATTACK", "CHARGE", "HEAVY", "ATTACK"], "pola niat: %s" % [kinds])
+	check(hp_log == [92, 92, 72, 64], "damage: 8, 0, 20, 8 -> %s" % [hp_log])
+
+	print("[Buto Hitam: niat & murka]")
+	var hitam := make_buto(EnemyButo.ButoType.HITAM, 100, 9)
+	var f6 := make_fixture([hitam] as Array[EnemyUnit], 200)
+	f6.bm.start_battle(f6.deck_list, f6.enemies)
+	check(hitam.get_intent(f6.bm).kind == EnemyIntent.Kind.ATTACK and hitam.get_intent(f6.bm).damage == 9, "fase 1: serangan 9")
+	hitam.health.take_damage(50)
+	var i6 := hitam.get_intent(f6.bm)
+	check(i6.kind == EnemyIntent.Kind.SHUFFLE and i6.damage == 13, "fase 2: ForceShuffle dengan serangan 13")
+	for i: int in range(1, f6.hand.get_card_count()):
+		f6.hand.lock_card_at(i, 1)
+	check(hitam.get_intent(f6.bm).kind == EnemyIntent.Kind.ATTACK, "kartu bebas tinggal 1 -> niat berubah jadi serangan biasa")
+
+	print("[Niat Kuning & Putih]")
+	var kuning := make_buto(EnemyButo.ButoType.KUNING, 50, 6)
+	var putih := make_buto(EnemyButo.ButoType.PUTIH, 50, 6)
+	var f7 := make_fixture([kuning, putih] as Array[EnemyUnit], 100)
+	f7.bm.start_battle(f7.deck_list, f7.enemies)
+	var ik := kuning.get_intent(f7.bm)
+	check(ik.kind == EnemyIntent.Kind.DRAIN and ik.damage == 6 and ik.extra == 25, "Kuning: serang 6 + kuras 25%")
+	check(putih.get_intent(f7.bm).kind == EnemyIntent.Kind.LOCK, "Putih: kunci kartu")
+
+	print("[Data stage]")
+	var catalog := StageCatalog.load_default()
+	check(catalog != null and catalog.stages.size() == 5, "5 stage")
+	check(catalog.get_stage(5).is_boss and catalog.get_stage(5).enemies[0].buto_type == EnemyButo.ButoType.HITAM, "stage 5: boss Buto Hitam")
+	var all_lines_ok := true
+	for stage: StageData in catalog.stages:
+		for line: String in stage.intro_dialog + stage.victory_dialog + stage.tutorial_dialog:
+			if line.split("|").size() != 2:
+				all_lines_ok = false
+	check(all_lines_ok, "semua baris dialog berformat pembicara|KUNCI")
+
+	print("[Berkah GameState]")
+	var gs := game_state()
+	var saved_deck: Array = (gs.get("deck") as Array).duplicate()
+	var saved_hp: int = gs.get("max_hp")
+	var serang_before := 0
+	for spec: String in gs.get("deck"):
+		if spec.begins_with("serang:"):
+			serang_before += int(spec.split(":")[1])
+	var upgraded: Array = gs.call("apply_blessing", 0)
+	var serang_after := 0
+	for spec: String in gs.get("deck"):
+		if spec.begins_with("serang:"):
+			serang_after += int(spec.split(":")[1])
+	check(upgraded.size() == 2 and serang_after == serang_before + 2, "Tempa Tongkat: 2 kartu Serang naik bintang")
+	gs.call("apply_blessing", 3)
+	check(gs.get("max_hp") == saved_hp + 10, "Jamu: HP maksimal +10")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 9
+	var options: Array = gs.call("roll_blessings", rng)
+	var unique := {}
+	for o: Variant in options:
+		unique[o] = true
+	check(options.size() == 3 and unique.size() == 3, "3 pilihan berkah berbeda")
+	(gs.get("deck") as Array).assign(saved_deck)
+	gs.set("max_hp", saved_hp)
+	gs.call("save_game")
+
+	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
+	quit(1 if _failures > 0 else 0)

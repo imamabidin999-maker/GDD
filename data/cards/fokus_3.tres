@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_fokus.png" id="1_7nhrn"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_fokus.png" id="2_da8lh"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_k8cv7"]
+
+[resource]
+script = ExtResource("3_k8cv7")
+id = &"fokus_3"
+display_name = "CARD_FOKUS"
+card_type = 1
+rank = 3
+base_power = 6
+shield = 0
+ap_gain = 0
+icon = ExtResource("2_da8lh")
+frame = ExtResource("1_7nhrn")
+description = ""

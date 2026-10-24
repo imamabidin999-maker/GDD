@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="StageData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_wcnut"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_dat3m"]
+
+[sub_resource type="Resource" id="Resource_xht7j"]
+script = ExtResource("1_wcnut")
+buto_type = 0
+max_hp = 40
+attack_power = 6
+skill_cooldown_turns = 2
+sprite_scale = 1.0
+
+[resource]
+script = ExtResource("2_dat3m")
+stage_number = 1
+title_key = "STAGE_1_TITLE"
+enemies = Array[ExtResource("1_wcnut")]([SubResource("Resource_xht7j")])
+music = "battle"
+is_boss = false
+map_position = Vector2(92, 268)
+background_tint = Color(1, 1, 1, 1)
+intro_dialog = PackedStringArray("narator|S1_INTRO_1", "eyang|S1_INTRO_2", "buto_kuning|S1_INTRO_3", "eyang|S1_INTRO_4")
+victory_dialog = PackedStringArray("warga|S1_WIN_1", "eyang|S1_WIN_2")
+tutorial_dialog = PackedStringArray("eyang|TUT_1", "eyang|TUT_2", "eyang|TUT_3", "eyang|TUT_4", "eyang|TUT_5", "eyang|TUT_6")

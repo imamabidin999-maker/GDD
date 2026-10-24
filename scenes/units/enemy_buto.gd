@@ -4,11 +4,14 @@ extends EnemyUnit
 ##
 ##   Kuning : setiap serangannya menguras Moxie Overcharge pemain, lewat signal
 ##            overcharge_drain_requested yang tersambung ke PlayerState.
+##   Hijau  : setiap beberapa turn menyemburkan racun. Racun mengurangi HP hero
+##            di akhir giliran musuh, menembus Tameng.
+##   Merah  : pola tiga langkah: serang biasa, ancang-ancang, pukulan berat.
 ##   Putih  : skill LockCard, mengunci 1 kartu acak di tangan sehingga tidak bisa
 ##            digeser atau digabung.
-##   Hitam  : boss. Saat HP-nya turun ke fase 2, skill ForceShuffle menghantam
-##            hero lalu mengacak sisa deck dan urutan kartu di tangan.
-##   Hijau, Merah : untuk sekarang menyerang biasa.
+##   Hitam  : boss. Saat HP-nya turun ke fase 2 ia murka (serangan lebih kuat)
+##            dan memakai ForceShuffle: menghantam hero lalu mengacak sisa deck
+##            dan urutan kartu di tangan.
 ##
 ## Skill tidak langsung dijalankan di decide_action(). Buto hanya memilih skill,
 ## lalu ButoSkillAction menjalankannya di RESOLVE_ACTIONS. Jadi skill tetap
@@ -17,9 +20,13 @@ extends EnemyUnit
 
 enum ButoType { KUNING, HIJAU, MERAH, PUTIH, HITAM }
 enum Skill {
+	NONE = -1, ## serangan biasa
 	DRAINING_STRIKE, ## Kuning: serangan + kuras Moxie Overcharge
 	LOCK_CARD, ## Putih: kunci 1 kartu acak di tangan
 	FORCE_SHUFFLE, ## Hitam fase 2: serangan + acak sisa deck & urutan tangan
+	POISON_SPIT, ## Hijau: serangan ringan + racun
+	CHARGE, ## Merah: ancang-ancang, tidak menyerang
+	HEAVY_STRIKE, ## Merah: pukulan berat
 }
 
 ## Minta PlayerState menguras Moxie Overcharge. Disambungkan otomatis ke
@@ -37,6 +44,14 @@ signal phase_changed(phase: int)
 ## Moxie Overcharge yang dikuras setiap serangan Buto Kuning (dalam persen).
 @export var overcharge_drain: float = 25.0
 
+@export_group("Hijau")
+## Tumpukan racun dari satu semburan.
+@export_range(1, 10) var poison_stacks: int = 3
+
+@export_group("Merah")
+## Pukulan berat = attack_power × pengali ini.
+@export var heavy_multiplier: float = 2.5
+
 @export_group("Putih")
 ## Berapa turn pemain kartu yang dikunci LockCard tetap terkunci.
 @export_range(1, 5) var lock_duration_turns: int = 1
@@ -44,10 +59,12 @@ signal phase_changed(phase: int)
 @export_group("Hitam (Boss)")
 ## Fase 2 dimulai saat HP <= rasio ini dikali max HP.
 @export_range(0.05, 0.95, 0.05) var phase_two_hp_ratio: float = 0.5
+## Tambahan serangan saat murka di fase 2.
+@export var phase_two_attack_bonus: int = 4
 
 @export_group("Skill")
-## Skill (LockCard, ForceShuffle) dipakai setiap N turn musuh. 1 = setiap turn.
-## Serangan Buto Kuning tidak memakai cooldown karena efeknya menempel di serangan.
+## Skill (racun, LockCard, ForceShuffle) dipakai setiap N turn musuh. 1 = setiap turn.
+## Serangan Buto Kuning dan pola Buto Merah tidak memakai cooldown ini.
 @export_range(1, 5) var skill_cooldown_turns: int = 2
 ## Seed acakan skill. 0 = acak setiap battle. Isi angka tetap untuk debugging.
 @export var rng_seed: int = 0
@@ -56,6 +73,8 @@ signal phase_changed(phase: int)
 var phase: int = 1
 
 var _turns_until_skill: int = 0
+# Langkah pola Buto Merah: 0 serang biasa, 1 ancang-ancang, 2 pukulan berat.
+var _merah_step: int = 0
 # true kalau LockCard dipakai saat tangan kosong. Kuncinya dipasang ke tangan
 # baru di awal turn pemain berikutnya.
 var _pending_hand_lock: bool = false
@@ -63,8 +82,26 @@ var _rng := RandomNumberGenerator.new()
 var _drain_receiver: Callable
 
 
+## Kunci untuk teks dan gambar, misalnya "kuning".
+func get_type_key() -> String:
+	return String(ButoType.keys()[buto_type]).to_lower()
+
+
 func get_type_name() -> String:
 	return "Buto %s" % String(ButoType.keys()[buto_type]).capitalize()
+
+
+## Damage serangan biasa saat ini (Buto Hitam lebih kuat di fase 2).
+func get_attack_damage() -> int:
+	return attack_power + (phase_two_attack_bonus if phase >= 2 else 0)
+
+
+func get_heavy_damage() -> int:
+	return roundi(attack_power * heavy_multiplier)
+
+
+func get_spit_damage() -> int:
+	return ceili(attack_power * 0.5)
 
 
 #region Siklus battle
@@ -76,6 +113,7 @@ func on_battle_started(battle: BattleManager) -> void:
 	var previous_phase := phase
 	phase = 1
 	_turns_until_skill = 0 # skill pertama boleh langsung dipakai
+	_merah_step = 0
 	_pending_hand_lock = false
 	if rng_seed != 0:
 		_rng.seed = rng_seed
@@ -96,28 +134,40 @@ func on_player_turn_started(battle: BattleManager) -> void:
 		lock_card(battle.hand)
 
 
+## Niat turn musuh berikutnya. Hanya mengintip, tidak mengubah cooldown.
+## Dihitung ulang setiap tangan berubah, jadi ikon niat selalu jujur
+## (misalnya Buto Hitam batal mengacak kalau kartu bebas tinggal satu).
+func get_intent(battle: BattleManager) -> EnemyIntent:
+	var skill := _pick_skill(battle, _turns_until_skill <= 0)
+	match skill:
+		Skill.DRAINING_STRIKE:
+			return EnemyIntent.new(EnemyIntent.Kind.DRAIN, attack_power, roundi(overcharge_drain))
+		Skill.LOCK_CARD:
+			return EnemyIntent.new(EnemyIntent.Kind.LOCK, 0, lock_duration_turns)
+		Skill.FORCE_SHUFFLE:
+			return EnemyIntent.new(EnemyIntent.Kind.SHUFFLE, get_attack_damage())
+		Skill.POISON_SPIT:
+			return EnemyIntent.new(EnemyIntent.Kind.POISON, get_spit_damage(), poison_stacks)
+		Skill.CHARGE:
+			return EnemyIntent.new(EnemyIntent.Kind.CHARGE, 0, get_heavy_damage())
+		Skill.HEAVY_STRIKE:
+			return EnemyIntent.new(EnemyIntent.Kind.HEAVY, get_heavy_damage())
+	return EnemyIntent.new(EnemyIntent.Kind.ATTACK, get_attack_damage())
+
+
 ## Memilih aksi di awal ENEMY_TURN berdasarkan warna Buto.
 func decide_action(battle: BattleManager) -> BattleAction:
 	_update_phase()
 	var skill_ready := _tick_skill_cooldown()
+	var skill := _pick_skill(battle, skill_ready)
+	if skill == Skill.POISON_SPIT or skill == Skill.LOCK_CARD or skill == Skill.FORCE_SHUFFLE:
+		_start_skill_cooldown()
+	if buto_type == ButoType.MERAH:
+		_merah_step = (_merah_step + 1) % 3
 
-	match buto_type:
-		ButoType.KUNING:
-			return ButoSkillAction.new(self, Skill.DRAINING_STRIKE)
-		ButoType.PUTIH:
-			# Tangan kosong (misalnya mode buang-tangan gaya FGO) tetap boleh:
-			# kuncinya dipasang ke tangan baru di awal turn pemain berikutnya.
-			var hand_empty := battle.hand.get_card_count() == 0
-			if skill_ready and (hand_empty or battle.hand.has_lockable_card()):
-				_start_skill_cooldown()
-				return ButoSkillAction.new(self, Skill.LOCK_CARD)
-		ButoType.HITAM:
-			# Mengacak tangan baru berarti kalau ada minimal 2 kartu yang bebas.
-			if phase >= 2 and skill_ready and battle.hand.count_unlocked() >= 2:
-				_start_skill_cooldown()
-				return ButoSkillAction.new(self, Skill.FORCE_SHUFFLE)
-
-	return super.decide_action(battle) # serangan biasa
+	if skill == Skill.NONE:
+		return EnemyAttackAction.new(self, battle.hero_health, get_attack_damage())
+	return ButoSkillAction.new(self, skill)
 
 
 ## Menjalankan skill dan mengisi hasilnya ke action (damage, kartu yang
@@ -130,8 +180,17 @@ func perform_skill(action: ButoSkillAction, battle: BattleManager) -> void:
 		Skill.LOCK_CARD:
 			_perform_lock_card(action, battle)
 		Skill.FORCE_SHUFFLE:
-			action.damage_dealt = battle.hero_health.take_damage(attack_power)
+			action.damage_dealt = battle.hero_health.take_damage(get_attack_damage())
 			action.succeeded = force_shuffle(battle.deck, battle.hand)
+		Skill.POISON_SPIT:
+			action.damage_dealt = battle.hero_health.take_damage(get_spit_damage())
+			battle.player.add_poison(poison_stacks)
+			action.succeeded = true
+		Skill.CHARGE:
+			action.succeeded = true # ancang-ancang: tidak menyerang turn ini
+		Skill.HEAVY_STRIKE:
+			action.damage_dealt = battle.hero_health.take_damage(get_heavy_damage())
+			action.succeeded = true
 	skill_used.emit(action.skill, action.succeeded)
 
 #endregion
@@ -171,6 +230,32 @@ func force_shuffle(deck: DeckController, hand: HandManager) -> bool:
 
 
 #region Helper
+
+# Skill apa yang dipakai kalau Buto beraksi sekarang. Murni membaca state.
+func _pick_skill(battle: BattleManager, skill_ready: bool) -> Skill:
+	match buto_type:
+		ButoType.KUNING:
+			return Skill.DRAINING_STRIKE
+		ButoType.HIJAU:
+			if skill_ready:
+				return Skill.POISON_SPIT
+		ButoType.MERAH:
+			if _merah_step == 1:
+				return Skill.CHARGE
+			if _merah_step == 2:
+				return Skill.HEAVY_STRIKE
+		ButoType.PUTIH:
+			# Tangan kosong (misalnya mode buang-tangan gaya FGO) tetap boleh:
+			# kuncinya dipasang ke tangan baru di awal turn pemain berikutnya.
+			var hand_empty := battle.hand.get_card_count() == 0
+			if skill_ready and (hand_empty or battle.hand.has_lockable_card()):
+				return Skill.LOCK_CARD
+		ButoType.HITAM:
+			# Mengacak tangan baru berarti kalau ada minimal 2 kartu yang bebas.
+			if phase >= 2 and skill_ready and battle.hand.count_unlocked() >= 2:
+				return Skill.FORCE_SHUFFLE
+	return Skill.NONE
+
 
 func _perform_lock_card(action: ButoSkillAction, battle: BattleManager) -> void:
 	if battle.hand.get_card_count() == 0:

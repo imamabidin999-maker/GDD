@@ -69,7 +69,8 @@ signal battle_ended(player_won: bool)
 ## false: kartu disimpan ke turn berikutnya (gaya Reverse: 1999).
 @export var discard_hand_on_turn_end: bool = false
 @export_range(0, 10) var ultimate_ap_cost: int = 0
-@export var ultimate_base_damage: int = 100
+## Damage dasar Ultimate ke SETIAP Buto (dikali multiplier & overcharge).
+@export var ultimate_base_damage: int = 30
 
 @export_group("Presentasi")
 ## Jeda sementara per aksi (detik) sebagai pengganti animasi. 0 = tanpa jeda.
@@ -258,8 +259,7 @@ func request_ultimate() -> bool:
 		return _end_request(false)
 
 	var spent := player.spend_moxie_for_ultimate()
-	_refresh_target()
-	_queue_action(UltimateAction.new(_target, spent, ultimate_base_damage))
+	_queue_action(UltimateAction.new(spent, ultimate_base_damage))
 	return _end_request(true, State.RESOLVE_ACTIONS)
 
 
@@ -398,10 +398,12 @@ func _enter_state(state: State) -> void:
 			_enter_battle_end(false)
 
 
-## PLAYER_TURN (turn baru): isi ulang AP dan tarik kartu sampai tangan penuh.
+## PLAYER_TURN (turn baru): Tameng lama hilang, AP diisi ulang, lalu kartu
+## ditarik sampai tangan penuh.
 func _setup_new_player_turn() -> void:
 	_needs_turn_setup = false
 	turn_number += 1
+	hero_health.clear_block()
 	player.start_turn()
 	deck.fill_hand(hand)
 	for enemy: EnemyUnit in get_living_enemies():
@@ -420,6 +422,9 @@ func _enter_enemy_turn() -> void:
 			return
 		if action != null:
 			_queue_action(action)
+	# Racun bekerja paling akhir, setelah semua Buto beraksi. Selalu diantre
+	# karena semburan racun di giliran ini baru berlaku setelah aksinya selesai.
+	_queue_action(PoisonTickAction.new(player))
 
 	# Setelah semua aksi Buto selesai, PLAYER_TURN berikutnya adalah turn baru.
 	_needs_turn_setup = true

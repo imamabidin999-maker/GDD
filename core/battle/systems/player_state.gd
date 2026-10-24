@@ -23,9 +23,13 @@ signal overcharge_full
 signal evolutionary_chain_triggered(stacks: int, multiplier: float)
 ## Moxie Overcharge berkurang karena efek musuh (misalnya serangan Buto Kuning).
 signal overcharge_drained(amount: float)
+## Jumlah tumpukan Racun berubah (efek Buto Hijau).
+signal poison_changed(stacks: int)
 
 const AP_COST_PLAY_CARD: int = 1
 const AP_COST_MOVE_CARD: int = 1
+## Batas AP saat mendapat AP tambahan dari kartu (misalnya Flow State).
+const AP_HARD_CAP: int = 9
 
 const MOXIE_NORMAL_CAP: float = 100.0
 const MOXIE_MAX: float = 200.0
@@ -77,6 +81,14 @@ var moxie: float = 0.0:
 var ultimate_damage_multiplier: float = 1.0
 ## Berapa kali Evolutionary Chain sudah terpicu di battle ini.
 var evolution_stacks: int = 0
+## Tumpukan Racun. Di akhir giliran musuh, hero kehilangan HP sebanyak jumlah
+## tumpukan, lalu tumpukan berkurang satu.
+var poison: int = 0:
+	set(value):
+		var changed := value != poison
+		poison = maxi(value, 0)
+		if changed:
+			poison_changed.emit(poison)
 
 var _played_this_turn: Array[CardInstance] = []
 var _chain_triggered_this_turn: bool = false
@@ -89,6 +101,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 	ultimate_damage_multiplier = starting_multiplier
 	evolution_stacks = 0
 	moxie = starting_moxie
+	poison = 0
 	start_turn()
 
 
@@ -126,6 +139,32 @@ func consume_ap(amount: int) -> bool:
 	if amount > 0:
 		current_ap -= amount
 	return true
+
+
+## AP tambahan dari efek kartu. Boleh melewati max_ap sampai AP_HARD_CAP.
+func gain_ap(amount: int) -> int:
+	if amount <= 0:
+		return 0
+	var before := current_ap
+	current_ap = mini(current_ap + amount, AP_HARD_CAP)
+	return current_ap - before
+
+#endregion
+
+
+#region Racun
+
+func add_poison(stacks: int) -> void:
+	if stacks > 0:
+		poison += stacks
+
+
+## Mengembalikan damage racun turn ini, lalu mengurangi tumpukan satu.
+func tick_poison() -> int:
+	var damage := poison
+	if poison > 0:
+		poison -= 1
+	return damage
 
 #endregion
 

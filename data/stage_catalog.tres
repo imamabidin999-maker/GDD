@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="StageCatalog" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/stage_catalog.gd" id="1_ftsno"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_3fwn3"]
+[ext_resource type="Resource" path="res://data/stages/stage_1.tres" id="3_xlr08"]
+[ext_resource type="Resource" path="res://data/stages/stage_2.tres" id="4_vmse7"]
+[ext_resource type="Resource" path="res://data/stages/stage_3.tres" id="5_leshr"]
+[ext_resource type="Resource" path="res://data/stages/stage_4.tres" id="6_6abqv"]
+[ext_resource type="Resource" path="res://data/stages/stage_5.tres" id="7_xt378"]
+
+[resource]
+script = ExtResource("1_ftsno")
+stages = Array[ExtResource("2_3fwn3")]([ExtResource("3_xlr08"), ExtResource("4_vmse7"), ExtResource("5_leshr"), ExtResource("6_6abqv"), ExtResource("7_xt378")])
+prologue_dialog = PackedStringArray("narator|PROLOGUE_1", "narator|PROLOGUE_2", "warga|PROLOGUE_3", "narator|PROLOGUE_4", "eyang|PROLOGUE_5")
+ending_dialog = PackedStringArray("narator|ENDING_1", "roro_ayu|ENDING_2", "eyang|ENDING_3", "narator|ENDING_4", "narator|ENDING_5")

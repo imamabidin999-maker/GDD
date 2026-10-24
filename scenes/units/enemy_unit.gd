@@ -40,6 +40,12 @@ func on_player_turn_started(_battle: BattleManager) -> void:
 	pass
 
 
+## Niat untuk giliran musuh berikutnya, untuk ikon di atas kepala.
+## Hanya mengintip: tidak mengubah state apa pun.
+func get_intent(_battle: BattleManager) -> EnemyIntent:
+	return EnemyIntent.new(EnemyIntent.Kind.ATTACK, attack_power)
+
+
 ## Dipanggil BattleManager di awal ENEMY_TURN. Boleh mengembalikan null kalau
 ## Buto ini tidak beraksi di turn ini, misalnya sedang terkena stun. Override
 ## boleh memakai await; BattleManager menunggunya sebelum lanjut.

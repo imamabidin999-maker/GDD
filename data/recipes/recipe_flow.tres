@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MergeRecipe" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="1_35miu"]
+[ext_resource type="Resource" path="res://data/cards/flow_1.tres" id="2_s0s5o"]
+[ext_resource type="Resource" path="res://data/cards/flow_2.tres" id="3_7ilgj"]
+[ext_resource type="Resource" path="res://data/cards/flow_3.tres" id="4_h2vh1"]
+[ext_resource type="Script" path="res://data/definitions/merge_recipe.gd" id="5_roexw"]
+
+[resource]
+script = ExtResource("5_roexw")
+type_a = 1
+type_b = 2
+results = Array[ExtResource("1_35miu")]([ExtResource("2_s0s5o"), ExtResource("3_7ilgj"), ExtResource("4_h2vh1")])
