@@ -271,6 +271,21 @@ STRINGS = [
      "AP: you have 4 AP each turn. Playing a card costs 1 AP, moving a card costs 1 AP.\n\nCards: Attack deals damage, Focus charges Moxie, Tactic gives Block. Stars show a card's strength.\n\nHybrid Merging: two adjacent cards of different colors with the same rank can be merged. Attack+Focus = Crimson Focus, Attack+Tactic = Piercing Strike, Focus+Tactic = Flow State. Drag a card to move it, or click the merge button between two cards.\n\nMoxie & Ultimate: at 100% Palang Strike is ready and hits every Buto. Save it up to 200% for double damage.\n\nEvolutionary Chain: play 3 rank-3 cards in a row in one turn to power up your Ultimate for the rest of the battle.\n\nButo intent: the icon above each Buto shows what it will do on its next turn."),
     ("PUSTAKA_CARDS", "Kartu", "Cards"),
     ("PUSTAKA_STATS", "HP %d  |  Serangan %d", "HP %d  |  Attack %d"),
+    ("PUSTAKA_RECIPES", "Resep Hybrid", "Hybrid Recipes"),
+    ("PUSTAKA_CARDS_HINT", "Arahkan kursor ke kartu untuk melihat detailnya.", "Hover over a card to see its details."),
+    ("PUSTAKA_SKILL", "Ilmu: %s", "Skill: %s"),
+    ("SKILL_KUNING", "Hisap Moxie", "Drain Moxie"),
+    ("SKILL_HIJAU", "Sembur Racun", "Poison Spit"),
+    ("SKILL_MERAH", "Pukulan Berat", "Heavy Blow"),
+    ("SKILL_PUTIH", "Kunci Kartu", "Lock Card"),
+    ("SKILL_HITAM", "Acak Tangan", "Shuffle Hand"),
+    ("MAP_BOSS", "Pertarungan Bos", "Boss Fight"),
+    ("MAP_MENU", "Menu", "Menu"),
+    ("MAP_REPLAY", "Bisa diulang untuk berkah tambahan.", "Replay it for another blessing."),
+    ("MAP_LOCKED_HINT", "Kalahkan stage sebelumnya dulu.", "Clear the previous stage first."),
+    ("DECK_TITLE", "Deck Eyang Palang", "Eyang Palang's Deck"),
+    ("DECK_HINT", "15 kartu. Berkah Roro Ayu menaikkan bintang kartu.", "15 cards. Roro Ayu's blessings raise card ranks."),
+    ("ENDING_THANKS", "Tamat", "The End"),
 ]
 
 

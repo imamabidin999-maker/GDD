@@ -9,9 +9,9 @@ const HERO_ATTACKS: Array[Texture2D] = [
 	preload("res://assets/sprites/hero/eyang_palang_attack_2.png"),
 ]
 const ENEMY_SLOTS := {
-	1: [Vector2(472, 238)],
-	2: [Vector2(410, 238), Vector2(540, 238)],
-	3: [Vector2(372, 238), Vector2(470, 238), Vector2(568, 238)],
+	1: [Vector2(472, 228)],
+	2: [Vector2(410, 228), Vector2(540, 228)],
+	3: [Vector2(372, 228), Vector2(470, 228), Vector2(568, 228)],
 }
 const HIT_DELAY := 0.17
 
@@ -116,26 +116,7 @@ func _setup_enemies() -> void:
 
 
 func _add_fireflies() -> void:
-	var p := CPUParticles2D.new()
-	p.amount = 18
-	p.lifetime = 6.0
-	p.preprocess = 6.0
-	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	p.emission_rect_extents = Vector2(320, 90)
-	p.position = Vector2(320, 120)
-	p.direction = Vector2(0, -1)
-	p.spread = 180.0
-	p.gravity = Vector2.ZERO
-	p.initial_velocity_min = 2.0
-	p.initial_velocity_max = 7.0
-	p.scale_amount_min = 1.0
-	p.scale_amount_max = 2.0
-	var ramp := Gradient.new()
-	ramp.set_color(0, Color(1.0, 0.95, 0.5, 0.0))
-	ramp.add_point(0.3, Color(1.0, 0.95, 0.5, 0.9))
-	ramp.add_point(0.7, Color(0.8, 1.0, 0.5, 0.7))
-	ramp.set_color(ramp.get_point_count() - 1, Color(0.8, 1.0, 0.5, 0.0))
-	p.color_ramp = ramp
+	var p := Ambient.fireflies(Vector2(320, 120), Vector2(320, 90))
 	_world.add_child(p)
 	_world.move_child(p, 1)
 
@@ -446,7 +427,7 @@ func _float_text(text: String, at: Vector2, color: Color, big: bool = false) -> 
 func _screen_flash(color: Color) -> void:
 	var rect := ColorRect.new()
 	rect.color = color
-	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	$HUD.add_child(rect)
 	var t := rect.create_tween()
@@ -481,7 +462,7 @@ func _open_pause() -> void:
 	AudioManager.play_sfx("click")
 	get_tree().paused = true
 	var root := Control.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	root.add_child(UIKit.dimmer(0.65))
 	var panel := PanelContainer.new()
@@ -544,7 +525,7 @@ func _defeat() -> void:
 	AudioManager.play_sfx("defeat")
 	await get_tree().create_timer(0.8).timeout
 	var root := Control.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(UIKit.dimmer(0.7))
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"GoldPanel"

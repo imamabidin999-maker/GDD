@@ -48,6 +48,24 @@ var _accent := Color.WHITE
 var _glow_phase: float = 0.0
 
 
+## Kartu pajangan untuk layar Deck dan Pustaka (di luar battle).
+## Kalau `components` diisi dua CardData, kartunya dibuat sebagai hybrid dari
+## bahan itu supaya angka Moxie-nya sama persis dengan di battle.
+static func preview(data: CardData, components: Array[CardData] = []) -> CardView:
+	var inst: CardInstance
+	if components.size() == 2:
+		inst = CardInstance.create_hybrid(data, CardInstance.new(components[0]), CardInstance.new(components[1]))
+	else:
+		inst = CardInstance.new(data)
+	var rules := PlayerState.new()
+	var moxie := rules.get_moxie_gain_from_card(inst)
+	rules.free()
+	var view := CardView.new()
+	view.setup(inst, moxie)
+	view.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	return view
+
+
 func setup(card_instance: CardInstance, moxie: float) -> void:
 	card = card_instance
 	moxie_gain = moxie

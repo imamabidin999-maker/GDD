@@ -39,7 +39,7 @@ var _ultimate_glow: Tween
 
 func setup(battle_manager: BattleManager, stage_title: String) -> void:
 	battle = battle_manager
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_top_bar(stage_title)
 	_build_bottom_panel()

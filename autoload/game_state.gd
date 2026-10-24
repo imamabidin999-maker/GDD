@@ -31,6 +31,7 @@ var max_hp: int = BASE_MAX_HP
 var deck: Array[String] = []
 var game_completed: bool = false
 var tutorial_done: bool = false
+var prologue_seen: bool = false
 ## Buto yang sudah pernah dilawan, untuk membuka entri Pustaka.
 var seen_buto: Array[String] = []
 #endregion
@@ -55,6 +56,11 @@ func has_progress() -> bool:
 	return not cleared_stages.is_empty() or unlocked_stage > 1
 
 
+## Ada petualangan yang bisa dilanjutkan dari menu utama.
+func has_save() -> bool:
+	return prologue_seen or has_progress()
+
+
 ## Mulai petualangan baru. Pengaturan tidak ikut direset.
 func new_game() -> void:
 	unlocked_stage = 1
@@ -64,6 +70,7 @@ func new_game() -> void:
 	deck = STARTER_DECK.duplicate()
 	game_completed = false
 	tutorial_done = false
+	prologue_seen = false
 	seen_buto.clear()
 	save_game()
 	progress_changed.emit()
@@ -219,6 +226,7 @@ func save_game() -> void:
 	cfg.set_value("progress", "deck", deck)
 	cfg.set_value("progress", "game_completed", game_completed)
 	cfg.set_value("progress", "tutorial_done", tutorial_done)
+	cfg.set_value("progress", "prologue_seen", prologue_seen)
 	cfg.set_value("progress", "seen_buto", seen_buto)
 	cfg.set_value("settings", "locale", locale)
 	cfg.set_value("settings", "music_volume", music_volume)
@@ -239,6 +247,7 @@ func load_game() -> void:
 		deck.assign(saved_deck)
 	game_completed = bool(cfg.get_value("progress", "game_completed", false))
 	tutorial_done = bool(cfg.get_value("progress", "tutorial_done", false))
+	prologue_seen = bool(cfg.get_value("progress", "prologue_seen", false))
 	seen_buto.assign(cfg.get_value("progress", "seen_buto", []))
 	locale = str(cfg.get_value("settings", "locale", "id"))
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))

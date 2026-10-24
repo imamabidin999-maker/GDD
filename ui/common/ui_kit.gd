@@ -64,7 +64,7 @@ static func vbox(separation: int = 2) -> VBoxContainer:
 static func dimmer(alpha: float = 0.6) -> ColorRect:
 	var r := ColorRect.new()
 	r.color = Color(0.02, 0.02, 0.05, alpha)
-	r.set_anchors_preset(Control.PRESET_FULL_RECT)
+	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	r.mouse_filter = Control.MOUSE_FILTER_STOP
 	return r
 
@@ -72,7 +72,7 @@ static func dimmer(alpha: float = 0.6) -> ColorRect:
 ## Membuat anak Control berada tepat di tengah induknya.
 static func center(control: Control) -> CenterContainer:
 	var c := CenterContainer.new()
-	c.set_anchors_preset(Control.PRESET_FULL_RECT)
+	c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(control)
 	return c

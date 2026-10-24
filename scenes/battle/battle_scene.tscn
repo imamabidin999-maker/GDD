@@ -41,7 +41,7 @@ centered = false
 position = Vector2(0, -250)
 
 [node name="Hero" type="Node2D" parent="World"]
-position = Vector2(150, 238)
+position = Vector2(150, 228)
 
 [node name="Health" type="Node" parent="World/Hero"]
 script = ExtResource("6_health")
