@@ -41,6 +41,7 @@ var _current_music: String = ""
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _next_voice: int = 0
 var _cache: Dictionary = {}
+var _fades: Dictionary = {}
 
 
 func _ready() -> void:
@@ -56,7 +57,8 @@ func play_music(key: String) -> void:
 		return
 	_current_music = key
 	var stream := _load(MUSIC.get(key, "")) as AudioStream
-	var old := _music_a if _music_a.playing else _music_b
+	# Pemain yang sedang terdengar paling keras dianggap musik lama.
+	var old := _music_a if _music_a.volume_db >= _music_b.volume_db and _music_a.playing else _music_b
 	var new := _music_b if old == _music_a else _music_a
 	if stream != null:
 		if stream is AudioStreamOggVorbis:
@@ -64,20 +66,29 @@ func play_music(key: String) -> void:
 		new.stream = stream
 		new.volume_db = -40.0
 		new.play()
-		create_tween().tween_property(new, "volume_db", 0.0, CROSSFADE)
+		_fade(new, 0.0, false)
+	else:
+		_fade(new, -40.0, true)
 	if old.playing:
-		var fade := create_tween()
-		fade.tween_property(old, "volume_db", -40.0, CROSSFADE)
-		fade.tween_callback(old.stop)
+		_fade(old, -40.0, true)
 
 
 func stop_music() -> void:
 	_current_music = ""
 	for player: AudioStreamPlayer in [_music_a, _music_b]:
 		if player.playing:
-			var fade := create_tween()
-			fade.tween_property(player, "volume_db", -40.0, CROSSFADE)
-			fade.tween_callback(player.stop)
+			_fade(player, -40.0, true)
+
+
+func _fade(player: AudioStreamPlayer, to_db: float, stop_after: bool) -> void:
+	var running := _fades.get(player) as Tween
+	if running != null and running.is_valid():
+		running.kill()
+	var t := create_tween()
+	t.tween_property(player, "volume_db", to_db, CROSSFADE)
+	if stop_after:
+		t.tween_callback(player.stop)
+	_fades[player] = t
 
 
 ## Memutar efek suara. pitch_jitter memberi sedikit variasi supaya pukulan
