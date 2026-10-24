@@ -1,29 +1,29 @@
 [gd_resource type="Resource" script_class="StageData" load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_njrxg"]
-[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_fmki8"]
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_pqpt5"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_fw1vq"]
 
-[sub_resource type="Resource" id="Resource_5n8xq"]
-script = ExtResource("1_njrxg")
+[sub_resource type="Resource" id="Resource_dbues"]
+script = ExtResource("1_pqpt5")
 buto_type = 1
-max_hp = 46
-attack_power = 6
+max_hp = 110
+attack_power = 11
 skill_cooldown_turns = 2
 sprite_scale = 1.0
 
-[sub_resource type="Resource" id="Resource_8car4"]
-script = ExtResource("1_njrxg")
+[sub_resource type="Resource" id="Resource_jp77k"]
+script = ExtResource("1_pqpt5")
 buto_type = 0
-max_hp = 30
-attack_power = 5
+max_hp = 70
+attack_power = 9
 skill_cooldown_turns = 2
 sprite_scale = 0.9
 
 [resource]
-script = ExtResource("2_fmki8")
+script = ExtResource("2_fw1vq")
 stage_number = 2
 title_key = "STAGE_2_TITLE"
-enemies = Array[ExtResource("1_njrxg")]([SubResource("Resource_5n8xq"), SubResource("Resource_8car4")])
+enemies = Array[ExtResource("1_pqpt5")]([SubResource("Resource_dbues"), SubResource("Resource_jp77k")])
 music = "battle"
 is_boss = false
 map_position = Vector2(206, 196)

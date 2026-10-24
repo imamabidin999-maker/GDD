@@ -120,29 +120,29 @@ func _build_stages() -> void:
 	var K := EnemyButo.ButoType
 	var catalog := StageCatalog.new()
 
-	var s1 := _stage(1, [_enemy(K.KUNING, 40, 6)] as Array[EnemySpec],
+	var s1 := _stage(1, [_enemy(K.KUNING, 95, 10)] as Array[EnemySpec],
 		Vector2(92, 268), Color(1, 1, 1), 4, 2)
 	s1.intro_dialog = _with_speakers(s1.intro_dialog, ["narator", "eyang", "buto_kuning", "eyang"])
 	s1.victory_dialog = _with_speakers(s1.victory_dialog, ["warga", "eyang"])
 	s1.tutorial_dialog = _with_speakers(PackedStringArray(["TUT_1", "TUT_2", "TUT_3", "TUT_4", "TUT_5", "TUT_6"]),
 		["eyang", "eyang", "eyang", "eyang", "eyang", "eyang"])
 
-	var s2 := _stage(2, [_enemy(K.HIJAU, 46, 6), _enemy(K.KUNING, 30, 5, 0.9)] as Array[EnemySpec],
+	var s2 := _stage(2, [_enemy(K.HIJAU, 110, 11), _enemy(K.KUNING, 70, 9, 0.9)] as Array[EnemySpec],
 		Vector2(206, 196), Color(0.82, 1.0, 0.88), 3, 2)
 	s2.intro_dialog = _with_speakers(s2.intro_dialog, ["narator", "buto_hijau", "eyang"])
 	s2.victory_dialog = _with_speakers(s2.victory_dialog, ["eyang", "narator"])
 
-	var s3 := _stage(3, [_enemy(K.MERAH, 64, 7), _enemy(K.HIJAU, 36, 5, 0.9)] as Array[EnemySpec],
+	var s3 := _stage(3, [_enemy(K.MERAH, 140, 11), _enemy(K.HIJAU, 80, 9, 0.9)] as Array[EnemySpec],
 		Vector2(318, 262), Color(0.82, 0.88, 1.06), 3, 2)
 	s3.intro_dialog = _with_speakers(s3.intro_dialog, ["narator", "buto_merah", "eyang"])
 	s3.victory_dialog = _with_speakers(s3.victory_dialog, ["eyang", "roro_ayu"])
 
-	var s4 := _stage(4, [_enemy(K.PUTIH, 58, 7), _enemy(K.MERAH, 52, 6, 0.9)] as Array[EnemySpec],
+	var s4 := _stage(4, [_enemy(K.PUTIH, 160, 15), _enemy(K.MERAH, 135, 12, 0.9)] as Array[EnemySpec],
 		Vector2(438, 188), Color(1.0, 0.9, 0.82), 3, 2)
 	s4.intro_dialog = _with_speakers(s4.intro_dialog, ["narator", "buto_putih", "eyang"])
 	s4.victory_dialog = _with_speakers(s4.victory_dialog, ["eyang", "narator"])
 
-	var s5 := _stage(5, [_enemy(K.HITAM, 170, 9, 1.15)] as Array[EnemySpec],
+	var s5 := _stage(5, [_enemy(K.HITAM, 420, 18, 1.15)] as Array[EnemySpec],
 		Vector2(554, 112), Color(0.92, 0.72, 0.78), 4, 2)
 	s5.music = "boss"
 	s5.is_boss = true

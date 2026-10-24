@@ -4,7 +4,7 @@ Game Turn-Based RPG Pixel Art bertema Dongkrek Madiun
 Engine: Godot 4.x (GDScript)
 Mekanik inti: **Tactical Cycle Synthesis**
 
-Dokumen ini menggambarkan arsitektur yang dituju. Sebagian sudah ada kodenya (deck, tangan, PlayerState, BattleManager); bagian lain seperti autoload, UI, dan data Buto masih berupa rancangan.
+Dokumen ini menggambarkan arsitektur yang dituju saat proyek dimulai. Game sudah selesai dibuat; bentuk akhirnya (termasuk bagian rancangan yang disederhanakan, seperti EventBus dan SaveManager) dicatat di `02-implementasi-akhir.md`.
 
 ---
 
@@ -427,6 +427,8 @@ Alur main kartu: `request_play_card()` → potong 1 AP dan angkat kartu dari tan
 ---
 
 ## 11. Keputusan Desain yang Masih Terbuka
+
+> Semua pertanyaan di bawah sudah diputuskan. Jawaban finalnya ada di `02-implementasi-akhir.md` bagian 4.
 
 Pertanyaan berikut berpengaruh langsung ke struktur di atas. Sebagian sudah punya jawaban **sementara** di kode, berupa export yang bisa diubah dari Inspector:
 

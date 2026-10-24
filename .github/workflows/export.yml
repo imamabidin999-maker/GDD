@@ -1,0 +1,45 @@
+# Membuat versi siap main (Windows, Linux, Web) dengan Godot 4.3.
+# Jalan otomatis saat ada push ke main/master, atau manual lewat tab
+# Actions -> "Export game" -> Run workflow. Hasilnya bisa diunduh dari
+# bagian Artifacts di halaman run tersebut.
+name: Export game
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  export:
+    name: Export ${{ matrix.preset }}
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - preset: "Windows Desktop"
+            path: build/windows/Dongkrek.exe
+            artifact: dongkrek-windows
+          - preset: "Linux"
+            path: build/linux/Dongkrek.x86_64
+            artifact: dongkrek-linux
+          - preset: "Web"
+            path: build/web/index.html
+            artifact: dongkrek-web
+    steps:
+      - uses: actions/checkout@v4
+      - name: Siapkan export template
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Export
+        run: |
+          mkdir -p "$(dirname "${{ matrix.path }}")"
+          godot --headless --import || true
+          godot --headless --export-release "${{ matrix.preset }}" "${{ matrix.path }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ github.workspace }}/build/
