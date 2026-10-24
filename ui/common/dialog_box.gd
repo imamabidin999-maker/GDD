@@ -43,7 +43,11 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	add_child(UIKit.dimmer(0.35))
+	# Klik harus sampai ke DialogBox sendiri (untuk lanjut ke baris berikutnya),
+	# jadi lapisan gelapnya tidak boleh menangkap mouse.
+	var dim := UIKit.dimmer(0.35)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(dim)
 
 	_panel = PanelContainer.new()
 	_panel.theme_type_variation = &"GoldPanel"

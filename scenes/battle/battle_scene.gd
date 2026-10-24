@@ -53,7 +53,8 @@ func _ready() -> void:
 	_setup_enemies()
 
 	_hand.merge_recipes = CardDB.get_recipes()
-	_hud.setup(_battle, "%s  -  %s" % [tr("MAP_STAGE") % _stage.stage_number, tr(_stage.title_key)])
+	_hud.setup(_battle, _stage_title())
+	GameState.settings_changed.connect(_on_settings_changed)
 	_hand_view.setup(_battle)
 	_hand_view.deck_point = Vector2(40, 330)
 	_connect_signals()
@@ -113,6 +114,20 @@ func _setup_enemies() -> void:
 		_enemies.append(buto)
 		buto.phase_changed.connect(_on_phase_changed.bind(buto))
 		GameState.mark_buto_seen(key)
+
+
+func _stage_title() -> String:
+	return "%s  -  %s" % [tr("MAP_STAGE") % _stage.stage_number, tr(_stage.title_key)]
+
+
+## Bahasa bisa diganti dari menu jeda: tulis ulang teks yang tidak ikut
+## berganti sendiri.
+func _on_settings_changed() -> void:
+	_hud.refresh_texts(_stage_title())
+	for enemy: EnemyUnit in _enemies:
+		var buto := enemy as EnemyButo
+		if buto != null:
+			buto.display_name = tr("BUTO_" + buto.get_type_key().to_upper())
 
 
 func _add_fireflies() -> void:
@@ -491,9 +506,19 @@ func _open_pause() -> void:
 		root.queue_free())
 	settings.pressed.connect(func() -> void:
 		var s := SettingsPanel.new()
-		root.add_child(s))
+		root.add_child(s)
+		# Buka ulang menu jeda supaya teksnya memakai bahasa yang baru.
+		s.closed.connect(func() -> void:
+			root.queue_free()
+			_reopen_pause.call_deferred()))
 	to_map.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.STAGE_MAP))
 	to_menu.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.MAIN_MENU))
+
+
+func _reopen_pause() -> void:
+	get_tree().paused = false
+	await get_tree().process_frame
+	_open_pause()
 
 
 func _on_battle_ended(player_won: bool) -> void:

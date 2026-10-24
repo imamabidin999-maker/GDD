@@ -63,6 +63,13 @@ func setup(battle_manager: BattleManager, stage_title: String) -> void:
 	refresh_buttons()
 
 
+## Menulis ulang teks yang dirakit dari beberapa bagian (dipanggil saat bahasa diganti).
+func refresh_texts(stage_title: String) -> void:
+	_stage_label.text = stage_title
+	if battle.turn_number > 0:
+		_turn_label.text = tr("BATTLE_TURN") % battle.turn_number
+
+
 #region Bangun
 
 func _build_top_bar(stage_title: String) -> void:
@@ -183,7 +190,8 @@ func _build_bottom_panel() -> void:
 	_ultimate_button.text = ""
 	_ultimate_button.pressed.connect(func() -> void: ultimate_pressed.emit())
 	add_child(_ultimate_button)
-	var ult_label := UIKit.small_label(tr("BATTLE_ULTIMATE_SHORT"), UIKit.COLOR_GOLD)
+	# Teks berupa kunci terjemahan supaya ikut berganti saat bahasa diubah.
+	var ult_label := UIKit.small_label("BATTLE_ULTIMATE_SHORT", UIKit.COLOR_GOLD)
 	ult_label.position = Vector2(562, PANEL_TOP + 47)
 	ult_label.size = Vector2(72, 10)
 	ult_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -193,7 +201,7 @@ func _build_bottom_panel() -> void:
 		var preview := roundi(battle.ultimate_base_damage * battle.player.ultimate_damage_multiplier * maxf(battle.player.moxie, 100.0) / 100.0)
 		return tr("BATTLE_ULTIMATE_TIP") % preview)
 
-	_end_turn_button = UIKit.button(tr("BATTLE_END_TURN"))
+	_end_turn_button = UIKit.button("BATTLE_END_TURN")
 	_end_turn_button.position = Vector2(562, PANEL_TOP + 66)
 	_end_turn_button.size = Vector2(72, 30)
 	_end_turn_button.pressed.connect(func() -> void: end_turn_pressed.emit())

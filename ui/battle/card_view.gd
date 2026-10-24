@@ -146,7 +146,8 @@ func refresh() -> void:
 	_accent = ACCENTS.get(family, Color.WHITE)
 	_frame.texture = data.frame
 	_icon.texture = data.icon
-	_title.text = tr(data.display_name + "_SHORT")
+	# Kunci terjemahan langsung, supaya judul ikut berganti saat bahasa diubah.
+	_title.text = data.display_name + "_SHORT"
 	_title.add_theme_color_override("font_color", _accent)
 	_rank.text = str(data.rank)
 

@@ -29,6 +29,8 @@ var _merge_buttons: Array[Button] = []
 var _rebuild_queued: bool = false
 var _pressed_view: CardView
 var _press_point := Vector2.ZERO
+## Posisi mouse terakhir dari event (dalam koordinat viewport).
+var _mouse := Vector2.ZERO
 var _dragging: bool = false
 var _drag_offset := Vector2.ZERO
 var _insert_marker: ColorRect
@@ -209,17 +211,23 @@ func _on_card_hover(view: CardView, hovering: bool) -> void:
 
 func _on_card_pressed(view: CardView) -> void:
 	_pressed_view = view
-	_press_point = get_global_mouse_position()
+	_press_point = _mouse
 	_dragging = false
 	_drag_offset = _press_point - view.global_position
 
 
 func _input(event: InputEvent) -> void:
+	# _input menerima event sebelum kartu (_gui_input), jadi posisi ini sudah
+	# terisi saat _on_card_pressed dipanggil. Koordinatnya koordinat viewport,
+	# sama dengan koordinat global HUD (CanvasLayer tanpa offset).
+	var mouse_event := event as InputEventMouse
+	if mouse_event != null:
+		_mouse = mouse_event.position
 	if _pressed_view == null:
 		return
 	var motion := event as InputEventMouseMotion
 	if motion != null:
-		var point := get_global_mouse_position()
+		var point := _mouse
 		if not _dragging and point.distance_to(_press_point) > DRAG_THRESHOLD:
 			if _pressed_view.card.is_locked():
 				locked_card_dragged.emit(_pressed_view)
@@ -235,7 +243,7 @@ func _input(event: InputEvent) -> void:
 		return
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed:
-		_release(get_global_mouse_position())
+		_release(_mouse)
 
 
 func _release(point: Vector2) -> void:
