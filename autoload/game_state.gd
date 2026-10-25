@@ -45,11 +45,24 @@ var blessings: Array[String] = []
 var blessed_stages: Array[int] = []
 #endregion
 
+## Tingkat kesulitan mode cerita. Mengubah Nyawa dan serangan Buto.
+enum Difficulty { SANTAI, NORMAL, SULIT }
+const DIFFICULTY_HP := [0.8, 1.0, 1.15]
+const DIFFICULTY_ATTACK := [0.85, 1.0, 1.15]
+
 #region Pengaturan
 var locale: String = "id"
 var music_volume: float = 0.8
 var sfx_volume: float = 0.9
 var fullscreen: bool = false
+## Kecepatan animasi battle: 1.0 atau 2.0.
+var battle_speed: float = 1.0
+## Petunjuk singkat saat mekanik baru pertama kali muncul.
+var hints_enabled: bool = true
+## Petunjuk yang sudah pernah tampil. Tidak ikut direset saat petualangan baru.
+var seen_hints: Array[String] = []
+## Tingkat kesulitan mode cerita (lihat Difficulty).
+var difficulty: int = Difficulty.NORMAL
 #endregion
 
 
@@ -168,6 +181,41 @@ func set_sfx_volume(value: float) -> void:
 	save_game()
 
 
+func set_battle_speed(value: float) -> void:
+	battle_speed = 2.0 if value >= 1.5 else 1.0
+	save_game()
+	settings_changed.emit()
+
+
+func set_hints_enabled(value: bool) -> void:
+	hints_enabled = value
+	save_game()
+
+
+## true kalau petunjuk ini perlu ditampilkan sekarang (belum pernah dan
+## petunjuk aktif). Langsung dicatat sebagai sudah tampil.
+func take_hint(id: String) -> bool:
+	if not hints_enabled or seen_hints.has(id):
+		return false
+	seen_hints.append(id)
+	save_game()
+	return true
+
+
+func set_difficulty(value: int) -> void:
+	difficulty = clampi(value, Difficulty.SANTAI, Difficulty.SULIT)
+	save_game()
+	settings_changed.emit()
+
+
+func difficulty_hp_multiplier() -> float:
+	return DIFFICULTY_HP[difficulty]
+
+
+func difficulty_attack_multiplier() -> float:
+	return DIFFICULTY_ATTACK[difficulty]
+
+
 func set_fullscreen(value: bool) -> void:
 	fullscreen = value
 	apply_settings()
@@ -214,6 +262,10 @@ func save_game() -> void:
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
 	cfg.set_value("settings", "fullscreen", fullscreen)
+	cfg.set_value("settings", "battle_speed", battle_speed)
+	cfg.set_value("settings", "hints_enabled", hints_enabled)
+	cfg.set_value("settings", "seen_hints", seen_hints)
+	cfg.set_value("settings", "difficulty", difficulty)
 	cfg.save(save_path)
 
 
@@ -240,6 +292,10 @@ func load_game() -> void:
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))
 	sfx_volume = float(cfg.get_value("settings", "sfx_volume", 0.9))
 	fullscreen = bool(cfg.get_value("settings", "fullscreen", false))
+	battle_speed = 2.0 if float(cfg.get_value("settings", "battle_speed", 1.0)) >= 1.5 else 1.0
+	hints_enabled = bool(cfg.get_value("settings", "hints_enabled", true))
+	seen_hints.assign(cfg.get_value("settings", "seen_hints", []))
+	difficulty = clampi(int(cfg.get_value("settings", "difficulty", Difficulty.NORMAL)), Difficulty.SANTAI, Difficulty.SULIT)
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:
 		_migrate_from_v1()

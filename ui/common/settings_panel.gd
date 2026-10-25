@@ -1,6 +1,7 @@
 class_name SettingsPanel
 extends Control
-## Panel pengaturan: bahasa, volume musik & efek suara, layar penuh.
+## Panel pengaturan: bahasa, volume musik & efek suara, layar penuh, tingkat
+## kesulitan cerita, kecepatan battle, dan petunjuk.
 ## Dipakai di menu utama dan di menu jeda battle.
 
 signal closed
@@ -13,6 +14,10 @@ var _full_label: Label
 var _close: Button
 var _lang_id: Button
 var _lang_en: Button
+# Teks yang ditulis ulang saat bahasa diganti: Label/Button -> kunci terjemahan.
+var _texts := {}
+var _difficulty_buttons: Array[Button] = []
+var _speed_buttons: Array[Button] = []
 
 
 func _ready() -> void:
@@ -63,17 +68,37 @@ func _ready() -> void:
 
 	_full_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_full_label)
-	var full := CheckBox.new()
-	full.button_pressed = GameState.fullscreen
-	full.focus_mode = Control.FOCUS_NONE
-	# CheckBox mewarisi gaya Button; tanpa ini ia tampil sebagai kotak lebar.
-	full.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
-		full.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	full.add_theme_icon_override("unchecked", _check_icon(false))
-	full.add_theme_icon_override("checked", _check_icon(true))
-	full.toggled.connect(func(on: bool) -> void: GameState.set_fullscreen(on))
-	grid.add_child(full)
+	grid.add_child(_checkbox(GameState.fullscreen, func(on: bool) -> void: GameState.set_fullscreen(on)))
+
+	grid.add_child(_text_label("SETTINGS_DIFFICULTY"))
+	var diff_row := UIKit.hbox(4)
+	for i: int in 3:
+		var b := UIKit.button("", 56, true)
+		b.toggle_mode = true
+		_texts[b] = ["DIFF_SANTAI", "DIFF_NORMAL", "DIFF_SULIT"][i]
+		b.pressed.connect(func() -> void:
+			GameState.set_difficulty(i)
+			AudioManager.play_sfx("click")
+			_refresh_texts())
+		diff_row.add_child(b)
+		_difficulty_buttons.append(b)
+	grid.add_child(diff_row)
+
+	grid.add_child(_text_label("SETTINGS_SPEED"))
+	var speed_row := UIKit.hbox(4)
+	for i: int in 2:
+		var b := UIKit.button("%dx" % (i + 1), 44, true)
+		b.toggle_mode = true
+		b.pressed.connect(func() -> void:
+			GameState.set_battle_speed(float(i + 1))
+			AudioManager.play_sfx("click")
+			_refresh_texts())
+		speed_row.add_child(b)
+		_speed_buttons.append(b)
+	grid.add_child(speed_row)
+
+	grid.add_child(_text_label("SETTINGS_HINTS"))
+	grid.add_child(_checkbox(GameState.hints_enabled, func(on: bool) -> void: GameState.set_hints_enabled(on)))
 
 	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -83,6 +108,26 @@ func _ready() -> void:
 		queue_free())
 	col.add_child(_close)
 	_refresh_texts()
+
+
+func _text_label(key: String) -> Label:
+	var l := UIKit.label("", &"BigLabel")
+	_texts[l] = key
+	return l
+
+
+func _checkbox(value: bool, on_toggle: Callable) -> CheckBox:
+	var box := CheckBox.new()
+	box.button_pressed = value
+	box.focus_mode = Control.FOCUS_NONE
+	# CheckBox mewarisi gaya Button; tanpa ini ia tampil sebagai kotak lebar.
+	box.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
+		box.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	box.add_theme_icon_override("unchecked", _check_icon(false))
+	box.add_theme_icon_override("checked", _check_icon(true))
+	box.toggled.connect(on_toggle)
+	return box
 
 
 ## Kotak centang 12x12 bergaya piksel: bingkai emas, isi emas saat dicentang.
@@ -124,6 +169,12 @@ func _refresh_texts() -> void:
 	_close.text = tr("BTN_CLOSE")
 	_lang_id.button_pressed = GameState.locale == "id"
 	_lang_en.button_pressed = GameState.locale == "en"
+	for node: Control in _texts:
+		node.set("text", tr(_texts[node]))
+	for i: int in _difficulty_buttons.size():
+		_difficulty_buttons[i].button_pressed = GameState.difficulty == i
+	for i: int in _speed_buttons.size():
+		_speed_buttons[i].button_pressed = is_equal_approx(GameState.battle_speed, float(i + 1))
 
 
 func _unhandled_input(event: InputEvent) -> void:

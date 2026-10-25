@@ -7,6 +7,8 @@ extends Control
 signal end_turn_pressed
 signal ultimate_pressed
 signal pause_pressed
+## Tombol kecepatan battle (1x/2x) ditekan.
+signal speed_pressed
 ## Elemen HUD disorot: tampilkan tooltip dengan teks ini di posisi layar itu.
 signal tooltip_requested(text: String, at: Vector2)
 signal tooltip_hidden
@@ -35,6 +37,7 @@ var _end_turn_button: Button
 var _banner: Label
 var _ap_box: Control
 var _ultimate_glow: Tween
+var _speed_button: Button
 
 
 func setup(battle_manager: BattleManager, stage_title: String) -> void:
@@ -61,6 +64,10 @@ func setup(battle_manager: BattleManager, stage_title: String) -> void:
 	_refresh_piles()
 	_refresh_chain()
 	refresh_buttons()
+
+
+func refresh_speed() -> void:
+	_speed_button.text = "%dx" % roundi(GameState.battle_speed)
 
 
 ## Menulis ulang teks yang dirakit dari beberapa bagian (dipanggil saat bahasa diganti).
@@ -107,6 +114,15 @@ func _build_top_bar(stage_title: String) -> void:
 	add_child(piles)
 	_hover_tip(deck_box, func() -> String: return tr("BATTLE_DECK_TIP") % battle.deck.get_draw_count())
 	_hover_tip(disc_box, func() -> String: return tr("BATTLE_DISCARD_TIP") % battle.deck.get_discard_count())
+
+	_speed_button = UIKit.button("")
+	_speed_button.position = Vector2(470, 0)
+	_speed_button.size = Vector2(26, 17)
+	_speed_button.add_theme_constant_override("content_margin_left", 2)
+	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
+	add_child(_speed_button)
+	_hover_tip(_speed_button, func() -> String: return tr("BATTLE_SPEED_TIP"))
+	refresh_speed()
 
 	var pause := UIKit.button("II")
 	pause.position = Vector2(616, 0)

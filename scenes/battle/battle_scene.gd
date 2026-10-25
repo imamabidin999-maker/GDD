@@ -49,6 +49,10 @@ var _current_action: BattleAction
 var _bala_spawned: int = 0
 # Dialog singkat saat Buto Hitam masuk fase 2, diputar begitu pemain bisa beraksi lagi.
 var _phase_dialog_pending: bool = false
+var _hints: HintToast
+# Skala waktu sebelum battle (tes otomatis mempercepatnya). Kecepatan battle
+# dikalikan ke sini dan dikembalikan saat scene ditutup.
+var _base_time_scale: float = 1.0
 
 
 func _ready() -> void:
@@ -67,9 +71,23 @@ func _ready() -> void:
 	GameState.settings_changed.connect(_on_settings_changed)
 	_hand_view.setup(_battle)
 	_hand_view.deck_point = Vector2(40, 330)
+	_hints = HintToast.new()
+	$HUD.add_child(_hints)
 	_connect_signals()
+	_base_time_scale = Engine.time_scale
+	_apply_speed()
+	tree_exiting.connect(func() -> void: Engine.time_scale = _base_time_scale)
 	AudioManager.play_music(_stage.music)
 	_begin.call_deferred()
+
+
+func _apply_speed() -> void:
+	Engine.time_scale = _base_time_scale * GameState.battle_speed
+
+
+func _toggle_speed() -> void:
+	AudioManager.play_sfx("click")
+	GameState.set_battle_speed(1.0 if GameState.battle_speed > 1.0 else 2.0)
 
 
 func _begin() -> void:
@@ -85,6 +103,11 @@ func _begin() -> void:
 		var view: UnitView = _enemy_views[enemy]
 		view.show_amuk(enemy.can_ngamuk)
 		view.set_amuk(enemy.amuk)
+		var buto := enemy as EnemyButo
+		if buto != null and buto.murka:
+			_hints.offer("murka")
+		if enemy.can_ngamuk:
+			_hints.offer("ngamuk")
 
 
 #region Persiapan
@@ -110,10 +133,25 @@ func _setup_enemies() -> void:
 ## EnemySpec. Dipakai di awal battle dan saat Buto Hitam memanggil Bala.
 func _create_buto(spec: EnemySpec, at: Vector2, layout_scale: float = 1.0) -> EnemyButo:
 	var buto := spec.create_buto()
+	_apply_difficulty(buto)
 	buto.position = at
 	_enemy_layer.add_child(buto)
 	_register_buto(buto, spec.sprite_scale * layout_scale)
 	return buto
+
+
+# Tingkat kesulitan cerita mengubah Nyawa dan serangan Buto (termasuk Bala
+# yang nanti dipanggil Buto Hitam).
+func _apply_difficulty(buto: EnemyButo) -> void:
+	var hp_mult := GameState.difficulty_hp_multiplier()
+	var atk_mult := GameState.difficulty_attack_multiplier()
+	if is_equal_approx(hp_mult, 1.0) and is_equal_approx(atk_mult, 1.0):
+		return
+	buto.health.max_hp = maxi(1, roundi(buto.health.max_hp * hp_mult))
+	buto.health.reset()
+	buto.attack_power = maxi(1, roundi(buto.attack_power * atk_mult))
+	buto.bala_hp = maxi(1, roundi(buto.bala_hp * hp_mult))
+	buto.bala_attack = maxi(1, roundi(buto.bala_attack * atk_mult))
 
 
 # Membuat UnitView untuk Buto yang sudah ada di _enemy_layer, lalu mencatatnya.
@@ -165,6 +203,8 @@ func _stage_title() -> String:
 ## berganti sendiri.
 func _on_settings_changed() -> void:
 	_hud.refresh_texts(_stage_title())
+	_hud.refresh_speed()
+	_apply_speed()
 	for enemy: EnemyUnit in _enemies:
 		var buto := enemy as EnemyButo
 		if buto != null:
@@ -185,7 +225,10 @@ func _connect_signals() -> void:
 	_battle.enemy_turn_started.connect(_on_enemy_turn_started)
 	_battle.enemy_ngamuk.connect(_on_enemy_ngamuk)
 	_battle.enemy_spawned.connect(_on_enemy_spawned)
-	_player.prayitna_changed.connect(func(on: bool) -> void: _hero_view.set_prayitna(on))
+	_player.prayitna_changed.connect(func(on: bool) -> void:
+		_hero_view.set_prayitna(on)
+		if on:
+			_hints.offer("prayitna"))
 	for enemy: EnemyUnit in _enemies:
 		_hook_enemy_signals(enemy)
 	_battle.player_input_ready.connect(_refresh_intents)
@@ -193,7 +236,10 @@ func _connect_signals() -> void:
 	_battle.battle_ended.connect(_on_battle_ended)
 	_hand.hand_changed.connect(_refresh_intents)
 	_player.ap_rejected.connect(_on_ap_rejected)
-	_player.poison_changed.connect(func(stacks: int) -> void: _hero_view.set_poison(stacks))
+	_player.poison_changed.connect(func(stacks: int) -> void:
+		_hero_view.set_poison(stacks)
+		if stacks > 0:
+			_hints.offer("lara"))
 	_player.evolutionary_chain_triggered.connect(_on_chain)
 	_player.overcharge_drained.connect(func(amount: float) -> void:
 		_float_text(tr("BATTLE_MOXIE_DRAINED") % roundi(amount), _hud.get_moxie_point() + Vector2(0, -6), UIKit.COLOR_PURPLE))
@@ -206,6 +252,7 @@ func _connect_signals() -> void:
 	_hud.end_turn_pressed.connect(_on_end_turn)
 	_hud.ultimate_pressed.connect(_on_ultimate)
 	_hud.pause_pressed.connect(_open_pause)
+	_hud.speed_pressed.connect(_toggle_speed)
 	_hud.tooltip_requested.connect(func(text: String, at: Vector2) -> void: _tooltip.show_text(text, at))
 	_hud.tooltip_hidden.connect(_tooltip.hide_tip)
 	_hand_view.card_hovered.connect(func(view: CardView) -> void:
@@ -438,6 +485,7 @@ func _on_enemy_spawned(enemy: EnemyUnit, summoner: EnemyUnit) -> void:
 	view.show_amuk(false)
 	view.set_targeted(buto == _battle.get_target())
 	view.play_spawn()
+	_hints.offer("bala")
 	if summoner != null and summoner.position.x < HITAM_BACK_X:
 		var t := summoner.create_tween()
 		t.tween_property(summoner, "position:x", HITAM_BACK_X, 0.5).set_trans(Tween.TRANS_SINE)
@@ -476,8 +524,17 @@ func _refresh_intents() -> void:
 	for enemy: EnemyUnit in _enemies:
 		var view: UnitView = _enemy_views[enemy]
 		if enemy.is_alive():
-			view.set_intents(enemy.get_intents(_battle))
+			var intents := enemy.get_intents(_battle)
+			view.set_intents(intents)
 			view.set_ngamuk_badge(enemy.get_action_count() >= 2)
+			for intent: EnemyIntent in intents:
+				match intent.kind:
+					EnemyIntent.Kind.LOCK:
+						_hints.offer("sirep")
+					EnemyIntent.Kind.POISON, EnemyIntent.Kind.PLAGUE_STRIKE:
+						_hints.offer("lara")
+					EnemyIntent.Kind.AJIAN_CHARGE, EnemyIntent.Kind.AJIAN:
+						_hints.offer("ajian")
 		else:
 			view.hide_intent()
 
@@ -506,6 +563,7 @@ func _on_phase_changed(phase: int, buto: EnemyButo) -> void:
 	_hud.show_banner(tr("BATTLE_PHASE2"), UIKit.COLOR_RED)
 	if buto.buto_type == EnemyButo.ButoType.HITAM:
 		_phase_dialog_pending = true
+		_hints.offer("pagebluk")
 
 
 func _on_enemy_hover(view: UnitView, hovering: bool) -> void:
