@@ -165,6 +165,10 @@ func _play_stage(n: int) -> bool:
 
 func _run() -> void:
 	await process_frame
+	# Mode headless memakai jendela palsu 64x64; dengan skala pecahan game
+	# ikut mengecil dan klik tiruan meleset. Pakai ukuran jendela sungguhan.
+	root.size = Vector2i(1280, 720)
+	await process_frame
 	Engine.time_scale = 8.0
 	var gs := root.get_node("GameState")
 	gs.set("save_path", "user://test_save.cfg")
