@@ -561,13 +561,19 @@ func _queue_action(action: BattleAction) -> void:
 	action_queued.emit(action)
 
 
-## Kalau target sekarang sudah mati (atau belum ada), pindah ke Buto pertama
-## yang masih hidup.
+## Kalau target sekarang sudah mati (atau belum ada), pindah ke Buto hidup
+## berikutnya dalam urutan, lalu memutar ke awal. Jadi setelah Bala pertama
+## tumbang, sasaran pindah ke Bala kedua, bukan kembali ke Buto Hitam.
 func _refresh_target() -> void:
 	if EnemyUnit.is_valid_alive(_target):
 		return
-	var living := get_living_enemies()
-	_set_target(living[0] if not living.is_empty() else null)
+	var start := _enemies.find(_target) + 1 if _target != null else 0
+	for i: int in _enemies.size():
+		var enemy := _enemies[(start + i) % _enemies.size()]
+		if EnemyUnit.is_valid_alive(enemy):
+			_set_target(enemy)
+			return
+	_set_target(null)
 
 
 func _set_target(enemy: EnemyUnit) -> void:

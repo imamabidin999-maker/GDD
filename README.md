@@ -52,7 +52,7 @@ Aturan singkatnya:
 
 ### Buto Hitam
 
-Setelah ancang-ancang, Buto Hitam melepas **Ajian Lebur Saketi** di giliran berikutnya (45 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 40 damage kepadanya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Setelah ancang-ancang, Buto Hitam melepas **Ajian Lebur Saketi** di giliran berikutnya (40 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 30 damage kepadanya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Di sisa nyawa separuh ia murka:
 
@@ -154,17 +154,22 @@ Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` mema
 
 ### Keseimbangan
 
-Hasil `simulate_balance.gd` (200 battle per stage). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, dan menyimpan Moxie. Bot "santai" memainkan kartu dari kiri saja.
+Hasil `simulate_balance.gd` (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya. Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Gebrakan begitu siap.
 
-| Stage | Lawan | Menang (cerdas) | Menang (santai) | Lama rata-rata |
+| Babak | Lawan | Menang (cerdas) | Menang (santai) | Lama rata-rata |
 |---|---|---|---|---|
-| 1 | Kuning | 100% | 100% | 3–4 turn |
-| 2 | Hijau + Kuning | 100% | 100% | 5–6 turn |
-| 3 | Merah + Hijau | 100% | 99% | 5–6 turn |
-| 4 | Putih + Merah | 98% | 93% | 7–8 turn |
-| 5 | Hitam | 89% | 68% | 9–11 turn |
+| 1 | Kuning | 100% | 100% | 3–4 giliran |
+| 2 | Hijau + Kuning | 100% | 100% | 5–6 giliran |
+| 3 | Merah + Hijau | 100% | 98% | 5–7 giliran |
+| 4 | Putih + Merah | 93% | 86% | 7–8 giliran |
+| 5 | Kuning Murka + Hijau | 98% | 80% | 7–8 giliran |
+| 6 | Hijau Murka + Merah | 97% | 72% | 5–6 giliran |
+| 7 | Merah Murka + Putih | 99% | 80% | 6–7 giliran |
+| 8 | Putih Murka + Kuning | 96% | 76% | 8–9 giliran |
+| 9 | Keempat Buto Murka | 90% | 71% | 6–7 giliran |
+| 10 | Buto Hitam | 95% | 58% | 12 giliran |
 
-Angka HP dan serangan Buto ada di `tools/generate_data.gd`.
+Babak 10 sengaja paling menuntut siasat: bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala, jadi angkanya jauh di bawah bot cerdas. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
 
 ## Kredit
 

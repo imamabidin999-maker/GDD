@@ -6,15 +6,15 @@
 [sub_resource type="Resource" id="Resource_k5ul6"]
 script = ExtResource("1_dr2wk")
 buto_type = 3
-max_hp = 290
-attack_power = 19
+max_hp = 270
+attack_power = 18
 murka = true
 can_ngamuk = true
 
 [sub_resource type="Resource" id="Resource_ok74u"]
 script = ExtResource("1_dr2wk")
-max_hp = 140
-attack_power = 14
+max_hp = 120
+attack_power = 12
 sprite_scale = 0.9
 
 [resource]

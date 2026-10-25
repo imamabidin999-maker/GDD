@@ -95,8 +95,8 @@ func _run() -> void:
 		f1.bm.request_end_turn()
 		hp_log.append(f1.hero.current_hp)
 	check(kinds == ["PLAGUE_STRIKE", "ATTACK", "AJIAN_CHARGE", "AJIAN", "PLAGUE_STRIKE"], "pola: %s" % [kinds])
-	# 10+2 Lara, 10+1 Lara, ancang-ancang, Ajian 25 + 3 Lara, 10 + Lara (2+2)
-	check(hp_log == [488, 477, 477, 449, 435], "Nyawa Eyang: %s" % [hp_log])
+	# 10+2 Lara, 10+1 Lara, ancang-ancang, Ajian 22 + 3 Lara, 10 + Lara (2+2)
+	check(hp_log == [488, 477, 477, 452, 438], "Nyawa Eyang: %s" % [hp_log])
 
 	print("[Membuyarkan Ajian dengan damage]")
 	var h2 := make_hitam(1000, 10)
@@ -112,12 +112,12 @@ func _run() -> void:
 	f2.bm.request_end_turn() # ancang-ancang
 	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 0, "damage sebelum ancang-ancang tidak mengisi bar Buyarkan")
 	var ia := h2.get_intent(f2.bm)
-	check(ia.kind == EnemyIntent.Kind.AJIAN and ia.damage == 25 and ia.extra == 3, "niat: Ajian Lebur Saketi 25 + 3 Lara")
-	h2.health.take_damage(39)
-	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 39 and broken[0] == 0, "39 damage belum cukup")
+	check(ia.kind == EnemyIntent.Kind.AJIAN and ia.damage == 22 and ia.extra == 3, "niat: Ajian Lebur Saketi 22 + 3 Lara")
+	h2.health.take_damage(29)
+	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 29 and broken[0] == 0, "29 damage belum cukup")
 	h2.health.take_damage(1)
-	check(not h2.is_ajian_charged() and broken[0] == 1, "40 damage membuyarkan Ajian")
-	check(progress_log.has(0) and progress_log.has(39) and progress_log[-1] == -1, "bar Buyarkan muncul, terisi, lalu disembunyikan")
+	check(not h2.is_ajian_charged() and broken[0] == 1, "30 damage membuyarkan Ajian")
+	check(progress_log.has(0) and progress_log.has(29) and progress_log[-1] == -1, "bar Buyarkan muncul, terisi, lalu disembunyikan")
 	check(h2.get_intent(f2.bm).kind == EnemyIntent.Kind.STAGGER, "niat berikutnya: terhuyung")
 	var hp_before := f2.hero.current_hp
 	var lara_before := f2.player.poison
@@ -127,6 +127,9 @@ func _run() -> void:
 
 	print("[Gebrakan Dongkrek membuyarkan Ajian]")
 	var h3 := make_hitam(1000, 10)
+	# Ambang tinggi supaya yang membuyarkan benar-benar bunyi Gebrakan, bukan
+	# damage-nya (damage Gebrakan sendiri biasanya sudah melewati ambang).
+	h3.ajian_break_threshold = 999
 	var f3 := make_fixture(h3, 500)
 	var ults: Array[UltimateAction] = []
 	f3.bm.action_presentation_started.connect(func(a: BattleAction) -> void:

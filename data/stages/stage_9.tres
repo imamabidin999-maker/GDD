@@ -5,14 +5,14 @@
 
 [sub_resource type="Resource" id="Resource_j8r6n"]
 script = ExtResource("1_2552q")
-max_hp = 70
+max_hp = 65
 murka = true
 can_ngamuk = true
 
 [sub_resource type="Resource" id="Resource_pulth"]
 script = ExtResource("1_2552q")
 buto_type = 1
-max_hp = 75
+max_hp = 70
 attack_power = 6
 murka = true
 can_ngamuk = true
@@ -21,7 +21,7 @@ start_amuk = 1
 [sub_resource type="Resource" id="Resource_p2t5o"]
 script = ExtResource("1_2552q")
 buto_type = 2
-max_hp = 85
+max_hp = 80
 murka = true
 can_ngamuk = true
 start_amuk = 2
@@ -29,7 +29,7 @@ start_amuk = 2
 [sub_resource type="Resource" id="Resource_lyv7r"]
 script = ExtResource("1_2552q")
 buto_type = 3
-max_hp = 80
+max_hp = 75
 murka = true
 can_ngamuk = true
 start_amuk = -1

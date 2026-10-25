@@ -272,3 +272,26 @@ Setiap tahap di-commit terpisah, dan tes harus lolos dulu sebelum lanjut.
 5. Jamu Kunyit Asam maksimal 3 kali.
 6. Nama tempat baru: Tegal Ilalang, Alas Jati Peteng, Kali Watu, Jembatan Pring, Pelataran Candi.
 7. Simpanan lama: babak 1–4 tetap selesai, sisanya dibuka ulang.
+
+---
+
+## 12. Catatan setelah dikerjakan
+
+Semua tahap sudah dikerjakan. Beberapa angka berubah dari perkiraan di atas setelah diuji dengan simulasi (`tools/simulate_balance.gd`, 200 battle per babak):
+
+| Hal | Rancangan | Akhirnya | Alasan |
+|---|---|---|---|
+| Ajian Lebur Saketi | ±45 damage | 40 damage (serangan × 2,2) | Bersama ambang yang lebih rendah, pemain santai lebih sering selamat |
+| Ambang membuyarkan Ajian | ±40 damage | 30 damage | Di 40, pemain yang tidak sengaja mengincar Ajian hampir tidak pernah membuyarkannya |
+| Bala | ±50 nyawa, serangan ±9 | 35 nyawa, serangan 6 | Dua Bala dengan angka awal membuat babak 10 terlalu berat (bot santai di bawah 25%) |
+| Buto Hitam | 520 nyawa | 500 nyawa | Menyesuaikan Bala yang lebih lemah |
+| Babak 5–9 | Lihat tabel babak | Lebih rendah sekitar 5–25% | Berkah v2 lebih banyak memberi efek battle daripada naik bintang, jadi deck di babak akhir sedikit lebih lemah |
+
+Angka final setiap babak ada di `tools/generate_data.gd`, hasil simulasinya di README bagian Keseimbangan.
+
+Tambahan kecil yang muncul saat pengerjaan:
+
+- Saat Bala muncul, sasaran otomatis pindah ke Bala pertama. Kalau sasaran tumbang, sasaran pindah ke lawan berikutnya, jadi setelah Bala pertama kalah sasaran langsung ke Bala kedua.
+- Bar Buyarkan diletakkan di atas bar nyawa Buto Hitam, karena di bawahnya sudah ada kartu di tangan.
+- Jamu Beras Kencur juga meniadakan +1 Lara dari Pagebluk Merata (karena 1 − 1 = 0). Ini sesuai bunyi berkahnya dan membuat berkah itu berguna di babak terakhir.
+- Gebrakan Dongkrek yang damage-nya sudah melewati ambang membuyarkan Ajian lewat damage, sebelum bunyinya sempat membuyarkan. Hasilnya sama saja bagi pemain.

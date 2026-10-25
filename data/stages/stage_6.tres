@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="Resource_ea4jj"]
 script = ExtResource("1_k5mlm")
 buto_type = 1
-max_hp = 160
+max_hp = 150
 attack_power = 11
 murka = true
 can_ngamuk = true
@@ -14,7 +14,7 @@ can_ngamuk = true
 [sub_resource type="Resource" id="Resource_rs24f"]
 script = ExtResource("1_k5mlm")
 buto_type = 2
-max_hp = 95
+max_hp = 90
 attack_power = 10
 sprite_scale = 0.9
 

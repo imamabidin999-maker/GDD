@@ -159,25 +159,25 @@ func _build_stages() -> void:
 	stages.append(s4)
 
 	# Bagian II: Buto Murka
-	var s5 := _stage(5, [_murka(K.KUNING, 170, 13), _enemy(K.HIJAU, 90, 10, 0.9)] as Array[EnemySpec],
+	var s5 := _stage(5, [_murka(K.KUNING, 165, 12), _enemy(K.HIJAU, 85, 10, 0.9)] as Array[EnemySpec],
 		Vector2(280, 192), Color(1.0, 0.95, 0.8), 4, 2)
 	s5.intro_dialog = _with_speakers(s5.intro_dialog, ["narator", "buto_kuning", "roro_ayu", "eyang"])
 	s5.victory_dialog = _with_speakers(s5.victory_dialog, ["eyang", "roro_ayu"])
 	stages.append(s5)
 
-	var s6 := _stage(6, [_murka(K.HIJAU, 160, 11), _enemy(K.MERAH, 95, 10, 0.9)] as Array[EnemySpec],
+	var s6 := _stage(6, [_murka(K.HIJAU, 150, 11), _enemy(K.MERAH, 90, 10, 0.9)] as Array[EnemySpec],
 		Vector2(176, 184), Color(0.74, 0.92, 0.8), 3, 2)
 	s6.intro_dialog = _with_speakers(s6.intro_dialog, ["narator", "buto_hijau", "eyang"])
 	s6.victory_dialog = _with_speakers(s6.victory_dialog, ["narator", "eyang"])
 	stages.append(s6)
 
-	var s7 := _stage(7, [_murka(K.MERAH, 210, 12), _enemy(K.PUTIH, 100, 10, 0.9)] as Array[EnemySpec],
+	var s7 := _stage(7, [_murka(K.MERAH, 195, 10), _enemy(K.PUTIH, 90, 9, 0.9)] as Array[EnemySpec],
 		Vector2(104, 128), Color(0.8, 0.9, 1.06), 3, 2)
 	s7.intro_dialog = _with_speakers(s7.intro_dialog, ["narator", "buto_merah", "eyang"])
 	s7.victory_dialog = _with_speakers(s7.victory_dialog, ["eyang", "narator"])
 	stages.append(s7)
 
-	var s8 := _stage(8, [_murka(K.PUTIH, 290, 19), _enemy(K.KUNING, 140, 14, 0.9)] as Array[EnemySpec],
+	var s8 := _stage(8, [_murka(K.PUTIH, 270, 18), _enemy(K.KUNING, 120, 12, 0.9)] as Array[EnemySpec],
 		Vector2(196, 112), Color(0.9, 0.95, 1.04), 3, 2)
 	s8.intro_dialog = _with_speakers(s8.intro_dialog, ["narator", "buto_putih", "eyang"])
 	s8.victory_dialog = _with_speakers(s8.victory_dialog, ["roro_ayu", "eyang"])
@@ -186,10 +186,10 @@ func _build_stages() -> void:
 	# Bagian III: Candi Pagebluk
 	# Titik Amuk awal dibedakan supaya tidak ada dua Buto yang Ngamuk di giliran yang sama.
 	var s9 := _stage(9, [
-		_murka(K.KUNING, 70, 7, 1.0, 0),
-		_murka(K.HIJAU, 75, 6, 1.0, 1),
-		_murka(K.MERAH, 85, 7, 1.0, 2),
-		_murka(K.PUTIH, 80, 7, 1.0, -1),
+		_murka(K.KUNING, 65, 7, 1.0, 0),
+		_murka(K.HIJAU, 70, 6, 1.0, 1),
+		_murka(K.MERAH, 80, 7, 1.0, 2),
+		_murka(K.PUTIH, 75, 7, 1.0, -1),
 	] as Array[EnemySpec], Vector2(392, 140), Color(1.0, 0.84, 0.84), 4, 2)
 	s9.intro_dialog = _with_speakers(s9.intro_dialog, ["narator", "buto_merah", "buto_kuning", "eyang"])
 	s9.victory_dialog = _with_speakers(s9.victory_dialog, ["narator", "buto_hitam"])

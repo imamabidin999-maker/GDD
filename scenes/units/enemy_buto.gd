@@ -86,13 +86,13 @@ signal bala_shield_changed(active: bool)
 ## Fase 2 dimulai saat HP <= rasio ini dikali max HP.
 @export_range(0.05, 0.95, 0.05) var phase_two_hp_ratio: float = 0.5
 ## Ajian Lebur Saketi = attack_power × pengali ini.
-@export var ajian_multiplier: float = 2.5
+@export var ajian_multiplier: float = 2.2
 ## Lara dari Ajian Lebur Saketi.
 @export_range(0, 10) var ajian_poison: int = 3
 ## Lara dari Gebug Pagebluk.
 @export_range(0, 10) var plague_poison: int = 2
 ## Total damage dalam satu giliran pemain yang membuyarkan Ajian.
-@export var ajian_break_threshold: int = 40
+@export var ajian_break_threshold: int = 30
 ## Jumlah Bala yang dipanggil di fase 2 (warnanya acak dan berbeda).
 @export_range(1, 4) var bala_count: int = 2
 @export var bala_hp: int = 35
