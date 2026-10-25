@@ -21,6 +21,15 @@ func _initialize() -> void:
 	_run()
 
 
+# Skrip tes dikompilasi sebelum autoload (AudioManager, GameState) terdaftar.
+# Menyebut kelas seperti DialogBox langsung akan ikut mengompilasinya terlalu
+# dini dan gagal (Godot 4.7 tidak mengulang kompilasi itu), jadi kelasnya
+# dicek lewat nama saja.
+func _is_class(node: Node, class_title: String) -> bool:
+	var script := node.get_script() as Script
+	return script != null and script.get_global_name() == class_title
+
+
 func _wait(sec: float) -> void:
 	await create_timer(sec).timeout
 
@@ -74,7 +83,7 @@ func clear_dialogs(max_clicks: int = 40) -> void:
 	for i: int in max_clicks:
 		var box: Node = null
 		for n: Node in current_scene.find_children("*", "", true, false):
-			if n is DialogBox:
+			if _is_class(n, "DialogBox"):
 				box = n
 		if box == null:
 			return
@@ -149,7 +158,7 @@ func _play_stage(n: int) -> bool:
 			if n < 5:
 				var rp: Node = null
 				for c: Node in current_scene.find_children("*", "", true, false):
-					if c is RewardPanel:
+					if _is_class(c, "RewardPanel"):
 						rp = c
 				var choices := rp.find_children("*", "Button", true, false)
 				await click((choices[0] as Button).get_global_rect().get_center())

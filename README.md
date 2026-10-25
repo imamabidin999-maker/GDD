@@ -6,13 +6,13 @@ Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: deck 15 kartu, AP t
 
 ## Cara menjalankan
 
-1. Unduh **Godot 4.3** versi standar (bukan .NET) dari <https://godotengine.org/download/archive/4.3-stable/>.
+1. Unduh **Godot 4.7** versi standar (bukan .NET) dari <https://godotengine.org/download/>. Versi dari Steam juga bisa. Project ini diuji dengan Godot 4.7.2.
 2. Buka Godot, pilih **Import**, lalu arahkan ke file `project.godot` di folder ini.
 3. Tekan **F5** (atau tombol ▶ di kanan atas) untuk mulai bermain.
 
 Pertama kali dibuka, Godot butuh beberapa detik untuk mengimpor gambar dan suara. Itu normal.
 
-**Memakai Godot 4.4 atau lebih baru?** Di versi itu game berjalan *di dalam* editor (tab **Game**), sehingga pilihan Layar Penuh tidak berpengaruh. Supaya game terbuka di jendelanya sendiri: di tab Game, klik ikon **⋮** paling kanan di toolbar, hilangkan centang **Embed Game on Next Play**, lalu jalankan lagi. Di Mac, tombol jalankan adalah **⌘B** (F5 di Mac perlu ditekan bersama tombol fn).
+**Game terlihat kecil atau Layar Penuh tidak berfungsi saat dijalankan dari editor?** Sejak Godot 4.4, game berjalan *di dalam* editor (tab **Game**), sehingga pilihan Layar Penuh tidak berpengaruh. Supaya game terbuka di jendelanya sendiri: di tab Game, klik ikon **⋮** paling kanan di toolbar, hilangkan centang **Embed Game on Next Play**, lalu jalankan lagi. Di Mac, tombol jalankan adalah **⌘B** (F5 di Mac perlu ditekan bersama tombol fn).
 
 ## Cara bermain
 
@@ -122,5 +122,5 @@ Angka HP dan serangan Buto ada di `tools/generate_data.gd`.
 
 - Desain karakter, kartu, dan latar: pemilik proyek (lihat `docs/desain_asli/`)
 - Font: Tiny5 dan Silkscreen, lisensi SIL Open Font License (`assets/fonts/OFL.txt`)
-- Mesin: Godot Engine 4.3
+- Mesin: Godot Engine 4.7
 - Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur
