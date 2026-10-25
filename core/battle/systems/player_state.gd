@@ -103,6 +103,9 @@ var poison: int = 0:
 		if changed:
 			poison_changed.emit(poison)
 
+## Pagebluk Merata (Buto Hitam fase 2): Lara tidak berkurang setelah bekerja.
+var poison_decay_paused: bool = false
+
 var _played_this_turn: Array[CardInstance] = []
 var _chain_triggered_this_turn: bool = false
 
@@ -115,6 +118,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 	evolution_stacks = 0
 	moxie = starting_moxie
 	poison = 0
+	poison_decay_paused = false
 	prayitna = false
 	start_turn()
 
@@ -173,10 +177,11 @@ func add_poison(stacks: int) -> void:
 		poison += stacks
 
 
-## Mengembalikan damage racun turn ini, lalu mengurangi tumpukan satu.
+## Mengembalikan damage racun turn ini, lalu mengurangi tumpukan satu
+## (kecuali selama Pagebluk Merata).
 func tick_poison() -> int:
 	var damage := poison
-	if poison > 0:
+	if poison > 0 and not poison_decay_paused:
 		poison -= 1
 	return damage
 

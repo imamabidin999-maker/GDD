@@ -16,6 +16,10 @@ const ENEMY_SLOTS := {
 }
 ## Empat Buto sekaligus (babak 9) sedikit diperkecil supaya muat.
 const FOUR_SLOT_SCALE := 0.82
+## Bala muncul di depan Buto Hitam, yang mundur ke HITAM_BACK_X.
+const BALA_SLOTS: Array[Vector2] = [Vector2(318, 236), Vector2(404, 236), Vector2(362, 250)]
+const BALA_SCALE := 0.8
+const HITAM_BACK_X := 528.0
 const HIT_DELAY := 0.17
 
 @onready var _battle: BattleManager = $Systems/BattleManager
@@ -42,6 +46,9 @@ var _battle_over: bool = false
 var _last_block: int = 0
 # Aksi yang sedang di-resolve, supaya angka damage tahu sumbernya (misalnya racun).
 var _current_action: BattleAction
+var _bala_spawned: int = 0
+# Dialog singkat saat Buto Hitam masuk fase 2, diputar begitu pemain bisa beraksi lagi.
+var _phase_dialog_pending: bool = false
 
 
 func _ready() -> void:
@@ -102,32 +109,50 @@ func _setup_enemies() -> void:
 ## EnemySpec. Dipakai di awal battle dan saat Buto Hitam memanggil Bala.
 func _create_buto(spec: EnemySpec, at: Vector2, layout_scale: float = 1.0) -> EnemyButo:
 	var buto := spec.create_buto()
-	var health := buto.health
-	buto.name = "Buto%s%d" % [String(EnemyButo.ButoType.keys()[spec.buto_type]).capitalize(), _enemies.size()]
-	buto.display_name = _buto_name(buto)
 	buto.position = at
 	_enemy_layer.add_child(buto)
+	_register_buto(buto, spec.sprite_scale * layout_scale)
+	return buto
 
+
+# Membuat UnitView untuk Buto yang sudah ada di _enemy_layer, lalu mencatatnya.
+func _register_buto(buto: EnemyButo, view_scale: float) -> UnitView:
+	buto.name = "Buto%s%d" % [String(EnemyButo.ButoType.keys()[buto.buto_type]).capitalize(), _enemies.size()]
+	buto.display_name = _buto_name(buto)
 	var key := buto.get_type_key()
 	var idle: Texture2D = load("res://assets/sprites/buto/buto_%s_idle.png" % key)
 	var attacks: Array[Texture2D] = [load("res://assets/sprites/buto/buto_%s_attack.png" % key)]
 	var view := UnitView.new()
 	buto.add_child(view)
-	view.setup(idle, attacks, health, true, spec.sprite_scale * layout_scale)
+	view.setup(idle, attacks, buto.health, true, view_scale)
 	view.set_murka(buto.murka)
+	view.set_shadow(buto.is_bala)
 	view.clicked.connect(_on_enemy_clicked)
 	view.hover_changed.connect(_on_enemy_hover)
 	_enemy_views[buto] = view
 	_enemies.append(buto)
 	buto.phase_changed.connect(_on_phase_changed.bind(buto))
-	GameState.mark_buto_seen(key)
+	buto.ajian_progress_changed.connect(view.set_ajian_progress)
+	buto.ajian_broken.connect(_on_ajian_broken.bind(buto))
+	buto.bala_shield_changed.connect(view.set_bala_shield)
+	GameState.mark_buto_seen("bala" if buto.is_bala else key)
 	if buto.murka:
 		GameState.mark_buto_seen("murka")
-	return buto
+	return view
+
+
+# Sambungan signal per Buto: titik Amuk dan angka damage.
+func _hook_enemy_signals(enemy: EnemyUnit) -> void:
+	var view: UnitView = _enemy_views[enemy]
+	enemy.amuk_changed.connect(view.set_amuk)
+	enemy.health.damaged.connect(_on_unit_damaged.bind(enemy.health))
+	enemy.health.damage_blocked.connect(_on_unit_blocked.bind(enemy.health))
 
 
 func _buto_name(buto: EnemyButo) -> String:
 	var base := tr("BUTO_" + buto.get_type_key().to_upper())
+	if buto.is_bala:
+		return tr("BALA_FMT") % base.trim_prefix("Buto ")
 	return tr("BUTO_MURKA_FMT") % base if buto.murka else base
 
 
@@ -158,11 +183,12 @@ func _connect_signals() -> void:
 	_battle.turn_started.connect(_on_turn_started)
 	_battle.enemy_turn_started.connect(_on_enemy_turn_started)
 	_battle.enemy_ngamuk.connect(_on_enemy_ngamuk)
+	_battle.enemy_spawned.connect(_on_enemy_spawned)
 	_player.prayitna_changed.connect(func(on: bool) -> void: _hero_view.set_prayitna(on))
 	for enemy: EnemyUnit in _enemies:
-		var view: UnitView = _enemy_views[enemy]
-		enemy.amuk_changed.connect(view.set_amuk)
+		_hook_enemy_signals(enemy)
 	_battle.player_input_ready.connect(_refresh_intents)
+	_battle.player_input_ready.connect(_play_phase_dialog)
 	_battle.battle_ended.connect(_on_battle_ended)
 	_hand.hand_changed.connect(_refresh_intents)
 	_player.ap_rejected.connect(_on_ap_rejected)
@@ -172,9 +198,8 @@ func _connect_signals() -> void:
 		_float_text(tr("BATTLE_MOXIE_DRAINED") % roundi(amount), _hud.get_moxie_point() + Vector2(0, -6), UIKit.COLOR_PURPLE))
 	_player.ultimate_ready.connect(func() -> void: AudioManager.play_sfx("moxie"))
 
-	for health: HealthComponent in _all_healths():
-		health.damaged.connect(_on_unit_damaged.bind(health))
-		health.damage_blocked.connect(_on_unit_blocked.bind(health))
+	_hero_health.damaged.connect(_on_unit_damaged.bind(_hero_health))
+	_hero_health.damage_blocked.connect(_on_unit_blocked.bind(_hero_health))
 	_hero_health.block_changed.connect(_on_hero_block_changed)
 
 	_hud.end_turn_pressed.connect(_on_end_turn)
@@ -189,13 +214,6 @@ func _connect_signals() -> void:
 	_hand_view.sirep_card_touched.connect(func(view: CardView) -> void:
 		AudioManager.play_sfx("error")
 		_float_text(tr("BATTLE_CARD_LOCKED"), view.global_position + Vector2(38, -4), UIKit.COLOR_GOLD))
-
-
-func _all_healths() -> Array[HealthComponent]:
-	var list: Array[HealthComponent] = [_hero_health]
-	for enemy: EnemyUnit in _enemies:
-		list.append(enemy.health)
-	return list
 
 
 func _view_of(health: HealthComponent) -> UnitView:
@@ -314,11 +332,6 @@ func _present_skill(action: ButoSkillAction) -> void:
 			AudioManager.play_sfx("lock")
 			if action.succeeded:
 				_float_text(tr("BATTLE_CARD_LOCKED_BY"), view.get_top_point(), UIKit.COLOR_GOLD)
-		EnemyButo.Skill.FORCE_SHUFFLE:
-			view.play_attack(true)
-			AudioManager.play_sfx("shuffle")
-			_shake_world(3.0)
-			_float_text(tr("BATTLE_HAND_SHUFFLED"), Vector2(320, 236), UIKit.COLOR_PURPLE)
 		EnemyButo.Skill.POISON_SPIT:
 			view.play_attack()
 			AudioManager.play_sfx("poison")
@@ -330,6 +343,32 @@ func _present_skill(action: ButoSkillAction) -> void:
 			view.play_attack(true)
 			AudioManager.play_sfx("hit_heavy")
 			_shake_world(4.0)
+		EnemyButo.Skill.PLAGUE_STRIKE:
+			view.play_attack()
+			AudioManager.play_sfx("bedug", 0.08)
+			AudioManager.play_sfx("poison", 0.05, -4.0)
+		EnemyButo.Skill.AJIAN_CHARGE:
+			view.play_charge()
+			AudioManager.play_sfx("gong", 0.0, -4.0)
+			_float_text(tr("BATTLE_AJIAN_CHARGING"), view.get_top_point(), Color(1.0, 0.45, 0.6), true)
+		EnemyButo.Skill.AJIAN:
+			view.play_attack(true)
+			AudioManager.play_sfx("hit_heavy")
+			_screen_flash(Color(0.85, 0.15, 0.4, 0.45))
+			_shake_world(7.0)
+			_hud.show_banner(tr("BATTLE_AJIAN"), UIKit.COLOR_RED)
+		EnemyButo.Skill.SUMMON_BALA:
+			view.play_glow(Color(0.6, 0.4, 0.9))
+			AudioManager.play_sfx("gong", 0.0, -2.0)
+			_hud.show_banner(tr("BATTLE_SUMMON_BALA"), UIKit.COLOR_PURPLE)
+		EnemyButo.Skill.STAGGER:
+			view.play_hit(Color(1.0, 0.95, 0.6))
+			AudioManager.play_sfx("korek")
+			_float_text(tr("BATTLE_STAGGERED"), view.get_top_point(), UIKit.COLOR_GOLD, true)
+		EnemyButo.Skill.PAGEBLUK:
+			AudioManager.play_sfx("poison", 0.05, -4.0)
+			_hero_view.play_glow(Color(0.6, 0.35, 0.85))
+			_float_text(tr("BATTLE_PAGEBLUK") % action.buto.pagebluk_poison, _hero_view.get_top_point() + Vector2(0, 10), UIKit.COLOR_PURPLE)
 
 
 func _on_unit_damaged(amount: int, health: HealthComponent) -> void:
@@ -382,6 +421,41 @@ func _on_enemy_ngamuk(enemy: EnemyUnit) -> void:
 	_float_text(tr("BATTLE_NGAMUK"), view.get_top_point() + Vector2(0, -2), UIKit.COLOR_RED, true)
 
 
+func _on_enemy_spawned(enemy: EnemyUnit, summoner: EnemyUnit) -> void:
+	var buto := enemy as EnemyButo
+	if buto == null:
+		return
+	buto.position = BALA_SLOTS[_bala_spawned % BALA_SLOTS.size()]
+	_bala_spawned += 1
+	var view := _register_buto(buto, BALA_SCALE)
+	_hook_enemy_signals(buto)
+	view.show_amuk(false)
+	view.set_targeted(buto == _battle.get_target())
+	view.play_spawn()
+	if summoner != null and summoner.position.x < HITAM_BACK_X:
+		var t := summoner.create_tween()
+		t.tween_property(summoner, "position:x", HITAM_BACK_X, 0.5).set_trans(Tween.TRANS_SINE)
+
+
+func _on_ajian_broken(buto: EnemyButo) -> void:
+	var view: UnitView = _enemy_views.get(buto)
+	if view == null:
+		return
+	view.play_hit(Color(1.0, 0.9, 0.5))
+	AudioManager.play_sfx("gong", 0.0, 3.0)
+	_shake_world(3.0)
+	_float_text(tr("BATTLE_AJIAN_BROKEN"), view.get_top_point() + Vector2(0, 10), UIKit.COLOR_GOLD, true)
+	_refresh_intents()
+
+
+func _play_phase_dialog() -> void:
+	if not _phase_dialog_pending or _battle_over or _overlay.get_child_count() > 0:
+		return
+	_phase_dialog_pending = false
+	_tooltip.hide_tip()
+	await _play_dialog(PackedStringArray(["buto_hitam|S10_PHASE2_1", "eyang|S10_PHASE2_2"]))
+
+
 func _on_enemy_turn_started() -> void:
 	_enemy_phase = true
 	_tooltip.hide_tip()
@@ -397,6 +471,7 @@ func _refresh_intents() -> void:
 		var view: UnitView = _enemy_views[enemy]
 		if enemy.is_alive():
 			view.set_intents(enemy.get_intents(_battle))
+			view.set_ngamuk_badge(enemy.get_action_count() >= 2)
 		else:
 			view.hide_intent()
 
@@ -418,9 +493,13 @@ func _on_phase_changed(phase: int, buto: EnemyButo) -> void:
 	var view: UnitView = _enemy_views.get(buto)
 	if view != null:
 		view.play_glow(Color(1.0, 0.25, 0.2))
+		view.show_amuk(buto.can_ngamuk)
+		view.set_amuk(buto.amuk)
 	AudioManager.play_sfx("gong", 0.0, 2.0)
 	_shake_world(5.0)
 	_hud.show_banner(tr("BATTLE_PHASE2"), UIKit.COLOR_RED)
+	if buto.buto_type == EnemyButo.ButoType.HITAM:
+		_phase_dialog_pending = true
 
 
 func _on_enemy_hover(view: UnitView, hovering: bool) -> void:
@@ -444,6 +523,12 @@ func _on_enemy_hover(view: UnitView, hovering: bool) -> void:
 				lines.append(_intent_text(intents[0]))
 		if enemy.can_ngamuk:
 			lines.append("[color=#ffb070]%s[/color]" % (tr("AMUK_TIP") % [clampi(enemy.amuk, 0, EnemyUnit.AMUK_MAX), EnemyUnit.AMUK_MAX]))
+		if buto != null and buto.is_ajian_charged():
+			lines.append("[color=#ffd36e]%s[/color]" % (tr("AJIAN_BREAK_TIP") % [buto.ajian_break_threshold, buto.get_ajian_progress(), buto.ajian_break_threshold]))
+		if buto != null and not buto.get_living_bala().is_empty():
+			lines.append("[color=#c8a8ff]%s[/color]" % tr("BALA_SHIELD_TIP"))
+		if buto != null and buto.is_bala:
+			lines.append("[color=#9aa0b8]%s[/color]" % tr("BALA_TIP"))
 		_tooltip.show_text("\n".join(lines), view.get_top_point() + Vector2(10, 20))
 
 
@@ -468,8 +553,16 @@ func _intent_text(intent: EnemyIntent) -> String:
 			return tr("INTENT_DRAIN_MURKA" if intent.murka else "INTENT_DRAIN") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.LOCK:
 			return tr("INTENT_LOCK") % intent.extra
-		EnemyIntent.Kind.SHUFFLE:
-			return tr("INTENT_SHUFFLE") % intent.damage
+		EnemyIntent.Kind.PLAGUE_STRIKE:
+			return tr("INTENT_PLAGUE") % [intent.damage, intent.extra]
+		EnemyIntent.Kind.AJIAN_CHARGE:
+			return tr("INTENT_AJIAN_CHARGE") % intent.extra
+		EnemyIntent.Kind.AJIAN:
+			return tr("INTENT_AJIAN") % [intent.damage, intent.extra]
+		EnemyIntent.Kind.SUMMON:
+			return tr("INTENT_SUMMON") % intent.extra
+		EnemyIntent.Kind.STAGGER:
+			return tr("INTENT_STAGGER")
 		EnemyIntent.Kind.POISON:
 			return tr("INTENT_POISON") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.CHARGE:

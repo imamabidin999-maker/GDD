@@ -22,10 +22,14 @@ const INTENT_ICONS := {
 	EnemyIntent.Kind.ATTACK: preload("res://assets/ui/mini_attack.png"),
 	EnemyIntent.Kind.DRAIN: preload("res://assets/ui/mini_drain.png"),
 	EnemyIntent.Kind.LOCK: preload("res://assets/ui/mini_lock.png"),
-	EnemyIntent.Kind.SHUFFLE: preload("res://assets/ui/mini_shuffle.png"),
 	EnemyIntent.Kind.POISON: preload("res://assets/ui/mini_poison.png"),
 	EnemyIntent.Kind.CHARGE: preload("res://assets/ui/mini_charge.png"),
 	EnemyIntent.Kind.HEAVY: preload("res://assets/ui/mini_heavy.png"),
+	EnemyIntent.Kind.PLAGUE_STRIKE: preload("res://assets/ui/mini_plague.png"),
+	EnemyIntent.Kind.AJIAN_CHARGE: preload("res://assets/ui/mini_ajian.png"),
+	EnemyIntent.Kind.AJIAN: preload("res://assets/ui/mini_ajian.png"),
+	EnemyIntent.Kind.SUMMON: preload("res://assets/ui/mini_summon.png"),
+	EnemyIntent.Kind.STAGGER: preload("res://assets/ui/mini_stagger.png"),
 }
 
 var health: HealthComponent
@@ -55,6 +59,10 @@ var _amuk_row: HBoxContainer
 var _amuk_dots: Array[TextureRect] = []
 var _amuk_pulse: Tween
 var _prayitna_icon: TextureRect
+var _ajian_bar: ProgressBar
+var _ajian_label: Label
+var _bala_shield: TextureRect
+var _bala_tween: Tween
 var _marker: Polygon2D
 var _click_area: Control
 var _home := Vector2.ZERO
@@ -180,6 +188,38 @@ func _build() -> void:
 	_amuk_row.visible = false
 	add_child(_amuk_row)
 
+	# Bar Buyarkan (Buto Hitam saat menyiapkan Ajian), tepat di atas bar nyawa.
+	# Di bawahnya sudah ada kartu di tangan.
+	_ajian_bar = ProgressBar.new()
+	_ajian_bar.show_percentage = false
+	_ajian_bar.size = Vector2(_bar_width, 8)
+	_ajian_bar.position = Vector2(-_bar_width * 0.5, -7)
+	_ajian_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ajian_bg := StyleBoxFlat.new()
+	ajian_bg.bg_color = Color(0.12, 0.06, 0.14)
+	ajian_bg.set_border_width_all(1)
+	ajian_bg.border_color = Color(0.84, 0.19, 0.38)
+	_ajian_bar.add_theme_stylebox_override("background", ajian_bg)
+	var ajian_fill := StyleBoxFlat.new()
+	ajian_fill.bg_color = Color(0.72, 0.5, 0.16)
+	_ajian_bar.add_theme_stylebox_override("fill", ajian_fill)
+	_ajian_bar.visible = false
+	add_child(_ajian_bar)
+	_ajian_label = UIKit.small_label("", Color(1.0, 0.9, 0.7))
+	_ajian_label.size = Vector2(_bar_width + 40, 8)
+	_ajian_label.position = Vector2(-_bar_width * 0.5 - 20, -8)
+	_ajian_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ajian_label.add_theme_color_override("font_outline_color", Color(0.03, 0.03, 0.06))
+	_ajian_label.add_theme_constant_override("outline_size", 2)
+	_ajian_label.visible = false
+	add_child(_ajian_label)
+
+	# Perisai Bala di samping niat: Buto ini hanya menerima separuh damage.
+	_bala_shield = UIKit.icon(preload("res://assets/ui/mini_bala_shield.png"))
+	_bala_shield.position = Vector2(-36, top - 17)
+	_bala_shield.visible = false
+	add_child(_bala_shield)
+
 	# Penanda target: segitiga emas yang naik-turun.
 	_marker = Polygon2D.new()
 	_marker.polygon = PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(0, 6)])
@@ -256,6 +296,74 @@ func set_amuk(value: int) -> void:
 		_amuk_pulse.tween_property(_amuk_row, "modulate", Color.WHITE, 0.35)
 
 
+## Lencana "x2" mengikuti jumlah aksi sebenarnya. Buto Hitam bisa menunda
+## Ngamuk walau Amuk-nya penuh.
+func set_ngamuk_badge(on: bool) -> void:
+	if _dead or not _amuk_row.visible:
+		return
+	_ngamuk_badge.visible = on
+
+
+## Bar Buyarkan. progress < 0 menyembunyikannya.
+func set_ajian_progress(progress: int, threshold: int) -> void:
+	var on := progress >= 0 and not _dead
+	_ajian_bar.visible = on
+	_ajian_label.visible = on
+	if not on:
+		return
+	_ajian_bar.max_value = threshold
+	var t := create_tween()
+	t.tween_property(_ajian_bar, "value", float(mini(progress, threshold)), 0.2)
+	_ajian_label.text = tr("AJIAN_BREAK_BAR") % [mini(progress, threshold), threshold]
+
+
+func set_bala_shield(on: bool) -> void:
+	on = on and not _dead
+	_bala_shield.visible = on
+	if _bala_tween != null:
+		_bala_tween.kill()
+		_bala_tween = null
+	if on:
+		_bala_tween = _bala_shield.create_tween().set_loops()
+		_bala_tween.tween_property(_bala_shield, "modulate", Color(1.5, 1.3, 1.7), 0.5)
+		_bala_tween.tween_property(_bala_shield, "modulate", Color.WHITE, 0.5)
+
+
+## Wujud Bala: gelap keunguan dan tembus pandang.
+func set_shadow(on: bool) -> void:
+	if not on:
+		return
+	_sprite.modulate = Color(0.42, 0.32, 0.6, 0.8)
+	_material.set_shader_parameter("outline_color", Color(0.6, 0.4, 0.9, 0.55))
+
+
+## Muncul perlahan dari kepulan asap (Bala yang baru dipanggil).
+func play_spawn() -> void:
+	var target := _sprite.modulate
+	_sprite.modulate.a = 0.0
+	var t := create_tween()
+	t.tween_property(_sprite, "modulate:a", target.a, 0.6)
+	var smoke := CPUParticles2D.new()
+	smoke.amount = 16
+	smoke.lifetime = 0.8
+	smoke.one_shot = true
+	smoke.explosiveness = 0.85
+	smoke.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	smoke.emission_rect_extents = Vector2(36, 40) * unit_scale
+	smoke.position = Vector2(0, -60) * unit_scale
+	smoke.direction = Vector2(0, -1)
+	smoke.spread = 60.0
+	smoke.gravity = Vector2.ZERO
+	smoke.initial_velocity_min = 8.0
+	smoke.initial_velocity_max = 20.0
+	smoke.scale_amount_min = 3.0
+	smoke.scale_amount_max = 5.0
+	smoke.color = Color(0.45, 0.3, 0.6, 0.55)
+	add_child(smoke)
+	smoke.emitting = true
+	get_tree().create_timer(1.2).timeout.connect(smoke.queue_free)
+
+
 ## Ikon Prayitna di samping bar nyawa Eyang Palang.
 func set_prayitna(on: bool) -> void:
 	_prayitna_icon.visible = on and not _dead
@@ -287,9 +395,13 @@ func _show_intent(intent: EnemyIntent, icon: TextureRect, label: Label) -> void:
 			label.text = "x%d" % intent.extra if intent.extra > 1 else ""
 		EnemyIntent.Kind.CHARGE:
 			label.text = "!"
+		EnemyIntent.Kind.AJIAN_CHARGE:
+			label.text = "%d!" % intent.extra
+		EnemyIntent.Kind.SUMMON:
+			label.text = "x%d" % intent.extra
 		_:
 			label.text = str(intent.damage) if intent.damage > 0 else ""
-	var heavy := intent.kind == EnemyIntent.Kind.HEAVY
+	var heavy := intent.kind in [EnemyIntent.Kind.HEAVY, EnemyIntent.Kind.AJIAN, EnemyIntent.Kind.AJIAN_CHARGE]
 	label.add_theme_color_override("font_color", UIKit.COLOR_RED if heavy else UIKit.COLOR_TEXT)
 
 
@@ -385,6 +497,9 @@ func play_death() -> void:
 	if _amuk_pulse != null:
 		_amuk_pulse.kill()
 	_amuk_row.visible = false
+	_ajian_bar.visible = false
+	_ajian_label.visible = false
+	set_bala_shield(false)
 	if _aura_tween != null:
 		_aura_tween.kill()
 	if _aura != null:

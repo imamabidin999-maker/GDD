@@ -11,13 +11,16 @@ var skill: EnemyButo.Skill
 ## Hasil skill, diisi EnemyButo.perform_skill() untuk ditampilkan view.
 ## false kalau skill gagal berefek, misalnya tidak ada kartu yang bisa dikunci.
 var succeeded: bool = false
-## Damage ke hero (serangan Kuning, hantaman Hitam, atau serangan cadangan Putih).
+## Damage ke hero (serangan Kuning, Gebug Pagebluk/Ajian Hitam, atau serangan
+## cadangan Putih).
 var damage_dealt: int = 0
 ## Kartu pertama yang disirep. null kalau tidak ada, atau sirepnya ditunda ke
 ## tangan berikutnya karena tangan sedang kosong.
 var locked_card: CardInstance
 ## Semua kartu yang disirep (Buto Putih Murka menyirep 2).
 var locked_cards: Array[CardInstance] = []
+## Bala yang muncul dari Memanggil Bala.
+var summoned: Array[EnemyUnit] = []
 
 
 func _init(user: EnemyButo, used_skill: EnemyButo.Skill) -> void:

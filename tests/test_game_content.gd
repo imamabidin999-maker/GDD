@@ -165,17 +165,15 @@ func _run() -> void:
 	check(kinds == ["ATTACK", "CHARGE", "HEAVY", "ATTACK"], "pola niat: %s" % [kinds])
 	check(hp_log == [92, 92, 72, 64], "damage: 8, 0, 20, 8 -> %s" % [hp_log])
 
-	print("[Buto Hitam: niat & murka]")
+	print("[Buto Hitam: niat fase 1 dan 2]")
 	var hitam := make_buto(EnemyButo.ButoType.HITAM, 100, 9)
 	var f6 := make_fixture([hitam] as Array[EnemyUnit], 200)
 	f6.bm.start_battle(f6.deck_list, f6.enemies)
-	check(hitam.get_intent(f6.bm).kind == EnemyIntent.Kind.ATTACK and hitam.get_intent(f6.bm).damage == 9, "fase 1: serangan 9")
+	var i6a := hitam.get_intent(f6.bm)
+	check(i6a.kind == EnemyIntent.Kind.PLAGUE_STRIKE and i6a.damage == 9, "fase 1: Gebug Pagebluk 9")
 	hitam.health.take_damage(50)
 	var i6 := hitam.get_intent(f6.bm)
-	check(i6.kind == EnemyIntent.Kind.SHUFFLE and i6.damage == 13, "fase 2: ForceShuffle dengan serangan 13")
-	for i: int in range(1, f6.hand.get_card_count()):
-		f6.hand.lock_card_at(i, 1)
-	check(hitam.get_intent(f6.bm).kind == EnemyIntent.Kind.ATTACK, "kartu bebas tinggal 1 -> niat berubah jadi serangan biasa")
+	check(i6.kind == EnemyIntent.Kind.SUMMON and i6.extra == 2, "fase 2: Memanggil 2 Bala")
 
 	print("[Niat Kuning & Putih]")
 	var kuning := make_buto(EnemyButo.ButoType.KUNING, 50, 6)

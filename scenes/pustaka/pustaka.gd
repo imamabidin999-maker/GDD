@@ -72,6 +72,7 @@ func _build() -> void:
 		var seen := GameState.seen_buto.has(key)
 		_add_entry(key, tr("BUTO_" + key.to_upper()) if seen else "? ? ?")
 	_add_entry("murka", tr("PUSTAKA_MURKA") if GameState.seen_buto.has("murka") else "? ? ?")
+	_add_entry("bala", tr("PUSTAKA_BALA") if GameState.seen_buto.has("bala") else "? ? ?")
 	_add_entry("howto", tr("PUSTAKA_HOWTO"))
 	_add_entry("cards", tr("PUSTAKA_CARDS"))
 
@@ -125,6 +126,8 @@ func _show(key: String) -> void:
 			_show_cards()
 		"murka":
 			_show_murka()
+		"bala":
+			_show_bala()
 		_:
 			_show_buto(key)
 
@@ -164,6 +167,21 @@ func _show_murka() -> void:
 	var t := aura.create_tween().set_loops()
 	t.tween_property(aura, "modulate:a", 0.9, 0.7).set_trans(Tween.TRANS_SINE)
 	t.tween_property(aura, "modulate:a", 0.45, 0.7).set_trans(Tween.TRANS_SINE)
+
+
+func _show_bala() -> void:
+	var sprite := load("res://assets/sprites/buto/buto_hijau_idle.png") as Texture2D
+	if not GameState.seen_buto.has("bala"):
+		_figure(sprite, "? ? ?", [], tr("PUSTAKA_LOCKED"), true)
+		return
+	# Angka Bala diambil dari nilai bawaan Buto Hitam supaya selalu sama dengan battle.
+	var hitam := EnemyButo.new()
+	var stats: Array[String] = [tr("PUSTAKA_STATS") % [hitam.bala_hp, hitam.bala_attack]]
+	hitam.free()
+	_figure(sprite, tr("PUSTAKA_BALA"), stats, tr("PUSTAKA_BALA_TEXT"), false)
+	# Wujud bayangan yang sama dengan di medan tempur.
+	var pic := (_content.get_child(-1) as Control).get_child(0) as TextureRect
+	pic.modulate = Color(0.42, 0.32, 0.6, 0.8)
 
 
 func _show_cards() -> void:

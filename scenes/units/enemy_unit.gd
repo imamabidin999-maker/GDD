@@ -68,6 +68,18 @@ func finish_enemy_turn(actions_taken: int) -> void:
 		amuk = mini(amuk + 1, AMUK_MAX)
 
 
+## Gebrakan Dongkrek juga membuyarkan kekuatan yang sedang disiapkan Buto
+## (Ajian Lebur Saketi milik Buto Hitam). Mengembalikan true kalau ada yang buyar.
+func break_power() -> bool:
+	return false
+
+
+## Aksi tambahan di akhir giliran musuh, setelah semua Buto beraksi dan
+## sebelum Lara bekerja. Contohnya Pagebluk Merata milik Buto Hitam.
+func get_end_turn_action(_battle: BattleManager) -> BattleAction:
+	return null
+
+
 ## Gebrakan Dongkrek membuyarkan amukan. Titik negatif (jeda awal) dibiarkan.
 ## Mengembalikan true kalau ada titik Amuk yang hilang.
 func calm_amuk() -> bool:

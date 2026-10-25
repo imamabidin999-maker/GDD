@@ -11,7 +11,8 @@ extends SceneTree
 ##
 ## Pemakaian: godot --headless -s tools/simulate_balance.gd [-- runs=200]
 ## Untuk mencoba-coba: hpx=1.5 atkx=1.2 mengalikan HP/serangan semua Buto,
-## stages=6,7,9 hanya mensimulasikan babak itu.
+## stages=6,7,9 hanya mensimulasikan babak itu, set=ajian_multiplier:2,bala_count:1
+## mengubah properti EnemyButo (yang punya properti itu) sebelum battle.
 
 const MAX_TURNS := 40
 
@@ -107,6 +108,10 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, seed_valu
 		buto.attack_power = roundi(spec.attack_power * float(_arg("atkx", "1")))
 		buto.health.max_hp = roundi(spec.max_hp * float(_arg("hpx", "1")))
 		buto.rng_seed = seed_value + enemies.size()
+		for pair: String in _arg("set", "").split(",", false):
+			var kv := pair.split(":")
+			if kv.size() == 2 and kv[0] in buto:
+				buto.set(kv[0], str_to_var(kv[1]))
 		holder.add_child(buto)
 		enemies.append(buto)
 	root.add_child(holder)
@@ -132,6 +137,7 @@ func _smart_turn(bm: BattleManager) -> void:
 	var guard := 0
 	while bm.is_accepting_input() and guard < 30:
 		guard += 1
+		_choose_target(bm)
 		_merge_all(bm)
 		if _try_ultimate(bm, false):
 			continue
@@ -142,6 +148,24 @@ func _smart_turn(bm: BattleManager) -> void:
 		var best := _best_card(bm)
 		if best < 0 or not bm.request_play_card(best):
 			return
+
+
+# Ajian yang sedang disiapkan dibuyarkan lebih dulu, lalu Bala dihabisi
+# (selama Bala hidup Buto Hitam hanya menerima separuh damage).
+func _choose_target(bm: BattleManager) -> void:
+	var living := bm.get_living_enemies()
+	for e: EnemyUnit in living:
+		var buto := e as EnemyButo
+		if buto != null and buto.is_ajian_charged():
+			bm.select_target(e)
+			return
+	var weakest: EnemyUnit = null
+	for e: EnemyUnit in living:
+		var buto := e as EnemyButo
+		if buto != null and buto.is_bala and (weakest == null or e.health.current_hp < weakest.health.current_hp):
+			weakest = e
+	if weakest != null:
+		bm.select_target(weakest)
 
 
 func _merge_all(bm: BattleManager) -> void:
@@ -198,9 +222,15 @@ func _try_ultimate(bm: BattleManager, eager: bool) -> bool:
 	# Gebrakan membuyarkan amukan: layak dipakai kalau Ngamuk akan sakit.
 	var calm := false
 	for e: EnemyUnit in bm.get_living_enemies():
-		if e.is_ngamuk_ready() and _incoming_damage(bm) >= bm.hero_health.current_hp * 0.3:
+		if e.get_action_count() >= 2 and _incoming_damage(bm) >= bm.hero_health.current_hp * 0.3:
 			calm = true
-	if eager or player.moxie >= PlayerState.MOXIE_MAX or lethal or danger or calm:
+	# Ajian yang tidak bisa dibuyarkan dengan kartu: buyarkan dengan Gebrakan.
+	var ajian := false
+	for e: EnemyUnit in bm.get_living_enemies():
+		var buto := e as EnemyButo
+		if buto != null and buto.is_ajian_charged() and bm.player.current_ap <= 1:
+			ajian = true
+	if eager or player.moxie >= PlayerState.MOXIE_MAX or lethal or danger or calm or ajian:
 		return bm.request_ultimate()
 	return false
 

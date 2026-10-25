@@ -48,7 +48,17 @@ Aturan singkatnya:
 | Hijau | **Sembur Lara**: Lara menggerogoti nyawa tiap akhir giliran Buto |
 | Merah | Pola tetap: serang, **Ancang-ancang**, lalu **Gebug Raksasa** |
 | Putih | **Sirep**: kartu terkuatmu tidak bisa dipakai selama satu giliran |
-| Hitam (bos) | Di sisa nyawa separuh ia murka: serangan naik dan kartu di tanganmu diacak |
+| Hitam (bos) | Pola **Gebug Pagebluk** (serangan + Lara), Gebug, lalu **Ajian Lebur Saketi** yang bisa dibuyarkan. Di sisa nyawa separuh ia memanggil **Bala** dan menebar **Pagebluk Merata** |
+
+### Buto Hitam
+
+Setelah ancang-ancang, Buto Hitam melepas **Ajian Lebur Saketi** di giliran berikutnya (45 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 40 damage kepadanya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+
+Di sisa nyawa separuh ia murka:
+
+- **Memanggil Bala** (sekali): dua Buto bayangan berwarna acak (35 nyawa, serangan 6) dengan ilmu warnanya masing-masing. Selama ada Bala yang hidup, Buto Hitam hanya menerima **separuh damage**. Bala lenyap kalau Buto Hitam tumbang.
+- **Pagebluk Merata**: setiap akhir giliran Buto kamu mendapat 1 Lara, dan Lara tidak berkurang lagi.
+- Ia mulai bisa **Ngamuk**, tapi tidak pernah di giliran ancang-ancang atau melepas Ajian.
 
 ### Buto Murka dan Ngamuk
 
@@ -115,6 +125,7 @@ python3 tools/build_audio.py       # musik & efek suara (butuh numpy, scipy, ffm
 python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
 godot --headless -s tools/simulate_balance.gd   # simulasi keseimbangan
+# opsi simulasi: -- runs=80 stages=9,10 hpx=0.9 atkx=1.1 set=bala_hp:40,ajian_break_threshold:35
 ```
 
 Tes otomatis:

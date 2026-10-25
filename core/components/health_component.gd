@@ -33,6 +33,9 @@ signal damage_blocked(amount: int)
 
 var current_hp: int = 100
 var block: int = 0
+## Pengali damage yang diterima lewat take_damage(). Buto Hitam memakai 0.5
+## selama Bala-nya masih hidup.
+var damage_taken_multiplier: float = 1.0
 
 
 ## Mengisi ulang HP. Tanpa argumen berarti penuh. Tameng ikut dikosongkan.
@@ -53,6 +56,8 @@ func is_dead() -> bool:
 func take_damage(amount: int) -> int:
 	if amount <= 0 or is_dead():
 		return 0
+	if not is_equal_approx(damage_taken_multiplier, 1.0):
+		amount = maxi(1, roundi(amount * damage_taken_multiplier))
 	if block > 0:
 		var absorbed := mini(block, amount)
 		block -= absorbed
@@ -73,6 +78,16 @@ func lose_hp(amount: int) -> int:
 	if current_hp == 0:
 		died.emit()
 	return dealt
+
+
+## Langsung menghabisi unit tanpa angka damage, misalnya Bala yang lenyap
+## saat pemanggilnya tumbang.
+func kill() -> void:
+	if is_dead():
+		return
+	current_hp = 0
+	hp_changed.emit(current_hp, max_hp)
+	died.emit()
 
 
 ## Menambah HP dan mengembalikan jumlah yang benar-benar pulih.

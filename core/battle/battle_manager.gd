@@ -50,6 +50,9 @@ signal player_input_ready
 signal enemy_turn_started
 ## Buto ini Ngamuk di giliran musuh sekarang (beraksi dua kali).
 signal enemy_ngamuk(enemy: EnemyUnit)
+## Musuh baru muncul di tengah battle (Bala panggilan Buto Hitam). View perlu
+## membuat tampilannya.
+signal enemy_spawned(enemy: EnemyUnit, summoner: EnemyUnit)
 signal action_queued(action: BattleAction)
 ## Aksi mulai di-resolve, SEBELUM efeknya diterapkan. View memakai ini untuk
 ## tahu aksi mana yang sedang berjalan saat signal HP terpancar.
@@ -201,7 +204,7 @@ func is_accepting_input() -> bool:
 
 func is_any_enemy_ngamuk_ready() -> bool:
 	for enemy: EnemyUnit in get_living_enemies():
-		if enemy.is_ngamuk_ready():
+		if enemy.get_action_count() >= 2:
 			return true
 	return false
 
@@ -214,6 +217,35 @@ func calm_enemies() -> int:
 		if enemy.calm_amuk():
 			calmed += 1
 	return calmed
+
+
+## Gebrakan Dongkrek membuyarkan kekuatan yang sedang disiapkan (Ajian).
+## Mengembalikan jumlah Buto yang kekuatannya buyar.
+func break_enemy_powers() -> int:
+	var broken := 0
+	for enemy: EnemyUnit in get_living_enemies():
+		if enemy.break_power():
+			broken += 1
+	return broken
+
+
+## Memasukkan musuh baru ke battle yang sedang berjalan, misalnya Bala yang
+## dipanggil Buto Hitam. Musuh baru diletakkan di parent yang sama dengan
+## pemanggilnya dan baru beraksi di giliran musuh berikutnya.
+func add_enemy(enemy: EnemyUnit, summoner: EnemyUnit = null) -> void:
+	if enemy == null or _enemies.has(enemy):
+		return
+	if enemy.get_parent() == null:
+		var parent: Node = summoner.get_parent() if summoner != null else self
+		parent.add_child(enemy)
+	_enemies.append(enemy)
+	enemy.amuk = enemy.start_amuk
+	enemy.on_battle_started(self)
+	enemy_spawned.emit(enemy, summoner)
+	# Sasaran pindah ke Bala pertama supaya pemain langsung sadar ada lawan
+	# baru yang melindungi pemanggilnya.
+	if summoner != null and _target == summoner:
+		_set_target(enemy)
 
 
 func get_living_enemies() -> Array[EnemyUnit]:
@@ -457,6 +489,10 @@ func _enter_enemy_turn() -> void:
 			if action != null:
 				_queue_action(action)
 		enemy.finish_enemy_turn(count)
+	for enemy: EnemyUnit in get_living_enemies():
+		var extra := enemy.get_end_turn_action(self)
+		if extra != null:
+			_queue_action(extra)
 	# Racun bekerja paling akhir, setelah semua Buto beraksi. Selalu diantre
 	# karena semburan racun di giliran ini baru berlaku setelah aksinya selesai.
 	_queue_action(PoisonTickAction.new(player))

@@ -62,7 +62,6 @@ func make_buto(type: EnemyButo.ButoType, hp: int, seed: int) -> EnemyButo:
 	b.buto_type = type
 	b.rng_seed = seed
 	b.attack_power = 10
-	b.phase_two_attack_bonus = 0 # angka serangan di tes ini mengasumsikan tanpa bonus murka
 	var h := HealthComponent.new()
 	h.max_hp = hp
 	b.add_child(h)
@@ -309,57 +308,6 @@ func _run() -> void:
 	fpm.bm.request_end_turn()
 	check(locked_indices(fpm.hand).size() == 2, "Putih Murka menyirep 2 kartu")
 
-	print("[Buto Hitam: fase 2 + ForceShuffle]")
-	var hitam := make_buto(EnemyButo.ButoType.HITAM, 100, 8)
-	var fh := make_fixture([hitam], 200)
-	var phases: Array[int] = []
-	hitam.phase_changed.connect(func(p: int) -> void: phases.append(p))
-	var h_skills: Array[String] = []
-	var snapshot_hand: Array[int] = []
-	var snapshot_draw: Array[int] = []
-	hitam.skill_used.connect(func(s: EnemyButo.Skill, ok: bool) -> void:
-		h_skills.append("%s:%s" % [EnemyButo.Skill.find_key(s), ok])
-		snapshot_hand.assign(uids(fh.hand.get_cards()))
-		snapshot_draw.assign(uids(fh.deck._draw_pile)))
-	fh.bm.start_battle(fh.deck_list, fh.enemies)
-	fh.bm.request_end_turn()
-	check(hitam.phase == 1 and fh.hero.current_hp == 190 and h_skills.is_empty(), "fase 1: serangan biasa")
-	hitam.health.take_damage(49)
-	check(hitam.phase == 1 and phases.is_empty(), "HP 51% -> masih fase 1")
-	hitam.health.take_damage(1)
-	check(hitam.phase == 2 and phases == [2], "HP 50% -> phase_changed(2) langsung saat terkena pukulan")
-	var hand_before := uids(fh.hand.get_cards())
-	var draw_before_h := uids(fh.deck._draw_pile)
-	fh.bm.request_end_turn()
-	check(h_skills == ["FORCE_SHUFFLE:true"] and fh.hero.current_hp == 180, "ForceShuffle: menghantam (-10) lalu mengacak")
-	check(sorted_copy(snapshot_hand) == sorted_copy(hand_before) and snapshot_hand != hand_before, "urutan tangan teracak, isinya sama")
-	check(sorted_copy(snapshot_draw) == sorted_copy(draw_before_h) and snapshot_draw != draw_before_h, "sisa draw pile teracak, isinya sama")
-	fh.bm.request_end_turn()
-	check(h_skills.size() == 1 and fh.hero.current_hp == 170, "cooldown: turn berikutnya serangan biasa")
-	fh.bm.request_end_turn()
-	check(h_skills.size() == 2, "lalu ForceShuffle lagi")
-	hitam.health.take_damage(10)
-	check(phases == [2], "fase 2 tidak terpicu ulang")
-	check(fh.deck.verify_integrity(fh.hand.get_cards()), "integritas 15 kartu")
-
-	print("[Putih + Hitam: kartu terkunci tidak ikut teracak]")
-	var p2 := make_buto(EnemyButo.ButoType.PUTIH, 300, 21)
-	p2.skill_cooldown_turns = 1
-	var h2 := make_buto(EnemyButo.ButoType.HITAM, 100, 22)
-	var fc := make_fixture([p2, h2], 300)
-	var lock_snapshot: Array[int] = [-1, -1]
-	var lock_held: Array[bool] = []
-	p2.skill_used.connect(func(_s: EnemyButo.Skill, _ok: bool) -> void:
-		var idx := locked_indices(fc.hand)
-		lock_snapshot[0] = idx[0] if not idx.is_empty() else -1
-		lock_snapshot[1] = fc.hand.get_card(lock_snapshot[0]).uid if lock_snapshot[0] >= 0 else -1)
-	h2.skill_used.connect(func(_s: EnemyButo.Skill, _ok: bool) -> void:
-		lock_held.append(lock_snapshot[0] >= 0 and fc.hand.get_card(lock_snapshot[0]).uid == lock_snapshot[1]))
-	fc.bm.start_battle(fc.deck_list, fc.enemies)
-	h2.health.take_damage(50)
-	fc.bm.request_end_turn()
-	check(lock_snapshot[0] >= 0 and lock_held == [true], "ForceShuffle tidak memindahkan kartu yang dikunci LockCard")
-
 	print("[Signal kunci untuk UI]")
 	var hu := HandManager.new()
 	root.add_child(hu)
@@ -407,31 +355,6 @@ func _run() -> void:
 	ff.bm.request_end_turn()
 	check(ff.hero.current_hp == 90 and locked_indices(ff.hand).is_empty(), "turn berikutnya: cooldown -> serang, tangan baru tanpa kunci")
 	check(ff.deck.verify_integrity(ff.hand.get_cards()), "integritas 15 kartu (mode FGO)")
-	var hf := make_buto(EnemyButo.ButoType.HITAM, 100, 42)
-	var fhf := make_fixture([hf], 100)
-	fhf.bm.discard_hand_on_turn_end = true
-	var hf_log: Array[int] = [0]
-	hf.skill_used.connect(func(_sk: EnemyButo.Skill, _ok: bool) -> void: hf_log[0] += 1)
-	fhf.bm.start_battle(fhf.deck_list, fhf.enemies)
-	hf.health.take_damage(60)
-	fhf.bm.request_end_turn()
-	fhf.bm.request_end_turn()
-	check(hf.phase == 2 and hf_log[0] == 0 and fhf.hero.current_hp == 80, "Hitam: tangan kosong -> tidak ForceShuffle, tetap menyerang")
-
-	print("[Hitam: ForceShuffle butuh minimal 2 kartu bebas]")
-	var hp2 := make_buto(EnemyButo.ButoType.HITAM, 100, 51)
-	var fp2 := make_fixture([hp2], 100)
-	var hp2_log: Array[int] = [0]
-	hp2.skill_used.connect(func(_sk: EnemyButo.Skill, _ok: bool) -> void: hp2_log[0] += 1)
-	fp2.bm.start_battle(fp2.deck_list, fp2.enemies)
-	hp2.health.take_damage(60)
-	for i: int in range(1, fp2.hand.get_card_count()):
-		fp2.hand.lock_card_at(i, 2)
-	fp2.bm.request_end_turn()
-	check(hp2_log[0] == 0 and fp2.hero.current_hp == 90, "1 kartu bebas -> serang biasa")
-	fp2.bm.request_end_turn()
-	check(hp2_log[0] == 1 and fp2.hero.current_hp == 80, "cooldown tidak terbuang: turn berikutnya ForceShuffle (+hantaman)")
-
 	print("[Fase Hitam saat battle diulang]")
 	var hr := make_buto(EnemyButo.ButoType.HITAM, 100, 61)
 	var fr := make_fixture([hr], 100)

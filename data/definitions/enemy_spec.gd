@@ -15,6 +15,8 @@ extends Resource
 @export var can_ngamuk: bool = false
 ## Titik Amuk awal; negatif menunda Ngamuk pertama.
 @export_range(-3, 3) var start_amuk: int = 0
+## Bala: Buto bayangan panggilan Buto Hitam (tidak dipakai di data babak).
+@export var bala: bool = false
 
 
 ## Membuat EnemyButo (beserta HealthComponent bernama "Health") sesuai angka
@@ -25,6 +27,7 @@ func create_buto() -> EnemyButo:
 	buto.buto_type = buto_type
 	buto.attack_power = attack_power
 	buto.skill_cooldown_turns = skill_cooldown_turns
+	buto.is_bala = bala
 	if murka:
 		buto.apply_murka()
 	buto.can_ngamuk = buto.can_ngamuk or can_ngamuk

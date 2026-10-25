@@ -56,7 +56,7 @@ BATTLE_DEFEAT_HINT,"Para Buto masih berkeliaran. Atur siasat, lalu coba lagi.",T
 BATTLE_NO_AP,Ketukan habis,Out of Ketukan
 BATTLE_CARD_LOCKED,Kartu tersirep,Card under Sirep
 BATTLE_CHAIN,Wirama!,Wirama!
-BATTLE_PHASE2,Buto Hitam murka!,Buto Hitam is enraged!
+BATTLE_PHASE2,Buto Hitam Murka!,Buto Hitam is enraged!
 BATTLE_MERGE,Gabung,Merge
 BATTLE_MERGE_TIP,Gabungkan dua kartu ini (gratis),Merge these two cards (free)
 BATTLE_DECK_TIP,Jurus tersisa: %d kartu,Draw pile: %d cards
@@ -69,7 +69,6 @@ BATTLE_AP_TIP,"Ketukan: tiap giliran ada 4 ketukan, seperti satu gatra gamelan. 
 BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Gebrakan Dongkrek siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Gebrakan Dongkrek ready, up to 200%% = Greget Memuncak (overcharged)."
 BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Gebrakan Dongkrek (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Gebrakan Dongkrek (now x%.2f).
 BATTLE_HELP,Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target  |  Spasi: akhiri giliran,Click card: play  |  Drag card: move  |  Click Buto: target  |  Space: end turn
-BATTLE_HAND_SHUFFLED,Tangan diacak!,Hand shuffled!
 BATTLE_CARD_LOCKED_BY,Sirep!,Sirep!
 BATTLE_MOXIE_DRAINED,Greget -%d%%,Greget -%d%%
 BATTLE_CHARGING,Ancang-ancang!,Winding up!
@@ -101,7 +100,6 @@ CARD_MERGE_HINT,Gabung: kartu beda warna dengan bintang sama yang bersebelahan.,
 INTENT_ATTACK,Akan menyerang %d,Will attack for %d
 INTENT_DRAIN,Menyerang %d dan menghisap %d%% Greget Memuncak,Attacks for %d and drains %d%% of your Greget Memuncak
 INTENT_LOCK,Akan menyirep %d kartu terkuatmu selama 1 giliran,Will cast Sirep on your %d strongest card(s) for 1 turn
-INTENT_SHUFFLE,Menghantam %d lalu mengacak tangan dan deck,"Hits for %d, then shuffles your hand and deck"
 INTENT_POISON,Menyembur %d dan memberi %d Lara,Spits for %d and inflicts %d Lara
 INTENT_CHARGE,Ancang-ancang: giliran depan Gebug Raksasa %d,Winding up: next turn a Gebug Raksasa (giant blow) for %d
 INTENT_HEAVY,Gebug Raksasa %d!,Gebug Raksasa for %d!
@@ -224,11 +222,19 @@ PUSTAKA_BUTO_PUTIH_TEXT,"Penjaga gapura candi. Ilmu Sirep-nya membuat kartu terk
 Siasat: mainkan kartu berbintang tinggi sebelum gilirannya tiba.","Guardian of the temple gate. Its Sirep spell leaves the strongest card in your hand powerless for one turn: it can't be played, moved, or merged.
 
 Tip: play your high-rank cards before its turn comes."
-PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk. Saat nyawanya tinggal separuh ia murka: serangannya makin kuat dan ia mengacak urutan kartu di tanganmu.
+PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk.
 
-Siasat: simpan Greget penuh untuk fase kedua.","King of the Buto and root of the plague. At half HP it becomes enraged: its attacks grow stronger and it shuffles the cards in your hand.
+Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau kamu memberi cukup damage di giliran setelah ancang-ancang (lihat bar Buyarkan di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
-Tip: save a full Greget gauge for the second phase."
+Saat nyawanya tinggal separuh ia murka: memanggil dua Bala, menebar Pagebluk Merata (tiap giliran Buto kamu mendapat 1 Lara dan Lara tidak berkurang), dan mulai bisa Ngamuk.
+
+Siasat: simpan Greget untuk membuyarkan Ajian di fase kedua, dan tuntaskan pertarungan secepatnya sebelum Lara menumpuk.","King of the Buto and root of the plague.
+
+Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian by dealing enough damage on the turn after the wind-up (watch the Break bar above its HP bar) or by using Gebrakan Dongkrek. If it breaks, Buto Hitam staggers and loses an action.
+
+At half HP it becomes enraged: it summons two Bala, spreads Pagebluk Merata (you gain 1 Lara every Buto turn and Lara no longer wears off), and can go Ngamuk.
+
+Tip: keep Greget ready to break the Ajian in the second phase, and finish the fight quickly before Lara piles up."
 PUSTAKA_HOWTO,Cara Bermain,How to Play
 PUSTAKA_HOWTO_TEXT,"Ketukan: tiap giliran kamu punya 4 ketukan, seperti satu gatra gamelan. Main kartu 1 ketukan, geser kartu 1 ketukan.
 
@@ -246,7 +252,11 @@ Sirep: ilmu Buto Putih. Kartu yang tersirep tidak bisa dimainkan, digeser, atau 
 
 Ngamuk: sebagian Buto punya tiga titik Amuk berbentuk api di atas kepalanya. Setiap aksinya mengisi satu titik. Saat ketiganya penuh muncul tanda x2, dan di giliran berikutnya ia beraksi dua kali.
 
-Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dongkrek juga membuyarkan amukan: semua titik Amuk kembali kosong.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
+Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dongkrek juga membuyarkan amukan: semua titik Amuk kembali kosong.
+
+Ajian Lebur Saketi: setelah Buto Hitam ancang-ancang, bar Buyarkan muncul di atas bar nyawanya. Penuhi bar itu dengan damage di giliranmu, atau pakai Gebrakan Dongkrek, supaya ajiannya buyar dan ia terhuyung.
+
+Bala: Buto bayangan panggilan Buto Hitam. Selama Bala masih hidup, Buto Hitam hanya menerima separuh damage.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
 
 Cards: Sabet deals damage, Semedi charges Greget, Tangkis gives Block. Stars show a card's strength.
 
@@ -262,7 +272,11 @@ Sirep: Buto Putih's spell. A card under Sirep can't be played, moved, or merged 
 
 Ngamuk (rampage): some Buto have three flame-shaped Amuk points above their heads. Each of their actions fills one point. When all three are full an x2 mark appears, and on its next turn the Buto acts twice.
 
-Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dongkrek also breaks their rage: every Amuk point is emptied."
+Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dongkrek also breaks their rage: every Amuk point is emptied.
+
+Ajian Lebur Saketi: after Buto Hitam winds up, a Break bar appears above its HP bar. Fill it with damage on your turn, or use Gebrakan Dongkrek, to break the Ajian and make it stagger.
+
+Bala: shadow Buto summoned by Buto Hitam. While any Bala lives, Buto Hitam takes only half damage."
 PUSTAKA_CARDS,Kartu,Cards
 PUSTAKA_STATS,Nyawa %d  |  Serangan %d,HP %d  |  Attack %d
 PUSTAKA_RECIPES,Resep Gabungan Jurus,Merge Recipes
@@ -272,7 +286,7 @@ SKILL_KUNING,Hisap Greget,Hisap Greget
 SKILL_HIJAU,Sembur Lara,Sembur Lara
 SKILL_MERAH,Gebug Raksasa,Gebug Raksasa
 SKILL_PUTIH,Sirep,Sirep
-SKILL_HITAM,Acak Tangan,Shuffle Hand
+SKILL_HITAM,Ajian Lebur Saketi,Ajian Lebur Saketi
 MAP_BOSS,Pertarungan Bos,Boss Fight
 MAP_MENU,Menu,Menu
 MAP_REPLAY,Bisa diulang untuk berkah tambahan.,Replay it for another blessing.
@@ -345,3 +359,31 @@ S10_INTRO_3,"Selama warga Mejayan masih menabuh, aku takkan mundur.","As long as
 S10_INTRO_4,"Kalau begitu, rasakan Ajian Lebur Saketi!",Then taste the Ajian Lebur Saketi!
 S10_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
 S10_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.
+AJIAN_BREAK_BAR,Buyarkan %d/%d,Break %d/%d
+AJIAN_BREAK_TIP,"Beri %d damage giliran ini untuk membuyarkan Ajian (%d/%d), atau pakai Gebrakan Dongkrek.","Deal %d damage this turn to break the Ajian (%d/%d), or use Gebrakan Dongkrek."
+BALA_SHIELD_TIP,Dilindungi Bala: hanya menerima separuh damage selama masih ada Bala yang hidup.,Shielded by Bala: takes only half damage while any Bala still stands.
+BALA_TIP,Buto bayangan panggilan Buto Hitam. Lenyap kalau Buto Hitam tumbang.,A shadow Buto summoned by Buto Hitam. Vanishes when Buto Hitam falls.
+BALA_FMT,Bala %s,Bala %s
+BATTLE_AJIAN_CHARGING,Ajian disiapkan!,Ajian gathering!
+BATTLE_AJIAN,Ajian Lebur Saketi!,Ajian Lebur Saketi!
+BATTLE_AJIAN_BROKEN,Ajian buyar!,Ajian broken!
+BATTLE_SUMMON_BALA,Memanggil Bala!,Bala summoned!
+BATTLE_STAGGERED,Terhuyung!,Staggered!
+BATTLE_PAGEBLUK,Pagebluk +%d Lara,Pagebluk +%d Lara
+INTENT_PLAGUE,Gebug Pagebluk: menyerang %d dan memberi %d Lara,Gebug Pagebluk: attacks for %d and inflicts %d Lara
+INTENT_AJIAN_CHARGE,Ancang-ancang Ajian Lebur Saketi (%d damage di giliran depan),Winding up Ajian Lebur Saketi (%d damage next turn)
+INTENT_AJIAN,Ajian Lebur Saketi: %d damage dan %d Lara,Ajian Lebur Saketi: %d damage and %d Lara
+INTENT_SUMMON,Memanggil %d Bala,Summons %d Bala
+INTENT_STAGGER,"Terhuyung, tidak beraksi","Staggered, does nothing"
+S10_PHASE2_1,Cukup main-mainnya! Rasakan pagebluk yang sebenarnya!,Enough games! Now feel the true plague!
+S10_PHASE2_2,"Tabuh terus! Selama Dongkrek berbunyi, kita tidak akan kalah.","Keep drumming! As long as Dongkrek sounds, we will not fall."
+PUSTAKA_BALA,Bala,Bala
+PUSTAKA_BALA_TEXT,"Buto bayangan yang dipanggil Buto Hitam saat ia murka. Wujudnya gelap tembus pandang, tapi ilmunya sama dengan Buto berwarna aslinya.
+
+Selama masih ada Bala yang berdiri, Buto Hitam hanya menerima separuh damage. Begitu Buto Hitam tumbang, semua Bala ikut lenyap.
+
+Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gebrakan Dongkrek.","Shadow Buto summoned by Buto Hitam in its rage. They look dark and translucent, but they use the same skills as the Buto whose color they bear.
+
+While any Bala still stands, Buto Hitam takes only half damage. When Buto Hitam falls, every Bala vanishes with it.
+
+Tip: take down the Bala first, or hit them all at once with Gebrakan Dongkrek."

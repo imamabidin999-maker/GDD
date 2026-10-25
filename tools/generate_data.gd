@@ -195,7 +195,7 @@ func _build_stages() -> void:
 	s9.victory_dialog = _with_speakers(s9.victory_dialog, ["narator", "buto_hitam"])
 	stages.append(s9)
 
-	var s10 := _stage(10, [_enemy(K.HITAM, 520, 18, 1.15)] as Array[EnemySpec],
+	var s10 := _stage(10, [_enemy(K.HITAM, 500, 18, 1.15)] as Array[EnemySpec],
 		Vector2(554, 112), Color(0.92, 0.72, 0.78), 4, 2)
 	s10.music = "boss"
 	s10.is_boss = true

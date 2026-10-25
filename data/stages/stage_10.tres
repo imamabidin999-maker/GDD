@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="Resource_ekecp"]
 script = ExtResource("1_rnhsh")
 buto_type = 4
-max_hp = 520
+max_hp = 500
 attack_power = 18
 sprite_scale = 1.15
 

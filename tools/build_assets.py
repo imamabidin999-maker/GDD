@@ -391,11 +391,6 @@ def mini_icon(kind: str) -> Image.Image:
         d.arc([3, 0, 8, 7], 180, 360, fill=(220, 220, 228, 255), width=2)
         d.rectangle([2, 5, 9, 11], fill=(232, 182, 72, 255))
         d.rectangle([5, 7, 6, 9], fill=(60, 40, 20, 255))
-    elif kind == "shuffle":
-        d.line([(1, 3), (8, 9)], fill=(240, 240, 240, 255), width=1)
-        d.line([(1, 9), (8, 3)], fill=(240, 240, 240, 255), width=1)
-        d.polygon([(8, 1), (11, 3), (8, 5)], fill=(240, 240, 240, 255))
-        d.polygon([(8, 7), (11, 9), (8, 11)], fill=(240, 240, 240, 255))
     elif kind == "charge":
         for x in (2, 6):
             d.polygon([(x, 5), (x + 2, 1), (x + 4, 5)], fill=(255, 150, 70, 255))
@@ -436,6 +431,41 @@ def mini_icon(kind: str) -> Image.Image:
     elif kind == "chain":
         d.ellipse([0, 3, 6, 9], outline=(232, 182, 72, 255), width=2)
         d.ellipse([5, 2, 11, 8], outline=(255, 220, 120, 255), width=2)
+    elif kind == "plague":
+        # Gebug Pagebluk: hantaman + tetes Lara
+        d.line([(1, 8), (7, 2)], fill=(220, 226, 238, 255), width=2)
+        d.line([(0, 6), (3, 9)], fill=(232, 182, 72, 255), width=1)
+        d.polygon([(9, 4), (11, 8), (10, 11), (8, 11), (7, 8)], fill=(150, 90, 200, 255))
+        d.point((9, 8), fill=(220, 190, 255, 255))
+    elif kind == "ajian":
+        # Ajian Lebur Saketi: ledakan merah keunguan berinti kuning
+        pts = []
+        for i in range(16):
+            ang = -math.pi / 2 + i * math.pi / 8
+            r = 5.8 if i % 2 == 0 else 2.6
+            pts.append((5.5 + r * math.cos(ang), 5.5 + r * math.sin(ang)))
+        d.polygon(pts, fill=(214, 48, 96, 255))
+        d.ellipse([3, 3, 8, 8], fill=(255, 150, 90, 255))
+        d.ellipse([4, 4, 7, 7], fill=(255, 236, 150, 255))
+    elif kind == "summon":
+        # Memanggil Bala: dua bayangan berkerudung
+        for x, col in ((0, (96, 70, 130, 255)), (5, (130, 96, 170, 255))):
+            d.polygon([(x + 3, 1), (x + 6, 4), (x + 6, 11), (x + 4, 9), (x + 3, 11), (x + 1, 9), (x, 11), (x, 4)], fill=col)
+            d.point((x + 2, 5), fill=(255, 210, 120, 255))
+            d.point((x + 4, 5), fill=(255, 210, 120, 255))
+    elif kind == "stagger":
+        # Terhuyung: bintang-bintang pusing berputar
+        d.arc([1, 3, 10, 10], 200, 520, fill=(200, 200, 220, 255), width=1)
+        for (x, y) in ((2, 2), (8, 4), (4, 8)):
+            d.polygon([(x, y - 2), (x + 1, y - 1), (x + 2, y), (x + 1, y + 1), (x, y + 2), (x - 1, y + 1), (x - 2, y), (x - 1, y - 1)],
+                      fill=(255, 220, 110, 255))
+            d.point((x, y), fill=(255, 250, 210, 255))
+    elif kind == "bala_shield":
+        # Perisai Bala: Buto Hitam hanya menerima separuh damage
+        d.polygon([(1, 1), (10, 1), (10, 6), (5, 11), (1, 6)], fill=(118, 80, 168, 255))
+        d.polygon([(5, 1), (10, 1), (10, 6), (5, 11)], fill=(82, 54, 124, 255))
+        d.polygon([(5, 2), (8, 5), (5, 8), (2, 5)], fill=(214, 190, 255, 255))
+        d.point((5, 5), fill=(82, 54, 124, 255))
     return add_outline(img)
 
 
@@ -448,9 +478,10 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_swirl(), "cards/icon_flow.png")
     save(draw_gong(), "ui/icon_ultimate.png")
     print("Ikon kecil:")
-    for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "shuffle", "charge",
+    for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",
-                 "amuk", "amuk_empty", "prayitna"):
+                 "amuk", "amuk_empty", "prayitna", "plague", "ajian", "summon", "stagger",
+                 "bala_shield"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
     # gembok besar untuk kartu terkunci
     img, d = canvas(20, 24)
