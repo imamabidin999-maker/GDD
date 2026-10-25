@@ -11,7 +11,8 @@ signal play_on_enemy_requested(hand_index: int, global_point: Vector2)
 signal card_hovered(view: CardView)
 signal card_unhovered(view: CardView)
 ## Kartu terkunci dicoba digeser.
-signal locked_card_dragged(view: CardView)
+## Pemain mencoba memakai atau menggeser kartu yang tersirep.
+signal sirep_card_touched(view: CardView)
 
 const CARD_STEP_MAX := 70.0
 const HOVER_RAISE := 14.0
@@ -230,8 +231,7 @@ func _input(event: InputEvent) -> void:
 		var point := _mouse
 		if not _dragging and point.distance_to(_press_point) > DRAG_THRESHOLD:
 			if _pressed_view.card.is_locked():
-				locked_card_dragged.emit(_pressed_view)
-				_shake(_pressed_view)
+				_reject_sirep(_pressed_view)
 				_pressed_view = null
 				return
 			_dragging = true
@@ -255,7 +255,10 @@ func _release(point: Vector2) -> void:
 		_dragging = false
 		return
 	if not _dragging:
-		battle.request_play_card(index)
+		if view.card.is_locked():
+			_reject_sirep(view)
+		else:
+			battle.request_play_card(index)
 		return
 	_dragging = false
 	var hand_rect := get_global_rect().grow_individual(0, 30, 0, 0)
@@ -308,6 +311,20 @@ func _shake(view: CardView) -> void:
 	for i: int in 4:
 		t.tween_property(view, "position:x", base.x + (3.0 if i % 2 == 0 else -3.0), 0.035)
 	t.tween_property(view, "position:x", base.x, 0.035)
+
+
+func _reject_sirep(view: CardView) -> void:
+	sirep_card_touched.emit(view)
+	_shake(view)
+
+
+## Kartu tersirep yang dipilih lewat keyboard: bergetar dan memberi tahu pemain.
+func reject_sirep_at(index: int) -> void:
+	var cards := hand.get_cards()
+	if index >= 0 and index < cards.size():
+		var v: CardView = _views.get(cards[index].uid)
+		if v != null:
+			_reject_sirep(v)
 
 
 ## Dipakai kalau aksi ditolak, supaya kartu yang sedang disorot ikut bergetar.

@@ -123,7 +123,7 @@ func _build() -> void:
 	_lock_layer.size = CARD_SIZE
 	_lock_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var shade := ColorRect.new()
-	shade.color = Color(0.05, 0.04, 0.1, 0.55)
+	shade.color = Color(0.05, 0.04, 0.1, 0.68)
 	shade.position = Vector2(3, 3)
 	shade.size = CARD_SIZE - Vector2(6, 6)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE

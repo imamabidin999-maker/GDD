@@ -219,7 +219,8 @@ func request_play_card(hand_index: int) -> bool:
 	if not _begin_request():
 		return false
 	var card := hand.get_card(hand_index)
-	if card == null or not player.consume_ap(PlayerState.AP_COST_PLAY_CARD):
+	# Kartu tersirep (ilmu Buto Putih) tidak bisa dimainkan. Dicek sebelum AP dipotong.
+	if card == null or card.is_locked() or not player.consume_ap(PlayerState.AP_COST_PLAY_CARD):
 		return _end_request(false)
 
 	hand.remove_card_at(hand_index)

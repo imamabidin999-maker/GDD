@@ -246,7 +246,7 @@ func _run() -> void:
 	check(is_equal_approx(other_ps.moxie, 125.0) and is_equal_approx(fk.player.moxie, 150.0), "pindah ke PlayerState baru, sambungan lama dilepas")
 	fk.bm.player = fk.player
 
-	print("[Buto Putih: LockCard + cooldown 2]")
+	print("[Buto Putih: Sirep + cooldown 2]")
 	var putih := make_buto(EnemyButo.ButoType.PUTIH, 300, 5)
 	putih.skill_cooldown_turns = 2
 	var fp := make_fixture([putih], 100)
@@ -272,8 +272,42 @@ func _run() -> void:
 	check(locked_indices(fp.hand).size() == 1 and fp.hero.current_hp == 90, "turn 4: LockCard lagi")
 	var li2 := locked_indices(fp.hand)[0]
 	var lc2 := fp.hand.get_card(li2)
-	check(fp.bm.request_play_card(li2) and not lc2.is_locked(), "kartu terkunci tetap bisa dimainkan, kuncinya lepas")
+	var ap_before := fp.player.current_ap
+	check(not fp.bm.request_play_card(li2) and lc2.is_locked() and fp.player.current_ap == ap_before, "kartu tersirep tidak bisa dimainkan, AP utuh")
+	var best_rank := 0
+	for c: CardInstance in fp.hand.get_cards():
+		best_rank = maxi(best_rank, c.get_rank())
+	check(lc2.get_rank() == best_rank, "Sirep menyasar kartu berbintang tertinggi")
 	check(fp.deck.verify_integrity(fp.hand.get_cards()), "integritas 15 kartu")
+
+	print("[Sirep: kartu terkuat, Putih Murka 2 kartu]")
+	var hk := HandManager.new()
+	root.add_child(hk)
+	var ranks: Array[int] = [1, 3, 2, 3, 1, 2]
+	var hk_cards: Array[CardInstance] = []
+	for r: int in ranks:
+		var card_data := make_card("S%d" % r, S, r, 5 * r)
+		var ci := CardInstance.new(card_data)
+		hk_cards.append(ci)
+		hk.add_card(ci)
+	var krng := RandomNumberGenerator.new()
+	krng.seed = 4
+	var first := hk.lock_strongest_cards(krng, 1, 1)
+	check(first.size() == 1 and hk.get_card(first[0]).get_rank() == 3, "satu sirep -> kartu bintang 3")
+	var second := hk.lock_strongest_cards(krng, 2, 1)
+	var second_ranks: Array[int] = []
+	for idx: int in second:
+		second_ranks.append(hk.get_card(idx).get_rank())
+	second_ranks.sort()
+	check(second_ranks == [2, 3], "dua sirep berikutnya -> bintang 3 sisa lalu bintang 2")
+	check(not hk.can_play_at(first[0]) and hk.can_play_at(0), "can_play_at menolak kartu tersirep")
+	var putih_murka := make_buto(EnemyButo.ButoType.PUTIH, 300, 5)
+	putih_murka.sirep_count = 2
+	var fpm := make_fixture([putih_murka], 100)
+	fpm.bm.start_battle(fpm.deck_list, fpm.enemies)
+	check(putih_murka.get_intent(fpm.bm).kind == EnemyIntent.Kind.LOCK and putih_murka.get_intent(fpm.bm).extra == 2, "niat Putih Murka: sirep 2 kartu")
+	fpm.bm.request_end_turn()
+	check(locked_indices(fpm.hand).size() == 2, "Putih Murka menyirep 2 kartu")
 
 	print("[Buto Hitam: fase 2 + ForceShuffle]")
 	var hitam := make_buto(EnemyButo.ButoType.HITAM, 100, 8)

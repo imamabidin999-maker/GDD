@@ -7,8 +7,8 @@ extends EnemyUnit
 ##   Hijau  : setiap beberapa turn menyemburkan racun. Racun mengurangi HP hero
 ##            di akhir giliran musuh, menembus Tameng.
 ##   Merah  : pola tiga langkah: serang biasa, ancang-ancang, pukulan berat.
-##   Putih  : skill LockCard, mengunci 1 kartu acak di tangan sehingga tidak bisa
-##            digeser atau digabung.
+##   Putih  : ilmu Sirep (skill LOCK_CARD), menyirep kartu berbintang tertinggi
+##            di tangan sehingga tidak bisa dimainkan, digeser, atau digabung.
 ##   Hitam  : boss. Saat HP-nya turun ke fase 2 ia murka (serangan lebih kuat)
 ##            dan memakai ForceShuffle: menghantam hero lalu mengacak sisa deck
 ##            dan urutan kartu di tangan.
@@ -53,8 +53,10 @@ signal phase_changed(phase: int)
 @export var heavy_multiplier: float = 2.5
 
 @export_group("Putih")
-## Berapa turn pemain kartu yang dikunci LockCard tetap terkunci.
+## Berapa giliran pemain kartu yang disirep tetap tersirep.
 @export_range(1, 5) var lock_duration_turns: int = 1
+## Berapa kartu yang disirep sekaligus (Buto Putih Murka: 2).
+@export_range(1, 3) var sirep_count: int = 1
 
 @export_group("Hitam (Boss)")
 ## Fase 2 dimulai saat HP <= rasio ini dikali max HP.
@@ -143,7 +145,7 @@ func get_intent(battle: BattleManager) -> EnemyIntent:
 		Skill.DRAINING_STRIKE:
 			return EnemyIntent.new(EnemyIntent.Kind.DRAIN, attack_power, roundi(overcharge_drain))
 		Skill.LOCK_CARD:
-			return EnemyIntent.new(EnemyIntent.Kind.LOCK, 0, lock_duration_turns)
+			return EnemyIntent.new(EnemyIntent.Kind.LOCK, 0, sirep_count)
 		Skill.FORCE_SHUFFLE:
 			return EnemyIntent.new(EnemyIntent.Kind.SHUFFLE, get_attack_damage())
 		Skill.POISON_SPIT:
@@ -207,12 +209,18 @@ func draining_strike(hero_health: HealthComponent) -> int:
 	return dealt
 
 
-## LockCard (Buto Putih): mengunci 1 kartu acak yang belum terkunci selama
-## lock_duration_turns turn pemain. Kartu terkunci tidak bisa digeser atau
-## digabung, tapi tetap bisa dimainkan. Mengembalikan index kartu yang dikunci,
-## atau -1 kalau tidak ada kartu yang bisa dikunci.
+## Sirep (Buto Putih): menyirep `sirep_count` kartu berbintang tertinggi yang
+## belum tersirep selama lock_duration_turns giliran pemain. Kartu tersirep
+## tidak bisa dimainkan, digeser, maupun digabung. Mengembalikan index kartu
+## pertama yang disirep, atau -1 kalau tidak ada kartu yang bisa disirep.
 func lock_card(hand: HandManager) -> int:
-	return hand.lock_random_card(_rng, lock_duration_turns)
+	var locked := lock_cards(hand)
+	return locked[0] if not locked.is_empty() else -1
+
+
+## Seperti lock_card(), tapi mengembalikan semua index yang disirep.
+func lock_cards(hand: HandManager) -> Array[int]:
+	return hand.lock_strongest_cards(_rng, sirep_count, lock_duration_turns)
 
 
 ## ForceShuffle (Buto Hitam fase 2): mengacak sisa draw pile dan urutan kartu
@@ -263,9 +271,11 @@ func _perform_lock_card(action: ButoSkillAction, battle: BattleManager) -> void:
 		action.succeeded = true
 		return
 
-	var index := lock_card(battle.hand)
-	if index >= 0:
-		action.locked_card = battle.hand.get_card(index)
+	var locked := lock_cards(battle.hand)
+	if not locked.is_empty():
+		for index: int in locked:
+			action.locked_cards.append(battle.hand.get_card(index))
+		action.locked_card = action.locked_cards[0]
 		action.succeeded = true
 		return
 

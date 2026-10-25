@@ -166,7 +166,7 @@ func _connect_signals() -> void:
 		_tooltip.show_text(view.get_tooltip_bbcode(), view.global_position + Vector2(0, 0)))
 	_hand_view.card_unhovered.connect(func(_v: CardView) -> void: _tooltip.hide_tip())
 	_hand_view.play_on_enemy_requested.connect(_on_play_on_enemy)
-	_hand_view.locked_card_dragged.connect(func(view: CardView) -> void:
+	_hand_view.sirep_card_touched.connect(func(view: CardView) -> void:
 		AudioManager.play_sfx("error")
 		_float_text(tr("BATTLE_CARD_LOCKED"), view.global_position + Vector2(38, -4), UIKit.COLOR_GOLD))
 
@@ -230,7 +230,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	else:
 		var key := event as InputEventKey
 		if key != null and key.pressed and not key.echo and key.keycode >= KEY_1 and key.keycode <= KEY_9:
-			_battle.request_play_card(key.keycode - KEY_1)
+			var index := key.keycode - KEY_1
+			if _battle.hand.is_locked_at(index):
+				_hand_view.reject_sirep_at(index)
+			else:
+				_battle.request_play_card(index)
 			get_viewport().set_input_as_handled()
 
 #endregion
@@ -419,7 +423,7 @@ func _intent_text(intent: EnemyIntent) -> String:
 		EnemyIntent.Kind.DRAIN:
 			return tr("INTENT_DRAIN") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.LOCK:
-			return tr("INTENT_LOCK")
+			return tr("INTENT_LOCK") % intent.extra
 		EnemyIntent.Kind.SHUFFLE:
 			return tr("INTENT_SHUFFLE") % intent.damage
 		EnemyIntent.Kind.POISON:

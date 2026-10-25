@@ -129,9 +129,10 @@ def build_characters() -> dict[str, Image.Image]:
     result = {}
     for key, rel in CHARACTERS.items():
         img = cut_character(src(key), remove_pockets=not rel.startswith("sprites/hero"))
-        if rel.startswith("sprites/buto"):
-            # Desain Buto menghadap kanan; di game Buto berdiri di kanan dan
-            # harus menghadap Eyang Palang di kiri.
+        if rel.startswith("sprites/buto") and rel.endswith("_idle.png"):
+            # Di desain asli pose diam Buto menghadap kanan, sedangkan pose
+            # serangnya sudah menghadap kiri. Di game Buto berdiri di kanan dan
+            # harus menghadap Eyang Palang, jadi hanya pose diam yang dibalik.
             img = img.transpose(Image.FLIP_LEFT_RIGHT)
         save(img, rel)
         result[os.path.basename(rel)[:-4]] = img

@@ -13,9 +13,11 @@ var skill: EnemyButo.Skill
 var succeeded: bool = false
 ## Damage ke hero (serangan Kuning, hantaman Hitam, atau serangan cadangan Putih).
 var damage_dealt: int = 0
-## Kartu yang dikunci LockCard. null kalau tidak ada, atau kuncinya ditunda ke
+## Kartu pertama yang disirep. null kalau tidak ada, atau sirepnya ditunda ke
 ## tangan berikutnya karena tangan sedang kosong.
 var locked_card: CardInstance
+## Semua kartu yang disirep (Buto Putih Murka menyirep 2).
+var locked_cards: Array[CardInstance] = []
 
 
 func _init(user: EnemyButo, used_skill: EnemyButo.Skill) -> void:

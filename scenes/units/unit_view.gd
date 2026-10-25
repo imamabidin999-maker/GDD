@@ -200,7 +200,7 @@ func set_intent(intent: EnemyIntent) -> void:
 	_intent_icon.texture = INTENT_ICONS.get(intent.kind)
 	match intent.kind:
 		EnemyIntent.Kind.LOCK:
-			_intent_label.text = ""
+			_intent_label.text = "x%d" % intent.extra if intent.extra > 1 else ""
 		EnemyIntent.Kind.CHARGE:
 			_intent_label.text = "!"
 		_:

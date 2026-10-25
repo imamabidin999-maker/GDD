@@ -245,6 +245,39 @@ func lock_card_at(index: int, turns: int) -> bool:
 	return true
 
 
+## Menyirep kartu berbintang tertinggi yang belum tersirep, sebanyak `count`.
+## Kalau beberapa kartu sama tinggi bintangnya, dipilih acak di antara itu.
+## Mengembalikan index kartu-kartu yang tersirep (bisa kurang dari `count`).
+func lock_strongest_cards(rng: RandomNumberGenerator, count: int, turns: int) -> Array[int]:
+	var locked: Array[int] = []
+	if turns <= 0:
+		return locked
+	for n: int in count:
+		var best_rank := -1
+		var candidates: Array[int] = []
+		for i: int in _cards.size():
+			if _cards[i].is_locked():
+				continue
+			var rank := _cards[i].get_rank()
+			if rank > best_rank:
+				best_rank = rank
+				candidates.clear()
+				candidates.append(i)
+			elif rank == best_rank:
+				candidates.append(i)
+		if candidates.is_empty():
+			break
+		var index := candidates[rng.randi_range(0, candidates.size() - 1)]
+		lock_card_at(index, turns)
+		locked.append(index)
+	return locked
+
+
+## Kartu tersirep tidak bisa dimainkan.
+func can_play_at(index: int) -> bool:
+	return is_valid_index(index) and not _cards[index].is_locked()
+
+
 ## Mengunci satu kartu acak yang belum terkunci. Mengembalikan index-nya,
 ## atau -1 kalau tidak ada kartu yang bisa dikunci.
 func lock_random_card(rng: RandomNumberGenerator, turns: int) -> int:

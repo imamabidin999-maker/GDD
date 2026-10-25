@@ -120,6 +120,8 @@ func _bot_turn(bm: BattleManager) -> void:
 		var best := 0
 		var best_score := -1.0
 		for i: int in bm.hand.get_card_count():
+			if not bm.hand.can_play_at(i):
+				continue
 			var d := bm.hand.get_card(i).data
 			var score := float(d.base_power + d.shield) + 6.0 * d.ap_gain
 			if score > best_score:

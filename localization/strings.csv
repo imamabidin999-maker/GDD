@@ -54,7 +54,7 @@ BATTLE_VICTORY,MENANG!,VICTORY!
 BATTLE_DEFEAT,KALAH...,DEFEATED...
 BATTLE_DEFEAT_HINT,"Para Buto masih berkeliaran. Atur siasat, lalu coba lagi.",The Buto still roam free. Rethink your tactics and try again.
 BATTLE_NO_AP,AP tidak cukup,Not enough AP
-BATTLE_CARD_LOCKED,Kartu terkunci,Card locked
+BATTLE_CARD_LOCKED,Kartu tersirep,Card under Sirep
 BATTLE_CHAIN,Evolutionary Chain!,Evolutionary Chain!
 BATTLE_PHASE2,Buto Hitam murka!,Buto Hitam is enraged!
 BATTLE_MERGE,Gabung,Merge
@@ -70,7 +70,7 @@ BATTLE_MOXIE_TIP,"Moxie %d%%. Kartu Fokus mengisinya. 100%% = Ultimate siap, sam
 BATTLE_CHAIN_TIP,Evolutionary Chain %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Ultimate (sekarang x%.2f).,Evolutionary Chain %d/3: play 3 rank-3 cards in a row to power up your Ultimate (now x%.2f).
 BATTLE_HELP,Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target  |  Spasi: akhiri turn,Click card: play  |  Drag card: move  |  Click Buto: target  |  Space: end turn
 BATTLE_HAND_SHUFFLED,Tangan diacak!,Hand shuffled!
-BATTLE_CARD_LOCKED_BY,Kartu dikunci!,Card locked!
+BATTLE_CARD_LOCKED_BY,Sirep!,Sirep!
 BATTLE_MOXIE_DRAINED,Moxie -%d%%,Moxie -%d%%
 BATTLE_CHARGING,Ancang-ancang!,Winding up!
 CARD_SERANG,Serang,Attack
@@ -96,11 +96,11 @@ EFFECT_BLOCK,Tameng %d,Block %d
 EFFECT_AP,+%d AP,+%d AP
 EFFECT_MOXIE,Moxie +%d%%,Moxie +%d%%
 CARD_RANK,Bintang %d,Rank %d
-CARD_LOCKED_TIP,Terkunci %d turn: tidak bisa digeser atau digabung.,Locked for %d turn(s): can't be moved or merged.
+CARD_LOCKED_TIP,"Tersirep %d giliran: tidak bisa dimainkan, digeser, atau digabung.","Under Sirep for %d turn(s): can't be played, moved, or merged."
 CARD_MERGE_HINT,Gabung: kartu beda warna dengan bintang sama yang bersebelahan.,Merge: adjacent cards of different colors with the same rank.
 INTENT_ATTACK,Akan menyerang %d,Will attack for %d
 INTENT_DRAIN,Menyerang %d dan menguras %d%% Moxie Overcharge,Attacks for %d and drains %d%% Overcharge Moxie
-INTENT_LOCK,Akan mengunci 1 kartu di tanganmu,Will lock 1 card in your hand
+INTENT_LOCK,Akan menyirep %d kartu terkuatmu selama 1 giliran,Will cast Sirep on your %d strongest card(s) for 1 turn
 INTENT_SHUFFLE,Menghantam %d lalu mengacak tangan dan deck,"Hits for %d, then shuffles your hand and deck"
 INTENT_POISON,Menyembur %d dan memberi %d Racun,Spits for %d and applies %d Poison
 INTENT_CHARGE,Ancang-ancang: turn depan pukulan berat %d,Winding up: next turn a heavy blow for %d
@@ -219,11 +219,11 @@ PUSTAKA_BUTO_MERAH_TEXT,"Tenaganya paling besar. Polanya selalu sama: serang bia
 Siasat: saat ia ancang-ancang, siapkan Tameng dari kartu Taktik.","The strongest of them all. Its pattern never changes: a normal attack, a wind-up, then a heavy blow.
 
 Tip: when it winds up, raise your Block with Tactic cards."
-PUSTAKA_BUTO_PUTIH_TEXT,"Penjaga gapura candi. Ilmunya mengunci satu kartu di tanganmu sehingga tidak bisa digeser atau digabung. Kartu terkunci masih bisa dimainkan.
+PUSTAKA_BUTO_PUTIH_TEXT,"Penjaga gapura candi. Ilmu Sirep-nya membuat kartu terkuat di tanganmu tak berdaya selama satu giliran: tidak bisa dimainkan, digeser, atau digabung.
 
-Siasat: mainkan kartu yang terkunci, kuncinya ikut lepas.","Guardian of the temple gate. Its magic locks one card in your hand so it can't be moved or merged. A locked card can still be played.
+Siasat: mainkan kartu berbintang tinggi sebelum gilirannya tiba.","Guardian of the temple gate. Its Sirep spell leaves the strongest card in your hand powerless for one turn: it can't be played, moved, or merged.
 
-Tip: play the locked card and the lock goes away with it."
+Tip: play your high-rank cards before its turn comes."
 PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk. Saat HP-nya tinggal separuh ia murka: serangannya makin kuat dan ia mengacak urutan kartu di tanganmu.
 
 Siasat: simpan Moxie penuh untuk fase kedua.","King of the Buto and root of the plague. At half HP it becomes enraged: its attacks grow stronger and it shuffles the cards in your hand.

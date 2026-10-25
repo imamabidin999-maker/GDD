@@ -211,6 +211,8 @@ func _best_card(bm: BattleManager) -> int:
 	var best_score := -INF
 	for i: int in hand.get_card_count():
 		var card := hand.get_card(i)
+		if card.is_locked():
+			continue # tersirep, tidak bisa dimainkan
 		var data := card.data
 		var score := float(data.base_power)
 		if target != null and data.base_power >= target.health.current_hp:
@@ -218,8 +220,6 @@ func _best_card(bm: BattleManager) -> int:
 		score += 1.1 * mini(data.shield, need)
 		score += 0.3 * enemy_count * bm.player.get_moxie_gain_from_card(card) * (1.0 if bm.player.moxie < PlayerState.MOXIE_MAX else 0.0)
 		score += 6.0 * data.ap_gain
-		if card.is_locked():
-			score += 2.0
 		if score > best_score:
 			best_score = score
 			best = i
@@ -242,7 +242,12 @@ func _casual_turn(bm: BattleManager) -> void:
 			continue
 		if bm.player.current_ap <= 0 or bm.hand.get_card_count() == 0:
 			return
-		if not bm.request_play_card(0):
+		var first_free := -1
+		for i: int in bm.hand.get_card_count():
+			if bm.hand.can_play_at(i):
+				first_free = i
+				break
+		if first_free < 0 or not bm.request_play_card(first_free):
 			return
 
 #endregion
