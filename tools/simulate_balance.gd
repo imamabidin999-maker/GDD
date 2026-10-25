@@ -178,9 +178,9 @@ func _move_for_merge(bm: BattleManager) -> bool:
 func _incoming_damage(bm: BattleManager) -> int:
 	var total := 0
 	for e: EnemyUnit in bm.get_living_enemies():
-		var intent := e.get_intent(bm)
-		if intent != null and intent.kind != EnemyIntent.Kind.CHARGE and intent.kind != EnemyIntent.Kind.LOCK:
-			total += intent.damage
+		for intent: EnemyIntent in e.get_intents(bm):
+			if intent != null and intent.kind != EnemyIntent.Kind.CHARGE and intent.kind != EnemyIntent.Kind.LOCK:
+				total += intent.damage
 	return total + bm.player.poison
 
 
@@ -217,7 +217,7 @@ func _best_card(bm: BattleManager) -> int:
 		var score := float(data.base_power)
 		if target != null and data.base_power >= target.health.current_hp:
 			score += 8.0
-		score += 1.1 * mini(data.shield, need)
+		score += 1.1 * mini(bm.player.get_card_shield(card), need)
 		score += 0.3 * enemy_count * bm.player.get_moxie_gain_from_card(card) * (1.0 if bm.player.moxie < PlayerState.MOXIE_MAX else 0.0)
 		score += 6.0 * data.ap_gain
 		if score > best_score:

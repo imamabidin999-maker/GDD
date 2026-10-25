@@ -157,15 +157,27 @@ func get_intent(battle: BattleManager) -> EnemyIntent:
 	return EnemyIntent.new(EnemyIntent.Kind.ATTACK, get_attack_damage())
 
 
+## Dua niat kalau Buto ini akan Ngamuk. Niat kedua dihitung dari keadaan
+## setelah aksi pertama (cooldown dan langkah pola), lalu keadaannya dikembalikan.
+func get_intents(battle: BattleManager) -> Array[EnemyIntent]:
+	var list: Array[EnemyIntent] = [get_intent(battle)]
+	if get_action_count() < 2:
+		return list
+	var saved_turns := _turns_until_skill
+	var saved_step := _merah_step
+	_after_pick(_pick_skill(battle, _tick_skill_cooldown()))
+	list.append(get_intent(battle))
+	_turns_until_skill = saved_turns
+	_merah_step = saved_step
+	return list
+
+
 ## Memilih aksi di awal ENEMY_TURN berdasarkan warna Buto.
 func decide_action(battle: BattleManager) -> BattleAction:
 	_update_phase()
 	var skill_ready := _tick_skill_cooldown()
 	var skill := _pick_skill(battle, skill_ready)
-	if skill == Skill.POISON_SPIT or skill == Skill.LOCK_CARD or skill == Skill.FORCE_SHUFFLE:
-		_start_skill_cooldown()
-	if buto_type == ButoType.MERAH:
-		_merah_step = (_merah_step + 1) % 3
+	_after_pick(skill)
 
 	if skill == Skill.NONE:
 		return EnemyAttackAction.new(self, battle.hero_health, get_attack_damage())
@@ -285,6 +297,14 @@ func _perform_lock_card(action: ButoSkillAction, battle: BattleManager) -> void:
 	action.damage_dealt = battle.hero_health.take_damage(attack_power)
 	action.succeeded = false
 	_turns_until_skill = 0
+
+
+# Efek samping memilih skill: memulai cooldown dan memajukan pola Buto Merah.
+func _after_pick(skill: Skill) -> void:
+	if skill == Skill.POISON_SPIT or skill == Skill.LOCK_CARD or skill == Skill.FORCE_SHUFFLE:
+		_start_skill_cooldown()
+	if buto_type == ButoType.MERAH:
+		_merah_step = (_merah_step + 1) % 3
 
 
 # true kalau skill siap dipakai turn ini. Kalau belum, cooldown dihitung mundur.

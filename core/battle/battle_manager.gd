@@ -48,6 +48,8 @@ signal turn_ended(turn_number: int)
 ## memindahkan state. Listener berikutnya sebaiknya mengecek is_accepting_input().
 signal player_input_ready
 signal enemy_turn_started
+## Buto ini Ngamuk di giliran musuh sekarang (beraksi dua kali).
+signal enemy_ngamuk(enemy: EnemyUnit)
 signal action_queued(action: BattleAction)
 ## Aksi mulai di-resolve, SEBELUM efeknya diterapkan. View memakai ini untuk
 ## tahu aksi mana yang sedang berjalan saat signal HP terpancar.
@@ -135,6 +137,7 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	_battle_id += 1
 	player.begin_battle() # nanti: oper Moxie awal & multiplier dari GameState
 	for enemy: EnemyUnit in _enemies:
+		enemy.amuk = enemy.start_amuk
 		enemy.on_battle_started(self)
 	_refresh_target()
 	battle_started.emit()
@@ -194,6 +197,23 @@ func is_battle_running() -> bool:
 ## (atau signal player_input_ready) untuk mengaktifkan tombol.
 func is_accepting_input() -> bool:
 	return _state == State.PLAYER_TURN and not _is_changing_state and not _is_handling_request
+
+
+func is_any_enemy_ngamuk_ready() -> bool:
+	for enemy: EnemyUnit in get_living_enemies():
+		if enemy.is_ngamuk_ready():
+			return true
+	return false
+
+
+## Gebrakan Dongkrek membuyarkan amukan semua Buto. Mengembalikan jumlah Buto
+## yang amukannya buyar.
+func calm_enemies() -> int:
+	var calmed := 0
+	for enemy: EnemyUnit in get_living_enemies():
+		if enemy.calm_amuk():
+			calmed += 1
+	return calmed
 
 
 func get_living_enemies() -> Array[EnemyUnit]:
@@ -409,6 +429,8 @@ func _setup_new_player_turn() -> void:
 	turn_number += 1
 	hero_health.clear_block()
 	player.start_turn()
+	# Prayitna: Eyang waspada kalau ada Buto yang akan Ngamuk di giliran musuh berikutnya.
+	player.prayitna = is_any_enemy_ngamuk_ready()
 	deck.fill_hand(hand)
 	for enemy: EnemyUnit in get_living_enemies():
 		enemy.on_player_turn_started(self)
@@ -420,12 +442,17 @@ func _enter_enemy_turn() -> void:
 	var battle_id := _battle_id
 	enemy_turn_started.emit()
 	for enemy: EnemyUnit in get_living_enemies():
-		@warning_ignore("redundant_await")
-		var action: BattleAction = await enemy.decide_action(self)
-		if _is_stale(battle_id, State.ENEMY_TURN):
-			return
-		if action != null:
-			_queue_action(action)
+		var count := enemy.get_action_count()
+		if count >= 2:
+			enemy_ngamuk.emit(enemy)
+		for i: int in count:
+			@warning_ignore("redundant_await")
+			var action: BattleAction = await enemy.decide_action(self)
+			if _is_stale(battle_id, State.ENEMY_TURN):
+				return
+			if action != null:
+				_queue_action(action)
+		enemy.finish_enemy_turn(count)
 	# Racun bekerja paling akhir, setelah semua Buto beraksi. Selalu diantre
 	# karena semburan racun di giliran ini baru berlaku setelah aksinya selesai.
 	_queue_action(PoisonTickAction.new(player))

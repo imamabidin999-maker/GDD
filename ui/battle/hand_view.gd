@@ -52,6 +52,7 @@ func setup(battle_manager: BattleManager) -> void:
 	hand.hand_changed.connect(_queue_rebuild)
 	hand.card_lock_changed.connect(func(_c: CardInstance, _l: bool) -> void: _queue_rebuild())
 	player.moxie_changed.connect(func(_v: float) -> void: _queue_rebuild())
+	player.prayitna_changed.connect(func(_on: bool) -> void: _queue_rebuild())
 	_queue_rebuild()
 
 
@@ -95,6 +96,7 @@ func _rebuild() -> void:
 				view.position = deck_point - global_position
 				view.modulate.a = 0.0
 		view.moxie_gain = player.get_moxie_gain_from_card(card)
+		view.shield_value = player.get_card_shield(card)
 		view.refresh()
 
 	_layout(true)

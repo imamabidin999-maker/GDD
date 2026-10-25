@@ -70,6 +70,10 @@ func _begin() -> void:
 		GameState.save_game()
 	var deck_list := CardDB.build_deck_list(GameState.deck)
 	_battle.start_battle(deck_list, _enemies)
+	for enemy: EnemyUnit in _enemies:
+		var view: UnitView = _enemy_views[enemy]
+		view.show_amuk(enemy.can_ngamuk)
+		view.set_amuk(enemy.amuk)
 
 
 #region Persiapan
@@ -142,6 +146,11 @@ func _connect_signals() -> void:
 	_battle.target_changed.connect(_on_target_changed)
 	_battle.turn_started.connect(_on_turn_started)
 	_battle.enemy_turn_started.connect(_on_enemy_turn_started)
+	_battle.enemy_ngamuk.connect(_on_enemy_ngamuk)
+	_player.prayitna_changed.connect(func(on: bool) -> void: _hero_view.set_prayitna(on))
+	for enemy: EnemyUnit in _enemies:
+		var view: UnitView = _enemy_views[enemy]
+		enemy.amuk_changed.connect(view.set_amuk)
 	_battle.player_input_ready.connect(_refresh_intents)
 	_battle.battle_ended.connect(_on_battle_ended)
 	_hand.hand_changed.connect(_refresh_intents)
@@ -277,6 +286,8 @@ func _present_ultimate(action: UltimateAction) -> void:
 	_hud.show_banner(tr("BATTLE_ULTIMATE"), UIKit.COLOR_GOLD)
 	_screen_flash(Color(1.0, 0.92, 0.7, 0.55))
 	_shake_world(5.0)
+	if action.calmed > 0:
+		_float_text(tr("BATTLE_AMUK_CALMED"), Vector2(470, 70), UIKit.COLOR_GOLD, true)
 
 
 func _present_skill(action: ButoSkillAction) -> void:
@@ -346,6 +357,18 @@ func _on_turn_started(_turn: int) -> void:
 	_hud.show_banner(tr("BATTLE_PLAYER_TURN"))
 	AudioManager.play_sfx("korek", 0.05, -4.0)
 	_refresh_intents()
+	if _player.prayitna:
+		_hero_view.play_glow(Color(0.6, 1.0, 0.6))
+		_float_text(tr("BATTLE_PRAYITNA"), _hero_view.get_top_point() + Vector2(0, 6), UIKit.COLOR_GREEN, true)
+
+
+func _on_enemy_ngamuk(enemy: EnemyUnit) -> void:
+	var view: UnitView = _enemy_views.get(enemy)
+	if view == null:
+		return
+	view.play_glow(Color(1.0, 0.35, 0.25))
+	AudioManager.play_sfx("hit_heavy", 0.05, -6.0)
+	_float_text(tr("BATTLE_NGAMUK"), view.get_top_point() + Vector2(0, -2), UIKit.COLOR_RED, true)
 
 
 func _on_enemy_turn_started() -> void:
@@ -362,7 +385,7 @@ func _refresh_intents() -> void:
 	for enemy: EnemyUnit in _enemies:
 		var view: UnitView = _enemy_views[enemy]
 		if enemy.is_alive():
-			view.set_intent(enemy.get_intent(_battle))
+			view.set_intents(enemy.get_intents(_battle))
 		else:
 			view.hide_intent()
 
@@ -399,9 +422,17 @@ func _on_enemy_hover(view: UnitView, hovering: bool) -> void:
 		var buto := enemy as EnemyButo
 		var lines: Array[String] = []
 		lines.append("[b][color=#ffdc80]%s[/color][/b]" % enemy.display_name)
-		lines.append("HP %d/%d" % [enemy.health.current_hp, enemy.health.max_hp])
+		lines.append(tr("UNIT_HP") % [enemy.health.current_hp, enemy.health.max_hp])
 		if not _enemy_phase and buto != null:
-			lines.append(_intent_text(buto.get_intent(_battle)))
+			var intents := buto.get_intents(_battle)
+			if intents.size() >= 2:
+				lines.append("[color=#ff6a5a]%s[/color]" % tr("INTENT_NGAMUK"))
+				for intent: EnemyIntent in intents:
+					lines.append("- " + _intent_text(intent))
+			else:
+				lines.append(_intent_text(intents[0]))
+		if enemy.can_ngamuk:
+			lines.append("[color=#ffb070]%s[/color]" % (tr("AMUK_TIP") % [clampi(enemy.amuk, 0, EnemyUnit.AMUK_MAX), EnemyUnit.AMUK_MAX]))
 		_tooltip.show_text("\n".join(lines), view.get_top_point() + Vector2(10, 20))
 
 
@@ -410,7 +441,9 @@ func _on_hero_hover(_view: UnitView, hovering: bool) -> void:
 		_tooltip.hide_tip()
 		return
 	var lines: Array[String] = ["[b][color=#ffdc80]%s[/color][/b]" % tr("SPEAKER_EYANG")]
-	lines.append("HP %d/%d" % [_hero_health.current_hp, _hero_health.max_hp])
+	lines.append(tr("UNIT_HP") % [_hero_health.current_hp, _hero_health.max_hp])
+	if _player.prayitna:
+		lines.append("[color=#b8ff8c]%s[/color]" % tr("PRAYITNA_TIP"))
 	if _hero_health.block > 0:
 		lines.append(tr("BATTLE_BLOCK_TIP") % _hero_health.block)
 	if _player.poison > 0:

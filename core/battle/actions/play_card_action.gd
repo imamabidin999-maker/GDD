@@ -23,9 +23,10 @@ func _apply(battle: BattleManager) -> void:
 	var data := card.data
 	if data.base_power > 0 and EnemyUnit.is_valid_alive(target):
 		damage_dealt = target.health.take_damage(data.base_power)
-	if data.shield > 0:
-		battle.hero_health.gain_block(data.shield)
-		shield_gained = data.shield
+	var shield := battle.player.get_card_shield(card) # termasuk tambahan Prayitna
+	if shield > 0:
+		battle.hero_health.gain_block(shield)
+		shield_gained = shield
 	if data.ap_gain > 0:
 		ap_gained = battle.player.gain_ap(data.ap_gain)
 

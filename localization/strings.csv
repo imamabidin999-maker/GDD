@@ -240,7 +240,13 @@ Greget dan Gebrakan Dongkrek: pada 100% Gebrakan Dongkrek siap dan menghantam se
 
 Wirama: mainkan 3 kartu bintang 3 berturut-turut dalam satu giliran untuk memperkuat Gebrakan Dongkrek sampai battle selesai.
 
-Niat Buto: ikon di atas kepala Buto menunjukkan apa yang akan ia lakukan di giliran berikutnya.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
+Niat Buto: ikon di atas kepala Buto menunjukkan apa yang akan ia lakukan di giliran berikutnya.
+
+Sirep: ilmu Buto Putih. Kartu yang tersirep tidak bisa dimainkan, digeser, atau digabung selama satu giliran.
+
+Ngamuk: sebagian Buto punya tiga titik Amuk berbentuk api di atas kepalanya. Setiap aksinya mengisi satu titik. Saat ketiganya penuh muncul tanda x2, dan di giliran berikutnya ia beraksi dua kali.
+
+Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dongkrek juga membuyarkan amukan: semua titik Amuk kembali kosong.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
 
 Cards: Sabet deals damage, Semedi charges Greget, Tangkis gives Block. Stars show a card's strength.
 
@@ -250,7 +256,13 @@ Greget and Gebrakan Dongkrek: at 100% Greget (fighting spirit), Gebrakan Dongkre
 
 Wirama (rhythm): play 3 rank-3 cards in a row in one turn to power up Gebrakan Dongkrek for the rest of the battle.
 
-Buto intent: the icon above each Buto shows what it will do on its next turn."
+Buto intent: the icon above each Buto shows what it will do on its next turn.
+
+Sirep: Buto Putih's spell. A card under Sirep can't be played, moved, or merged for one turn.
+
+Ngamuk (rampage): some Buto have three flame-shaped Amuk points above their heads. Each of their actions fills one point. When all three are full an x2 mark appears, and on its next turn the Buto acts twice.
+
+Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dongkrek also breaks their rage: every Amuk point is emptied."
 PUSTAKA_CARDS,Kartu,Cards
 PUSTAKA_STATS,Nyawa %d  |  Serangan %d,HP %d  |  Attack %d
 PUSTAKA_RECIPES,Resep Gabungan Jurus,Merge Recipes
@@ -270,3 +282,11 @@ DECK_HINT,15 kartu. Berkah Roro Ayu menaikkan bintang kartu.,15 cards. Roro Ayu'
 ENDING_THANKS,Tamat,The End
 HUD_AP,KETUKAN,KETUKAN
 HUD_MOXIE,GREGET,GREGET
+UNIT_HP,Nyawa %d/%d,HP %d/%d
+BATTLE_NGAMUK,Ngamuk!,Ngamuk!
+BATTLE_PRAYITNA,Prayitna!,Prayitna!
+BATTLE_AMUK_CALMED,Amukan buyar!,Their rage is broken!
+INTENT_NGAMUK,Ngamuk! Beraksi dua kali:,Ngamuk! Acts twice:
+AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gebrakan Dongkrek mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gebrakan Dongkrek empties it."
+PRAYITNA_TIP,Prayitna: ada Buto yang bersiap ngamuk. Tameng dari kartu +50% di giliran ini.,Prayitna (vigilance): a Buto is about to go Ngamuk. Block from cards +50% this turn.
+CARD_PRAYITNA_TIP,Prayitna: Tameng +50%,Prayitna: Block +50%

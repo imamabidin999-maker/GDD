@@ -16,6 +16,8 @@ signal ap_changed(current: int, maximum: int)
 ## Aksi ditolak karena AP kurang. Bisa dipakai UI untuk membuat pip AP berkedip.
 signal ap_rejected(requested: int, available: int)
 signal moxie_changed(value: float)
+## Buff Prayitna (waspada) aktif atau berakhir.
+signal prayitna_changed(active: bool)
 ## Moxie baru saja menyentuh 100%.
 signal ultimate_ready
 ## Moxie baru saja menyentuh 200%.
@@ -33,6 +35,8 @@ const AP_HARD_CAP: int = 9
 
 const MOXIE_NORMAL_CAP: float = 100.0
 const MOXIE_MAX: float = 200.0
+## Pengali Tameng kartu selama Prayitna.
+const PRAYITNA_SHIELD_MULTIPLIER: float = 1.5
 
 ## Jumlah kartu bintang maksimal yang dibutuhkan untuk memicu Evolutionary Chain.
 const CHAIN_LENGTH: int = 3
@@ -83,6 +87,15 @@ var ultimate_damage_multiplier: float = 1.0
 var evolution_stacks: int = 0
 ## Tumpukan Racun. Di akhir giliran musuh, hero kehilangan HP sebanyak jumlah
 ## tumpukan, lalu tumpukan berkurang satu.
+## Prayitna: ada Buto yang bersiap Ngamuk, Tameng dari kartu bertambah 50%.
+## Diatur BattleManager di awal setiap giliran pemain.
+var prayitna: bool = false:
+	set(value):
+		if value == prayitna:
+			return
+		prayitna = value
+		prayitna_changed.emit(prayitna)
+
 var poison: int = 0:
 	set(value):
 		var changed := value != poison
@@ -102,6 +115,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 	evolution_stacks = 0
 	moxie = starting_moxie
 	poison = 0
+	prayitna = false
 	start_turn()
 
 
@@ -215,6 +229,15 @@ func spend_moxie_for_ultimate() -> float:
 	var spent := moxie
 	moxie = 0.0
 	return spent
+
+
+## Tameng yang diberikan kartu ini sekarang (termasuk tambahan Prayitna).
+func get_card_shield(card: CardInstance) -> int:
+	if card == null or card.data.shield <= 0:
+		return 0
+	if prayitna:
+		return ceili(card.data.shield * PRAYITNA_SHIELD_MULTIPLIER)
+	return card.data.shield
 
 
 ## Berapa Moxie yang didapat dari memainkan kartu ini.

@@ -28,6 +28,9 @@ const PADLOCK := preload("res://assets/ui/padlock.png")
 var card: CardInstance
 ## Moxie yang didapat kalau kartu ini dimainkan (diisi HandView dari PlayerState).
 var moxie_gain: float = 0.0
+## Tameng yang diberikan kartu ini sekarang. -1 = pakai nilai dasar kartu.
+## Lebih besar dari nilai dasar saat Prayitna aktif.
+var shield_value: int = -1
 ## Disorot emas kalau bisa digabung dengan tetangganya.
 var mergeable: bool = false:
 	set(value):
@@ -158,8 +161,10 @@ func refresh() -> void:
 		child.queue_free()
 	if data.base_power > 0:
 		_add_stat(MINI_ATTACK, str(data.base_power), Color(1, 0.9, 0.85))
-	if data.shield > 0:
-		_add_stat(MINI_BLOCK, str(data.shield), UIKit.COLOR_GREEN)
+	var shield := get_shield()
+	if shield > 0:
+		var boosted := shield > data.shield
+		_add_stat(MINI_BLOCK, str(shield), Color(0.75, 1.0, 0.55) if boosted else UIKit.COLOR_GREEN)
 	if moxie_gain > 0.0:
 		_add_stat(MINI_MOXIE, "+%d" % roundi(moxie_gain), UIKit.COLOR_BLUE)
 	if data.ap_gain > 0:
@@ -168,6 +173,10 @@ func refresh() -> void:
 	_lock_layer.visible = card.is_locked()
 	_lock_label.text = str(card.lock_turns) if card.is_locked() else ""
 	queue_redraw()
+
+
+func get_shield() -> int:
+	return shield_value if shield_value >= 0 else card.data.shield
 
 
 func _add_stat(texture: Texture2D, text: String, color: Color) -> void:
@@ -221,8 +230,10 @@ func get_tooltip_bbcode() -> String:
 	lines.append("[b][color=#%s]%s[/color][/b]  [color=#ffd36e]%s[/color]" % [_accent.to_html(false), tr(data.display_name), tr("CARD_RANK") % data.rank])
 	if data.base_power > 0:
 		lines.append(tr("EFFECT_DAMAGE") % data.base_power)
-	if data.shield > 0:
-		lines.append(tr("EFFECT_BLOCK") % data.shield)
+	if get_shield() > 0:
+		lines.append(tr("EFFECT_BLOCK") % get_shield())
+		if get_shield() > data.shield:
+			lines.append("[color=#b8ff8c]%s[/color]" % tr("CARD_PRAYITNA_TIP"))
 	if moxie_gain > 0.0:
 		lines.append(tr("EFFECT_MOXIE") % roundi(moxie_gain))
 	if data.ap_gain > 0:

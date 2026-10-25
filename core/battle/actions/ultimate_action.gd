@@ -1,6 +1,7 @@
 class_name UltimateAction
 extends BattleAction
-## Ultimate Eyang Palang: "Gebrakan Palang", menghantam SEMUA Buto.
+## Ultimate Eyang Palang: "Gebrakan Dongkrek", menghantam SEMUA Buto.
+## Bunyinya juga membuyarkan amukan: titik Amuk semua Buto dikosongkan.
 ## Moxie sudah dihabiskan BattleManager saat request, jadi aksi ini tinggal
 ## menghitung damage.
 ##
@@ -15,6 +16,8 @@ var base_damage: int
 var damage_per_target: int = 0
 var damage_dealt: int = 0
 var targets: Array[EnemyUnit] = []
+## Berapa Buto yang amukannya buyar.
+var calmed: int = 0
 
 
 func _init(spent_moxie: float, ultimate_base_damage: int) -> void:
@@ -28,3 +31,4 @@ func _apply(battle: BattleManager) -> void:
 	targets = battle.get_living_enemies()
 	for enemy: EnemyUnit in targets:
 		damage_dealt += enemy.health.take_damage(damage_per_target)
+	calmed = battle.calm_enemies()

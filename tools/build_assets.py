@@ -418,6 +418,21 @@ def mini_icon(kind: str) -> Image.Image:
         d.rectangle([1, 2, 8, 11], fill=(110, 90, 90, 255))
         d.line([(2, 4), (7, 9)], fill=(220, 120, 120, 255))
         d.line([(2, 9), (7, 4)], fill=(220, 120, 120, 255))
+    elif kind == "amuk":
+        # api kecil: titik Amuk yang sudah terisi
+        d.polygon([(5, 0), (9, 5), (9, 8), (6, 11), (3, 11), (1, 8), (1, 5), (3, 3), (4, 5)], fill=(236, 84, 52, 255))
+        d.polygon([(5, 5), (7, 8), (6, 10), (4, 10), (3, 8)], fill=(255, 200, 90, 255))
+    elif kind == "amuk_empty":
+        d.polygon([(5, 0), (9, 5), (9, 8), (6, 11), (3, 11), (1, 8), (1, 5), (3, 3), (4, 5)], fill=(70, 50, 60, 255))
+        d.polygon([(5, 5), (7, 8), (6, 10), (4, 10), (3, 8)], fill=(42, 32, 44, 255))
+    elif kind == "prayitna":
+        # mata waspada dengan sinar: buff Prayitna
+        d.line([(5, 0), (5, 1)], fill=(255, 220, 120, 255))
+        d.line([(1, 1), (2, 2)], fill=(255, 220, 120, 255))
+        d.line([(9, 1), (8, 2)], fill=(255, 220, 120, 255))
+        d.polygon([(0, 7), (3, 4), (8, 4), (11, 7), (8, 10), (3, 10)], fill=(232, 240, 226, 255))
+        d.ellipse([3, 4, 8, 10], fill=(92, 190, 110, 255))
+        d.rectangle([5, 6, 6, 8], fill=(20, 40, 24, 255))
     elif kind == "chain":
         d.ellipse([0, 3, 6, 9], outline=(232, 182, 72, 255), width=2)
         d.ellipse([5, 2, 11, 8], outline=(255, 220, 120, 255), width=2)
@@ -434,7 +449,8 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_gong(), "ui/icon_ultimate.png")
     print("Ikon kecil:")
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "shuffle", "charge",
-                 "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain"):
+                 "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",
+                 "amuk", "amuk_empty", "prayitna"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
     # gembok besar untuk kartu terkunci
     img, d = canvas(20, 24)
@@ -445,6 +461,14 @@ def build_icons(eye: Image.Image) -> None:
     d.rectangle([1, 10, 18, 12], fill=(255, 220, 130, 255))
     d.rectangle([8, 14, 11, 20], fill=(70, 46, 20, 255))
     save(add_outline(img), "ui/padlock.png")
+    # titik Amuk kecil (api 7x8) di atas kepala Buto
+    for filled in (True, False):
+        img, d = canvas(7, 8)
+        body = (236, 84, 52, 255) if filled else (70, 50, 60, 255)
+        core = (255, 200, 90, 255) if filled else (42, 32, 44, 255)
+        d.polygon([(3, 0), (6, 4), (6, 6), (4, 7), (2, 7), (0, 6), (0, 4), (2, 2)], fill=body)
+        d.polygon([(3, 4), (4, 6), (2, 6)], fill=core)
+        save(img, "ui/amuk_dot.png" if filled else "ui/amuk_dot_empty.png")
 
 
 # ---------------------------------------------------------------------------

@@ -11,6 +11,8 @@ signal hover_changed(view: UnitView, hovering: bool)
 
 const SHADER := preload("res://assets/shaders/sprite_fx.gdshader")
 const FEET_Y := 150.0
+const AMUK_FULL := preload("res://assets/ui/amuk_dot.png")
+const AMUK_EMPTY := preload("res://assets/ui/amuk_dot_empty.png")
 const BAR_WIDTH := 58
 const OUTLINE_NORMAL := Color(0.78, 0.82, 1.0, 0.45)
 const OUTLINE_TARGET := Color(1.0, 0.82, 0.35, 0.95)
@@ -45,6 +47,13 @@ var _poison_label: Label
 var _intent_box: HBoxContainer
 var _intent_icon: TextureRect
 var _intent_label: Label
+var _intent_icon2: TextureRect
+var _intent_label2: Label
+var _ngamuk_badge: Label
+var _amuk_row: HBoxContainer
+var _amuk_dots: Array[TextureRect] = []
+var _amuk_pulse: Tween
+var _prayitna_icon: TextureRect
 var _marker: Polygon2D
 var _click_area: Control
 var _home := Vector2.ZERO
@@ -119,6 +128,10 @@ func _build() -> void:
 	_poison_label = UIKit.small_label("0", UIKit.COLOR_GREEN)
 	_poison_box.add_child(_poison_label)
 	_status_row.add_child(_poison_box)
+	# Prayitna (hanya Eyang Palang): ikon mata waspada.
+	_prayitna_icon = UIKit.icon(preload("res://assets/ui/mini_prayitna.png"))
+	_prayitna_icon.visible = false
+	_status_row.add_child(_prayitna_icon)
 	_block_box.visible = false
 	_poison_box.visible = false
 
@@ -133,8 +146,32 @@ func _build() -> void:
 	_intent_label.add_theme_color_override("font_outline_color", Color(0.03, 0.03, 0.06))
 	_intent_label.add_theme_constant_override("outline_size", 3)
 	_intent_box.add_child(_intent_label)
+	# Aksi kedua, hanya tampil saat Buto ini akan Ngamuk.
+	_intent_icon2 = UIKit.icon(null)
+	_intent_box.add_child(_intent_icon2)
+	_intent_label2 = UIKit.label("", &"", UIKit.COLOR_TEXT)
+	_intent_label2.add_theme_color_override("font_outline_color", Color(0.03, 0.03, 0.06))
+	_intent_label2.add_theme_constant_override("outline_size", 3)
+	_intent_box.add_child(_intent_label2)
 	_intent_box.visible = false
 	add_child(_intent_box)
+
+	# Titik Amuk: tiga api kecil di bawah niat, dan "x2" saat siap Ngamuk.
+	_amuk_row = UIKit.hbox(2)
+	_amuk_row.position = Vector2(-20, top - 4)
+	_amuk_row.size = Vector2(40, 9)
+	_amuk_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for i: int in EnemyUnit.AMUK_MAX:
+		var dot := UIKit.icon(AMUK_EMPTY)
+		_amuk_row.add_child(dot)
+		_amuk_dots.append(dot)
+	_ngamuk_badge = UIKit.small_label("x2", UIKit.COLOR_RED)
+	_ngamuk_badge.add_theme_color_override("font_outline_color", Color(0.03, 0.03, 0.06))
+	_ngamuk_badge.add_theme_constant_override("outline_size", 2)
+	_ngamuk_badge.visible = false
+	_amuk_row.add_child(_ngamuk_badge)
+	_amuk_row.visible = false
+	add_child(_amuk_row)
 
 	# Penanda target: segitiga emas yang naik-turun.
 	_marker = Polygon2D.new()
@@ -192,21 +229,61 @@ func set_targeted(on: bool) -> void:
 	_material.set_shader_parameter("outline_color", OUTLINE_TARGET if on and not _dead else OUTLINE_NORMAL)
 
 
+## Titik Amuk hanya tampil untuk Buto yang bisa Ngamuk.
+func show_amuk(enabled: bool) -> void:
+	_amuk_row.visible = enabled and not _dead
+
+
+func set_amuk(value: int) -> void:
+	var filled := clampi(value, 0, _amuk_dots.size())
+	for i: int in _amuk_dots.size():
+		_amuk_dots[i].texture = AMUK_FULL if i < filled else AMUK_EMPTY
+	if _amuk_pulse != null:
+		_amuk_pulse.kill()
+		_amuk_row.modulate = Color.WHITE
+	_ngamuk_badge.visible = filled >= _amuk_dots.size()
+	if filled >= _amuk_dots.size():
+		# Amuk penuh: berdenyut supaya pemain sadar giliran depan ia Ngamuk.
+		_amuk_pulse = _amuk_row.create_tween().set_loops()
+		_amuk_pulse.tween_property(_amuk_row, "modulate", Color(1.6, 1.2, 1.2), 0.35)
+		_amuk_pulse.tween_property(_amuk_row, "modulate", Color.WHITE, 0.35)
+
+
+## Ikon Prayitna di samping bar nyawa Eyang Palang.
+func set_prayitna(on: bool) -> void:
+	_prayitna_icon.visible = on and not _dead
+
+
 func set_intent(intent: EnemyIntent) -> void:
-	if intent == null or _dead:
+	var list: Array[EnemyIntent] = [intent]
+	set_intents(list)
+
+
+## Satu niat, atau dua kalau Buto ini akan Ngamuk (keduanya tampil berdampingan).
+func set_intents(intents: Array[EnemyIntent]) -> void:
+	if intents.is_empty() or intents[0] == null or _dead:
 		_intent_box.visible = false
 		return
 	_intent_box.visible = true
-	_intent_icon.texture = INTENT_ICONS.get(intent.kind)
+	_show_intent(intents[0], _intent_icon, _intent_label)
+	var second := intents.size() >= 2 and intents[1] != null
+	_intent_icon2.visible = second
+	_intent_label2.visible = second
+	if second:
+		_show_intent(intents[1], _intent_icon2, _intent_label2)
+
+
+func _show_intent(intent: EnemyIntent, icon: TextureRect, label: Label) -> void:
+	icon.texture = INTENT_ICONS.get(intent.kind)
 	match intent.kind:
 		EnemyIntent.Kind.LOCK:
-			_intent_label.text = "x%d" % intent.extra if intent.extra > 1 else ""
+			label.text = "x%d" % intent.extra if intent.extra > 1 else ""
 		EnemyIntent.Kind.CHARGE:
-			_intent_label.text = "!"
+			label.text = "!"
 		_:
-			_intent_label.text = str(intent.damage) if intent.damage > 0 else ""
+			label.text = str(intent.damage) if intent.damage > 0 else ""
 	var heavy := intent.kind == EnemyIntent.Kind.HEAVY
-	_intent_label.add_theme_color_override("font_color", UIKit.COLOR_RED if heavy else UIKit.COLOR_TEXT)
+	label.add_theme_color_override("font_color", UIKit.COLOR_RED if heavy else UIKit.COLOR_TEXT)
 
 
 func hide_intent() -> void:
@@ -298,6 +375,9 @@ func play_death() -> void:
 	_dead = true
 	set_targeted(false)
 	hide_intent()
+	if _amuk_pulse != null:
+		_amuk_pulse.kill()
+	_amuk_row.visible = false
 	_click_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if _bob_tween != null:
 		_bob_tween.kill()
