@@ -14,6 +14,9 @@ extends SceneTree
 ## stages=6,7,9 hanya mensimulasikan babak itu, set=ajian_multiplier:2,bala_count:1
 ## mengubah properti EnemyButo (yang punya properti itu) sebelum battle.
 ##
+## noevents=1 mematikan kejadian di perjalanan, notabuh=1 mengeluarkan kartu
+## Tabuh dari undian berkah.
+##
 ## mode=ruwatan levels=1,4,7,10 mensimulasikan Ruwatan utuh (8 langkah, Nyawa
 ## terbawa, berkah dan kejadian dipilih acak) di Tingkat Pagebluk itu.
 
@@ -58,13 +61,12 @@ func _run() -> void:
 				var rng := RandomNumberGenerator.new()
 				rng.seed = 1000 * n + r
 				# Deck, Nyawa, dan berkah mengikuti berkah acak dari babak-babak
-				# sebelumnya (satu berkah untuk setiap kemenangan pertama).
-				var deck: Array[String] = []
-				deck.assign(_game_state.get("STARTER_DECK"))
-				var max_hp: int = _game_state.get("BASE_MAX_HP")
-				var owned: Array[String] = []
-				for b: int in n - 1:
-					max_hp = _apply_random_blessing(deck, max_hp, owned, rng)
+				# sebelumnya (satu berkah untuk setiap kemenangan pertama) dan
+				# kejadian di perjalanan setelah babak 2, 4, 6, dan 8.
+				var profile := _story_profile(n, rng)
+				var deck := profile.deck
+				var max_hp := profile.max_hp
+				var owned := profile.blessings
 				var result := _battle(stage, deck, max_hp, owned, rng.randi(), style)
 				if result.x > 0:
 					wins += 1
@@ -75,27 +77,24 @@ func _run() -> void:
 	quit(0)
 
 
-# Satu dari tiga pilihan acak, dipilih acak juga (pemain tidak selalu
-# memilih yang terbaik). Mengembalikan Nyawa maksimal yang baru.
-func _apply_random_blessing(deck: Array[String], max_hp: int, owned: Array[String], rng: RandomNumberGenerator) -> int:
+# Profil pemain sebelum babak `n`. RuwatanRun dipakai sekadar wadah deck,
+# berkah, dan Nyawa karena antarmukanya sama dengan GameState. Berkah dan
+# kejadian dipilih acak (pemain tidak selalu memilih yang terbaik).
+func _story_profile(n: int, rng: RandomNumberGenerator) -> RuwatanRun:
+	var starter: Array[String] = []
+	starter.assign(_game_state.get("STARTER_DECK"))
 	var excluded: Array = [Blessings.Kind.TABUH_KENONG]
 	if _arg("notabuh", "0") == "1":
 		excluded.append_array(Blessings.TABUH_FAMILY.keys())
-	var options := Blessings.roll(rng, deck, owned, 3, excluded)
-	if options.is_empty():
-		return max_hp
-	var kind: Blessings.Kind = options[rng.randi_range(0, options.size() - 1)]
-	owned.append(Blessings.kind_name(kind))
-	if Blessings.UPGRADE_FAMILY.has(kind):
-		Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
-	elif kind == Blessings.Kind.LARAS_GAMELAN:
-		Blessings.upgrade_tabuh(deck)
-	elif Blessings.TABUH_FAMILY.has(kind):
-		var at := _replace_index(deck)
-		deck[at] = Blessings.tabuh_spec_for(Blessings.TABUH_FAMILY[kind], deck[at])
-	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
-		return max_hp + Blessings.JAMU_HP
-	return max_hp
+	var profile := RuwatanRun.create(1, 0, starter, excluded)
+	var seen: Array[String] = []
+	for stage: int in range(1, n):
+		_sim_blessing(profile, rng)
+		if _arg("noevents", "0") != "1" and (_game_state.get("EVENT_STAGES") as Array).has(stage):
+			var id := JourneyEvents.pick(rng, seen)
+			seen.append(id)
+			_sim_event(profile, id, rng)
+	return profile
 
 
 # Kartu yang diganti kartu Tabuh: bintang terendah dari tipe dasar yang
@@ -193,7 +192,7 @@ func _run_ruwatan(runs: int) -> void:
 				var run := RuwatanRun.create(level, rng.randi(), starter, [Blessings.Kind.TABUH_KENONG])
 				while not run.is_over():
 					if run.current_step() == RuwatanRun.Step.EVENT:
-						_sim_event(run, rng)
+						_sim_event(run, run.current_event(), rng)
 						run.finish_event()
 						continue
 					var result := _battle(run.build_stage(), run.deck, run.max_hp, run.blessings, rng.randi(), style, run.hp, run)
@@ -224,9 +223,9 @@ func _sim_blessing(run: RuwatanRun, rng: RandomNumberGenerator) -> void:
 
 # Pilihan kejadian acak. Pemilih kartu: Tabuh menggantikan kartu terlemah,
 # tempa menaikkan kartu terendah.
-func _sim_event(run: RuwatanRun, rng: RandomNumberGenerator) -> void:
+func _sim_event(run: RuwatanRun, event_id: String, rng: RandomNumberGenerator) -> void:
 	var choice := "a" if rng.randf() < 0.5 else "b"
-	for effect: String in JourneyEvents.effects_of(run.current_event(), choice):
+	for effect: String in JourneyEvents.effects_of(event_id, choice):
 		if effect.begins_with("tabuh:"):
 			run.place_tabuh(_replace_index(run.deck), effect.get_slice(":", 1))
 		elif effect == "upgrade_pick":

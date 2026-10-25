@@ -4,6 +4,8 @@ Game RPG turn-based bergaya pixel art yang terinspirasi dari kesenian **Dongkrek
 
 Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Gebrakan Dongkrek yang bisa diisi sampai 200%.
 
+Petualangannya berisi 10 babak cerita. Di sepanjang jalan ada kartu Tabuh dari alat musik Dongkrek, tantangan untuk mengumpulkan Bintang Dongkrek, dan kejadian kecil di perjalanan. Setelah tamat, mode **Ruwatan** terbuka: perjalanan acak delapan langkah dengan sepuluh Tingkat Pagebluk.
+
 ## Cara menjalankan
 
 1. Unduh **Godot 4.7** versi standar (bukan .NET) dari <https://godotengine.org/download/>. Versi dari Steam juga bisa. Project ini diuji dengan Godot 4.7.2.
@@ -25,7 +27,9 @@ Seluruh game bisa dimainkan dengan mouse.
 | Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
 | Pilih target | Klik Buto | – |
 | Gebrakan Dongkrek | Tombol gong | Q |
+| Menabuh irama Gebrakan | Klik kiri | Spasi, Enter, atau Q |
 | Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
+| Kecepatan battle 1x / 2x | Tombol 1x di atas | – |
 | Jeda | Tombol II | Esc |
 
 Aturan singkatnya:
@@ -39,6 +43,8 @@ Aturan singkatnya:
 - **Greget**: pada 100% **Gebrakan Dongkrek** siap dan menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
 - **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Gebrakan Dongkrek sampai battle selesai.
 - **Niat Buto**: ikon di atas kepala Buto menunjukkan rencananya di giliran berikutnya.
+- **Kartu Tabuh** (bingkai emas): jurus dari alat musik Dongkrek. Didapat dari berkah atau kejadian di perjalanan, dan tidak bisa digabung. Lihat bagian Jurus Tabuh di bawah.
+- **Petunjuk**: saat sebuah mekanik muncul pertama kali (Buto Murka, Ngamuk, Lara, Sirep, Ajian, Bala, kartu Tabuh, dan lainnya), keterangan singkat tampil di pojok layar. Petunjuk bisa dimatikan di Pengaturan.
 
 ### Para Buto
 
@@ -95,11 +101,86 @@ Kemenangan **pertama** di setiap babak memberi satu berkah: pilih satu dari tiga
 | Jimat Penolak Sirep | Sirep pertama di tiap battle ditangkal | Sekali |
 | Jamu Beras Kencur | Setiap kali menerima Lara, jumlahnya berkurang 1 | Sekali |
 
-Berkah yang dimiliki terlihat di panel **Jurus** pada peta.
+| Tabuh Bedug / Kentongan Titir / Korek / Gong / Kenong | Kartu Tabuh itu menggantikan satu kartu pilihanmu | Sekali per jenis |
+| Laras Gamelan | 2 kartu Tabuh naik satu bintang | Selama masih ada yang bisa naik |
+
+Kenong baru masuk undian setelah 8 Bintang Dongkrek. Berkah yang dimiliki terlihat di panel **Jurus** pada peta.
+
+### Jurus Tabuh
+
+Saat berkah kartu Tabuh dipilih, kamu memilih kartu mana yang diganti. Bintang kartu Tabuh yang masuk sama dengan bintang kartu yang diganti **ditambah satu** (paling tinggi bintang 3), jadi mengganti kartu yang sudah ditempa tidak sia-sia. Deck tetap 15 kartu.
+
+| Kartu | Bintang 1 / 2 / 3 | Ketukan |
+|---|---|---|
+| Tabuh Bedug | 5 / 8 / 12 damage ke **semua** Buto | 1 |
+| Kentongan Titir | +1 Ketukan, tarik 2 / 2 / 3 kartu, Tameng 0 / 3 / 5 | 1 |
+| Korek | 4 / 6 / 9 damage, membuyarkan titik Amuk target, Greget +10 / 15 / 20% | 1 |
+| Gong | 18 / 26 / 36 damage | 2 |
+| Kenong | Kartu berikutnya giliran ini +40 / 60 / 80% | 0 |
+
+### Kejadian di perjalanan
+
+Setelah kemenangan pertama di babak 2, 4, 6, dan 8, sebuah kejadian menunggu di peta: Mbok Jamu Gendong, Pande Gamelan, Peronda Desa, Buto Kecil Tersesat, dan lainnya (ada delapan). Setiap kejadian punya dua pilihan, misalnya menukar sedikit Nyawa maksimal dengan kartu Tabuh, menempa satu kartu pilihanmu, atau menerima berkah. Kejadian yang sudah dialami tidak muncul lagi di petualangan yang sama.
+
+### Tantangan dan Bintang Dongkrek
+
+Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tantangan babak itu (misalnya "menang paling lama 6 giliran", "Lara tidak pernah lebih dari 3", "kalahkan kedua Bala sebelum Buto Hitam"). Tantangan dan bintangnya terlihat di panel babak pada peta, dan hasilnya muncul setelah menang. Bintang tetap tercatat walau memulai petualangan baru.
+
+| Bintang | Hadiah |
+|---|---|
+| 8 | Kenong masuk ke pilihan berkah |
+| 16 | Tombol **Pilihan lain** (undi ulang sekali) di panel berkah |
+| 24 | Ruwatan dimulai dengan satu berkah acak |
+| 30 | Gelar **Juru Dongkrek** di menu utama dan aura emas Eyang Palang |
+
+### Gebrakan Dongkrek berirama
+
+Saat Gebrakan Dongkrek dipakai, muncul permainan irama singkat: enam ketukan "dung" (bedug) dan "krek" (korek) berjalan ke lingkaran. Klik atau tekan Spasi tepat saat ketukan masuk lingkaran. Tepat bernilai penuh, cukup bernilai setengah, dan hasilnya menambah damage Gebrakan **sampai +30%**. Meleset semua tidak mengurangi damage. Irama tidak ikut dipercepat oleh kecepatan battle 2x, dan bisa dimatikan di Pengaturan.
+
+## Ruwatan
+
+Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, dan tetap terbuka walau kamu memulai petualangan baru. Ruwatan adalah perjalanan acak delapan langkah dengan deck, berkah, dan Nyawa sendiri:
+
+1. Dua Buto biasa
+2. Dua Buto biasa
+3. Kejadian di perjalanan
+4. Buto Murka dan pendampingnya
+5. Buto Murka dan pendampingnya
+6. Kejadian di perjalanan
+7. Sepasang Buto Murka
+8. Buto Hitam
+
+- Mulai dengan jurus awal dan 70 Nyawa, tanpa berkah. Setiap menang dapat satu berkah.
+- **Nyawa terbawa** dari battle ke battle dan hanya pulih 45% Nyawa maksimal setelah menang.
+- Kalah berarti Ruwatan selesai. Langkah terjauh di setiap tingkat dicatat.
+- Seluruh jalur (warna Buto dan letak kejadian) terlihat sejak awal. Ruwatan yang sedang berjalan tersimpan otomatis.
+
+**Tingkat Pagebluk** berlaku bertumpuk, dan berhasil di satu tingkat membuka tingkat berikutnya. Tingkat kesulitan cerita tidak berlaku di Ruwatan.
+
+| Tingkat | Tambahan |
+|---|---|
+| 1 | Ruwatan biasa |
+| 2 | Nyawa Buto +10% |
+| 3 | Serangan Buto +10% |
+| 4 | Pemulihan setelah menang hanya 35% |
+| 5 | Buto biasa juga bisa Ngamuk |
+| 6 | Pilihan berkah tinggal dua |
+| 7 | Setiap battle dimulai dengan 1 Lara |
+| 8 | Nyawa Buto +20% (menggantikan +10%) |
+| 9 | Buto Hitam memanggil 3 Bala |
+| 10 | Ajian makin sulit dibuyarkan (+10) dan Pagebluk Merata menambah 1 Lara lagi |
+
+## Pengaturan
+
+- **Bahasa**: Indonesia atau English.
+- **Musik, Efek Suara, Layar Penuh**.
+- **Kesulitan** mode cerita: Santai (Nyawa Buto −20%, serangan −15%), Normal, atau Sulit (Nyawa dan serangan +15%). Bisa diganti kapan saja.
+- **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
+- **Petunjuk** dan **Irama Gebrakan** bisa dinyalakan atau dimatikan.
+
+Progres tersimpan otomatis.
 
 Simpanan lama tetap bisa dipakai. Dari versi 5 babak, babak 1–4 tetap tercatat selesai, sedangkan babak 5 ke atas dibuka ulang karena isinya sudah berubah. Babak yang sudah selesai dianggap sudah memberi berkah, dan Jamu yang sudah diminum dihitung dari nyawa maksimal.
-
-Bahasa bisa diganti antara **Indonesia** dan **English** di menu Pengaturan. Progres tersimpan otomatis.
 
 ## Membuat versi siap main (export)
 
@@ -117,10 +198,12 @@ Versi Web bisa langsung diunggah ke itch.io (pilih "This file will be played in 
 
 ```
 autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
-core/          Logika battle: BattleManager, DeckController, HandManager, PlayerState, aksi
+core/          Logika battle (BattleManager, DeckController, HandManager, PlayerState, aksi)
+               dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan)
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
-scenes/        Menu utama, peta, battle, Pustaka, ending, dan unit
-ui/            Kartu, tangan, HUD, dialog, pengaturan, tooltip, titik peta
+scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
+ui/            Kartu, tangan, HUD, dialog, pengaturan, tooltip, titik peta, panel berkah,
+               kejadian, tantangan, irama Gebrakan, dan pemilih kartu
 assets/        Sprite, latar, kartu, ikon, font, shader, musik, dan efek suara
 localization/  Teks dua bahasa (dibuat oleh tools/strings_source.py)
 tests/         Tes otomatis
@@ -140,6 +223,8 @@ python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
 godot --headless -s tools/simulate_balance.gd   # simulasi keseimbangan
 # opsi simulasi: -- runs=80 stages=9,10 hpx=0.9 atkx=1.1 set=bala_hp:40,ajian_break_threshold:35
+#                -- noevents=1 notabuh=1   (tanpa kejadian / tanpa kartu Tabuh)
+#                -- mode=ruwatan levels=1,5,10   (Ruwatan utuh per Tingkat Pagebluk)
 ```
 
 Tes otomatis:
@@ -148,28 +233,37 @@ Tes otomatis:
 for t in tests/test_*.gd; do godot --headless -s "$t"; done
 ```
 
-`test_campaign_flow.gd` menamatkan seluruh kampanye 10 babak dengan klik mouse sungguhan, dari menu utama sampai ending (sekitar satu menit).
+`test_campaign_flow.gd` menamatkan seluruh kampanye 10 babak dengan klik mouse sungguhan, dari menu utama sampai ending, termasuk berkah, kartu Tabuh, tantangan, dan kejadian di perjalanan, lalu menempuh satu Ruwatan sampai panel hasil (sekitar satu setengah menit).
 
 Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` memang disengaja: tes itu sengaja memberi input salah untuk memastikan input tersebut ditolak.
 
 ### Keseimbangan
 
-Hasil `simulate_balance.gd` (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya. Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Gebrakan begitu siap.
+Hasil `simulate_balance.gd` di kesulitan Normal (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya, ditambah kejadian di perjalanan setelah babak 2, 4, 6, dan 8 (pilihannya juga acak). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, memilih kartu Tabuh sesuai keadaan, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Gebrakan begitu siap. Bonus irama Gebrakan tidak ikut dihitung.
 
 | Babak | Lawan | Menang (cerdas) | Menang (santai) | Lama rata-rata |
 |---|---|---|---|---|
 | 1 | Kuning | 100% | 100% | 3–4 giliran |
 | 2 | Hijau + Kuning | 100% | 100% | 5–6 giliran |
-| 3 | Merah + Hijau | 100% | 98% | 5–7 giliran |
-| 4 | Putih + Merah | 93% | 86% | 7–8 giliran |
-| 5 | Kuning Murka + Hijau | 98% | 80% | 7–8 giliran |
-| 6 | Hijau Murka + Merah | 97% | 72% | 5–6 giliran |
-| 7 | Merah Murka + Putih | 99% | 80% | 6–7 giliran |
-| 8 | Putih Murka + Kuning | 96% | 76% | 8–9 giliran |
-| 9 | Keempat Buto Murka | 90% | 71% | 6–7 giliran |
-| 10 | Buto Hitam | 95% | 58% | 12 giliran |
+| 3 | Merah + Hijau | 100% | 97% | 5–6 giliran |
+| 4 | Putih + Merah | 93% | 83% | 7–8 giliran |
+| 5 | Kuning Murka + Hijau | 99% | 81% | 6–7 giliran |
+| 6 | Hijau Murka + Merah | 99% | 73% | 5 giliran |
+| 7 | Merah Murka + Putih | 98% | 81% | 6–7 giliran |
+| 8 | Putih Murka + Kuning | 96% | 85% | 8 giliran |
+| 9 | Keempat Buto Murka | 99% | 86% | 5–6 giliran |
+| 10 | Buto Hitam | 97% | 57% | 10–11 giliran |
 
-Babak 10 sengaja paling menuntut siasat: bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala, jadi angkanya jauh di bawah bot cerdas. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
+Babak 10 sengaja paling menuntut siasat: bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala, jadi angkanya jauh di bawah bot cerdas. Di kesulitan Santai bot santai menang 87–100% di setiap babak; di kesulitan Sulit bot cerdas menang 57–100% dan bot santai 25–100%. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
+
+Ruwatan (`mode=ruwatan`, 200 perjalanan per tingkat; berkah dan kejadian dipilih acak, jadi pemain yang memilih dengan cermat akan lebih sering berhasil):
+
+| Tingkat Pagebluk | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Berhasil (cerdas) | 88% | 71% | 58% | 42% | 46% | 38% | 32% | 15% | 12% | 7% |
+| Berhasil (santai) | 28% | 14% | 6% | 3% | 4% | 2% | 2% | 1% | 0% | 0% |
+
+Angka Buto Ruwatan dan aturan tiap tingkat ada di `core/progress/ruwatan_run.gd`. Catatan perancangan lengkap untuk pembaruan ini ada di `docs/04-rancangan-pembaruan-v3.md`.
 
 ## Kredit
 

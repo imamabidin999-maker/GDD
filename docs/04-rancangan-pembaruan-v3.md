@@ -146,3 +146,31 @@ Catatan penyetelan: rancangan awal memakai pemulihan 40%/25% dan 2 Lara di tingk
 | 12 | Kejadian di perjalanan |
 | 13 | Mode Ruwatan |
 | 14 | Keseimbangan, tes, dokumentasi |
+
+## 8. Hasil Akhir dan Catatan Keseimbangan
+
+Semua tahap 8 sampai 14 sudah dikerjakan. Beberapa hal yang berubah dari rancangan awal setelah dicoba dan disimulasikan:
+
+- **Kartu Tabuh dan aturan bintang +1.** Waktu Tabuh pertama kali masuk, angka menang bot turun tajam (bot cerdas 23–63% di babak akhir). Sebagian karena kartu Tabuh bintang 1 menggantikan kartu yang sudah ditempa, jadi dibuat aturan "bintang kartu yang diganti ditambah satu". Penyebab terbesarnya ternyata ada di bot simulasi: bot cerdas menggeser kartu Tabuh untuk digabung padahal Tabuh tidak bisa digabung, sehingga Ketukannya terbuang. Setelah bot diperbaiki, angkanya kembali normal.
+- **Kejadian di perjalanan ikut disimulasikan.** Simulasi cerita sekarang memberi kejadian acak setelah babak 2, 4, 6, dan 8, sama seperti di game. Dengan kejadian, keseimbangan mode cerita kembali ke profil v2 tanpa perlu mengubah angka Buto.
+- **Ruwatan.** Angka Buto dibuat lebih ringan daripada babak cerita, pemulihan dinaikkan ke 45%/35%, dan tingkat 7 memakai 1 Lara. Rinciannya ada di bagian 5.
+
+Hasil simulasi akhir, kesulitan Normal, 200 battle per babak (berkah dan kejadian dipilih acak):
+
+| Babak | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Bot cerdas | 100% | 100% | 100% | 93% | 99% | 99% | 98% | 96% | 99% | 97% |
+| Bot santai | 100% | 100% | 97% | 83% | 81% | 73% | 81% | 85% | 86% | 57% |
+
+Kesulitan Santai: bot santai menang 87–100% di setiap babak. Kesulitan Sulit: bot cerdas 57–100%, bot santai 25–100%.
+
+Ruwatan, 200 perjalanan per tingkat:
+
+| Tingkat | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Bot cerdas | 88% | 71% | 58% | 42% | 46% | 38% | 32% | 15% | 12% | 7% |
+| Bot santai | 28% | 14% | 6% | 3% | 4% | 2% | 2% | 1% | 0% | 0% |
+
+Bot memilih berkah dan pilihan kejadian secara acak, jadi angka ini lebih rendah daripada pemain yang memilih dengan cermat. Bonus irama Gebrakan juga tidak dihitung. Selisih tingkat 4 dan 5 masih dalam batas acak simulasi.
+
+Tes baru untuk pembaruan ini: `test_tabuh`, `test_challenges`, `test_rhythm`, `test_events`, dan `test_ruwatan`. `test_campaign_flow` sekarang ikut melewati pemilih kartu Tabuh, panel Hasil Tantangan, empat kejadian di perjalanan, dan satu Ruwatan sampai panel hasil.
