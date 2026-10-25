@@ -81,9 +81,23 @@ Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di at
 | II. Buto Murka | 5 Tegal Ilalang, 6 Alas Jati Peteng, 7 Kali Watu, 8 Jembatan Pring (masing-masing satu Buto Murka dan satu pendamping) |
 | III. Candi Pagebluk | 9 Pelataran Candi (keempat Buto Murka sekaligus), 10 Candi Pagebluk (Buto Hitam) |
 
-Setelah menang, Roro Ayu memberi satu **berkah** pilihan: menaikkan bintang dua kartu atau menambah nyawa maksimal. Babak yang sudah selesai boleh diulang untuk berkah tambahan.
+### Berkah Roro Ayu
 
-Simpanan dari versi 5 babak tetap bisa dipakai: babak 1–4 tetap tercatat selesai, sedangkan babak 5 ke atas dibuka ulang karena isinya sudah berubah.
+Kemenangan **pertama** di setiap babak memberi satu berkah: pilih satu dari tiga pilihan acak. Babak yang diulang tidak memberi berkah lagi, jadi sepanjang petualangan ada 9 berkah.
+
+| Berkah | Efek | Batas |
+|---|---|---|
+| Tempa Sabet / Olah Semedi / Laku Tangkis | 2 kartu tipe itu naik satu bintang | Selama masih ada yang bisa naik |
+| Jamu Kunyit Asam | Nyawa maksimal +10 | 3 kali |
+| Kendang Pembuka | +1 Ketukan di giliran pertama tiap battle | Sekali |
+| Greget Leluhur | Tiap battle dimulai dengan Greget 30% | Sekali |
+| Tameng Pusaka | Tameng 10 di giliran pertama tiap battle | Sekali |
+| Jimat Penolak Sirep | Sirep pertama di tiap battle ditangkal | Sekali |
+| Jamu Beras Kencur | Setiap kali menerima Lara, jumlahnya berkurang 1 | Sekali |
+
+Berkah yang dimiliki terlihat di panel **Jurus** pada peta.
+
+Simpanan lama tetap bisa dipakai. Dari versi 5 babak, babak 1–4 tetap tercatat selesai, sedangkan babak 5 ke atas dibuka ulang karena isinya sudah berubah. Babak yang sudah selesai dianggap sudah memberi berkah, dan Jamu yang sudah diminum dihitung dari nyawa maksimal.
 
 Bahasa bisa diganti antara **Indonesia** dan **English** di menu Pengaturan. Progres tersimpan otomatis.
 

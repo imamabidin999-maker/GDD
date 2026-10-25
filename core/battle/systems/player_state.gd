@@ -27,6 +27,8 @@ signal evolutionary_chain_triggered(stacks: int, multiplier: float)
 signal overcharge_drained(amount: float)
 ## Jumlah tumpukan Racun berubah (efek Buto Hijau).
 signal poison_changed(stacks: int)
+## Jimat Penolak Sirep menangkal satu Sirep.
+signal sirep_warded
 
 const AP_COST_PLAY_CARD: int = 1
 const AP_COST_MOVE_CARD: int = 1
@@ -106,6 +108,20 @@ var poison: int = 0:
 ## Pagebluk Merata (Buto Hitam fase 2): Lara tidak berkurang setelah bekerja.
 var poison_decay_paused: bool = false
 
+# Efek berkah, diisi Blessings.prepare_player() sebelum battle dimulai.
+## Greget di awal battle (Greget Leluhur).
+var start_moxie: float = 0.0
+## Ketukan tambahan di giliran pertama (Kendang Pembuka).
+var first_turn_bonus_ap: int = 0
+## Tameng di giliran pertama (Tameng Pusaka).
+var first_turn_block: int = 0
+## Sirep yang ditangkal per battle (Jimat Penolak Sirep).
+var sirep_wards_per_battle: int = 0
+## Pengurang Lara setiap kali menerima Lara (Jamu Beras Kencur).
+var poison_reduction: int = 0
+## Sisa tangkal Sirep di battle ini.
+var sirep_wards: int = 0
+
 var _played_this_turn: Array[CardInstance] = []
 var _chain_triggered_this_turn: bool = false
 
@@ -120,6 +136,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 	poison = 0
 	poison_decay_paused = false
 	prayitna = false
+	sirep_wards = sirep_wards_per_battle
 	start_turn()
 
 
@@ -173,8 +190,18 @@ func gain_ap(amount: int) -> int:
 #region Racun
 
 func add_poison(stacks: int) -> void:
+	stacks -= poison_reduction
 	if stacks > 0:
 		poison += stacks
+
+
+## Jimat Penolak Sirep: true kalau Sirep kali ini ditangkal.
+func consume_sirep_ward() -> bool:
+	if sirep_wards <= 0:
+		return false
+	sirep_wards -= 1
+	sirep_warded.emit()
+	return true
 
 
 ## Mengembalikan damage racun turn ini, lalu mengurangi tumpukan satu

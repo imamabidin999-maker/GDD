@@ -79,6 +79,7 @@ func _begin() -> void:
 		GameState.tutorial_done = true
 		GameState.save_game()
 	var deck_list := CardDB.build_deck_list(GameState.deck)
+	GameState.prepare_player(_player)
 	_battle.start_battle(deck_list, _enemies)
 	for enemy: EnemyUnit in _enemies:
 		var view: UnitView = _enemy_views[enemy]
@@ -330,7 +331,10 @@ func _present_skill(action: ButoSkillAction) -> void:
 		EnemyButo.Skill.LOCK_CARD:
 			view.play_glow(Color(0.9, 0.95, 1.0))
 			AudioManager.play_sfx("lock")
-			if action.succeeded:
+			if action.warded:
+				_hero_view.play_glow(Color(0.95, 0.8, 0.4))
+				_float_text(tr("BATTLE_SIREP_WARDED"), _hero_view.get_top_point(), UIKit.COLOR_GOLD, true)
+			elif action.succeeded:
 				_float_text(tr("BATTLE_CARD_LOCKED_BY"), view.get_top_point(), UIKit.COLOR_GOLD)
 		EnemyButo.Skill.POISON_SPIT:
 			view.play_attack()
@@ -402,11 +406,13 @@ func _on_target_changed(target: EnemyUnit) -> void:
 		_enemy_views[enemy].set_targeted(enemy == target)
 
 
-func _on_turn_started(_turn: int) -> void:
+func _on_turn_started(turn: int) -> void:
 	_enemy_phase = false
 	_hud.show_banner(tr("BATTLE_PLAYER_TURN"))
 	AudioManager.play_sfx("korek", 0.05, -4.0)
 	_refresh_intents()
+	if turn == 1 and _player.first_turn_bonus_ap > 0:
+		_float_text(tr("BATTLE_KENDANG") % _player.first_turn_bonus_ap, _hud.get_ap_point() + Vector2(0, -6), UIKit.COLOR_GOLD)
 	if _player.prayitna:
 		_hero_view.play_glow(Color(0.6, 1.0, 0.6))
 		_float_text(tr("BATTLE_PRAYITNA"), _hero_view.get_top_point() + Vector2(0, 6), UIKit.COLOR_GREEN, true)
@@ -544,6 +550,10 @@ func _on_hero_hover(_view: UnitView, hovering: bool) -> void:
 		lines.append(tr("BATTLE_BLOCK_TIP") % _hero_health.block)
 	if _player.poison > 0:
 		lines.append(tr("BATTLE_POISON_TIP") % [_player.poison, _player.poison])
+	if _player.sirep_wards > 0:
+		lines.append("[color=#ffd36e]%s[/color]" % tr("HERO_JIMAT_TIP"))
+	if _player.poison_reduction > 0:
+		lines.append("[color=#ffd36e]%s[/color]" % (tr("HERO_KENCUR_TIP") % _player.poison_reduction))
 	_tooltip.show_text("\n".join(lines), _hero_view.get_top_point() + Vector2(10, 20))
 
 
@@ -676,11 +686,14 @@ func _victory() -> void:
 	_hud.show_banner(tr("BATTLE_VICTORY"), UIKit.COLOR_GOLD)
 	await get_tree().create_timer(1.6).timeout
 	await _play_dialog(_stage.victory_dialog)
+	var first_win := not GameState.is_stage_blessed(_stage.stage_number)
 	GameState.complete_stage(_stage.stage_number)
 	if _stage.stage_number >= GameState.STAGE_COUNT:
 		SceneRouter.go_to(SceneRouter.ENDING)
 		return
 	var reward := RewardPanel.new()
+	reward.stage_number = _stage.stage_number
+	reward.already_received = not first_win
 	_overlay.add_child(reward)
 	await reward.done
 	SceneRouter.go_to(SceneRouter.STAGE_MAP)

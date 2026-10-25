@@ -316,6 +316,8 @@ func _open_deck() -> void:
 			continue
 		grid.add_child(_card_with_tooltip(data))
 
+	col.add_child(_blessing_row())
+
 	var close := UIKit.button(tr("BTN_CLOSE"), 120, true)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	close.pressed.connect(func() -> void:
@@ -323,6 +325,35 @@ func _open_deck() -> void:
 		_tooltip.hide_tip()
 		root.queue_free())
 	col.add_child(close)
+
+
+## Berkah yang dimiliki: ikon dengan keterangan saat disorot.
+func _blessing_row() -> Control:
+	var row := UIKit.hbox(4)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_child(UIKit.label(tr("BLESS_OWNED"), &"", UIKit.COLOR_GOLD))
+	if GameState.blessings.is_empty():
+		row.add_child(UIKit.label(tr("BLESS_NONE"), &"", UIKit.COLOR_DIM))
+		return row
+	var counts := {}
+	for entry: String in GameState.blessings:
+		counts[entry] = int(counts.get(entry, 0)) + 1
+	for entry: String in counts:
+		var kind := Blessings.from_name(entry)
+		if kind < 0:
+			continue
+		var tex: Texture2D = RewardPanel.BLESS_ICONS[kind]
+		var ic := UIKit.icon(tex)
+		ic.mouse_filter = Control.MOUSE_FILTER_STOP
+		var text := "[b][color=#ffd36e]%s[/color][/b]\n%s" % [tr(Blessings.text_key(kind)), tr(Blessings.text_key(kind) + "_DESC")]
+		if int(counts[entry]) > 1:
+			text = "[b][color=#ffd36e]%s x%d[/color][/b]\n%s" % [tr(Blessings.text_key(kind)), int(counts[entry]), tr(Blessings.text_key(kind) + "_DESC")]
+		ic.mouse_entered.connect(func() -> void: _tooltip.show_text(text, ic.global_position + Vector2(0, -40)))
+		ic.mouse_exited.connect(_tooltip.hide_tip)
+		row.add_child(ic)
+		if int(counts[entry]) > 1:
+			row.add_child(UIKit.small_label("x%d" % int(counts[entry]), UIKit.COLOR_TEXT))
+	return row
 
 
 static func _compare_specs(a: String, b: String) -> bool:

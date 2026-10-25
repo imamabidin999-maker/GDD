@@ -1,22 +1,27 @@
 class_name RewardPanel
 extends Control
-## Pilihan "Berkah Roro Ayu" setelah menang: pemain memilih satu dari tiga
-## berkah (menaikkan bintang kartu atau HP maksimal).
+## Pilihan "Berkah Roro Ayu" setelah kemenangan pertama di sebuah babak:
+## pemain memilih satu dari tiga berkah. Kalau babaknya sudah pernah memberi
+## berkah, panel hanya memberi tahu hal itu.
 
 signal done
 
-const BLESS_KEYS := {
-	GameState.Blessing.TEMPA_SERANG: "BLESS_TEMPA",
-	GameState.Blessing.ILMU_FOKUS: "BLESS_FOKUS",
-	GameState.Blessing.SIASAT_TAKTIK: "BLESS_TAKTIK",
-	GameState.Blessing.JAMU: "BLESS_JAMU",
-}
 const BLESS_ICONS := {
-	GameState.Blessing.TEMPA_SERANG: preload("res://assets/cards/icon_serang.png"),
-	GameState.Blessing.ILMU_FOKUS: preload("res://assets/cards/icon_fokus.png"),
-	GameState.Blessing.SIASAT_TAKTIK: preload("res://assets/cards/icon_taktik.png"),
-	GameState.Blessing.JAMU: preload("res://assets/ui/mini_heart.png"),
+	Blessings.Kind.TEMPA_SABET: preload("res://assets/cards/icon_serang.png"),
+	Blessings.Kind.OLAH_SEMEDI: preload("res://assets/cards/icon_fokus.png"),
+	Blessings.Kind.LAKU_TANGKIS: preload("res://assets/cards/icon_taktik.png"),
+	Blessings.Kind.JAMU_KUNYIT_ASAM: preload("res://assets/ui/mini_heart.png"),
+	Blessings.Kind.KENDANG_PEMBUKA: preload("res://assets/ui/bless_kendang.png"),
+	Blessings.Kind.GREGET_LELUHUR: preload("res://assets/ui/bless_leluhur.png"),
+	Blessings.Kind.TAMENG_PUSAKA: preload("res://assets/ui/bless_pusaka.png"),
+	Blessings.Kind.JIMAT_PENOLAK_SIREP: preload("res://assets/ui/bless_jimat.png"),
+	Blessings.Kind.JAMU_BERAS_KENCUR: preload("res://assets/ui/bless_kencur.png"),
 }
+
+## Babak asal berkah. Diisi sebelum panel masuk ke tree.
+var stage_number: int = 0
+## true kalau babak ini sudah pernah memberi berkah.
+var already_received: bool = false
 
 var _col: VBoxContainer
 var _choices: HBoxContainer
@@ -34,19 +39,45 @@ func _ready() -> void:
 	var title := UIKit.label(tr("REWARD_TITLE"), &"HeaderLabel")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(title)
+	if already_received:
+		_add_message(tr("REWARD_ALREADY"))
+		_add_continue()
+		return
+
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var options := GameState.roll_blessings(rng)
+	if options.is_empty():
+		_add_message(tr("REWARD_EMPTY"))
+		_add_continue()
+		return
 	var hint := UIKit.label(tr("REWARD_HINT"), &"", UIKit.COLOR_DIM)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(hint)
 	_choices = UIKit.hbox(8)
 	_col.add_child(_choices)
-
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	for blessing: GameState.Blessing in GameState.roll_blessings(rng):
+	for blessing: Blessings.Kind in options:
 		_choices.add_child(_make_choice(blessing))
 
 
-func _make_choice(blessing: GameState.Blessing) -> Button:
+func _add_message(text: String) -> void:
+	var msg := UIKit.label(text, &"BigLabel", UIKit.COLOR_TEXT)
+	msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	msg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	msg.custom_minimum_size = Vector2(300, 0)
+	_col.add_child(msg)
+
+
+func _add_continue() -> void:
+	var cont := UIKit.button(tr("BTN_CONTINUE"), 120, true)
+	cont.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	cont.pressed.connect(func() -> void:
+		done.emit()
+		queue_free())
+	_col.add_child(cont)
+
+
+func _make_choice(blessing: Blessings.Kind) -> Button:
 	var b := Button.new()
 	b.custom_minimum_size = Vector2(150, 112)
 	b.focus_mode = Control.FOCUS_NONE
@@ -67,10 +98,10 @@ func _make_choice(blessing: GameState.Blessing) -> Button:
 		ic.custom_minimum_size = Vector2(tex.get_width() * 2, 30)
 		ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	inner.add_child(ic)
-	var name_label := UIKit.label(tr(BLESS_KEYS[blessing]), &"BigLabel", UIKit.COLOR_GOLD)
+	var name_label := UIKit.label(tr(Blessings.text_key(blessing)), &"BigLabel", UIKit.COLOR_GOLD)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	inner.add_child(name_label)
-	var desc := UIKit.label(tr(BLESS_KEYS[blessing] + "_DESC"), &"", UIKit.COLOR_TEXT)
+	var desc := UIKit.label(tr(Blessings.text_key(blessing) + "_DESC"), &"", UIKit.COLOR_TEXT)
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.custom_minimum_size = Vector2(138, 0)
@@ -80,9 +111,9 @@ func _make_choice(blessing: GameState.Blessing) -> Button:
 	return b
 
 
-func _choose(blessing: GameState.Blessing) -> void:
+func _choose(blessing: Blessings.Kind) -> void:
 	AudioManager.play_sfx("gong")
-	var upgraded := GameState.apply_blessing(blessing)
+	var upgraded := GameState.apply_blessing(blessing, stage_number)
 	for child: Node in _choices.get_children():
 		child.queue_free()
 	var msg := tr("REWARD_DONE")
@@ -97,14 +128,9 @@ func _choose(blessing: GameState.Blessing) -> void:
 		msg += "\n%s  %s" % [tr(card.display_name), tr("CARD_RANK") % card.rank]
 		if int(counts[spec]) > 1:
 			msg += "  x%d" % int(counts[spec])
-	if blessing == GameState.Blessing.JAMU:
+	if blessing == Blessings.Kind.JAMU_KUNYIT_ASAM:
 		msg += "\n" + tr("MAP_HP") % GameState.max_hp
 	var result := UIKit.label(msg, &"", UIKit.COLOR_TEXT)
 	result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(result)
-	var cont := UIKit.button(tr("BTN_CONTINUE"), 120, true)
-	cont.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	cont.pressed.connect(func() -> void:
-		done.emit()
-		queue_free())
-	_col.add_child(cont)
+	_add_continue()

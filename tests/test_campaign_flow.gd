@@ -6,6 +6,7 @@ extends SceneTree
 
 var _failures: int = 0
 var _checks: int = 0
+var _last_reward_already: bool = false
 
 
 func check(condition: bool, label: String) -> void:
@@ -166,10 +167,13 @@ func _play_stage(n: int) -> bool:
 				for c: Node in current_scene.find_children("*", "", true, false):
 					if _is_class(c, "RewardPanel"):
 						rp = c
+				var already: bool = rp.get("already_received")
+				_last_reward_already = already
 				var choices := rp.find_children("*", "Button", true, false)
 				await click((choices[0] as Button).get_global_rect().get_center())
 				await _wait(0.4)
-				await click_button(tr("BTN_CONTINUE"))
+				if not already:
+					await click_button(tr("BTN_CONTINUE"))
 				await _wait(1.2)
 			return true
 		await _wait(1.0)
@@ -229,6 +233,16 @@ func _run() -> void:
 	await _wait(1.5)
 	check(_scene_name() == "main_menu", "kembali ke menu utama")
 	check(find_button(tr("MENU_CONTINUE")) != null, "menu utama menampilkan Lanjutkan")
+	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "satu berkah untuk setiap babak 1-9")
+
+	print("[Mengulang babak 1]")
+	await click_button(tr("MENU_CONTINUE"))
+	await _wait(1.2)
+	check(_scene_name() == "stage_map", "Lanjutkan membuka peta")
+	var replay_won := await _play_stage(1)
+	check(replay_won and _last_reward_already, "babak ulang dimenangkan tanpa berkah baru")
+	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "jumlah berkah tetap")
+	check(_scene_name() == "stage_map", "kembali ke peta")
 
 	Engine.time_scale = 1.0
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])

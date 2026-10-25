@@ -50,13 +50,15 @@ func _run() -> void:
 			for r: int in runs:
 				var rng := RandomNumberGenerator.new()
 				rng.seed = 1000 * n + r
-				# Deck dan HP mengikuti berkah acak dari stage-stage sebelumnya.
+				# Deck, Nyawa, dan berkah mengikuti berkah acak dari babak-babak
+				# sebelumnya (satu berkah untuk setiap kemenangan pertama).
 				var deck: Array[String] = []
 				deck.assign(_game_state.get("STARTER_DECK"))
 				var max_hp: int = _game_state.get("BASE_MAX_HP")
+				var owned: Array[String] = []
 				for b: int in n - 1:
-					max_hp = _apply_random_blessing(deck, max_hp, rng)
-				var result := _battle(stage, deck, max_hp, rng.randi(), style)
+					max_hp = _apply_random_blessing(deck, max_hp, owned, rng)
+				var result := _battle(stage, deck, max_hp, owned, rng.randi(), style)
 				if result.x > 0:
 					wins += 1
 					hp_left += result.z
@@ -66,26 +68,23 @@ func _run() -> void:
 	quit(0)
 
 
-func _apply_random_blessing(deck: Array[String], max_hp: int, rng: RandomNumberGenerator) -> int:
-	var choice := rng.randi_range(0, 3)
-	if choice == 3:
-		return max_hp + 10
-	var family: String = ["serang", "fokus", "taktik"][choice]
-	for step: int in 2:
-		var best := -1
-		var best_rank := 3
-		for i: int in deck.size():
-			var parts := deck[i].split(":")
-			if parts[0] == family and int(parts[1]) < best_rank:
-				best = i
-				best_rank = int(parts[1])
-		if best >= 0:
-			deck[best] = "%s:%d" % [family, best_rank + 1]
+# Satu dari tiga pilihan acak, dipilih acak juga (pemain tidak selalu
+# memilih yang terbaik). Mengembalikan Nyawa maksimal yang baru.
+func _apply_random_blessing(deck: Array[String], max_hp: int, owned: Array[String], rng: RandomNumberGenerator) -> int:
+	var options := Blessings.roll(rng, deck, owned)
+	if options.is_empty():
+		return max_hp
+	var kind: Blessings.Kind = options[rng.randi_range(0, options.size() - 1)]
+	owned.append(Blessings.kind_name(kind))
+	if Blessings.UPGRADE_FAMILY.has(kind):
+		Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
+	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
+		return max_hp + Blessings.JAMU_HP
 	return max_hp
 
 
 ## Mengembalikan Vector3i(menang 1/0, jumlah turn, sisa HP).
-func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, seed_value: int, style: String) -> Vector3i:
+func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Array[String], seed_value: int, style: String) -> Vector3i:
 	var holder := Node.new()
 	var deck := DeckController.new()
 	deck.shuffle_seed = seed_value
@@ -115,6 +114,7 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, seed_valu
 		holder.add_child(buto)
 		enemies.append(buto)
 	root.add_child(holder)
+	Blessings.prepare_player(player, owned)
 	bm.start_battle(_card_db.call("build_deck_list", deck_specs), enemies)
 
 	while bm.is_battle_running() and bm.turn_number <= MAX_TURNS:

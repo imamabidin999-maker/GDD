@@ -117,7 +117,7 @@ BLESS_FOKUS_DESC,2 kartu Semedi naik satu bintang.,Upgrade 2 Semedi cards by one
 BLESS_TAKTIK,Laku Tangkis,Laku Tangkis
 BLESS_TAKTIK_DESC,2 kartu Tangkis naik satu bintang.,Upgrade 2 Tangkis cards by one rank.
 BLESS_JAMU,Jamu Kunyit Asam,Turmeric Tonic
-BLESS_JAMU_DESC,Nyawa maksimal Eyang Palang +10.,Eyang Palang's max HP +10.
+BLESS_JAMU_DESC,Nyawa maksimal Eyang Palang +10 (paling banyak 3 kali).,Eyang Palang's max HP +10 (up to 3 times).
 REWARD_DONE,Berkah diterima!,Blessing received!
 SPEAKER_NARATOR,Narator,Narrator
 SPEAKER_EYANG,Eyang Palang,Eyang Palang
@@ -289,7 +289,7 @@ SKILL_PUTIH,Sirep,Sirep
 SKILL_HITAM,Ajian Lebur Saketi,Ajian Lebur Saketi
 MAP_BOSS,Pertarungan Bos,Boss Fight
 MAP_MENU,Menu,Menu
-MAP_REPLAY,Bisa diulang untuk berkah tambahan.,Replay it for another blessing.
+MAP_REPLAY,Berkah babak ini sudah diterima. Babak boleh diulang untuk berlatih.,Blessing already received. You can replay it for practice.
 MAP_LOCKED_HINT,Menangkan babak sebelumnya dulu.,Clear the previous act first.
 DECK_TITLE,Jurus Eyang Palang,Eyang Palang's Deck
 DECK_HINT,15 kartu. Berkah Roro Ayu menaikkan bintang kartu.,15 cards. Roro Ayu's blessings raise card ranks.
@@ -387,3 +387,21 @@ Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gebrakan D
 While any Bala still stands, Buto Hitam takes only half damage. When Buto Hitam falls, every Bala vanishes with it.
 
 Tip: take down the Bala first, or hit them all at once with Gebrakan Dongkrek."
+BLESS_KENDANG,Kendang Pembuka,Kendang Pembuka
+BLESS_KENDANG_DESC,+1 Ketukan di giliran pertama setiap battle.,+1 Ketukan on the first turn of every battle.
+BLESS_LELUHUR,Greget Leluhur,Greget Leluhur
+BLESS_LELUHUR_DESC,Setiap battle dimulai dengan Greget 30%.,Start every battle with 30% Greget.
+BLESS_PUSAKA,Tameng Pusaka,Tameng Pusaka
+BLESS_PUSAKA_DESC,Tameng 10 di giliran pertama setiap battle.,Gain 10 Block on the first turn of every battle.
+BLESS_JIMAT,Jimat Penolak Sirep,Jimat Penolak Sirep
+BLESS_JIMAT_DESC,Sirep pertama di setiap battle ditangkal.,Wards off the first Sirep in every battle.
+BLESS_KENCUR,Jamu Beras Kencur,Beras Kencur Tonic
+BLESS_KENCUR_DESC,"Setiap kali menerima Lara, jumlahnya berkurang 1.","Whenever you receive Lara, you receive 1 less."
+BLESS_OWNED,Berkah:,Blessings:
+BLESS_NONE,belum ada,none yet
+REWARD_ALREADY,Berkah babak ini sudah diterima. Roro Ayu menunggumu di babak berikutnya.,You already received this act's blessing. Roro Ayu awaits you in the next act.
+REWARD_EMPTY,Semua berkah sudah kamu miliki.,You already own every blessing.
+BATTLE_SIREP_WARDED,Sirep ditangkal!,Sirep warded off!
+BATTLE_KENDANG,Kendang: +%d Ketukan,Kendang: +%d Ketukan
+HERO_JIMAT_TIP,Jimat Penolak Sirep siap menangkal Sirep berikutnya.,Jimat Penolak Sirep will ward off the next Sirep.
+HERO_KENCUR_TIP,Jamu Beras Kencur: Lara yang diterima berkurang %d.,Beras Kencur Tonic: Lara received is reduced by %d.

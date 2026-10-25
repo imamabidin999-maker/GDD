@@ -9,13 +9,13 @@ signal settings_changed
 signal progress_changed
 
 const SAVE_PATH := "user://save.cfg"
-## Versi format simpanan. Versi 1 dari masa 5 babak, versi 2 untuk 10 babak.
-const SAVE_VERSION := 2
+## Versi format simpanan. Versi 1 dari masa 5 babak, versi 2 untuk 10 babak,
+## versi 3 mencatat berkah yang dimiliki dan babak yang sudah memberi berkah.
+const SAVE_VERSION := 3
 const STAGE_COUNT := 10
 ## Babak lama (versi 1) yang isinya masih sama di versi 10 babak.
 const V1_KEPT_STAGES := 4
 const BASE_MAX_HP := 70
-const MAX_RANK := 3
 const STARTER_DECK: Array[String] = [
 	"serang:1", "serang:1", "serang:2", "serang:2", "serang:3",
 	"fokus:1", "fokus:1", "fokus:2", "fokus:2", "fokus:3",
@@ -24,9 +24,6 @@ const STARTER_DECK: Array[String] = [
 
 ## Tes otomatis mengganti ini supaya simpanan pemain tidak tertimpa.
 var save_path: String = SAVE_PATH
-
-## Jenis berkah (hadiah setelah menang) yang bisa dipilih pemain.
-enum Blessing { TEMPA_SERANG, ILMU_FOKUS, SIASAT_TAKTIK, JAMU }
 
 #region Progres
 ## Stage tertinggi yang sudah terbuka (1..STAGE_COUNT).
@@ -41,6 +38,11 @@ var tutorial_done: bool = false
 var prologue_seen: bool = false
 ## Buto yang sudah pernah dilawan, untuk membuka entri Pustaka.
 var seen_buto: Array[String] = []
+## Berkah yang dimiliki, sebagai nama Blessings.Kind. Jamu Kunyit Asam bisa
+## muncul lebih dari sekali.
+var blessings: Array[String] = []
+## Babak yang berkah kemenangan pertamanya sudah diterima.
+var blessed_stages: Array[int] = []
 #endregion
 
 #region Pengaturan
@@ -79,6 +81,8 @@ func new_game() -> void:
 	tutorial_done = false
 	prologue_seen = false
 	seen_buto.clear()
+	blessings.clear()
+	blessed_stages.clear()
 	save_game()
 	progress_changed.emit()
 
@@ -112,66 +116,34 @@ func mark_buto_seen(type_key: String) -> void:
 
 #region Berkah (hadiah kemenangan)
 
-## Tiga pilihan berkah acak. Pilihan yang tidak lagi berguna (misalnya semua
-## kartu Serang sudah bintang 3) tidak ditawarkan.
-func roll_blessings(rng: RandomNumberGenerator) -> Array[Blessing]:
-	var pool: Array[Blessing] = [Blessing.JAMU]
-	if _count_upgradable("serang") > 0:
-		pool.append(Blessing.TEMPA_SERANG)
-	if _count_upgradable("fokus") > 0:
-		pool.append(Blessing.ILMU_FOKUS)
-	if _count_upgradable("taktik") > 0:
-		pool.append(Blessing.SIASAT_TAKTIK)
-	# acak urutan lalu ambil maksimal 3
-	for i: int in range(pool.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
-		var tmp := pool[i]
-		pool[i] = pool[j]
-		pool[j] = tmp
-	return pool.slice(0, 3)
+## Berkah hanya diberikan sekali untuk setiap babak, saat pertama kali menang.
+func is_stage_blessed(stage: int) -> bool:
+	return blessed_stages.has(stage)
 
 
-## Menerapkan berkah. Mengembalikan daftar kartu yang naik rank (untuk UI).
-func apply_blessing(blessing: Blessing) -> Array[String]:
+## Tiga pilihan berkah acak (lihat aturan di Blessings).
+func roll_blessings(rng: RandomNumberGenerator) -> Array[Blessings.Kind]:
+	return Blessings.roll(rng, deck, blessings)
+
+
+## Menerapkan berkah dan mencatat babak asalnya. Mengembalikan daftar kartu
+## yang naik bintang (untuk UI).
+func apply_blessing(kind: Blessings.Kind, for_stage: int = 0) -> Array[String]:
 	var upgraded: Array[String] = []
-	match blessing:
-		Blessing.TEMPA_SERANG:
-			upgraded = _upgrade_type("serang", 2)
-		Blessing.ILMU_FOKUS:
-			upgraded = _upgrade_type("fokus", 2)
-		Blessing.SIASAT_TAKTIK:
-			upgraded = _upgrade_type("taktik", 2)
-		Blessing.JAMU:
-			max_hp += 10
+	if Blessings.UPGRADE_FAMILY.has(kind):
+		upgraded = Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
+	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
+		max_hp += Blessings.JAMU_HP
+	blessings.append(Blessings.kind_name(kind))
+	if for_stage > 0 and not blessed_stages.has(for_stage):
+		blessed_stages.append(for_stage)
 	save_game()
 	return upgraded
 
 
-func _count_upgradable(type_key: String) -> int:
-	var count := 0
-	for spec: String in deck:
-		var parts := spec.split(":")
-		if parts[0] == type_key and int(parts[1]) < MAX_RANK:
-			count += 1
-	return count
-
-
-# Naikkan rank kartu terendah dari tipe ini, sebanyak `amount` kartu.
-func _upgrade_type(type_key: String, amount: int) -> Array[String]:
-	var upgraded: Array[String] = []
-	for step: int in amount:
-		var best := -1
-		var best_rank := MAX_RANK
-		for i: int in deck.size():
-			var parts := deck[i].split(":")
-			if parts[0] == type_key and int(parts[1]) < best_rank:
-				best = i
-				best_rank = int(parts[1])
-		if best < 0:
-			break
-		deck[best] = "%s:%d" % [type_key, best_rank + 1]
-		upgraded.append(deck[best])
-	return upgraded
+## Efek berkah untuk battle yang akan dimulai.
+func prepare_player(player: PlayerState) -> void:
+	Blessings.prepare_player(player, blessings)
 
 #endregion
 
@@ -236,6 +208,8 @@ func save_game() -> void:
 	cfg.set_value("progress", "tutorial_done", tutorial_done)
 	cfg.set_value("progress", "prologue_seen", prologue_seen)
 	cfg.set_value("progress", "seen_buto", seen_buto)
+	cfg.set_value("progress", "blessings", blessings)
+	cfg.set_value("progress", "blessed_stages", blessed_stages)
 	cfg.set_value("settings", "locale", locale)
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
@@ -257,12 +231,21 @@ func load_game() -> void:
 	tutorial_done = bool(cfg.get_value("progress", "tutorial_done", false))
 	prologue_seen = bool(cfg.get_value("progress", "prologue_seen", false))
 	seen_buto.assign(cfg.get_value("progress", "seen_buto", []))
+	blessings.clear()
+	for entry: Variant in cfg.get_value("progress", "blessings", []):
+		if entry is String and Blessings.from_name(entry) >= 0:
+			blessings.append(entry)
+	blessed_stages.assign(cfg.get_value("progress", "blessed_stages", []))
 	locale = str(cfg.get_value("settings", "locale", "id"))
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))
 	sfx_volume = float(cfg.get_value("settings", "sfx_volume", 0.9))
 	fullscreen = bool(cfg.get_value("settings", "fullscreen", false))
-	if int(cfg.get_value("meta", "save_version", 1)) < SAVE_VERSION:
+	var version := int(cfg.get_value("meta", "save_version", 1))
+	if version < 2:
 		_migrate_from_v1()
+	if version < 3:
+		_migrate_from_v2()
+	if version < SAVE_VERSION:
 		save_game()
 
 
@@ -277,6 +260,18 @@ func _migrate_from_v1() -> void:
 	cleared_stages = kept
 	unlocked_stage = mini(unlocked_stage, V1_KEPT_STAGES + 1)
 	game_completed = false
+
+
+# Sebelum versi 3 berkah diberikan setiap menang tanpa dicatat. Babak yang
+# sudah selesai dianggap sudah memberi berkah, dan Jamu yang sudah diminum
+# dihitung dari Nyawa maksimal supaya batas 3 kali tetap berlaku.
+func _migrate_from_v2() -> void:
+	blessed_stages = cleared_stages.duplicate()
+	blessings.clear()
+	@warning_ignore("integer_division")
+	var jamu := clampi((max_hp - BASE_MAX_HP) / Blessings.JAMU_HP, 0, Blessings.JAMU_LIMIT)
+	for i: int in jamu:
+		blessings.append(Blessings.kind_name(Blessings.Kind.JAMU_KUNYIT_ASAM))
 
 
 func _is_valid_deck(saved: Array) -> bool:

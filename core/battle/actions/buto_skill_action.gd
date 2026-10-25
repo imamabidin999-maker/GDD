@@ -21,6 +21,8 @@ var locked_card: CardInstance
 var locked_cards: Array[CardInstance] = []
 ## Bala yang muncul dari Memanggil Bala.
 var summoned: Array[EnemyUnit] = []
+## Sirep ditangkal Jimat Penolak Sirep.
+var warded: bool = false
 
 
 func _init(user: EnemyButo, used_skill: EnemyButo.Skill) -> void:

@@ -138,7 +138,7 @@ func start_battle(card_list: Array[CardData], enemy_list: Array[EnemyUnit]) -> b
 	_target = null
 	turn_number = 0
 	_battle_id += 1
-	player.begin_battle() # nanti: oper Moxie awal & multiplier dari GameState
+	player.begin_battle(player.start_moxie)
 	for enemy: EnemyUnit in _enemies:
 		enemy.amuk = enemy.start_amuk
 		enemy.on_battle_started(self)
@@ -461,6 +461,10 @@ func _setup_new_player_turn() -> void:
 	turn_number += 1
 	hero_health.clear_block()
 	player.start_turn()
+	if turn_number == 1:
+		# Berkah Kendang Pembuka dan Tameng Pusaka.
+		player.gain_ap(player.first_turn_bonus_ap)
+		hero_health.gain_block(player.first_turn_block)
 	# Prayitna: Eyang waspada kalau ada Buto yang akan Ngamuk di giliran musuh berikutnya.
 	player.prayitna = is_any_enemy_ngamuk_ready()
 	deck.fill_hand(hand)

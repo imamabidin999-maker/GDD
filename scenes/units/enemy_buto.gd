@@ -458,6 +458,11 @@ func _hitam_next_skill() -> Skill:
 
 
 func _perform_lock_card(action: ButoSkillAction, battle: BattleManager) -> void:
+	if battle.player.consume_sirep_ward():
+		# Jimat Penolak Sirep: Sirep-nya ditangkal, Buto Putih tidak menyerang.
+		action.warded = true
+		action.succeeded = false
+		return
 	if battle.hand.get_card_count() == 0:
 		_pending_hand_lock = true
 		action.succeeded = true

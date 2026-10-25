@@ -469,6 +469,48 @@ def mini_icon(kind: str) -> Image.Image:
     return add_outline(img)
 
 
+def blessing_icon(kind: str) -> Image.Image:
+    """Ikon berkah 15x15 (ditampilkan 2x di panel berkah)."""
+    img, d = canvas(15, 15)
+    if kind == "kendang":
+        # kendang: badan kayu, kulit di kedua ujung, tali
+        d.polygon([(2, 4), (12, 4), (13, 7), (12, 10), (2, 10), (1, 7)], fill=(150, 92, 52, 255))
+        d.line([(3, 5), (11, 5)], fill=(190, 130, 76, 255))
+        d.ellipse([0, 3, 3, 11], fill=(232, 214, 168, 255))
+        d.ellipse([11, 3, 14, 11], fill=(214, 194, 150, 255))
+        for x in (4, 7, 10):
+            d.line([(x, 4), (x + 1, 10)], fill=(92, 56, 34, 255))
+    elif kind == "leluhur":
+        # Greget Leluhur: api biru berlingkar emas
+        d.ellipse([0, 1, 14, 14], outline=(232, 182, 72, 255))
+        d.polygon([(7, 2), (11, 8), (10, 12), (7, 13), (4, 12), (3, 8), (5, 6), (6, 8)], fill=(90, 170, 240, 255))
+        d.polygon([(7, 7), (9, 10), (7, 12), (5, 10)], fill=(200, 235, 255, 255))
+    elif kind == "pusaka":
+        # Tameng Pusaka: tameng emas bermata merah
+        d.polygon([(1, 1), (13, 1), (13, 7), (7, 14), (1, 7)], fill=(232, 182, 72, 255))
+        d.polygon([(7, 1), (13, 1), (13, 7), (7, 14)], fill=(196, 140, 52, 255))
+        d.line([(2, 2), (12, 2)], fill=(255, 230, 150, 255))
+        d.ellipse([4, 3, 10, 9], fill=(150, 30, 44, 255))
+        d.ellipse([5, 4, 9, 8], fill=(214, 48, 64, 255))
+        d.point((6, 5), fill=(255, 170, 170, 255))
+    elif kind == "jimat":
+        # Jimat Penolak Sirep: liontin bertali dengan batu ungu
+        d.arc([3, 0, 11, 8], 180, 360, fill=(200, 170, 120, 255))
+        d.line([(3, 4), (5, 7)], fill=(200, 170, 120, 255))
+        d.line([(11, 4), (9, 7)], fill=(200, 170, 120, 255))
+        d.polygon([(7, 6), (11, 10), (7, 14), (3, 10)], fill=(232, 182, 72, 255))
+        d.polygon([(7, 8), (9, 10), (7, 12), (5, 10)], fill=(150, 90, 200, 255))
+        d.point((6, 9), fill=(220, 190, 255, 255))
+    elif kind == "kencur":
+        # Jamu Beras Kencur: gelas jamu krem dengan daun
+        d.polygon([(3, 5), (11, 5), (10, 14), (4, 14)], fill=(220, 226, 236, 160))
+        d.polygon([(4, 7), (10, 7), (9, 13), (5, 13)], fill=(238, 214, 150, 255))
+        d.line([(4, 7), (10, 7)], fill=(255, 240, 200, 255))
+        d.polygon([(8, 1), (13, 0), (12, 4), (9, 5)], fill=(92, 170, 80, 255))
+        d.line([(9, 5), (12, 1)], fill=(52, 110, 50, 255))
+    return add_outline(img)
+
+
 def build_icons(eye: Image.Image) -> None:
     print("Ikon kartu:")
     save(draw_sword(), "cards/icon_serang.png")
@@ -483,6 +525,8 @@ def build_icons(eye: Image.Image) -> None:
                  "amuk", "amuk_empty", "prayitna", "plague", "ajian", "summon", "stagger",
                  "bala_shield"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
+    for kind in ("kendang", "leluhur", "pusaka", "jimat", "kencur"):
+        save(blessing_icon(kind), f"ui/bless_{kind}.png")
     # gembok besar untuk kartu terkunci
     img, d = canvas(20, 24)
     d.arc([4, 0, 15, 14], 180, 360, fill=(226, 226, 236, 255), width=3)
