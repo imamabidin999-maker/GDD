@@ -13,6 +13,9 @@ extends SceneTree
 ## Untuk mencoba-coba: hpx=1.5 atkx=1.2 mengalikan HP/serangan semua Buto,
 ## stages=6,7,9 hanya mensimulasikan babak itu, set=ajian_multiplier:2,bala_count:1
 ## mengubah properti EnemyButo (yang punya properti itu) sebelum battle.
+##
+## mode=ruwatan levels=1,4,7,10 mensimulasikan Ruwatan utuh (8 langkah, Nyawa
+## terbawa, berkah dan kejadian dipilih acak) di Tingkat Pagebluk itu.
 
 const MAX_TURNS := 40
 
@@ -36,6 +39,10 @@ func _run() -> void:
 	_card_db = root.get_node("CardDB")
 	_game_state = root.get_node("GameState")
 	var runs := int(_arg("runs", "200"))
+	if _arg("mode", "") == "ruwatan":
+		_run_ruwatan(runs)
+		quit(0)
+		return
 	var catalog := StageCatalog.load_default()
 	for style: String in ["cerdas", "santai"]:
 		print("\n=== Bot %s (%d kali per stage) ===" % [style, runs])
@@ -111,8 +118,10 @@ func _replace_index(deck: Array[String]) -> int:
 	return best
 
 
-## Mengembalikan Vector3i(menang 1/0, jumlah turn, sisa HP).
-func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Array[String], seed_value: int, style: String) -> Vector3i:
+## Mengembalikan Vector3i(menang 1/0, jumlah turn, sisa HP). Untuk Ruwatan,
+## `run` memasang Tingkat Pagebluk dan `start_hp` adalah Nyawa yang terbawa.
+func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Array[String], seed_value: int, style: String,
+		start_hp: int = -1, run: RuwatanRun = null) -> Vector3i:
 	var holder := Node.new()
 	var deck := DeckController.new()
 	deck.shuffle_seed = seed_value
@@ -121,6 +130,8 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Ar
 	var player := PlayerState.new()
 	var hero := HealthComponent.new()
 	hero.max_hp = max_hp
+	if start_hp > 0:
+		hero.reset(start_hp)
 	var bm := BattleManager.new()
 	bm.deck = deck
 	bm.hand = hand
@@ -135,6 +146,8 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Ar
 		buto.attack_power = roundi(spec.attack_power * float(_arg("atkx", "1")))
 		buto.health.max_hp = roundi(spec.max_hp * float(_arg("hpx", "1")))
 		buto.rng_seed = seed_value + enemies.size()
+		if run != null:
+			run.modify_buto(buto)
 		for pair: String in _arg("set", "").split(",", false):
 			var kv := pair.split(":")
 			if kv.size() == 2 and kv[0] in buto:
@@ -143,6 +156,8 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Ar
 		enemies.append(buto)
 	root.add_child(holder)
 	Blessings.prepare_player(player, owned)
+	if run != null:
+		player.start_poison = run.start_poison()
 	bm.start_battle(_card_db.call("build_deck_list", deck_specs), enemies)
 
 	while bm.is_battle_running() and bm.turn_number <= MAX_TURNS:
@@ -157,6 +172,74 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, owned: Ar
 	var result := Vector3i(1 if won else 0, bm.turn_number, hero.current_hp)
 	holder.free()
 	return result
+
+
+#region Ruwatan
+
+func _run_ruwatan(runs: int) -> void:
+	var starter: Array[String] = []
+	starter.assign(_game_state.get("STARTER_DECK"))
+	for style: String in ["cerdas", "santai"]:
+		print("\n=== Ruwatan, bot %s (%d kali per tingkat) ===" % [style, runs])
+		print("tingkat | berhasil | langkah rata2 | gugur di langkah 1..8")
+		for level_text: String in _arg("levels", "1,3,5,7,10").split(","):
+			var level := int(level_text)
+			var wins := 0
+			var steps := 0
+			var died: Array[int] = [0, 0, 0, 0, 0, 0, 0, 0]
+			for r: int in runs:
+				var rng := RandomNumberGenerator.new()
+				rng.seed = 7000 * level + r
+				var run := RuwatanRun.create(level, rng.randi(), starter, [Blessings.Kind.TABUH_KENONG])
+				while not run.is_over():
+					if run.current_step() == RuwatanRun.Step.EVENT:
+						_sim_event(run, rng)
+						run.finish_event()
+						continue
+					var result := _battle(run.build_stage(), run.deck, run.max_hp, run.blessings, rng.randi(), style, run.hp, run)
+					if result.x == 0:
+						died[run.step] += 1
+						run.lose_battle()
+					else:
+						run.win_battle(result.z)
+						if not run.is_over():
+							_sim_blessing(run, rng)
+							run.finish_blessing()
+				steps += run.steps_cleared()
+				if run.state == RuwatanRun.State.WON:
+					wins += 1
+			print("   %2d   |  %3d%%    |     %4.1f      | %s" % [level, roundi(100.0 * wins / runs), float(steps) / runs, str(died)])
+
+
+# Berkah acak dari pilihan yang ditawarkan, seperti di mode cerita.
+func _sim_blessing(run: RuwatanRun, rng: RandomNumberGenerator) -> void:
+	var options := run.roll_blessings(rng)
+	if options.is_empty():
+		return
+	var kind: Blessings.Kind = options[rng.randi_range(0, options.size() - 1)]
+	run.apply_blessing(kind)
+	if Blessings.TABUH_FAMILY.has(kind):
+		run.place_tabuh(_replace_index(run.deck), Blessings.TABUH_FAMILY[kind])
+
+
+# Pilihan kejadian acak. Pemilih kartu: Tabuh menggantikan kartu terlemah,
+# tempa menaikkan kartu terendah.
+func _sim_event(run: RuwatanRun, rng: RandomNumberGenerator) -> void:
+	var choice := "a" if rng.randf() < 0.5 else "b"
+	for effect: String in JourneyEvents.effects_of(run.current_event(), choice):
+		if effect.begins_with("tabuh:"):
+			run.place_tabuh(_replace_index(run.deck), effect.get_slice(":", 1))
+		elif effect == "upgrade_pick":
+			var best := -1
+			for i: int in run.deck.size():
+				var rank := int(run.deck[i].get_slice(":", 1))
+				if rank < Blessings.MAX_RANK and (best < 0 or rank < int(run.deck[best].get_slice(":", 1))):
+					best = i
+			run.upgrade_card(best)
+		else:
+			JourneyEvents.apply(effect, run, rng)
+
+#endregion
 
 
 #region Bot cerdas

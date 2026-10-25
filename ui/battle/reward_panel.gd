@@ -1,8 +1,9 @@
 class_name RewardPanel
 extends Control
-## Pilihan "Berkah Roro Ayu" setelah kemenangan pertama di sebuah babak:
-## pemain memilih satu dari tiga berkah. Kalau babaknya sudah pernah memberi
-## berkah, panel hanya memberi tahu hal itu.
+## Pilihan "Berkah Roro Ayu" setelah kemenangan pertama di sebuah babak
+## (atau setiap kemenangan di Ruwatan): pemain memilih satu dari beberapa
+## berkah. Kalau babaknya sudah pernah memberi berkah, panel hanya memberi
+## tahu hal itu.
 
 signal done
 
@@ -28,6 +29,8 @@ const BLESS_ICONS := {
 var stage_number: int = 0
 ## true kalau babak ini sudah pernah memberi berkah.
 var already_received: bool = false
+## GameState (cerita) atau RuwatanRun. Kosong berarti GameState.
+var profile: Object
 
 var _col: VBoxContainer
 var _choices: HBoxContainer
@@ -35,6 +38,8 @@ var _reroll: Button
 
 
 func _ready() -> void:
+	if profile == null:
+		profile = GameState
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(UIKit.dimmer(0.7))
@@ -53,7 +58,7 @@ func _ready() -> void:
 
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	var options := GameState.roll_blessings(rng)
+	var options: Array[Blessings.Kind] = profile.call("roll_blessings", rng)
 	if options.is_empty():
 		_add_message(tr("REWARD_EMPTY"))
 		_add_continue()
@@ -73,7 +78,7 @@ func _ready() -> void:
 			AudioManager.play_sfx("kentongan")
 			_reroll.queue_free()
 			_reroll = null
-			var again := GameState.roll_blessings(rng)
+			var again: Array[Blessings.Kind] = profile.call("roll_blessings", rng)
 			if not again.is_empty():
 				_fill_choices(again))
 		_col.add_child(_reroll)
@@ -141,14 +146,15 @@ func _make_choice(blessing: Blessings.Kind) -> Button:
 func _place_tabuh(family: String) -> String:
 	var picker := DeckPicker.new()
 	picker.mode = DeckPicker.Mode.REPLACE
-	picker.deck = GameState.deck.duplicate()
+	var deck: Array[String] = profile.call("get_deck")
+	picker.deck = deck.duplicate()
 	picker.incoming_spec = "%s:1" % family
 	picker.tabuh_family = family
 	get_parent().add_child(picker)
 	var index: int = await picker.picked
 	if index < 0:
 		return tr("REWARD_SKIPPED")
-	var swap := GameState.place_tabuh(index, family)
+	var swap: Array[String] = profile.call("place_tabuh", index, family)
 	if swap.is_empty():
 		return tr("REWARD_SKIPPED")
 	return tr("REWARD_REPLACED") % [_card_name(swap[1]), _card_name(swap[0])]
@@ -163,7 +169,7 @@ func _card_name(spec: String) -> String:
 
 func _choose(blessing: Blessings.Kind) -> void:
 	AudioManager.play_sfx("gong")
-	var upgraded := GameState.apply_blessing(blessing, stage_number)
+	var upgraded: Array[String] = profile.call("apply_blessing", blessing, stage_number)
 	for child: Node in _choices.get_children():
 		child.queue_free()
 	if _reroll != null:
@@ -184,7 +190,7 @@ func _choose(blessing: Blessings.Kind) -> void:
 		if int(counts[spec]) > 1:
 			msg += "  x%d" % int(counts[spec])
 	if blessing == Blessings.Kind.JAMU_KUNYIT_ASAM:
-		msg += "\n" + tr("MAP_HP") % GameState.max_hp
+		msg += "\n" + tr("MAP_HP") % int(profile.call("get_max_hp"))
 	var result := UIKit.label(msg, &"", UIKit.COLOR_TEXT)
 	result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(result)

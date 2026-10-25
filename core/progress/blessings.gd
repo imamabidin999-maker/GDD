@@ -181,6 +181,29 @@ static func upgrade_tabuh(deck: Array[String], amount: int = UPGRADE_COUNT) -> A
 	return upgraded
 
 
+## Efek berkah pada deck: berkah naik bintang dan Laras Gamelan. Mengubah
+## `deck` langsung dan mengembalikan kartu yang naik. Berkah lain tidak
+## menyentuh deck (Jamu Kunyit Asam diurus pemilik Nyawa, kartu Tabuh dipasang
+## setelah pemain memilih kartu yang diganti).
+static func apply_to_deck(kind: Kind, deck: Array[String]) -> Array[String]:
+	if UPGRADE_FAMILY.has(kind):
+		return upgrade_family(deck, UPGRADE_FAMILY[kind])
+	if kind == Kind.LARAS_GAMELAN:
+		return upgrade_tabuh(deck)
+	return []
+
+
+## Menurunkan satu kartu tertentu (paling rendah bintang 1). Mengembalikan
+## spec barunya, atau "" kalau index salah.
+static func downgrade_at(deck: Array[String], index: int) -> String:
+	if index < 0 or index >= deck.size():
+		return ""
+	var rank := int(deck[index].get_slice(":", 1))
+	if rank > 1:
+		deck[index] = "%s:%d" % [deck[index].get_slice(":", 0), rank - 1]
+	return deck[index]
+
+
 ## Menaikkan satu kartu tertentu (pilihan pemain). Mengembalikan spec barunya,
 ## atau "" kalau sudah bintang 3.
 static func upgrade_at(deck: Array[String], index: int) -> String:

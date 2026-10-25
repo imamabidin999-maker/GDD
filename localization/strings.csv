@@ -505,7 +505,7 @@ STAR_REWARD_RUWATAN,Ruwatan dimulai dengan satu berkah acak,Ruwatan starts with 
 STAR_REWARD_MASTER,Gelar Juru Dongkrek dan aura emas Eyang Palang,The Juru Dongkrek title and Eyang Palang's golden aura
 STAR_REWARD_LINE,%d bintang: %s,%d stars: %s
 REWARD_REROLL,Pilihan lain,Reroll
-REWARD_REROLL_TIP,Undi ulang tiga pilihan berkah (sekali).,Reroll the three blessing choices (once).
+REWARD_REROLL_TIP,Undi ulang pilihan berkah (sekali).,Reroll the blessing choices (once).
 MENU_MASTER_TITLE,Juru Dongkrek,Juru Dongkrek
 SETTINGS_RHYTHM,Irama Gebrakan,Gebrakan rhythm
 RHYTHM_TITLE,Gebrakan Dongkrek!,Gebrakan Dongkrek!
@@ -567,3 +567,57 @@ EV_PENGAMEN_A,Beli kenongnya (Nyawa maks -5),Buy the kenong (Max HP -5)
 EV_PENGAMEN_B,Dengarkan sebentar (Nyawa maks +3),Listen for a while (Max HP +3)
 EV_PENGAMEN_A_RESULT,Pengamen itu menyerahkan kenongnya dengan senyum lebar.,The busker hands over the kenong with a wide smile.
 EV_PENGAMEN_B_RESULT,Iramanya menenangkan hati sebelum pertempuran berikutnya.,The rhythm calms you before the next battle.
+MENU_RUWATAN,Ruwatan,Ruwatan
+MENU_RUWATAN_LOCKED,Tamatkan petualangan Eyang Palang untuk membuka Ruwatan.,Finish Eyang Palang's journey to unlock Ruwatan.
+RUWATAN_TITLE,Ruwatan,Ruwatan
+RUWATAN_INTRO,"Ruwatan adalah perjalanan acak delapan langkah untuk membersihkan desa dari sisa pagebluk. Eyang Palang berangkat dengan jurus awal dan 70 Nyawa, tanpa berkah. Nyawa terbawa dari battle ke battle, dan sekali kalah, Ruwatan selesai.","Ruwatan is a random eight-step journey to cleanse the villages of what the plague left behind. Eyang Palang sets out with the basic deck, 70 HP, and no blessings. HP carries over from battle to battle, and a single defeat ends the Ruwatan."
+RUWATAN_LEVEL_PICK,Tingkat Pagebluk,Pagebluk Level
+RUWATAN_LEVEL,Tingkat Pagebluk %d,Pagebluk Level %d
+RUWATAN_BEST_NONE,Belum pernah dicoba.,Not attempted yet.
+RUWATAN_BEST_WON,Terbaik: berhasil sampai akhir,Best: completed
+RUWATAN_BEST_STEP,Terbaik: lolos %d dari 8 langkah,Best: cleared %d of 8 steps
+RUWATAN_RULES,Aturan tambahan:,Extra rules:
+RUWATAN_RULES_NONE,"Ruwatan biasa, tanpa aturan tambahan.",A plain Ruwatan with no extra rules.
+PAGEBLUK_RULE_2,Nyawa Buto +10%,Buto HP +10%
+PAGEBLUK_RULE_3,Serangan Buto +10%,Buto attack +10%
+PAGEBLUK_RULE_4,"Setelah menang, Nyawa hanya pulih 35%","After a win, only 35% HP comes back"
+PAGEBLUK_RULE_5,Buto biasa juga bisa Ngamuk,Ordinary Buto can go Ngamuk too
+PAGEBLUK_RULE_6,Pilihan berkah tinggal dua,Only two blessing choices
+PAGEBLUK_RULE_7,Setiap battle dimulai dengan 1 Lara,Every battle starts with 1 Lara
+PAGEBLUK_RULE_8,Nyawa Buto +20% (menggantikan +10%),Buto HP +20% (replaces +10%)
+PAGEBLUK_RULE_9,Buto Hitam memanggil 3 Bala,Buto Hitam summons 3 Bala
+PAGEBLUK_RULE_10,Ajian makin sulit dibuyarkan (+10) dan Pagebluk Merata menambah 1 Lara lagi,Ajian is harder to break (+10) and Pagebluk Merata adds 1 more Lara
+RUWATAN_START,Mulai Ruwatan,Begin Ruwatan
+RUWATAN_LOCKED_LEVEL,Berhasilkan tingkat sebelumnya dulu.,Complete the previous level first.
+RUWATAN_BONUS_ON,Hadiah Bintang Dongkrek: Ruwatan dimulai dengan satu berkah acak.,Bintang Dongkrek reward: you start with one random blessing.
+RUWATAN_BONUS_OFF,Kumpulkan 24 Bintang Dongkrek supaya Ruwatan dimulai dengan satu berkah acak.,Collect 24 Bintang Dongkrek to start each Ruwatan with a random blessing.
+RUWATAN_STEP,Langkah %d dari %d,Step %d of %d
+RUWATAN_STEP_BATTLE,Dua Buto menghadang,Two Buto block the way
+RUWATAN_STEP_MURKA,Buto Murka dan pendampingnya,A Buto Murka and its companion
+RUWATAN_STEP_TWIN,Sepasang Buto Murka,A pair of Buto Murka
+RUWATAN_STEP_EVENT,Kejadian di perjalanan,Something on the road
+RUWATAN_STEP_BOSS,Buto Hitam,Buto Hitam
+RUWATAN_SHORT_BATTLE,Buto,Buto
+RUWATAN_SHORT_MURKA,Murka,Murka
+RUWATAN_SHORT_EVENT,Kejadian,Event
+RUWATAN_SHORT_BOSS,Bos,Boss
+RUWATAN_EVENT_TEXT,"Ada sesuatu di jalan depan. Bisa membawa untung, bisa juga merugikan.","Something waits on the road ahead. It might help you, or it might cost you."
+RUWATAN_GO_EVENT,Hampiri,Approach
+RUWATAN_ABANDON,Akhiri Ruwatan,End Ruwatan
+RUWATAN_CONFIRM_ABANDON,Akhiri Ruwatan ini? Langkah yang sudah dilewati tetap dicatat.,End this Ruwatan? The steps you cleared still count.
+RUWATAN_HP,Nyawa %d/%d,HP %d/%d
+RUWATAN_HEAL_NOTE,"Setiap menang, Nyawa pulih %d%% dari Nyawa maksimal.",Each win restores %d%% of your max HP.
+RUWATAN_WON_TITLE,Ruwatan Berhasil!,Ruwatan Complete!
+RUWATAN_LOST_TITLE,Ruwatan Gagal,Ruwatan Failed
+RUWATAN_WON_TEXT,Buto Hitam tumbang dan desa-desa kembali tenang. Tingkat Pagebluk %d berhasil kamu lewati.,Buto Hitam falls and the villages grow quiet again. You cleared Pagebluk Level %d.
+RUWATAN_LOST_TEXT,Eyang Palang terpaksa mundur di langkah %d dari 8 (Tingkat Pagebluk %d).,Eyang Palang had to fall back at step %d of 8 (Pagebluk Level %d).
+RUWATAN_UNLOCKED,Tingkat Pagebluk %d sekarang bisa dipilih.,Pagebluk Level %d is now open.
+RUWATAN_TOP_CLEARED,Pagebluk tertinggi sudah kamu taklukkan!,You have conquered the highest Pagebluk!
+RUWATAN_DONE,Selesai,Done
+RUWATAN_START_BLESSING,Roro Ayu membekali Eyang Palang dengan berkah %s.,Roro Ayu sends Eyang Palang off with %s.
+RUWATAN_BATTLE_TITLE,Ruwatan  -  Langkah %d/%d  -  Pagebluk %d,Ruwatan  -  Step %d/%d  -  Pagebluk %d
+RUWATAN_HEALED,Nyawa +%d,+%d HP
+RUWATAN_DEFEAT_HINT,Ruwatan berakhir di langkah %d (Tingkat Pagebluk %d). Perjalanan baru selalu bisa dimulai lagi.,The Ruwatan ends at step %d (Pagebluk Level %d). You can always set out on a new one.
+BTN_SEE_RESULT,Lihat Hasil,See Result
+BTN_TO_RUWATAN,Ke Ruwatan,To Ruwatan
+RUWATAN_ACTIVE_RULES,Pagebluk: %s,Pagebluk: %s

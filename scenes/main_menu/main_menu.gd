@@ -1,6 +1,7 @@
 extends Control
 ## Menu utama: judul, Eyang Palang berhadapan dengan Buto Hitam di depan candi,
-## dan tombol Lanjutkan / Petualangan Baru / Pustaka / Pengaturan / Keluar.
+## dan tombol Lanjutkan / Petualangan Baru / Ruwatan / Pustaka / Pengaturan /
+## Keluar. Ruwatan terkunci sampai cerita tamat sekali.
 
 const BG := preload("res://assets/backgrounds/menu_candi.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
@@ -91,6 +92,12 @@ func _build_ui() -> void:
 	if GameState.has_save():
 		_add_menu_button(buttons, tr("MENU_CONTINUE"), _on_continue)
 	_add_menu_button(buttons, tr("MENU_NEW"), _on_new_game)
+	var ruwatan := _add_menu_button(buttons, tr("MENU_RUWATAN"), func() -> void: SceneRouter.go_to(SceneRouter.RUWATAN))
+	if not GameState.ruwatan_unlocked:
+		ruwatan.disabled = true
+		ruwatan.icon = preload("res://assets/ui/padlock.png")
+		ruwatan.tooltip_text = tr("MENU_RUWATAN_LOCKED")
+		ruwatan.mouse_filter = Control.MOUSE_FILTER_STOP
 	_add_menu_button(buttons, tr("MENU_PUSTAKA"), func() -> void: SceneRouter.go_to(SceneRouter.PUSTAKA))
 	_add_menu_button(buttons, tr("MENU_SETTINGS"), _open_settings)
 	if OS.get_name() != "Web":
@@ -104,7 +111,7 @@ func _build_ui() -> void:
 	_ui.add_child(version)
 
 
-func _add_menu_button(parent: Control, text: String, action: Callable) -> void:
+func _add_menu_button(parent: Control, text: String, action: Callable) -> Button:
 	var b := UIKit.button(text, 170, true)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -112,6 +119,7 @@ func _add_menu_button(parent: Control, text: String, action: Callable) -> void:
 		AudioManager.play_sfx("click")
 		action.call())
 	parent.add_child(b)
+	return b
 
 
 func _on_continue() -> void:

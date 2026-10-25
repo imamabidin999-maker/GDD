@@ -1,7 +1,8 @@
 extends Node2D
-## Composition root battle: membaca stage dari GameState, memunculkan Eyang
-## Palang dan para Buto, menyambungkan BattleManager dengan tampilan (HUD,
-## tangan, animasi), lalu mengurus alur menang/kalah.
+## Composition root battle: membaca stage dari GameState (babak cerita atau
+## langkah Ruwatan), memunculkan Eyang Palang dan para Buto, menyambungkan
+## BattleManager dengan tampilan (HUD, tangan, animasi), lalu mengurus alur
+## menang/kalah.
 
 const HERO_IDLE := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const HERO_ATTACKS: Array[Texture2D] = [
@@ -38,6 +39,8 @@ const HIT_DELAY := 0.17
 @onready var _overlay: CanvasLayer = $Overlay
 
 var _stage: StageData
+## Ruwatan yang sedang dijalani, atau null untuk babak cerita.
+var _run: RuwatanRun
 var _hero_view: UnitView
 var _enemy_views: Dictionary = {} # EnemyUnit -> UnitView
 var _enemies: Array[EnemyUnit] = []
@@ -57,10 +60,15 @@ var _base_time_scale: float = 1.0
 
 
 func _ready() -> void:
-	var catalog := StageCatalog.load_default()
-	_stage = catalog.get_stage(GameState.current_stage)
-	if _stage == null:
-		_stage = catalog.stages[0]
+	var run := GameState.ruwatan
+	if GameState.play_mode == GameState.PlayMode.RUWATAN and run != null and not run.is_over() and run.is_battle_step():
+		_run = run
+		_stage = run.build_stage()
+	else:
+		var catalog := StageCatalog.load_default()
+		_stage = catalog.get_stage(GameState.current_stage)
+		if _stage == null:
+			_stage = catalog.stages[0]
 
 	_background.modulate = _stage.background_tint
 	_add_fireflies()
@@ -97,8 +105,12 @@ func _begin() -> void:
 		await _play_dialog(_stage.tutorial_dialog)
 		GameState.tutorial_done = true
 		GameState.save_game()
-	var deck_list := CardDB.build_deck_list(GameState.deck)
-	GameState.prepare_player(_player)
+	var deck_list := CardDB.build_deck_list(_run.deck if _run != null else GameState.deck)
+	if _run != null:
+		Blessings.prepare_player(_player, _run.blessings)
+		_player.start_poison = _run.start_poison()
+	else:
+		GameState.prepare_player(_player)
 	_stats = BattleStats.new()
 	_stats.attach(_battle, _enemies)
 	_battle.start_battle(deck_list, _enemies)
@@ -116,8 +128,13 @@ func _begin() -> void:
 #region Persiapan
 
 func _setup_hero() -> void:
-	_hero_health.max_hp = GameState.max_hp
-	_hero_health.reset()
+	if _run != null:
+		# Nyawa Ruwatan terbawa dari battle sebelumnya.
+		_hero_health.max_hp = _run.max_hp
+		_hero_health.reset(_run.hp)
+	else:
+		_hero_health.max_hp = GameState.max_hp
+		_hero_health.reset()
 	_hero_view = UnitView.new()
 	_hero_node.add_child(_hero_view)
 	_hero_view.setup(HERO_IDLE, HERO_ATTACKS, _hero_health, false)
@@ -137,7 +154,10 @@ func _setup_enemies() -> void:
 ## EnemySpec. Dipakai di awal battle dan saat Buto Hitam memanggil Bala.
 func _create_buto(spec: EnemySpec, at: Vector2, layout_scale: float = 1.0) -> EnemyButo:
 	var buto := spec.create_buto()
-	_apply_difficulty(buto)
+	if _run != null:
+		_run.modify_buto(buto)
+	else:
+		_apply_difficulty(buto)
 	buto.position = at
 	_enemy_layer.add_child(buto)
 	_register_buto(buto, spec.sprite_scale * layout_scale)
@@ -200,6 +220,8 @@ func _buto_name(buto: EnemyButo) -> String:
 
 
 func _stage_title() -> String:
+	if _run != null:
+		return tr("RUWATAN_BATTLE_TITLE") % [_run.step + 1, RuwatanRun.STEPS.size(), _run.level]
 	return "%s  -  %s" % [tr("MAP_STAGE") % _stage.stage_number, tr(_stage.title_key)]
 
 
@@ -751,7 +773,7 @@ func _open_pause() -> void:
 	col.add_child(help)
 	var resume := UIKit.button(tr("BTN_RESUME"), 160, true)
 	var settings := UIKit.button(tr("MENU_SETTINGS"), 160, true)
-	var to_map := UIKit.button(tr("BTN_TO_MAP"), 160, true)
+	var to_map := UIKit.button(tr("BTN_TO_RUWATAN" if _run != null else "BTN_TO_MAP"), 160, true)
 	var to_menu := UIKit.button(tr("BTN_MAIN_MENU"), 160, true)
 	for b: Button in [resume, settings, to_map, to_menu]:
 		b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -767,7 +789,7 @@ func _open_pause() -> void:
 		s.closed.connect(func() -> void:
 			root.queue_free()
 			_reopen_pause.call_deferred()))
-	to_map.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.STAGE_MAP))
+	to_map.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.RUWATAN if _run != null else SceneRouter.STAGE_MAP))
 	to_menu.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.MAIN_MENU))
 
 
@@ -790,6 +812,9 @@ func _victory() -> void:
 	AudioManager.play_music("victory")
 	_hud.show_banner(tr("BATTLE_VICTORY"), UIKit.COLOR_GOLD)
 	await get_tree().create_timer(1.6).timeout
+	if _run != null:
+		await _ruwatan_victory()
+		return
 	await _play_dialog(_stage.victory_dialog)
 	await _show_challenges()
 	var first_win := not GameState.is_stage_blessed(_stage.stage_number)
@@ -808,6 +833,18 @@ func _victory() -> void:
 		rng.randomize()
 		GameState.queue_event_after(_stage.stage_number, rng)
 	SceneRouter.go_to(SceneRouter.STAGE_MAP)
+
+
+# Ruwatan: Nyawa yang tersisa dibawa ke langkah berikutnya dan pulih
+# sebagian. Berkahnya dipilih di layar Ruwatan.
+func _ruwatan_victory() -> void:
+	var healed := _run.win_battle(_hero_health.current_hp)
+	if healed > 0:
+		AudioManager.play_sfx("moxie")
+		_hero_health.reset(_run.hp)
+		_float_text(tr("RUWATAN_HEALED") % healed, _hero_view.get_top_point(), UIKit.COLOR_GREEN, true)
+		await get_tree().create_timer(1.2).timeout
+	SceneRouter.go_to(SceneRouter.RUWATAN)
 
 
 # Bintang Dongkrek dari tantangan babak ini.
@@ -829,6 +866,8 @@ func _show_challenges() -> void:
 func _defeat() -> void:
 	AudioManager.stop_music()
 	AudioManager.play_sfx("defeat")
+	if _run != null:
+		_run.lose_battle()
 	await get_tree().create_timer(0.8).timeout
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -841,19 +880,28 @@ func _defeat() -> void:
 	var title := UIKit.label(tr("BATTLE_DEFEAT"), &"TitleLabel", UIKit.COLOR_RED)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
-	var hint := UIKit.label(tr("BATTLE_DEFEAT_HINT"), &"BigLabel", UIKit.COLOR_TEXT)
+	var hint_text := tr("BATTLE_DEFEAT_HINT")
+	if _run != null:
+		hint_text = tr("RUWATAN_DEFEAT_HINT") % [_run.step + 1, _run.level]
+	var hint := UIKit.label(hint_text, &"BigLabel", UIKit.COLOR_TEXT)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.custom_minimum_size = Vector2(300, 0)
 	col.add_child(hint)
 	var row := UIKit.hbox(8)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_child(row)
+	_overlay.add_child(root)
+	if _run != null:
+		# Kalah di Ruwatan berarti perjalanannya selesai: tidak ada coba lagi.
+		var result := UIKit.button(tr("BTN_SEE_RESULT"), 140, true)
+		row.add_child(result)
+		result.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.RUWATAN))
+		return
 	var retry := UIKit.button(tr("BTN_RETRY"), 110, true)
 	var to_map := UIKit.button(tr("BTN_TO_MAP"), 110, true)
 	row.add_child(retry)
 	row.add_child(to_map)
-	col.add_child(row)
-	_overlay.add_child(root)
 	retry.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.BATTLE))
 	to_map.pressed.connect(func() -> void: SceneRouter.go_to(SceneRouter.STAGE_MAP))
 

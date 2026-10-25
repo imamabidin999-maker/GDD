@@ -1,6 +1,6 @@
 extends Node
 ## Data yang bertahan sepanjang game: progres 10 babak, isi deck pemain,
-## dan pengaturan. Disimpan ke user://save.cfg.
+## Ruwatan, dan pengaturan. Disimpan ke user://save.cfg.
 ##
 ## Deck disimpan sebagai daftar "tipe:rank", misalnya "serang:2". CardDB yang
 ## mengubahnya menjadi CardData saat battle dimulai.
@@ -50,6 +50,19 @@ var seen_events: Array[String] = []
 ## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
 ## Seperti rekor, tidak ikut direset saat petualangan baru.
 var stage_stars: Dictionary = {}
+#endregion
+
+## Battle berikutnya milik mode cerita atau Ruwatan. Tidak disimpan.
+enum PlayMode { STORY, RUWATAN }
+var play_mode: int = PlayMode.STORY
+
+#region Ruwatan
+## Terbuka setelah tamat sekali. Tidak ikut direset saat petualangan baru.
+var ruwatan_unlocked: bool = false
+## Hasil terbaik per Tingkat Pagebluk: tingkat -> langkah yang dilewati (8 = berhasil).
+var ruwatan_best: Dictionary = {}
+## Ruwatan yang sedang berjalan (null kalau tidak ada).
+var ruwatan: RuwatanRun = null
 #endregion
 
 ## Tingkat kesulitan mode cerita. Mengubah Nyawa dan serangan Buto.
@@ -126,6 +139,7 @@ func complete_stage(stage: int) -> void:
 	unlocked_stage = clampi(maxi(unlocked_stage, stage + 1), 1, STAGE_COUNT)
 	if stage >= STAGE_COUNT:
 		game_completed = true
+		ruwatan_unlocked = true
 	save_game()
 	progress_changed.emit()
 
@@ -199,12 +213,8 @@ func record_stars(stage: int, results: Array[bool]) -> Array[bool]:
 ## Menerapkan berkah dan mencatat babak asalnya. Mengembalikan daftar kartu
 ## yang naik bintang (untuk UI).
 func apply_blessing(kind: Blessings.Kind, for_stage: int = 0) -> Array[String]:
-	var upgraded: Array[String] = []
-	if Blessings.UPGRADE_FAMILY.has(kind):
-		upgraded = Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
-	elif kind == Blessings.Kind.LARAS_GAMELAN:
-		upgraded = Blessings.upgrade_tabuh(deck)
-	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
+	var upgraded := Blessings.apply_to_deck(kind, deck)
+	if kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
 		max_hp += Blessings.JAMU_HP
 	# Berkah kartu Tabuh: kartunya dipasang lewat replace_card() setelah pemain
 	# memilih kartu yang diganti.
@@ -248,13 +258,10 @@ func upgrade_card(index: int) -> String:
 
 ## Menurunkan satu kartu (paling rendah bintang 1). Mengembalikan spec barunya.
 func downgrade_card(index: int) -> String:
-	if index < 0 or index >= deck.size():
-		return ""
-	var rank := int(deck[index].get_slice(":", 1))
-	if rank > 1:
-		deck[index] = "%s:%d" % [deck[index].get_slice(":", 0), rank - 1]
+	var result := Blessings.downgrade_at(deck, index)
+	if result != "":
 		save_game()
-	return deck[index]
+	return result
 
 
 #region Profil pemain
@@ -402,6 +409,61 @@ func _set_bus_volume(bus_name: String, value: float) -> void:
 #endregion
 
 
+#region Ruwatan
+
+## Tingkat Pagebluk tertinggi yang boleh dipilih: satu di atas tingkat
+## tertinggi yang pernah berhasil.
+func ruwatan_max_level() -> int:
+	var top := 0
+	for lvl: Variant in ruwatan_best:
+		if int(ruwatan_best[lvl]) >= RuwatanRun.STEPS.size():
+			top = maxi(top, int(lvl))
+	return clampi(top + 1, 1, RuwatanRun.MAX_LEVEL)
+
+
+func ruwatan_best_of(level: int) -> int:
+	return int(ruwatan_best.get(level, -1))
+
+
+## Memulai Ruwatan baru (yang lama, kalau ada, ditinggalkan).
+func start_ruwatan(level: int, rng: RandomNumberGenerator) -> RuwatanRun:
+	if ruwatan != null:
+		abandon_ruwatan()
+	_attach_ruwatan(RuwatanRun.create(mini(level, ruwatan_max_level()), rng.randi(), STARTER_DECK, locked_blessings()))
+	if ruwatan_blessing_unlocked():
+		ruwatan.grant_start_blessing(rng)
+	save_game()
+	return ruwatan
+
+
+## Mengakhiri Ruwatan yang sedang berjalan atau yang hasilnya sudah dilihat.
+func abandon_ruwatan() -> void:
+	if ruwatan == null:
+		return
+	_record_ruwatan(ruwatan)
+	ruwatan.changed.disconnect(_on_ruwatan_changed)
+	ruwatan = null
+	save_game()
+
+
+func _attach_ruwatan(run: RuwatanRun) -> void:
+	ruwatan = run
+	if run != null:
+		run.changed.connect(_on_ruwatan_changed)
+
+
+func _on_ruwatan_changed() -> void:
+	if ruwatan.is_over():
+		_record_ruwatan(ruwatan)
+	save_game()
+
+
+func _record_ruwatan(run: RuwatanRun) -> void:
+	ruwatan_best[run.level] = maxi(ruwatan_best_of(run.level), run.steps_cleared())
+
+#endregion
+
+
 #region Simpan & muat
 
 func save_game() -> void:
@@ -423,6 +485,12 @@ func save_game() -> void:
 	for stage: Variant in stage_stars:
 		stars_out[str(stage)] = int(stage_stars[stage])
 	cfg.set_value("progress", "stage_stars", stars_out)
+	cfg.set_value("ruwatan", "unlocked", ruwatan_unlocked)
+	var best_out := {}
+	for lvl: Variant in ruwatan_best:
+		best_out[str(lvl)] = int(ruwatan_best[lvl])
+	cfg.set_value("ruwatan", "best", best_out)
+	cfg.set_value("ruwatan", "run", ruwatan.to_dict() if ruwatan != null else {})
 	cfg.set_value("settings", "locale", locale)
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
@@ -465,6 +533,20 @@ func load_game() -> void:
 			var stage := int(str(key))
 			if stage >= 1 and stage <= STAGE_COUNT:
 				stage_stars[stage] = clampi(int(stars_in[key]), 0, (1 << Challenges.STARS_PER_STAGE) - 1)
+	ruwatan_unlocked = bool(cfg.get_value("ruwatan", "unlocked", false)) or game_completed
+	ruwatan_best.clear()
+	var best_in: Variant = cfg.get_value("ruwatan", "best", {})
+	if best_in is Dictionary:
+		for key: Variant in best_in:
+			var lvl := int(str(key))
+			if lvl >= 1 and lvl <= RuwatanRun.MAX_LEVEL:
+				ruwatan_best[lvl] = clampi(int(best_in[key]), 0, RuwatanRun.STEPS.size())
+	if ruwatan != null:
+		ruwatan.changed.disconnect(_on_ruwatan_changed)
+		ruwatan = null
+	var run_in: Variant = cfg.get_value("ruwatan", "run", {})
+	if run_in is Dictionary and not (run_in as Dictionary).is_empty():
+		_attach_ruwatan(RuwatanRun.from_dict(run_in, locked_blessings()))
 	locale = str(cfg.get_value("settings", "locale", "id"))
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))
 	sfx_volume = float(cfg.get_value("settings", "sfx_volume", 0.9))

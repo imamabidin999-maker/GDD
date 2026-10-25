@@ -286,6 +286,7 @@ func _start_battle() -> void:
 	if _selected == null or _selected.state == StageNode.State.LOCKED or SceneRouter.is_busy():
 		return
 	GameState.current_stage = _selected.stage.stage_number
+	GameState.play_mode = GameState.PlayMode.STORY
 	AudioManager.play_sfx("bedug")
 	SceneRouter.go_to(SceneRouter.BATTLE)
 
@@ -334,81 +335,11 @@ func _play_event() -> void:
 
 
 func _open_deck() -> void:
-	var root := _overlay_root()
-	var panel := PanelContainer.new()
-	panel.theme_type_variation = &"GoldPanel"
-	root.add_child(UIKit.center(panel))
-	var col := UIKit.vbox(4)
-	panel.add_child(col)
-	var title := UIKit.label(tr("DECK_TITLE"), &"HeaderLabel")
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(title)
-	var hint := UIKit.small_label(tr("DECK_HINT"), UIKit.COLOR_DIM)
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(hint)
-
-	var grid := GridContainer.new()
-	grid.columns = 8
-	grid.add_theme_constant_override("h_separation", 1)
-	grid.add_theme_constant_override("v_separation", 2)
-	col.add_child(grid)
-	var specs := GameState.deck.duplicate()
-	specs.sort_custom(DeckPicker.compare_specs)
-	for spec: String in specs:
-		var data := CardDB.card_from_spec(spec)
-		if data == null:
-			continue
-		grid.add_child(_card_with_tooltip(data))
-
-	col.add_child(_blessing_row())
-
-	var close := UIKit.button(tr("BTN_CLOSE"), 120, true)
-	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	close.pressed.connect(func() -> void:
-		AudioManager.play_sfx("click")
-		_tooltip.hide_tip()
-		root.queue_free())
-	col.add_child(close)
-
-
-## Berkah yang dimiliki: ikon dengan keterangan saat disorot.
-func _blessing_row() -> Control:
-	var row := UIKit.hbox(4)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_child(UIKit.label(tr("BLESS_OWNED"), &"", UIKit.COLOR_GOLD))
-	if GameState.blessings.is_empty():
-		row.add_child(UIKit.label(tr("BLESS_NONE"), &"", UIKit.COLOR_DIM))
-		return row
-	var counts := {}
-	for entry: String in GameState.blessings:
-		counts[entry] = int(counts.get(entry, 0)) + 1
-	for entry: String in counts:
-		var kind := Blessings.from_name(entry)
-		if kind < 0:
-			continue
-		var tex: Texture2D = RewardPanel.BLESS_ICONS[kind]
-		var ic := UIKit.icon(tex)
-		ic.mouse_filter = Control.MOUSE_FILTER_STOP
-		var text := "[b][color=#ffd36e]%s[/color][/b]\n%s" % [tr(Blessings.text_key(kind)), tr(Blessings.text_key(kind) + "_DESC")]
-		if int(counts[entry]) > 1:
-			text = "[b][color=#ffd36e]%s x%d[/color][/b]\n%s" % [tr(Blessings.text_key(kind)), int(counts[entry]), tr(Blessings.text_key(kind) + "_DESC")]
-		ic.mouse_entered.connect(func() -> void: _tooltip.show_text(text, ic.global_position + Vector2(0, -40)))
-		ic.mouse_exited.connect(_tooltip.hide_tip)
-		row.add_child(ic)
-		if int(counts[entry]) > 1:
-			row.add_child(UIKit.small_label("x%d" % int(counts[entry]), UIKit.COLOR_TEXT))
-	return row
-
-
-## Kartu ukuran asli (skala pecahan merusak piksel) dengan tooltip saat disorot.
-func _card_with_tooltip(data: CardData) -> Control:
-	var view := CardView.preview(data)
-	view.hover_changed.connect(func(v: CardView, on: bool) -> void:
-		if on:
-			_tooltip.show_text(v.get_tooltip_bbcode(), v.global_position + Vector2(v.size.x + 4, 0))
-		else:
-			_tooltip.hide_tip())
-	return view
+	var view := DeckOverview.new()
+	view.deck = GameState.deck
+	view.blessings = GameState.blessings
+	view.tooltip = _tooltip
+	_overlay.add_child(view)
 
 
 func _open_menu() -> void:

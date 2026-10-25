@@ -1,6 +1,7 @@
 extends SceneTree
 ## Tes ujung-ke-ujung: menamatkan kampanye lewat scene asli dengan klik mouse
-## sungguhan (menu -> peta -> 10 babak -> berkah -> ending -> peta -> menu).
+## sungguhan (menu -> peta -> 10 babak -> berkah -> ending -> peta -> menu),
+## lalu menempuh satu Ruwatan sampai selesai.
 ## Battle dimainkan bot sederhana. Waktu game dipercepat 8x.
 ##   godot --headless -s tests/test_campaign_flow.gd
 
@@ -244,6 +245,81 @@ func _play_stage(n: int) -> bool:
 	return false
 
 
+# Satu Ruwatan tingkat 1 lewat layar Ruwatan: battle, berkah, kejadian,
+# sampai panel hasil.
+func _play_ruwatan(gs: Node) -> void:
+	print("[Ruwatan]")
+	check(bool(gs.get("ruwatan_unlocked")), "Ruwatan terbuka setelah tamat")
+	await click_button(tr("MAP_MENU"))
+	await _wait(0.4)
+	await click_button(tr("BTN_MAIN_MENU"))
+	await _wait(1.5)
+	check(await click_button(tr("MENU_RUWATAN")), "tombol Ruwatan di menu utama")
+	await _wait(1.2)
+	check(_scene_name() == "ruwatan", "masuk ke layar Ruwatan")
+	check(await click_button(tr("RUWATAN_START")), "mulai Ruwatan")
+	await _wait(0.6)
+	# Berkah awal (hadiah 24 bintang) diumumkan dengan panel kecil.
+	if find_button(tr("BTN_CONTINUE")) != null:
+		await click_button(tr("BTN_CONTINUE"))
+		await _wait(0.4)
+	var run: RefCounted = gs.get("ruwatan")
+	check(run != null and int(run.get("level")) == 1 and int(run.get("step")) == 0, "Ruwatan tingkat 1 dimulai di langkah 1")
+	# Seperti mode cerita: yang dites alurnya, jadi Nyawa dibesarkan.
+	run.set("max_hp", 400)
+	run.set("hp", 400)
+	var battles := 0
+	var events_before := _events_seen
+	var rewards := 0
+	for guard: int in 30:
+		run = gs.get("ruwatan")
+		if run == null or bool(run.call("is_over")):
+			break
+		if _scene_name() != "ruwatan":
+			await _wait(1.0)
+			continue
+		if not bool(run.call("is_battle_step")):
+			await click_button(tr("RUWATAN_GO_EVENT"))
+			await _wait(0.6)
+			await _handle_event()
+			continue
+		await click_button(tr("BTN_FIGHT"))
+		await _wait(1.5)
+		var bm: BattleManager = current_scene.get_node_or_null("Systems/BattleManager")
+		if bm == null:
+			break
+		while is_instance_valid(bm) and bm.is_battle_running() and bm.turn_number < 40:
+			await _bot_turn(bm)
+		battles += 1
+		await _wait(4.0)
+		var rp := await _wait_for_node("RewardPanel", 3.0)
+		if rp != null:
+			rewards += 1
+			var choices := rp.find_children("*", "Button", true, false)
+			await click((choices[0] as Button).get_global_rect().get_center())
+			await _wait(0.4)
+			var picker := _find_node("DeckPicker")
+			if picker != null:
+				var cards := picker.find_children("*", "Control", true, false).filter(
+					func(n: Node) -> bool: return _is_class(n, "CardView"))
+				await click((cards[0] as Control).get_global_rect().get_center())
+				await _wait(0.2)
+				await click_button(tr("PICKER_CONFIRM_REPLACE"))
+				await _wait(0.4)
+			await click_button(tr("BTN_CONTINUE"))
+			await _wait(0.6)
+	run = gs.get("ruwatan")
+	check(run != null and int(run.get("state")) == 1, "Ruwatan berhasil sampai Buto Hitam")
+	print("  %d battle, %d berkah, %d kejadian" % [battles, rewards, _events_seen - events_before])
+	check(battles == 6 and rewards == 5 and _events_seen - events_before == 2, "enam battle, lima berkah, dua kejadian")
+	await _wait(1.0)
+	check(await click_button(tr("RUWATAN_DONE")), "panel hasil Ruwatan")
+	await _wait(0.6)
+	check(gs.get("ruwatan") == null and int(gs.call("ruwatan_best_of", 1)) == 8 and int(gs.call("ruwatan_max_level")) == 2,
+		"hasil tercatat dan Tingkat Pagebluk 2 terbuka")
+	check(find_button(tr("RUWATAN_START")) != null, "kembali ke pilihan tingkat")
+
+
 func _run() -> void:
 	await process_frame
 	# Mode headless memakai jendela palsu 64x64; dengan skala pecahan game
@@ -255,6 +331,8 @@ func _run() -> void:
 	gs.set("save_path", "user://test_save.cfg")
 	gs.call("new_game")
 	(gs.get("stage_stars") as Dictionary).clear()
+	gs.call("abandon_ruwatan")
+	gs.set("ruwatan_best", {})
 	gs.call("set_locale", "id")
 
 	print("[Menu utama -> peta]")
@@ -316,6 +394,8 @@ func _run() -> void:
 	check(replay_won and _last_reward_already, "babak ulang dimenangkan tanpa berkah baru")
 	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "jumlah berkah tetap")
 	check(_scene_name() == "stage_map", "kembali ke peta")
+
+	await _play_ruwatan(gs)
 
 	Engine.time_scale = 1.0
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])

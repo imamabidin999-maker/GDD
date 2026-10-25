@@ -83,7 +83,7 @@ Kejadian yang belum selesai tersimpan, jadi tidak hilang kalau game ditutup.
 
 ## 5. Mode Ruwatan
 
-Terbuka setelah tamat, dari menu utama. Ruwatan adalah perjalanan acak 8 langkah:
+Terbuka setelah tamat sekali (tetap terbuka walau memulai petualangan baru), dari menu utama. Ruwatan adalah perjalanan acak 8 langkah:
 
 1. Battle (dua Buto biasa)
 2. Battle (dua Buto biasa)
@@ -91,13 +91,26 @@ Terbuka setelah tamat, dari menu utama. Ruwatan adalah perjalanan acak 8 langkah
 4. Battle (Buto Murka + pendamping)
 5. Battle (Buto Murka + pendamping)
 6. Kejadian
-7. Battle (dua Buto Murka)
+7. Battle (sepasang Buto Murka)
 8. Bos: Buto Hitam
 
 - Mulai dari deck awal dan 70 Nyawa, tanpa berkah. Setiap menang dapat berkah (3 pilihan, tanpa aturan kemenangan pertama).
-- **Nyawa terbawa** antar battle dan pulih 40% Nyawa maksimal setelah menang.
-- Kalah berarti Ruwatan selesai. Hasil terbaik dicatat.
-- Ruwatan yang sedang berjalan tersimpan dan bisa dilanjutkan.
+- **Nyawa terbawa** antar battle dan pulih 45% Nyawa maksimal setelah menang.
+- Kalah berarti Ruwatan selesai. Hasil terbaik (langkah terjauh) dicatat per tingkat.
+- Ruwatan yang sedang berjalan tersimpan dan bisa dilanjutkan. Keluar di tengah battle tidak mengubah Nyawa; battle yang sama diulang saat kembali.
+- Warna Buto, kejadian, dan urutannya ditentukan dari seed saat Ruwatan dimulai, jadi seluruh jalur bisa dilihat dari awal.
+- Tingkat kesulitan cerita (Santai/Normal/Sulit) tidak berlaku di Ruwatan; Tingkat Pagebluk yang menggantikannya.
+
+Angka Buto di Ruwatan lebih ringan daripada babak cerita karena Nyawa terbawa dan berkah datang sambil jalan:
+
+| Peran | Kuning | Hijau | Merah | Putih |
+|---|---|---|---|---|
+| Pemimpin (langkah 1-2) | 80 / 9 | 88 / 9 | 104 / 9 | 116 / 11 |
+| Pendamping | 56 / 8 | 60 / 8 | 68 / 8 | 68 / 8 |
+| Buto Murka (langkah 4-5) | 120 / 10 | 114 / 9 | 140 / 9 | 172 / 12 |
+| Sepasang Murka (langkah 7) | 92 / 9 | 88 / 8 | 104 / 8 | 120 / 10 |
+
+Angka ditulis Nyawa / serangan. Battle kedua dari jenis yang sama (langkah 2 dan 5) mendapat Nyawa +5%. Buto Hitam di Ruwatan: 370 Nyawa, serangan 15.
 
 **Tingkat Pagebluk** (berlaku menumpuk). Menang di tingkat N membuka tingkat N+1.
 
@@ -106,13 +119,15 @@ Terbuka setelah tamat, dari menu utama. Ruwatan adalah perjalanan acak 8 langkah
 | 1 | Ruwatan biasa |
 | 2 | Nyawa Buto +10% |
 | 3 | Serangan Buto +10% |
-| 4 | Pemulihan setelah menang hanya 25% |
+| 4 | Pemulihan setelah menang hanya 35% |
 | 5 | Buto biasa juga bisa Ngamuk |
 | 6 | Pilihan berkah hanya 2 |
-| 7 | Setiap battle dimulai dengan 2 Lara |
+| 7 | Setiap battle dimulai dengan 1 Lara |
 | 8 | Nyawa Buto +20% (menggantikan +10%) |
 | 9 | Buto Hitam memanggil 3 Bala |
 | 10 | Ambang Buyarkan Ajian +10, Pagebluk Merata +1 Lara lagi |
+
+Catatan penyetelan: rancangan awal memakai pemulihan 40%/25% dan 2 Lara di tingkat 7. Simulasi (bot memilih berkah dan kejadian secara acak) menunjukkan tebing yang terlalu curam di tingkat 4 dan 7, dan angka Buto setara babak cerita membuat tingkat 1 hanya 18% berhasil untuk bot cerdas. Setelah disetel, bot cerdas berhasil sekitar 86% di tingkat 1 dan turun bertahap sampai sekitar 7% di tingkat 10.
 
 ## 6. Tambahan Kecil
 

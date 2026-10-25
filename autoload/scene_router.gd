@@ -10,6 +10,7 @@ const STAGE_MAP := "res://scenes/stage_map/stage_map.tscn"
 const BATTLE := "res://scenes/battle/battle_scene.tscn"
 const PUSTAKA := "res://scenes/pustaka/pustaka.tscn"
 const ENDING := "res://scenes/ending/ending.tscn"
+const RUWATAN := "res://scenes/ruwatan/ruwatan.tscn"
 
 const FADE_TIME := 0.25
 

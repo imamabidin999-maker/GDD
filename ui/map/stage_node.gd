@@ -2,13 +2,14 @@ class_name StageNode
 extends Control
 ## Satu titik stage di peta: medali bundar berisi topeng Buto penjaganya.
 ## Terkunci = gelap dengan gembok, terbuka = cincin emas berdenyut,
-## selesai = cincin hijau dengan tanda centang. Babak Buto Murka diberi
+## selesai = cincin hijau dengan tanda centang, menunggu = cincin redup tanpa
+## gembok (langkah Ruwatan yang belum dicapai). Babak Buto Murka diberi
 ## lingkaran aura merah keunguan.
 
 signal pressed(node: StageNode)
 signal hover_changed(node: StageNode, hovering: bool)
 
-enum State { LOCKED, OPEN, CLEARED }
+enum State { LOCKED, OPEN, CLEARED, UPCOMING }
 
 const RADIUS := 15.0
 const PADLOCK := preload("res://assets/ui/padlock.png")
@@ -30,6 +31,10 @@ var _phase: float = 0.0
 var _murka: bool = false
 ## Bintang Dongkrek babak ini (bitmask 3 bintang).
 var stars: int = 0
+## Tiga bintang di bawah medali (tidak dipakai di Ruwatan).
+var show_stars: bool = true
+## Tanda tanya di tengah medali (langkah kejadian Ruwatan).
+var mystery: bool = false
 
 
 func setup(stage_data: StageData, node_state: State) -> void:
@@ -92,6 +97,8 @@ func _draw() -> void:
 			ring = UIKit.COLOR_GOLD.lerp(Color.WHITE, 0.25 + 0.25 * sin(_phase * 4.0))
 		State.CLEARED:
 			ring = COLOR_CLEARED
+		State.UPCOMING:
+			ring = COLOR_LOCKED.lightened(0.3)
 
 	if _murka and state != State.LOCKED:
 		var aura := COLOR_MURKA
@@ -117,8 +124,16 @@ func _draw() -> void:
 
 	if _mask != null:
 		var mask_size := Vector2(24, 24)
-		var tint := Color(0.22, 0.22, 0.28) if state == State.LOCKED else Color.WHITE
+		var tint := Color.WHITE
+		if state == State.LOCKED:
+			tint = Color(0.22, 0.22, 0.28)
+		elif state == State.UPCOMING:
+			tint = Color(0.72, 0.72, 0.8)
 		draw_texture_rect(_mask, Rect2(c - mask_size * 0.5, mask_size), false, tint)
+	elif mystery:
+		var q_size := UIKit.FONT_MAIN.get_string_size("?", HORIZONTAL_ALIGNMENT_LEFT, -1, 16)
+		draw_string(UIKit.FONT_MAIN, c + Vector2(-q_size.x * 0.5, 6), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 16,
+			UIKit.COLOR_GOLD if state == State.OPEN else ring)
 	if state == State.LOCKED:
 		draw_texture(PADLOCK, c - PADLOCK.get_size() * 0.5 + Vector2(0, 1))
 	elif state == State.CLEARED:
@@ -129,7 +144,7 @@ func _draw() -> void:
 			Color(0.06, 0.16, 0.08), 1.5)
 
 	# Tiga Bintang Dongkrek di bawah medali.
-	if state != State.LOCKED or stars != 0:
+	if show_stars and (state != State.LOCKED or stars != 0):
 		for i: int in Challenges.STARS_PER_STAGE:
 			var sc := c + Vector2((i - 1) * 8.0, RADIUS + 5.0)
 			var lit := bool(stars & (1 << i))

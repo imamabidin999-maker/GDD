@@ -132,6 +132,8 @@ var sirep_wards_per_battle: int = 0
 var poison_reduction: int = 0
 ## Sisa tangkal Sirep di battle ini.
 var sirep_wards: int = 0
+## Lara di awal battle (Ruwatan Tingkat Pagebluk 7 ke atas).
+var start_poison: int = 0
 
 var _played_this_turn: Array[CardInstance] = []
 var _chain_triggered_this_turn: bool = false
@@ -144,7 +146,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 	ultimate_damage_multiplier = starting_multiplier
 	evolution_stacks = 0
 	moxie = starting_moxie
-	poison = 0
+	poison = start_poison
 	poison_decay_paused = false
 	prayitna = false
 	sirep_wards = sirep_wards_per_battle
