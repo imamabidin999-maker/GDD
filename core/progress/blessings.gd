@@ -21,6 +21,12 @@ enum Kind {
 	TAMENG_PUSAKA, ## Tameng 10 di giliran pertama
 	JIMAT_PENOLAK_SIREP, ## Sirep pertama di tiap battle ditangkal
 	JAMU_BERAS_KENCUR, ## Lara yang diterima berkurang 1
+	TABUH_BEDUG, ## kartu Tabuh Bedug menggantikan satu kartu
+	TABUH_KENTONGAN, ## kartu Kentongan Titir menggantikan satu kartu
+	TABUH_KOREK, ## kartu Korek menggantikan satu kartu
+	TABUH_GONG, ## kartu Gong menggantikan satu kartu
+	TABUH_KENONG, ## kartu Kenong menggantikan satu kartu (perlu 8 Bintang Dongkrek)
+	LARAS_GAMELAN, ## 2 kartu Tabuh naik satu bintang
 }
 
 const MAX_RANK := 3
@@ -37,7 +43,21 @@ const KENCUR_REDUCTION := 1
 const ONCE: Array[Kind] = [
 	Kind.KENDANG_PEMBUKA, Kind.GREGET_LELUHUR, Kind.TAMENG_PUSAKA,
 	Kind.JIMAT_PENOLAK_SIREP, Kind.JAMU_BERAS_KENCUR,
+	Kind.TABUH_BEDUG, Kind.TABUH_KENTONGAN, Kind.TABUH_KOREK, Kind.TABUH_GONG, Kind.TABUH_KENONG,
 ]
+## Berkah kartu Tabuh dan keluarga kartunya. Kartu baru masuk dengan bintang 1
+## dan menggantikan satu kartu pilihan pemain (deck tetap 15 kartu).
+const TABUH_FAMILY := {
+	Kind.TABUH_BEDUG: "bedug",
+	Kind.TABUH_KENTONGAN: "kentongan",
+	Kind.TABUH_KOREK: "korek",
+	Kind.TABUH_GONG: "gong",
+	Kind.TABUH_KENONG: "kenong",
+}
+const TABUH_FAMILIES: Array[String] = ["bedug", "kentongan", "korek", "gong", "kenong"]
+## Kartu Tabuh yang baru didapat mendapat bintang kartu yang digantinya
+## ditambah ini (paling tinggi bintang 3), seperti jurus lama yang ditempa ulang.
+const TABUH_RANK_BONUS := 1
 ## Berkah naik bintang dan tipe kartunya.
 const UPGRADE_FAMILY := {
 	Kind.TEMPA_SABET: "serang",
@@ -55,6 +75,12 @@ const TEXT_KEYS := {
 	Kind.TAMENG_PUSAKA: "BLESS_PUSAKA",
 	Kind.JIMAT_PENOLAK_SIREP: "BLESS_JIMAT",
 	Kind.JAMU_BERAS_KENCUR: "BLESS_KENCUR",
+	Kind.TABUH_BEDUG: "BLESS_TABUH_BEDUG",
+	Kind.TABUH_KENTONGAN: "BLESS_TABUH_KENTONGAN",
+	Kind.TABUH_KOREK: "BLESS_TABUH_KOREK",
+	Kind.TABUH_GONG: "BLESS_TABUH_GONG",
+	Kind.TABUH_KENONG: "BLESS_TABUH_KENONG",
+	Kind.LARAS_GAMELAN: "BLESS_LARAS",
 }
 
 
@@ -79,8 +105,9 @@ static func count(owned: Array[String], kind: Kind) -> int:
 	return owned.count(kind_name(kind))
 
 
-## Berkah yang masih boleh ditawarkan, urut sesuai enum.
-static func available(deck: Array[String], owned: Array[String]) -> Array[Kind]:
+## Berkah yang masih boleh ditawarkan, urut sesuai enum. `excluded` berisi
+## berkah yang belum terbuka (misalnya Kenong sebelum 8 Bintang Dongkrek).
+static func available(deck: Array[String], owned: Array[String], excluded: Array = []) -> Array[Kind]:
 	var pool: Array[Kind] = []
 	for kind: Kind in UPGRADE_FAMILY:
 		if count_upgradable(deck, UPGRADE_FAMILY[kind]) > 0:
@@ -88,14 +115,17 @@ static func available(deck: Array[String], owned: Array[String]) -> Array[Kind]:
 	if count(owned, Kind.JAMU_KUNYIT_ASAM) < JAMU_LIMIT:
 		pool.append(Kind.JAMU_KUNYIT_ASAM)
 	for kind: Kind in ONCE:
-		if not has(owned, kind):
+		if not has(owned, kind) and not excluded.has(kind):
 			pool.append(kind)
+	if count_upgradable_tabuh(deck) > 0:
+		pool.append(Kind.LARAS_GAMELAN)
 	return pool
 
 
 ## Pilihan acak yang berbeda-beda, paling banyak `amount`.
-static func roll(rng: RandomNumberGenerator, deck: Array[String], owned: Array[String], amount: int = 3) -> Array[Kind]:
-	var pool := available(deck, owned)
+static func roll(rng: RandomNumberGenerator, deck: Array[String], owned: Array[String], amount: int = 3,
+		excluded: Array = []) -> Array[Kind]:
+	var pool := available(deck, owned, excluded)
 	for i: int in range(pool.size() - 1, 0, -1):
 		var j := rng.randi_range(0, i)
 		var tmp := pool[i]
@@ -111,6 +141,56 @@ static func count_upgradable(deck: Array[String], family: String) -> int:
 		if parts[0] == family and int(parts[1]) < MAX_RANK:
 			total += 1
 	return total
+
+
+## Spec kartu Tabuh `family` yang menggantikan kartu `replaced`.
+static func tabuh_spec_for(family: String, replaced: String) -> String:
+	var rank := clampi(int(replaced.get_slice(":", 1)) + TABUH_RANK_BONUS, 1, MAX_RANK)
+	return "%s:%d" % [family, rank]
+
+
+static func is_tabuh_spec(spec: String) -> bool:
+	return TABUH_FAMILIES.has(spec.get_slice(":", 0))
+
+
+static func count_upgradable_tabuh(deck: Array[String]) -> int:
+	var total := 0
+	for spec: String in deck:
+		if is_tabuh_spec(spec) and int(spec.get_slice(":", 1)) < MAX_RANK:
+			total += 1
+	return total
+
+
+## Laras Gamelan: menaikkan bintang kartu Tabuh terendah sebanyak `amount`.
+static func upgrade_tabuh(deck: Array[String], amount: int = UPGRADE_COUNT) -> Array[String]:
+	var upgraded: Array[String] = []
+	for step: int in amount:
+		var best := -1
+		var best_rank := MAX_RANK
+		for i: int in deck.size():
+			if not is_tabuh_spec(deck[i]):
+				continue
+			var rank := int(deck[i].get_slice(":", 1))
+			if rank < best_rank:
+				best = i
+				best_rank = rank
+		if best < 0:
+			break
+		deck[best] = "%s:%d" % [deck[best].get_slice(":", 0), best_rank + 1]
+		upgraded.append(deck[best])
+	return upgraded
+
+
+## Menaikkan satu kartu tertentu (pilihan pemain). Mengembalikan spec barunya,
+## atau "" kalau sudah bintang 3.
+static func upgrade_at(deck: Array[String], index: int) -> String:
+	if index < 0 or index >= deck.size():
+		return ""
+	var rank := int(deck[index].get_slice(":", 1))
+	if rank >= MAX_RANK:
+		return ""
+	deck[index] = "%s:%d" % [deck[index].get_slice(":", 0), rank + 1]
+	return deck[index]
 
 
 ## Menaikkan bintang kartu terendah dari satu tipe sebanyak `amount` kartu.

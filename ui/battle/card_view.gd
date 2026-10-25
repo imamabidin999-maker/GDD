@@ -17,6 +17,11 @@ const ACCENTS := {
 	"crimson": Color(1.0, 0.55, 0.92),
 	"piercing": Color(1.0, 0.75, 0.42),
 	"flow": Color(0.5, 1.0, 0.92),
+	"bedug": Color(1.0, 0.84, 0.45),
+	"kentongan": Color(1.0, 0.84, 0.45),
+	"korek": Color(1.0, 0.84, 0.45),
+	"gong": Color(1.0, 0.84, 0.45),
+	"kenong": Color(1.0, 0.84, 0.45),
 }
 
 const MINI_ATTACK := preload("res://assets/ui/mini_attack.png")
@@ -24,13 +29,19 @@ const MINI_BLOCK := preload("res://assets/ui/mini_block.png")
 const MINI_MOXIE := preload("res://assets/ui/mini_moxie.png")
 const MINI_AP := preload("res://assets/ui/mini_ap.png")
 const PADLOCK := preload("res://assets/ui/padlock.png")
+const MINI_ALL := preload("res://assets/ui/mini_all.png")
+const MINI_DECK := preload("res://assets/ui/mini_deck.png")
+const MINI_CALM := preload("res://assets/ui/mini_calm.png")
+const MINI_BOOST := preload("res://assets/ui/mini_boost.png")
 
 var card: CardInstance
 ## Moxie yang didapat kalau kartu ini dimainkan (diisi HandView dari PlayerState).
 var moxie_gain: float = 0.0
 ## Tameng yang diberikan kartu ini sekarang. -1 = pakai nilai dasar kartu.
-## Lebih besar dari nilai dasar saat Prayitna aktif.
+## Lebih besar dari nilai dasar saat Prayitna atau Kenong aktif.
 var shield_value: int = -1
+## Damage kartu ini sekarang. -1 = pakai nilai dasar. Lebih besar saat Kenong.
+var damage_value: int = -1
 ## Disorot emas kalau bisa digabung dengan tetangganya.
 var mergeable: bool = false:
 	set(value):
@@ -46,6 +57,7 @@ var _title: Label
 var _rank: Label
 var _stats: GridContainer
 var _lock_layer: Control
+var _cost_badge: Control
 var _lock_label: Label
 var _accent := Color.WHITE
 var _glow_phase: float = 0.0
@@ -125,6 +137,15 @@ func _build() -> void:
 	_stats.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_stats)
 
+	# Biaya Ketukan selain 1 (Gong) di pojok kanan atas. Digambar di node anak
+	# supaya tidak tertutup gambar bingkai.
+	_cost_badge = Control.new()
+	_cost_badge.position = Vector2(CARD_SIZE.x - 14, 0)
+	_cost_badge.size = Vector2(14, 14)
+	_cost_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_cost_badge.draw.connect(_draw_cost_badge)
+	add_child(_cost_badge)
+
 	_lock_layer = Control.new()
 	_lock_layer.size = CARD_SIZE
 	_lock_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -159,8 +180,17 @@ func refresh() -> void:
 
 	for child: Node in _stats.get_children():
 		child.queue_free()
-	if data.base_power > 0:
-		_add_stat(MINI_ATTACK, str(data.base_power), Color(1, 0.9, 0.85))
+	var damage := get_damage()
+	if damage > 0:
+		_add_stat(MINI_ATTACK, str(damage), Color(1.0, 0.75, 0.4) if damage > data.base_power else Color(1, 0.9, 0.85))
+	if data.hits_all:
+		_add_stat(MINI_ALL, "", UIKit.COLOR_TEXT)
+	if data.draw > 0:
+		_add_stat(MINI_DECK, "+%d" % data.draw, UIKit.COLOR_TEXT)
+	if data.calm_target:
+		_add_stat(MINI_CALM, "", UIKit.COLOR_TEXT)
+	if data.next_boost > 0.0:
+		_add_stat(MINI_BOOST, "+%d%%" % roundi(data.next_boost * 100.0), UIKit.COLOR_GOLD)
 	var shield := get_shield()
 	if shield > 0:
 		var boosted := shield > data.shield
@@ -170,13 +200,28 @@ func refresh() -> void:
 	if data.ap_gain > 0:
 		_add_stat(MINI_AP, "+%d" % data.ap_gain, UIKit.COLOR_GOLD)
 
+	_cost_badge.visible = data.ap_cost != 1
+	_cost_badge.queue_redraw()
 	_lock_layer.visible = card.is_locked()
 	_lock_label.text = str(card.lock_turns) if card.is_locked() else ""
 	queue_redraw()
 
 
+func _draw_cost_badge() -> void:
+	var c := Vector2(7, 7)
+	_cost_badge.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -7), c + Vector2(7, 0), c + Vector2(0, 7), c + Vector2(-7, 0)]), Color(0.05, 0.05, 0.1))
+	_cost_badge.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -6), c + Vector2(6, 0), c + Vector2(0, 6), c + Vector2(-6, 0)]), UIKit.COLOR_GOLD)
+	var text := str(card.data.ap_cost) if card != null else ""
+	var w := UIKit.FONT_SMALL.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+	_cost_badge.draw_string(UIKit.FONT_SMALL, c + Vector2(-w * 0.5 + 0.5, 3), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.1, 0.06, 0.02))
+
+
 func get_shield() -> int:
 	return shield_value if shield_value >= 0 else card.data.shield
+
+
+func get_damage() -> int:
+	return damage_value if damage_value >= 0 else card.data.base_power
 
 
 func _add_stat(texture: Texture2D, text: String, color: Color) -> void:
@@ -228,8 +273,18 @@ func get_tooltip_bbcode() -> String:
 	var data := card.data
 	var lines: Array[String] = []
 	lines.append("[b][color=#%s]%s[/color][/b]  [color=#ffd36e]%s[/color]" % [_accent.to_html(false), tr(data.display_name), tr("CARD_RANK") % data.rank])
-	if data.base_power > 0:
-		lines.append(tr("EFFECT_DAMAGE") % data.base_power)
+	if data.ap_cost != 1:
+		lines.append("[color=#ffd36e]%s[/color]" % (tr("EFFECT_COST") % data.ap_cost))
+	if get_damage() > 0:
+		lines.append((tr("EFFECT_ALL") if data.hits_all else tr("EFFECT_DAMAGE")) % get_damage())
+		if get_damage() > data.base_power:
+			lines.append("[color=#ffc070]%s[/color]" % tr("CARD_BOOST_TIP"))
+	if data.draw > 0:
+		lines.append(tr("EFFECT_DRAW") % data.draw)
+	if data.calm_target:
+		lines.append(tr("EFFECT_CALM"))
+	if data.next_boost > 0.0:
+		lines.append(tr("EFFECT_BOOST") % roundi(data.next_boost * 100.0))
 	if get_shield() > 0:
 		lines.append(tr("EFFECT_BLOCK") % get_shield())
 		if get_shield() > data.shield:
@@ -241,6 +296,8 @@ func get_tooltip_bbcode() -> String:
 	lines.append("[color=#9aa0b8]%s[/color]" % tr(data.display_name + "_DESC"))
 	if card.is_locked():
 		lines.append("[color=#ffd36e]%s[/color]" % (tr("CARD_LOCKED_TIP") % card.lock_turns))
+	elif data.is_tabuh():
+		lines.append("[color=#9aa0b8]%s[/color]" % tr("CARD_TABUH_HINT"))
 	elif data.is_base_type():
 		lines.append("[color=#9aa0b8]%s[/color]" % tr("CARD_MERGE_HINT"))
 	return "\n".join(lines)

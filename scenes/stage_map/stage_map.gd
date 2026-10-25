@@ -309,7 +309,7 @@ func _open_deck() -> void:
 	grid.add_theme_constant_override("v_separation", 2)
 	col.add_child(grid)
 	var specs := GameState.deck.duplicate()
-	specs.sort_custom(_compare_specs)
+	specs.sort_custom(DeckPicker.compare_specs)
 	for spec: String in specs:
 		var data := CardDB.card_from_spec(spec)
 		if data == null:
@@ -354,15 +354,6 @@ func _blessing_row() -> Control:
 		if int(counts[entry]) > 1:
 			row.add_child(UIKit.small_label("x%d" % int(counts[entry]), UIKit.COLOR_TEXT))
 	return row
-
-
-static func _compare_specs(a: String, b: String) -> bool:
-	const ORDER := ["serang", "fokus", "taktik"]
-	var pa := a.split(":")
-	var pb := b.split(":")
-	if pa[0] != pb[0]:
-		return ORDER.find(pa[0]) < ORDER.find(pb[0])
-	return int(pa[1]) < int(pb[1])
 
 
 ## Kartu ukuran asli (skala pecahan merusak piksel) dengan tooltip saat disorot.

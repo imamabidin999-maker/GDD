@@ -22,9 +22,12 @@ func is_same_rank(first: CardInstance, second: CardInstance) -> bool:
 	return first.get_rank() == second.get_rank()
 
 
-## true kalau keduanya kartu dasar (bukan hybrid) dan tipenya tidak sama.
+## true kalau keduanya kartu dasar (bukan hybrid), bukan Tabuh, dan tipenya
+## tidak sama. Kartu Tabuh tidak pernah bisa digabung.
 func is_different_base_type(first: CardInstance, second: CardInstance) -> bool:
 	if first.is_hybrid() or second.is_hybrid():
+		return false
+	if first.data.is_tabuh() or second.data.is_tabuh():
 		return false
 	return first.get_type() != second.get_type()
 

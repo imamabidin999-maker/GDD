@@ -71,16 +71,44 @@ func _run() -> void:
 # Satu dari tiga pilihan acak, dipilih acak juga (pemain tidak selalu
 # memilih yang terbaik). Mengembalikan Nyawa maksimal yang baru.
 func _apply_random_blessing(deck: Array[String], max_hp: int, owned: Array[String], rng: RandomNumberGenerator) -> int:
-	var options := Blessings.roll(rng, deck, owned)
+	var excluded: Array = [Blessings.Kind.TABUH_KENONG]
+	if _arg("notabuh", "0") == "1":
+		excluded.append_array(Blessings.TABUH_FAMILY.keys())
+	var options := Blessings.roll(rng, deck, owned, 3, excluded)
 	if options.is_empty():
 		return max_hp
 	var kind: Blessings.Kind = options[rng.randi_range(0, options.size() - 1)]
 	owned.append(Blessings.kind_name(kind))
 	if Blessings.UPGRADE_FAMILY.has(kind):
 		Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
+	elif kind == Blessings.Kind.LARAS_GAMELAN:
+		Blessings.upgrade_tabuh(deck)
+	elif Blessings.TABUH_FAMILY.has(kind):
+		var at := _replace_index(deck)
+		deck[at] = Blessings.tabuh_spec_for(Blessings.TABUH_FAMILY[kind], deck[at])
 	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
 		return max_hp + Blessings.JAMU_HP
 	return max_hp
+
+
+# Kartu yang diganti kartu Tabuh: bintang terendah dari tipe dasar yang
+# paling banyak di deck (seperti pilihan pemain yang wajar).
+func _replace_index(deck: Array[String]) -> int:
+	var counts := {}
+	for spec: String in deck:
+		var fam := spec.get_slice(":", 0)
+		counts[fam] = int(counts.get(fam, 0)) + 1
+	var best := 0
+	var best_key := Vector2i(99, 0)
+	for i: int in deck.size():
+		var fam := deck[i].get_slice(":", 0)
+		if Blessings.is_tabuh_spec(deck[i]):
+			continue
+		var key := Vector2i(int(deck[i].get_slice(":", 1)), -int(counts[fam]))
+		if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
+			best_key = key
+			best = i
+	return best
 
 
 ## Mengembalikan Vector3i(menang 1/0, jumlah turn, sisa HP).
@@ -187,7 +215,7 @@ func _move_for_merge(bm: BattleManager) -> bool:
 				continue
 			var a := hand.get_card(i)
 			var b := hand.get_card(j)
-			if not a.data.is_base_type() or not b.data.is_base_type():
+			if not a.data.is_base_type() or not b.data.is_base_type() or a.data.is_tabuh() or b.data.is_tabuh():
 				continue
 			if a.get_rank() != b.get_rank() or a.get_type() == b.get_type():
 				continue
@@ -244,18 +272,34 @@ func _best_card(bm: BattleManager) -> int:
 	var best_score := -INF
 	for i: int in hand.get_card_count():
 		var card := hand.get_card(i)
-		if card.is_locked():
-			continue # tersirep, tidak bisa dimainkan
+		if card.is_locked() or card.data.ap_cost > bm.player.current_ap:
+			continue # tersirep atau Ketukan tidak cukup
 		var data := card.data
-		var score := float(data.base_power)
-		if target != null and data.base_power >= target.health.current_hp:
+		var damage := bm.player.get_card_damage(card)
+		var score := float(damage * (enemy_count if data.hits_all else 1))
+		if target != null and damage >= target.health.current_hp:
 			score += 8.0
 		score += 1.1 * mini(bm.player.get_card_shield(card), need)
 		score += 0.3 * enemy_count * bm.player.get_moxie_gain_from_card(card) * (1.0 if bm.player.moxie < PlayerState.MOXIE_MAX else 0.0)
 		score += 6.0 * data.ap_gain
+		score += 4.0 * mini(data.draw, hand.get_free_slots() + 1)
+		if data.calm_target and target != null:
+			score += 12.0 if target.is_ngamuk_ready() else 3.0 * maxi(target.amuk, 0)
+		if data.next_boost > 0.0 and bm.player.current_ap >= 2:
+			score += data.next_boost * _best_other_damage(bm, i)
+		score /= maxf(1.0, float(data.ap_cost))
 		if score > best_score:
 			best_score = score
 			best = i
+	return best
+
+
+func _best_other_damage(bm: BattleManager, skip: int) -> float:
+	var best := 0.0
+	for i: int in bm.hand.get_card_count():
+		var card := bm.hand.get_card(i)
+		if i != skip and not card.is_locked() and card.data.next_boost <= 0.0:
+			best = maxf(best, float(card.data.base_power + card.data.shield))
 	return best
 
 #endregion
@@ -277,7 +321,7 @@ func _casual_turn(bm: BattleManager) -> void:
 			return
 		var first_free := -1
 		for i: int in bm.hand.get_card_count():
-			if bm.hand.can_play_at(i):
+			if bm.hand.can_play_at(i) and bm.hand.get_card(i).data.ap_cost <= bm.player.current_ap:
 				first_free = i
 				break
 		if first_free < 0 or not bm.request_play_card(first_free):

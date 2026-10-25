@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_c7plc"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_kentongan.png" id="2_tl4k3"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_6mjjh"]
+
+[resource]
+script = ExtResource("3_6mjjh")
+id = &"kentongan_2"
+display_name = "CARD_KENTONGAN"
+card_type = 4
+rank = 2
+shield = 3
+ap_gain = 1
+draw = 2
+icon = ExtResource("2_tl4k3")
+frame = ExtResource("1_c7plc")

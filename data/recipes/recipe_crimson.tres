@@ -1,13 +1,11 @@
-[gd_resource type="Resource" script_class="MergeRecipe" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="MergeRecipe" format=3]
 
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="1_ns2ep"]
-[ext_resource type="Resource" path="res://data/cards/crimson_1.tres" id="2_mjqnh"]
-[ext_resource type="Resource" path="res://data/cards/crimson_2.tres" id="3_nxnof"]
-[ext_resource type="Resource" path="res://data/cards/crimson_3.tres" id="4_3fgp0"]
-[ext_resource type="Script" path="res://data/definitions/merge_recipe.gd" id="5_1rogj"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="1_jlhbs"]
+[ext_resource type="Resource" path="res://data/cards/crimson_1.tres" id="2_vlxra"]
+[ext_resource type="Resource" path="res://data/cards/crimson_2.tres" id="3_3da3a"]
+[ext_resource type="Resource" path="res://data/cards/crimson_3.tres" id="4_5hyed"]
+[ext_resource type="Script" path="res://data/definitions/merge_recipe.gd" id="5_8sr8l"]
 
 [resource]
-script = ExtResource("5_1rogj")
-type_a = 0
-type_b = 1
-results = Array[ExtResource("1_ns2ep")]([ExtResource("2_mjqnh"), ExtResource("3_nxnof"), ExtResource("4_3fgp0")])
+script = ExtResource("5_8sr8l")
+results = Array[ExtResource("1_jlhbs")]([ExtResource("2_vlxra"), ExtResource("3_3da3a"), ExtResource("4_5hyed")])

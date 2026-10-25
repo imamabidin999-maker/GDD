@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_613u3"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_korek.png" id="2_geyqa"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_p6jlo"]
+
+[resource]
+script = ExtResource("3_p6jlo")
+id = &"korek_2"
+display_name = "CARD_KOREK"
+card_type = 4
+rank = 2
+base_power = 6
+calm_target = true
+moxie_gain = 15.0
+icon = ExtResource("2_geyqa")
+frame = ExtResource("1_613u3")

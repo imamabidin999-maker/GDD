@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_lxvl2"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_bedug.png" id="2_qpxc5"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_ubq2f"]
+
+[resource]
+script = ExtResource("3_ubq2f")
+id = &"bedug_3"
+display_name = "CARD_BEDUG"
+card_type = 4
+rank = 3
+base_power = 12
+hits_all = true
+icon = ExtResource("2_qpxc5")
+frame = ExtResource("1_lxvl2")

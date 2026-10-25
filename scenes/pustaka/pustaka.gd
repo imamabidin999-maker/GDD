@@ -189,19 +189,12 @@ func _show_cards() -> void:
 	_content.add_child(UIKit.small_label(tr("PUSTAKA_CARDS_HINT"), UIKit.COLOR_DIM))
 	# Satu baris per tipe: tiga kartu (bintang 1-3) lalu keterangannya.
 	for family: String in ["serang", "fokus", "taktik"]:
-		var row := UIKit.hbox(4)
-		for rank: int in range(1, 4):
-			var data := CardDB.get_card(family, rank)
-			if data != null:
-				row.add_child(_card_with_tooltip(data, []))
-		var first := CardDB.get_card(family, 1)
-		if first != null:
-			var text := UIKit.label("%s\n%s" % [tr(first.display_name), tr(first.display_name + "_DESC")], &"BigLabel", UIKit.COLOR_TEXT)
-			text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			text.custom_minimum_size = Vector2(200, 0)
-			text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			row.add_child(text)
-		_content.add_child(row)
+		_content.add_child(_family_row(family))
+
+	_heading(tr("PUSTAKA_TABUH"))
+	_content.add_child(UIKit.small_label(tr("PUSTAKA_TABUH_HINT"), UIKit.COLOR_DIM))
+	for family: String in Blessings.TABUH_FAMILIES:
+		_content.add_child(_family_row(family))
 
 	_heading(tr("PUSTAKA_RECIPES"))
 	for recipe: MergeRecipe in CardDB.get_recipes():
@@ -222,6 +215,23 @@ func _show_cards() -> void:
 		text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		line.add_child(text)
 		_content.add_child(line)
+
+
+# Satu baris: kartu bintang 1-3 lalu nama dan keterangannya.
+func _family_row(family: String) -> Control:
+	var row := UIKit.hbox(4)
+	for rank: int in range(1, 4):
+		var data := CardDB.get_card(family, rank)
+		if data != null:
+			row.add_child(_card_with_tooltip(data, []))
+	var first := CardDB.get_card(family, 1)
+	if first != null:
+		var text := UIKit.label("%s\n%s" % [tr(first.display_name), tr(first.display_name + "_DESC")], &"BigLabel", UIKit.COLOR_TEXT)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text.custom_minimum_size = Vector2(200, 0)
+		text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(text)
+	return row
 
 
 func _symbol(text: String) -> Label:

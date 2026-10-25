@@ -429,3 +429,54 @@ HINT_BALA_TITLE,Bala,Bala
 HINT_BALA,"Selama masih ada Bala yang hidup, Buto Hitam hanya menerima separuh damage. Habisi Bala lebih dulu.","While any Bala lives, Buto Hitam takes only half damage. Take the Bala down first."
 HINT_PAGEBLUK_TITLE,Pagebluk Merata,Pagebluk Merata
 HINT_PAGEBLUK,"Mulai sekarang kamu mendapat 1 Lara di akhir setiap giliran Buto, dan Lara tidak berkurang lagi. Tuntaskan pertarungan secepatnya.","From now on you gain 1 Lara at the end of every Buto turn, and Lara no longer wears off. Finish the fight quickly."
+CARD_BEDUG,Tabuh Bedug,Tabuh Bedug
+CARD_BEDUG_SHORT,BEDUG,BEDUG
+CARD_BEDUG_DESC,Dentum bedug mengguncang semua Buto sekaligus.,The boom of the bedug drum shakes every Buto at once.
+CARD_KENTONGAN,Kentongan Titir,Kentongan Titir
+CARD_KENTONGAN_SHORT,KENTONGAN,KENTONGAN
+CARD_KENTONGAN_DESC,Titir kentongan memanggil warga: tarik kartu tambahan.,The rapid kentongan alarm calls the villagers: draw extra cards.
+CARD_KOREK,Korek,Korek
+CARD_KOREK_DESC,"Bunyi ""krek"" yang tajam membuyarkan amukan satu Buto.","A sharp ""krek"" breaks one Buto's rage."
+CARD_KOREK_SHORT,KOREK,KOREK
+CARD_GONG,Gong,Gong
+CARD_GONG_SHORT,GONG,GONG
+CARD_GONG_DESC,Pukulan gong yang berat. Butuh 2 Ketukan.,A heavy gong strike. Costs 2 Ketukan.
+CARD_KENONG,Kenong,Kenong
+CARD_KENONG_SHORT,KENONG,KENONG
+CARD_KENONG_DESC,Kenong menjaga irama: kartu berikutnya giliran ini lebih kuat.,The kenong keeps the beat: your next card this turn is stronger.
+EFFECT_ALL,%d damage ke semua Buto,%d damage to every Buto
+EFFECT_DRAW,Tarik %d kartu,Draw %d card(s)
+EFFECT_CALM,Mengosongkan Amuk sasaran,Empties the target's Amuk
+EFFECT_COST,Butuh %d Ketukan,Costs %d Ketukan
+EFFECT_BOOST,Kartu berikutnya giliran ini +%d%%,Next card this turn +%d%%
+CARD_BOOST_TIP,Diperkuat Kenong.,Boosted by Kenong.
+CARD_TABUH_HINT,Kartu Tabuh tidak bisa digabung.,Tabuh cards can't be merged.
+BLESS_TABUH_BEDUG,Tabuh Bedug,Tabuh Bedug
+BLESS_TABUH_BEDUG_DESC,Terima kartu Tabuh Bedug (damage ke semua Buto) dan ganti satu jurusmu.,Gain a Tabuh Bedug card (damage to every Buto) in place of one of your cards.
+BLESS_TABUH_KENTONGAN,Kentongan Titir,Kentongan Titir
+BLESS_TABUH_KENTONGAN_DESC,Terima kartu Kentongan Titir (tarik kartu) dan ganti satu jurusmu.,Gain a Kentongan Titir card (draw cards) in place of one of your cards.
+BLESS_TABUH_KOREK,Korek,Korek
+BLESS_TABUH_KOREK_DESC,Terima kartu Korek (membuyarkan Amuk) dan ganti satu jurusmu.,Gain a Korek card (breaks Amuk) in place of one of your cards.
+BLESS_TABUH_GONG,Gong,Gong
+BLESS_TABUH_GONG_DESC,"Terima kartu Gong (damage besar, 2 Ketukan) dan ganti satu jurusmu.","Gain a Gong card (big damage, 2 Ketukan) in place of one of your cards."
+BLESS_TABUH_KENONG,Kenong,Kenong
+BLESS_TABUH_KENONG_DESC,Terima kartu Kenong (memperkuat kartu berikutnya) dan ganti satu jurusmu.,Gain a Kenong card (boosts your next card) in place of one of your cards.
+BLESS_LARAS,Laras Gamelan,Laras Gamelan
+BLESS_LARAS_DESC,2 kartu Tabuh naik satu bintang.,Upgrade 2 Tabuh cards by one rank.
+PICKER_REPLACE_TITLE,Ganti Jurus,Replace a Card
+PICKER_REPLACE_HINT,Pilih kartu di Jurus yang akan diganti dengan kartu baru ini.,Choose the card in your deck that this new card will replace.
+PICKER_UPGRADE_TITLE,Tempa Jurus,Upgrade a Card
+PICKER_UPGRADE_HINT,Pilih kartu yang naik satu bintang.,Choose a card to upgrade by one rank.
+PICKER_CONFIRM_REPLACE,Ganti,Replace
+PICKER_CONFIRM_UPGRADE,Tempa,Upgrade
+PICKER_SKIP,Lewati,Skip
+PICKER_SKIP_TIP,Kartu baru tidak diambil.,The new card is not taken.
+PICKER_NEW_CARD,Kartu baru,New card
+REWARD_REPLACED,%s menggantikan %s,%s replaces %s
+REWARD_SKIPPED,Jurus tidak berubah.,Your deck stays the same.
+PUSTAKA_TABUH,Jurus Tabuh,Tabuh Cards
+PUSTAKA_TABUH_HINT,Didapat dari berkah Roro Ayu atau kejadian di perjalanan. Tidak bisa digabung.,Earned from Roro Ayu's blessings or events on the road. Can't be merged.
+HINT_TABUH_TITLE,Jurus Tabuh,Tabuh Cards
+HINT_TABUH,Kartu Tabuh punya efek khusus dan tidak bisa digabung. Arahkan kursor ke kartu untuk melihat efeknya.,Tabuh cards have special effects and can't be merged. Hover over a card to see what it does.
+BATTLE_CALMED_ONE,Amuk buyar!,Rage broken!
+BATTLE_KENONG,Kenong +%d%%,Kenong +%d%%

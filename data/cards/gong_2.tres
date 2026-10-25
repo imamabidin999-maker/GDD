@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_ic2r6"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_gong.png" id="2_rhbqv"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_t36iw"]
+
+[resource]
+script = ExtResource("3_t36iw")
+id = &"gong_2"
+display_name = "CARD_GONG"
+card_type = 4
+rank = 2
+base_power = 26
+ap_cost = 2
+icon = ExtResource("2_rhbqv")
+frame = ExtResource("1_ic2r6")

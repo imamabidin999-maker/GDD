@@ -214,6 +214,8 @@ CARD_HUES = {
     "piercing": 0.085,        # jingga (Serang + Taktik)
     "flow": 0.48,             # toska (Fokus + Taktik)
 }
+# Kartu Tabuh: perunggu (lebih gelap dan kurang jenuh dari jingga Piercing).
+TABUH_FRAME = (0.13, 1.0, 1.08)
 
 
 def blank_card_template() -> tuple[Image.Image, Image.Image]:
@@ -253,6 +255,8 @@ def build_card_frames() -> Image.Image:
     for name, hue in CARD_HUES.items():
         frame = blank if hue is None else recolor(blank, hue, sat_mul=1.05)
         save(frame, f"cards/frame_{name}.png")
+    hue, sat, val = TABUH_FRAME
+    save(recolor(blank, hue, sat_mul=sat, val_mul=val), "cards/frame_tabuh.png")
     icon = eye_icon(eye)
     save(icon, "cards/icon_fokus.png")
     return icon
@@ -354,6 +358,102 @@ def draw_gong(size: int = 40) -> Image.Image:
     return add_outline(img)
 
 
+WOOD = (150, 92, 52, 255)
+WOOD_D = (98, 58, 34, 255)
+WOOD_L = (190, 130, 76, 255)
+SKIN = (232, 214, 168, 255)
+BRONZE = (196, 140, 52, 255)
+BRONZE_L = (250, 214, 120, 255)
+BRONZE_D = (140, 96, 36, 255)
+
+
+def draw_bedug(size: int = 40) -> Image.Image:
+    """Bedug: gendang besar berbaring di atas penyangga, dengan pemukulnya."""
+    img, d = canvas(size, size)
+    d.line([(8, 34), (14, 26)], fill=WOOD_D, width=2)
+    d.line([(32, 34), (26, 26)], fill=WOOD_D, width=2)
+    d.polygon([(8, 10), (30, 10), (34, 18), (30, 27), (8, 27), (11, 18)], fill=WOOD)
+    d.line([(9, 12), (29, 12)], fill=WOOD_L)
+    for x in (14, 19, 24):
+        d.line([(x, 10), (x, 27)], fill=WOOD_D)
+    d.ellipse([3, 9, 13, 28], fill=WOOD_D)
+    d.ellipse([4, 10, 12, 27], fill=SKIN)
+    d.ellipse([6, 14, 9, 21], fill=(250, 238, 200, 255))
+    d.line([(26, 4), (36, 0)], fill=WOOD_L, width=2)
+    d.ellipse([22, 3, 27, 8], fill=SKIN)
+    return add_outline(img)
+
+
+def draw_kentongan(size: int = 40) -> Image.Image:
+    """Kentongan: batang bambu berlubang memanjang yang digantung, dan pemukulnya."""
+    img, d = canvas(size, size)
+    d.arc([15, 0, 23, 8], 180, 360, fill=(200, 170, 120, 255))
+    d.line([(15, 4), (15, 6)], fill=(200, 170, 120, 255))
+    d.line([(23, 4), (23, 6)], fill=(200, 170, 120, 255))
+    d.rounded_rectangle([12, 5, 26, 37], radius=5, fill=(176, 150, 82, 255))
+    d.line([(14, 8), (14, 34)], fill=(214, 190, 116, 255))
+    d.line([(24, 8), (24, 34)], fill=(130, 108, 56, 255))
+    d.line([(12, 16), (26, 16)], fill=(130, 108, 56, 255))
+    d.rectangle([18, 19, 20, 33], fill=(60, 40, 24, 255))
+    d.line([(30, 22), (38, 30)], fill=WOOD, width=2)
+    d.ellipse([27, 19, 32, 24], fill=WOOD_D)
+    return add_outline(img)
+
+
+def draw_korek(size: int = 40) -> Image.Image:
+    """Korek: alat kayu bergerigi yang diputar sehingga berbunyi "krek"."""
+    img, d = canvas(size, size)
+    d.rectangle([6, 14, 30, 30], fill=WOOD)
+    d.rectangle([8, 16, 28, 28], fill=WOOD_D)
+    d.line([(6, 14), (30, 14)], fill=WOOD_L)
+    cx, cy = 18, 22
+    for i in range(10):
+        ang = i * math.pi / 5
+        x = cx + math.cos(ang) * 8
+        y = cy + math.sin(ang) * 8
+        d.rectangle([x - 1, y - 1, x + 1, y + 1], fill=(214, 190, 140, 255))
+    d.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=(214, 190, 140, 255))
+    d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=WOOD_D)
+    d.line([(cx, cy), (34, 6)], fill=WOOD_L, width=2)
+    d.rectangle([32, 3, 36, 8], fill=WOOD_D)
+    d.line([(3, 8), (6, 11)], fill=(255, 230, 150, 255))
+    d.line([(2, 13), (5, 13)], fill=(255, 230, 150, 255))
+    return add_outline(img)
+
+
+def draw_gong_card(size: int = 40) -> Image.Image:
+    """Gong besar yang tergantung di rangka kayu."""
+    img, d = canvas(size, size)
+    d.rectangle([3, 2, 36, 5], fill=WOOD)
+    d.line([(3, 2), (36, 2)], fill=WOOD_L)
+    d.rectangle([3, 5, 6, 37], fill=WOOD)
+    d.rectangle([33, 5, 36, 37], fill=WOOD)
+    d.line([(16, 5), (17, 9)], fill=(200, 170, 120, 255))
+    d.line([(23, 5), (22, 9)], fill=(200, 170, 120, 255))
+    d.ellipse([8, 8, 31, 31], fill=BRONZE_D)
+    d.ellipse([9, 9, 30, 30], fill=BRONZE)
+    d.arc([9, 9, 30, 30], 200, 300, fill=BRONZE_L, width=2)
+    d.ellipse([15, 15, 24, 24], fill=BRONZE_D)
+    d.ellipse([16, 15, 23, 22], fill=BRONZE_L)
+    return add_outline(img)
+
+
+def draw_kenong(size: int = 40) -> Image.Image:
+    """Kenong: gong pencon besar yang duduk di atas tali dalam kotak kayu."""
+    img, d = canvas(size, size)
+    d.polygon([(4, 26), (36, 26), (32, 36), (8, 36)], fill=WOOD)
+    d.line([(4, 26), (36, 26)], fill=WOOD_L)
+    d.line([(9, 28), (31, 34)], fill=(200, 170, 120, 255))
+    d.line([(9, 34), (31, 28)], fill=(200, 170, 120, 255))
+    d.ellipse([7, 12, 33, 30], fill=BRONZE_D)
+    d.ellipse([8, 12, 32, 28], fill=BRONZE)
+    d.arc([8, 12, 32, 28], 190, 280, fill=BRONZE_L, width=2)
+    d.ellipse([15, 6, 25, 16], fill=BRONZE_D)
+    d.ellipse([16, 6, 24, 14], fill=BRONZE_L)
+    d.point((18, 8), fill=(255, 245, 200, 255))
+    return add_outline(img)
+
+
 def crimson_eye(eye: Image.Image) -> Image.Image:
     a = np.asarray(eye).astype(np.float64)
     hsv = rgb_to_hsv(a[..., :3] / 255.0)
@@ -431,6 +531,19 @@ def mini_icon(kind: str) -> Image.Image:
     elif kind == "chain":
         d.ellipse([0, 3, 6, 9], outline=(232, 182, 72, 255), width=2)
         d.ellipse([5, 2, 11, 8], outline=(255, 220, 120, 255), width=2)
+    elif kind == "all":
+        # semua sasaran: tiga titik bidik
+        for (x, y) in ((1, 6), (5, 1), (9, 6)):
+            d.ellipse([x - 1, y, x + 2, y + 3], outline=(255, 120, 90, 255))
+        d.line([(1, 11), (10, 11)], fill=(255, 120, 90, 255))
+    elif kind == "calm":
+        # Amuk dibuyarkan: api dicoret
+        d.polygon([(5, 0), (9, 5), (9, 8), (6, 11), (3, 11), (1, 8), (1, 5), (3, 3), (4, 5)], fill=(150, 90, 70, 255))
+        d.line([(0, 11), (11, 0)], fill=(230, 236, 250, 255), width=2)
+    elif kind == "boost":
+        # kartu berikutnya lebih kuat: panah naik emas
+        d.polygon([(5, 0), (10, 5), (7, 5), (7, 11), (3, 11), (3, 5), (0, 5)], fill=(250, 210, 90, 255))
+        d.line([(5, 2), (5, 9)], fill=(255, 240, 170, 255))
     elif kind == "plague":
         # Gebug Pagebluk: hantaman + tetes Lara
         d.line([(1, 8), (7, 2)], fill=(220, 226, 238, 255), width=2)
@@ -519,11 +632,16 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_spear(), "cards/icon_piercing.png")
     save(draw_swirl(), "cards/icon_flow.png")
     save(draw_gong(), "ui/icon_ultimate.png")
+    save(draw_bedug(), "cards/icon_bedug.png")
+    save(draw_kentongan(), "cards/icon_kentongan.png")
+    save(draw_korek(), "cards/icon_korek.png")
+    save(draw_gong_card(), "cards/icon_gong.png")
+    save(draw_kenong(), "cards/icon_kenong.png")
     print("Ikon kecil:")
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",
                  "amuk", "amuk_empty", "prayitna", "plague", "ajian", "summon", "stagger",
-                 "bala_shield"):
+                 "bala_shield", "all", "calm", "boost"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
     for kind in ("kendang", "leluhur", "pusaka", "jimat", "kencur"):
         save(blessing_icon(kind), f"ui/bless_{kind}.png")

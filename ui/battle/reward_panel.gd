@@ -16,6 +16,12 @@ const BLESS_ICONS := {
 	Blessings.Kind.TAMENG_PUSAKA: preload("res://assets/ui/bless_pusaka.png"),
 	Blessings.Kind.JIMAT_PENOLAK_SIREP: preload("res://assets/ui/bless_jimat.png"),
 	Blessings.Kind.JAMU_BERAS_KENCUR: preload("res://assets/ui/bless_kencur.png"),
+	Blessings.Kind.TABUH_BEDUG: preload("res://assets/cards/icon_bedug.png"),
+	Blessings.Kind.TABUH_KENTONGAN: preload("res://assets/cards/icon_kentongan.png"),
+	Blessings.Kind.TABUH_KOREK: preload("res://assets/cards/icon_korek.png"),
+	Blessings.Kind.TABUH_GONG: preload("res://assets/cards/icon_gong.png"),
+	Blessings.Kind.TABUH_KENONG: preload("res://assets/cards/icon_kenong.png"),
+	Blessings.Kind.LARAS_GAMELAN: preload("res://assets/cards/icon_kenong.png"),
 }
 
 ## Babak asal berkah. Diisi sebelum panel masuk ke tree.
@@ -111,12 +117,38 @@ func _make_choice(blessing: Blessings.Kind) -> Button:
 	return b
 
 
+# Berkah kartu Tabuh: pemain memilih kartu yang diganti. Mengembalikan teks hasilnya.
+func _place_tabuh(family: String) -> String:
+	var picker := DeckPicker.new()
+	picker.mode = DeckPicker.Mode.REPLACE
+	picker.deck = GameState.deck.duplicate()
+	picker.incoming_spec = "%s:1" % family
+	picker.tabuh_family = family
+	get_parent().add_child(picker)
+	var index: int = await picker.picked
+	if index < 0:
+		return tr("REWARD_SKIPPED")
+	var swap := GameState.place_tabuh(index, family)
+	if swap.is_empty():
+		return tr("REWARD_SKIPPED")
+	return tr("REWARD_REPLACED") % [_card_name(swap[1]), _card_name(swap[0])]
+
+
+func _card_name(spec: String) -> String:
+	var card := CardDB.card_from_spec(spec)
+	if card == null:
+		return spec
+	return "%s (%s)" % [tr(card.display_name), tr("CARD_RANK") % card.rank]
+
+
 func _choose(blessing: Blessings.Kind) -> void:
 	AudioManager.play_sfx("gong")
 	var upgraded := GameState.apply_blessing(blessing, stage_number)
 	for child: Node in _choices.get_children():
 		child.queue_free()
 	var msg := tr("REWARD_DONE")
+	if Blessings.TABUH_FAMILY.has(blessing):
+		msg += "\n" + await _place_tabuh(Blessings.TABUH_FAMILY[blessing])
 	# Kartu kembar ditulis sekali dengan jumlahnya, misal "Fokus  Bintang 2  x2".
 	var counts := {}
 	for spec: String in upgraded:

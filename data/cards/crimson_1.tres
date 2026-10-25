@@ -1,18 +1,14 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/cards/frame_crimson.png" id="1_l3it5"]
-[ext_resource type="Texture2D" path="res://assets/cards/icon_crimson.png" id="2_6r4ir"]
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_vyx0m"]
+[ext_resource type="Texture2D" path="res://assets/cards/frame_crimson.png" id="1_df2hu"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_crimson.png" id="2_5nfqc"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_47fe6"]
 
 [resource]
-script = ExtResource("3_vyx0m")
+script = ExtResource("3_47fe6")
 id = &"crimson_1"
 display_name = "CARD_CRIMSON"
 card_type = 3
-rank = 1
 base_power = 12
-shield = 0
-ap_gain = 0
-icon = ExtResource("2_6r4ir")
-frame = ExtResource("1_l3it5")
-description = ""
+icon = ExtResource("2_5nfqc")
+frame = ExtResource("1_df2hu")

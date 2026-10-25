@@ -1,18 +1,14 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/cards/frame_serang.png" id="1_gmyak"]
-[ext_resource type="Texture2D" path="res://assets/cards/icon_serang.png" id="2_4o0c0"]
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_wwpny"]
+[ext_resource type="Texture2D" path="res://assets/cards/frame_serang.png" id="1_db4r8"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_serang.png" id="2_p4xqi"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_fdr58"]
 
 [resource]
-script = ExtResource("3_wwpny")
+script = ExtResource("3_fdr58")
 id = &"serang_2"
 display_name = "CARD_SERANG"
-card_type = 0
 rank = 2
 base_power = 9
-shield = 0
-ap_gain = 0
-icon = ExtResource("2_4o0c0")
-frame = ExtResource("1_gmyak")
-description = ""
+icon = ExtResource("2_p4xqi")
+frame = ExtResource("1_db4r8")

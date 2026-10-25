@@ -12,6 +12,14 @@ var damage_dealt: int = 0
 var shield_gained: int = 0
 var ap_gained: int = 0
 var moxie_gained: float = 0.0
+## Efek kartu Tabuh.
+var hit_targets: Array[EnemyUnit] = []
+var cards_drawn: int = 0
+var calmed: bool = false
+## Korek membuyarkan Buto yang sudah siap Ngamuk.
+var calmed_ready: bool = false
+## Penguat Kenong yang dipakai kartu ini (0 = tidak ada).
+var boost_used: float = 0.0
 
 
 func _init(played_card: CardInstance, target_enemy: EnemyUnit) -> void:
@@ -21,16 +29,37 @@ func _init(played_card: CardInstance, target_enemy: EnemyUnit) -> void:
 
 func _apply(battle: BattleManager) -> void:
 	var data := card.data
-	if data.base_power > 0 and EnemyUnit.is_valid_alive(target):
-		damage_dealt = target.health.take_damage(data.base_power)
-	var shield := battle.player.get_card_shield(card) # termasuk tambahan Prayitna
+	var player := battle.player
+	if data.next_boost <= 0.0:
+		boost_used = player.next_card_boost
+	var damage := player.get_card_damage(card) # termasuk penguat Kenong
+	if damage > 0:
+		if data.hits_all:
+			for enemy: EnemyUnit in battle.get_living_enemies():
+				hit_targets.append(enemy)
+				damage_dealt += enemy.health.take_damage(damage)
+		elif EnemyUnit.is_valid_alive(target):
+			hit_targets.append(target)
+			damage_dealt = target.health.take_damage(damage)
+	var shield := player.get_card_shield(card) # termasuk Prayitna dan Kenong
 	if shield > 0:
 		battle.hero_health.gain_block(shield)
 		shield_gained = shield
 	if data.ap_gain > 0:
-		ap_gained = battle.player.gain_ap(data.ap_gain)
+		ap_gained = player.gain_ap(data.ap_gain)
+	if data.calm_target and EnemyUnit.is_valid_alive(target):
+		calmed_ready = target.is_ngamuk_ready()
+		calmed = target.calm_amuk()
+	# Penguat Kenong habis dipakai kartu ini; Kenong memasang penguat baru.
+	if data.next_boost > 0.0:
+		player.next_card_boost = data.next_boost
+	elif boost_used > 0.0:
+		player.next_card_boost = 0.0
 
-	var moxie_before := battle.player.moxie
-	battle.player.register_card_played(card) # Moxie + Evolutionary Chain
-	moxie_gained = battle.player.moxie - moxie_before
+	var moxie_before := player.moxie
+	player.register_card_played(card) # Moxie + Evolutionary Chain
+	moxie_gained = player.moxie - moxie_before
 	battle.deck.discard_card(card) # kartu hybrid dipecah lagi jadi 2 kartu dasar
+	# Tarikan Kentongan setelah kartunya dibuang, jadi slotnya sudah kosong.
+	if data.draw > 0:
+		cards_drawn = battle.deck.draw_cards_into(battle.hand, data.draw).size()

@@ -1,18 +1,14 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/cards/frame_taktik.png" id="1_tt38r"]
-[ext_resource type="Texture2D" path="res://assets/cards/icon_taktik.png" id="2_yrtq2"]
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_sy5r3"]
+[ext_resource type="Texture2D" path="res://assets/cards/frame_taktik.png" id="1_eabp7"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_taktik.png" id="2_dql3p"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_wse4y"]
 
 [resource]
-script = ExtResource("3_sy5r3")
+script = ExtResource("3_wse4y")
 id = &"taktik_1"
 display_name = "CARD_TAKTIK"
 card_type = 2
-rank = 1
-base_power = 0
 shield = 5
-ap_gain = 0
-icon = ExtResource("2_yrtq2")
-frame = ExtResource("1_tt38r")
-description = ""
+icon = ExtResource("2_dql3p")
+frame = ExtResource("1_eabp7")

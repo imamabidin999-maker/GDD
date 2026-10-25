@@ -136,7 +136,17 @@ func is_stage_blessed(stage: int) -> bool:
 
 ## Tiga pilihan berkah acak (lihat aturan di Blessings).
 func roll_blessings(rng: RandomNumberGenerator) -> Array[Blessings.Kind]:
-	return Blessings.roll(rng, deck, blessings)
+	return Blessings.roll(rng, deck, blessings, 3, locked_blessings())
+
+
+## Berkah yang belum terbuka.
+func locked_blessings() -> Array:
+	return [] if kenong_unlocked() else [Blessings.Kind.TABUH_KENONG]
+
+
+## Kenong masuk undian berkah setelah cukup Bintang Dongkrek.
+func kenong_unlocked() -> bool:
+	return false
 
 
 ## Menerapkan berkah dan mencatat babak asalnya. Mengembalikan daftar kartu
@@ -145,13 +155,48 @@ func apply_blessing(kind: Blessings.Kind, for_stage: int = 0) -> Array[String]:
 	var upgraded: Array[String] = []
 	if Blessings.UPGRADE_FAMILY.has(kind):
 		upgraded = Blessings.upgrade_family(deck, Blessings.UPGRADE_FAMILY[kind])
+	elif kind == Blessings.Kind.LARAS_GAMELAN:
+		upgraded = Blessings.upgrade_tabuh(deck)
 	elif kind == Blessings.Kind.JAMU_KUNYIT_ASAM:
 		max_hp += Blessings.JAMU_HP
+	# Berkah kartu Tabuh: kartunya dipasang lewat replace_card() setelah pemain
+	# memilih kartu yang diganti.
 	blessings.append(Blessings.kind_name(kind))
 	if for_stage > 0 and not blessed_stages.has(for_stage):
 		blessed_stages.append(for_stage)
 	save_game()
 	return upgraded
+
+
+## Mengganti kartu ke-`index` di deck dengan `spec` (misalnya "bedug:1").
+## Mengembalikan spec kartu yang dikeluarkan, atau "" kalau index salah.
+func replace_card(index: int, spec: String) -> String:
+	if index < 0 or index >= deck.size() or CardDB.card_from_spec(spec) == null:
+		return ""
+	var old := deck[index]
+	deck[index] = spec
+	save_game()
+	return old
+
+
+## Memasang kartu Tabuh `family` menggantikan kartu ke-`index`. Bintangnya
+## mengikuti Blessings.tabuh_spec_for(). Mengembalikan [lama, baru] atau [].
+func place_tabuh(index: int, family: String) -> Array[String]:
+	if index < 0 or index >= deck.size():
+		return []
+	var spec := Blessings.tabuh_spec_for(family, deck[index])
+	var old := replace_card(index, spec)
+	if old == "":
+		return []
+	return [old, spec]
+
+
+## Menaikkan satu kartu pilihan. Mengembalikan spec barunya, atau "".
+func upgrade_card(index: int) -> String:
+	var result := Blessings.upgrade_at(deck, index)
+	if result != "":
+		save_game()
+	return result
 
 
 ## Efek berkah untuk battle yang akan dimulai.

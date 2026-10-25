@@ -235,6 +235,11 @@ func _connect_signals() -> void:
 	_battle.player_input_ready.connect(_play_phase_dialog)
 	_battle.battle_ended.connect(_on_battle_ended)
 	_hand.hand_changed.connect(_refresh_intents)
+	_hand.hand_changed.connect(func() -> void:
+		for card: CardInstance in _hand.get_cards():
+			if card.data.is_tabuh():
+				_hints.offer("tabuh")
+				return)
 	_player.ap_rejected.connect(_on_ap_rejected)
 	_player.poison_changed.connect(func(stacks: int) -> void:
 		_hero_view.set_poison(stacks)
@@ -351,10 +356,36 @@ func _present_card(action: PlayCardAction) -> void:
 	else:
 		_hero_view.play_glow(Color(0.5, 0.95, 0.6))
 		AudioManager.play_sfx("card", 0.05)
+	if data.is_tabuh():
+		_present_tabuh(action)
 	if action.moxie_gained > 0.0:
 		_float_text("+%d%%" % roundi(action.moxie_gained), _hud.get_moxie_point() + Vector2(0, -6), UIKit.COLOR_BLUE)
 	if action.ap_gained > 0:
 		_float_text(tr("EFFECT_AP") % action.ap_gained, _hud.get_ap_point() + Vector2(0, -6), UIKit.COLOR_GOLD)
+
+
+# Bunyi alat musiknya, ditambah efek khusus tiap kartu Tabuh.
+func _present_tabuh(action: PlayCardAction) -> void:
+	var data := action.card.data
+	match data.get_family():
+		"bedug":
+			AudioManager.play_sfx("bedug", 0.05)
+			_shake_world(3.0)
+		"kentongan":
+			AudioManager.play_sfx("kentongan", 0.05)
+		"korek":
+			AudioManager.play_sfx("korek", 0.05)
+			if action.calmed and action.target != null and _enemy_views.has(action.target):
+				var view: UnitView = _enemy_views[action.target]
+				_float_text(tr("BATTLE_CALMED_ONE"), view.get_top_point(), UIKit.COLOR_GOLD, true)
+		"gong":
+			AudioManager.play_sfx("gong", 0.0)
+			_screen_flash(Color(1.0, 0.9, 0.6, 0.3))
+			_shake_world(5.0)
+		"kenong":
+			AudioManager.play_sfx("gong", 0.1, -6.0)
+			_hero_view.play_glow(Color(1.0, 0.85, 0.4))
+			_float_text(tr("BATTLE_KENONG") % roundi(data.next_boost * 100.0), _hero_view.get_top_point(), UIKit.COLOR_GOLD)
 
 
 func _present_ultimate(action: UltimateAction) -> void:

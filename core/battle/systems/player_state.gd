@@ -29,6 +29,8 @@ signal overcharge_drained(amount: float)
 signal poison_changed(stacks: int)
 ## Jimat Penolak Sirep menangkal satu Sirep.
 signal sirep_warded
+## Penguat dari Kenong untuk kartu berikutnya berubah (0 = tidak ada).
+signal next_card_boost_changed(boost: float)
 
 const AP_COST_PLAY_CARD: int = 1
 const AP_COST_MOVE_CARD: int = 1
@@ -108,6 +110,15 @@ var poison: int = 0:
 ## Pagebluk Merata (Buto Hitam fase 2): Lara tidak berkurang setelah bekerja.
 var poison_decay_paused: bool = false
 
+## Kenong: kartu berikutnya giliran ini lebih kuat, misalnya 0.4 = +40%.
+## Habis saat kartu berikutnya dimainkan atau saat giliran berganti.
+var next_card_boost: float = 0.0:
+	set(value):
+		if is_equal_approx(value, next_card_boost):
+			return
+		next_card_boost = maxf(value, 0.0)
+		next_card_boost_changed.emit(next_card_boost)
+
 # Efek berkah, diisi Blessings.prepare_player() sebelum battle dimulai.
 ## Greget di awal battle (Greget Leluhur).
 var start_moxie: float = 0.0
@@ -144,6 +155,7 @@ func begin_battle(starting_moxie: float = 0.0, starting_multiplier: float = 1.0)
 func start_turn() -> void:
 	_played_this_turn.clear()
 	_chain_triggered_this_turn = false
+	next_card_boost = 0.0
 	refill_ap()
 
 #endregion
@@ -279,18 +291,35 @@ func spend_moxie_for_ultimate() -> float:
 func get_card_shield(card: CardInstance) -> int:
 	if card == null or card.data.shield <= 0:
 		return 0
+	var value := float(card.data.shield)
 	if prayitna:
-		return ceili(card.data.shield * PRAYITNA_SHIELD_MULTIPLIER)
-	return card.data.shield
+		value = ceilf(value * PRAYITNA_SHIELD_MULTIPLIER)
+	return _boosted(card, value)
+
+
+## Damage kartu ini kalau dimainkan sekarang (termasuk penguat Kenong).
+func get_card_damage(card: CardInstance) -> int:
+	if card == null or card.data.base_power <= 0:
+		return 0
+	return _boosted(card, float(card.data.base_power))
+
+
+# Penguat Kenong tidak berlaku untuk kartu Kenong sendiri.
+func _boosted(card: CardInstance, value: float) -> int:
+	if next_card_boost > 0.0 and card.data.next_boost <= 0.0:
+		return ceili(value * (1.0 + next_card_boost))
+	return roundi(value)
 
 
 ## Berapa Moxie yang didapat dari memainkan kartu ini.
 ## Kartu Fokus memberi Moxie. Kartu hybrid yang mengandung Fokus (Crimson Focus,
 ## Flow State) juga memberi Moxie, jadi pemain tidak rugi Moxie karena merge.
 func get_moxie_gain_from_card(card: CardInstance) -> float:
-	if card == null or fokus_moxie_by_rank.is_empty():
+	if card == null:
 		return 0.0
-	if not _contains_type(card, CardData.CardType.FOKUS):
+	if card.data.moxie_gain > 0.0:
+		return card.data.moxie_gain
+	if fokus_moxie_by_rank.is_empty() or not _contains_type(card, CardData.CardType.FOKUS):
 		return 0.0
 	var rank_index := clampi(card.get_rank() - 1, 0, fokus_moxie_by_rank.size() - 1)
 	return fokus_moxie_by_rank[rank_index]

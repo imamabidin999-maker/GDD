@@ -94,12 +94,13 @@ func _run() -> void:
 	var deck := starter()
 	var owned: Array[String] = []
 	var pool := Blessings.available(deck, owned)
-	check(pool.size() == 9, "awal permainan: kesembilan berkah bisa muncul")
+	# 9 berkah dasar + 5 berkah Tabuh; Laras Gamelan baru muncul setelah ada kartu Tabuh.
+	check(pool.size() == 14 and not pool.has(Blessings.Kind.LARAS_GAMELAN), "awal permainan: 14 berkah bisa muncul")
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 11
 	var seen := {}
 	var rolls_ok := true
-	for i: int in 40:
+	for i: int in 80:
 		var r := Blessings.roll(rng, deck, owned)
 		var unique := {}
 		for k: Blessings.Kind in r:
@@ -107,7 +108,7 @@ func _run() -> void:
 			seen[k] = true
 		rolls_ok = rolls_ok and r.size() == 3 and unique.size() == 3
 	check(rolls_ok, "setiap undian berisi 3 berkah berbeda")
-	check(seen.size() == 9, "dalam 40 undian semua jenis berkah pernah muncul")
+	check(seen.size() == 14, "dalam 80 undian semua jenis berkah pernah muncul")
 
 	owned.append("KENDANG_PEMBUKA")
 	check(not Blessings.available(deck, owned).has(Blessings.Kind.KENDANG_PEMBUKA), "berkah sekali hilang setelah dimiliki")
@@ -125,7 +126,8 @@ func _run() -> void:
 	check(up == ["fokus:2", "fokus:2"], "Olah Semedi menaikkan dua kartu Semedi terendah: %s" % [up])
 
 	var all_once: Array[String] = ["KENDANG_PEMBUKA", "GREGET_LELUHUR", "TAMENG_PUSAKA", "JIMAT_PENOLAK_SIREP",
-		"JAMU_BERAS_KENCUR", "JAMU_KUNYIT_ASAM", "JAMU_KUNYIT_ASAM", "JAMU_KUNYIT_ASAM"]
+		"JAMU_BERAS_KENCUR", "JAMU_KUNYIT_ASAM", "JAMU_KUNYIT_ASAM", "JAMU_KUNYIT_ASAM",
+		"TABUH_BEDUG", "TABUH_KENTONGAN", "TABUH_KOREK", "TABUH_GONG", "TABUH_KENONG"]
 	var only_upgrades := names(Blessings.available(starter(), all_once))
 	check(only_upgrades == ["TEMPA_SABET", "OLAH_SEMEDI", "LAKU_TANGKIS"], "sisa undian: hanya berkah naik bintang")
 	check(Blessings.roll(rng, maxed_all(), all_once).is_empty(), "semua habis: undian kosong")

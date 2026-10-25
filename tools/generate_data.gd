@@ -18,6 +18,17 @@ const CARDS := {
 	"crimson": {"type": CardData.CardType.HYBRID, "name": "CARD_CRIMSON", "stats": [[12, 0, 0], [17, 0, 0], [25, 0, 0]]},
 	"piercing": {"type": CardData.CardType.HYBRID, "name": "CARD_PIERCING", "stats": [[10, 4, 0], [14, 6, 0], [20, 9, 0]]},
 	"flow": {"type": CardData.CardType.HYBRID, "name": "CARD_FLOW", "stats": [[3, 5, 1], [5, 7, 1], [7, 10, 1]]},
+	# Jurus Tabuh: kartu dasar berbingkai emas yang tidak bisa digabung.
+	"bedug": {"type": CardData.CardType.TABUH, "name": "CARD_BEDUG", "stats": [[5, 0, 0], [8, 0, 0], [12, 0, 0]],
+		"hits_all": true},
+	"kentongan": {"type": CardData.CardType.TABUH, "name": "CARD_KENTONGAN", "stats": [[0, 0, 1], [0, 3, 1], [0, 5, 1]],
+		"draw": [2, 2, 3]},
+	"korek": {"type": CardData.CardType.TABUH, "name": "CARD_KOREK", "stats": [[4, 0, 0], [6, 0, 0], [9, 0, 0]],
+		"calm": true, "moxie": [10.0, 15.0, 20.0]},
+	"gong": {"type": CardData.CardType.TABUH, "name": "CARD_GONG", "stats": [[18, 0, 0], [26, 0, 0], [36, 0, 0]],
+		"ap_cost": 2},
+	"kenong": {"type": CardData.CardType.TABUH, "name": "CARD_KENONG", "stats": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+		"boost": [0.4, 0.6, 0.8], "ap_cost": 0},
 }
 
 const RECIPES := [
@@ -52,8 +63,15 @@ func _build_cards() -> Dictionary:
 			card.base_power = stats[0]
 			card.shield = stats[1]
 			card.ap_gain = stats[2]
+			card.ap_cost = info.get("ap_cost", 1)
+			card.hits_all = info.get("hits_all", false)
+			card.calm_target = info.get("calm", false)
+			card.draw = info["draw"][i] if info.has("draw") else 0
+			card.next_boost = info["boost"][i] if info.has("boost") else 0.0
+			card.moxie_gain = info["moxie"][i] if info.has("moxie") else 0.0
 			card.icon = load("res://assets/cards/icon_%s.png" % family)
-			card.frame = load("res://assets/cards/frame_%s.png" % family)
+			var frame_name := "tabuh" if card.card_type == CardData.CardType.TABUH else family
+			card.frame = load("res://assets/cards/frame_%s.png" % frame_name)
 			var path := "%s%s_%d.tres" % [CARD_DIR, family, i + 1]
 			_save(card, path)
 			list.append(load(path) as CardData)

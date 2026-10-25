@@ -1,18 +1,15 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/cards/frame_fokus.png" id="1_rsf6p"]
-[ext_resource type="Texture2D" path="res://assets/cards/icon_fokus.png" id="2_0jkvx"]
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_bn42q"]
+[ext_resource type="Texture2D" path="res://assets/cards/frame_fokus.png" id="1_u5lpb"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_fokus.png" id="2_uanm0"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_bch1b"]
 
 [resource]
-script = ExtResource("3_bn42q")
+script = ExtResource("3_bch1b")
 id = &"fokus_2"
 display_name = "CARD_FOKUS"
 card_type = 1
 rank = 2
 base_power = 4
-shield = 0
-ap_gain = 0
-icon = ExtResource("2_0jkvx")
-frame = ExtResource("1_rsf6p")
-description = ""
+icon = ExtResource("2_uanm0")
+frame = ExtResource("1_u5lpb")

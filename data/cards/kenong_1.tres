@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_l75w4"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_kenong.png" id="2_xf4jf"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_56mt2"]
+
+[resource]
+script = ExtResource("3_56mt2")
+id = &"kenong_1"
+display_name = "CARD_KENONG"
+card_type = 4
+ap_cost = 0
+next_boost = 0.4
+icon = ExtResource("2_xf4jf")
+frame = ExtResource("1_l75w4")

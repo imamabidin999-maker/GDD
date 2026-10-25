@@ -1,18 +1,16 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/cards/frame_piercing.png" id="1_2phs8"]
-[ext_resource type="Texture2D" path="res://assets/cards/icon_piercing.png" id="2_r3do7"]
-[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_dn3ts"]
+[ext_resource type="Texture2D" path="res://assets/cards/frame_piercing.png" id="1_rui8v"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_piercing.png" id="2_27e2e"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_qsjgq"]
 
 [resource]
-script = ExtResource("3_dn3ts")
+script = ExtResource("3_qsjgq")
 id = &"piercing_3"
 display_name = "CARD_PIERCING"
 card_type = 3
 rank = 3
 base_power = 20
 shield = 9
-ap_gain = 0
-icon = ExtResource("2_r3do7")
-frame = ExtResource("1_2phs8")
-description = ""
+icon = ExtResource("2_27e2e")
+frame = ExtResource("1_rui8v")

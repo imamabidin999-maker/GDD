@@ -272,7 +272,7 @@ func request_play_card(hand_index: int) -> bool:
 		return false
 	var card := hand.get_card(hand_index)
 	# Kartu tersirep (ilmu Buto Putih) tidak bisa dimainkan. Dicek sebelum AP dipotong.
-	if card == null or card.is_locked() or not player.consume_ap(PlayerState.AP_COST_PLAY_CARD):
+	if card == null or card.is_locked() or not player.consume_ap(card.data.ap_cost):
 		return _end_request(false)
 
 	hand.remove_card_at(hand_index)

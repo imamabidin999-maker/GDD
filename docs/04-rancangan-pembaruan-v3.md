@@ -12,17 +12,17 @@ Lima kartu baru yang diambil dari alat musik Dongkrek. Warnanya emas kecoklatan,
 
 | Kartu | Ketukan | ★1 | ★2 | ★3 |
 |---|---|---|---|---|
-| **Tabuh Bedug** | 1 | 4 damage ke **semua** Buto | 6 | 9 |
-| **Kentongan Titir** | 1 | Tarik 2 kartu | Tarik 2, Tameng 4 | Tarik 3, Tameng 6 |
-| **Korek** | 1 | 3 damage dan **mengosongkan Amuk** sasaran | 5 | 8 |
-| **Gong** | **2** | 16 damage | 24 | 34 |
-| **Kenong** | 1 | Kartu berikutnya giliran ini +40% (damage dan Tameng) | +60% | +80% |
+| **Tabuh Bedug** | 1 | 5 damage ke **semua** Buto | 8 | 12 |
+| **Kentongan Titir** | 1, lalu **kembali 1** | Tarik 2 kartu | Tarik 2, Tameng 3 | Tarik 3, Tameng 5 |
+| **Korek** | 1 | 4 damage, **mengosongkan Amuk** sasaran, Greget +10% | 6, +15% | 9, +20% |
+| **Gong** | **2** | 18 damage | 26 | 36 |
+| **Kenong** | **0** | Kartu berikutnya giliran ini +40% (damage dan Tameng) | +60% | +80% |
 
 Cara mendapatkannya:
 
-- **Berkah Jurus Tabuh**: setiap jenis Tabuh punya berkahnya sendiri ("Terima Tabuh Bedug"). Setelah dipilih, pemain memilih satu kartu di Jurus yang diganti. Deck tetap 15 kartu. Masing-masing hanya sekali.
+- **Berkah Jurus Tabuh**: setiap jenis Tabuh punya berkahnya sendiri ("Terima Tabuh Bedug"). Setelah dipilih, pemain memilih satu kartu di Jurus yang diganti. Kartu Tabuh yang masuk mendapat **bintang kartu yang diganti ditambah satu** (paling tinggi 3), seperti jurus lama yang ditempa ulang. Deck tetap 15 kartu. Masing-masing hanya sekali.
 - **Laras Gamelan** (berkah): 2 kartu Tabuh terendah naik satu bintang. Muncul kalau ada Tabuh yang masih bisa naik.
-- **Kejadian di perjalanan** (bagian 4) juga bisa memberi Tabuh.
+- **Kejadian di perjalanan** (bagian 4) juga bisa memberi Tabuh, dengan aturan bintang yang sama.
 - Kenong baru masuk undian setelah pemain punya 8 Bintang Dongkrek (bagian 2).
 
 Kartu Tabuh bisa disirep dan ikut dihitung untuk Wirama kalau bintang 3.

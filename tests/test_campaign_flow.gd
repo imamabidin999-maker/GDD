@@ -7,6 +7,7 @@ extends SceneTree
 var _failures: int = 0
 var _checks: int = 0
 var _last_reward_already: bool = false
+var _picked_tabuh: int = 0
 
 
 func check(condition: bool, label: String) -> void:
@@ -121,7 +122,7 @@ func _bot_turn(bm: BattleManager) -> void:
 		var best := 0
 		var best_score := -1.0
 		for i: int in bm.hand.get_card_count():
-			if not bm.hand.can_play_at(i):
+			if not bm.hand.can_play_at(i) or bm.hand.get_card(i).data.ap_cost > bm.player.current_ap:
 				continue
 			var d := bm.hand.get_card(i).data
 			var score := float(d.base_power + d.shield) + 6.0 * d.ap_gain
@@ -132,6 +133,13 @@ func _bot_turn(bm: BattleManager) -> void:
 	await _wait_input(bm)
 	if is_instance_valid(bm) and bm.is_battle_running():
 		bm.request_end_turn()
+
+
+func _find_node(class_title: String) -> Node:
+	for n: Node in current_scene.find_children("*", "", true, false):
+		if _is_class(n, class_title):
+			return n
+	return null
 
 
 func _stage_count() -> int:
@@ -172,6 +180,16 @@ func _play_stage(n: int) -> bool:
 				var choices := rp.find_children("*", "Button", true, false)
 				await click((choices[0] as Button).get_global_rect().get_center())
 				await _wait(0.4)
+				# Berkah kartu Tabuh membuka pemilih kartu: pilih kartu pertama lalu Ganti.
+				var picker := _find_node("DeckPicker")
+				if picker != null:
+					_picked_tabuh += 1
+					var cards := picker.find_children("*", "Control", true, false).filter(
+						func(n: Node) -> bool: return _is_class(n, "CardView"))
+					await click((cards[0] as Control).get_global_rect().get_center())
+					await _wait(0.2)
+					await click_button(tr("PICKER_CONFIRM_REPLACE"))
+					await _wait(0.4)
 				if not already:
 					await click_button(tr("BTN_CONTINUE"))
 				await _wait(1.2)
@@ -234,6 +252,12 @@ func _run() -> void:
 	check(_scene_name() == "main_menu", "kembali ke menu utama")
 	check(find_button(tr("MENU_CONTINUE")) != null, "menu utama menampilkan Lanjutkan")
 	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "satu berkah untuk setiap babak 1-9")
+	var tabuh_in_deck := 0
+	for spec: String in gs.get("deck"):
+		if Blessings.is_tabuh_spec(spec):
+			tabuh_in_deck += 1
+	print("  berkah kartu Tabuh dipilih %d kali" % _picked_tabuh)
+	check(tabuh_in_deck == _picked_tabuh and (gs.get("deck") as Array).size() == 15, "kartu Tabuh masuk ke Jurus lewat pemilih kartu, deck tetap 15")
 
 	print("[Mengulang babak 1]")
 	await click_button(tr("MENU_CONTINUE"))
