@@ -12,6 +12,8 @@ Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: deck 15 kartu, AP t
 
 Pertama kali dibuka, Godot butuh beberapa detik untuk mengimpor gambar dan suara. Itu normal.
 
+**Memakai Godot 4.4 atau lebih baru?** Di versi itu game berjalan *di dalam* editor (tab **Game**), sehingga pilihan Layar Penuh tidak berpengaruh. Supaya game terbuka di jendelanya sendiri: di tab Game, klik ikon **⋮** paling kanan di toolbar, hilangkan centang **Embed Game on Next Play**, lalu jalankan lagi. Di Mac, tombol jalankan adalah **⌘B** (F5 di Mac perlu ditekan bersama tombol fn).
+
 ## Cara bermain
 
 Seluruh game bisa dimainkan dengan mouse.
