@@ -507,3 +507,10 @@ STAR_REWARD_LINE,%d bintang: %s,%d stars: %s
 REWARD_REROLL,Pilihan lain,Reroll
 REWARD_REROLL_TIP,Undi ulang tiga pilihan berkah (sekali).,Reroll the three blessing choices (once).
 MENU_MASTER_TITLE,Juru Dongkrek,Juru Dongkrek
+SETTINGS_RHYTHM,Irama Gebrakan,Gebrakan rhythm
+RHYTHM_TITLE,Gebrakan Dongkrek!,Gebrakan Dongkrek!
+RHYTHM_HINT,Klik atau tekan Spasi saat ketukan masuk lingkaran.,Click or press Space as each beat reaches the circle.
+RHYTHM_PERFECT,Tepat!,Perfect!
+RHYTHM_GOOD,Cukup,Good
+RHYTHM_MISS,Meleset,Miss
+RHYTHM_RESULT,Irama +%d%%,Rhythm +%d%%

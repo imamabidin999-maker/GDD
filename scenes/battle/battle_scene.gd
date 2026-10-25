@@ -292,7 +292,17 @@ func _on_end_turn() -> void:
 
 
 func _on_ultimate() -> void:
-	_battle.request_ultimate()
+	var ready := _battle.is_accepting_input() and _player.is_ultimate_ready() \
+		and _player.can_afford(_battle.ultimate_ap_cost) and _overlay.get_child_count() == 0
+	if not GameState.rhythm_enabled or not ready:
+		_battle.request_ultimate() # ditolak dengan umpan balik biasa kalau belum siap
+		return
+	_tooltip.hide_tip()
+	var rhythm := RhythmGebrakan.new()
+	_overlay.add_child(rhythm)
+	var score: float = await rhythm.finished
+	if is_instance_valid(_battle):
+		_battle.request_ultimate(RhythmGebrakan.bonus_for(score))
 
 
 func _on_enemy_clicked(view: UnitView) -> void:
@@ -400,6 +410,8 @@ func _present_ultimate(action: UltimateAction) -> void:
 	_shake_world(5.0)
 	if action.calmed > 0:
 		_float_text(tr("BATTLE_AMUK_CALMED"), Vector2(470, 70), UIKit.COLOR_GOLD, true)
+	if action.rhythm_bonus > 1.0:
+		_float_text(tr("RHYTHM_RESULT") % roundi((action.rhythm_bonus - 1.0) * 100.0), _hero_view.get_top_point(), UIKit.COLOR_GOLD, true)
 
 
 func _present_skill(action: ButoSkillAction) -> void:

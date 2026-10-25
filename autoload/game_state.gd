@@ -66,6 +66,8 @@ var hints_enabled: bool = true
 var seen_hints: Array[String] = []
 ## Tingkat kesulitan mode cerita (lihat Difficulty).
 var difficulty: int = Difficulty.NORMAL
+## Permainan irama saat Gebrakan Dongkrek dipakai.
+var rhythm_enabled: bool = true
 #endregion
 
 
@@ -271,6 +273,11 @@ func set_battle_speed(value: float) -> void:
 	settings_changed.emit()
 
 
+func set_rhythm_enabled(value: bool) -> void:
+	rhythm_enabled = value
+	save_game()
+
+
 func set_hints_enabled(value: bool) -> void:
 	hints_enabled = value
 	save_game()
@@ -354,6 +361,7 @@ func save_game() -> void:
 	cfg.set_value("settings", "hints_enabled", hints_enabled)
 	cfg.set_value("settings", "seen_hints", seen_hints)
 	cfg.set_value("settings", "difficulty", difficulty)
+	cfg.set_value("settings", "rhythm_enabled", rhythm_enabled)
 	cfg.save(save_path)
 
 
@@ -391,6 +399,7 @@ func load_game() -> void:
 	hints_enabled = bool(cfg.get_value("settings", "hints_enabled", true))
 	seen_hints.assign(cfg.get_value("settings", "seen_hints", []))
 	difficulty = clampi(int(cfg.get_value("settings", "difficulty", Difficulty.NORMAL)), Difficulty.SANTAI, Difficulty.SULIT)
+	rhythm_enabled = bool(cfg.get_value("settings", "rhythm_enabled", true))
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:
 		_migrate_from_v1()

@@ -308,14 +308,15 @@ func request_merge(index_a: int, index_b: int) -> bool:
 	return _end_request(merged != null)
 
 
-func request_ultimate() -> bool:
+## rhythm_bonus: pengali dari permainan irama Gebrakan (1.0 sampai 1.3).
+func request_ultimate(rhythm_bonus: float = 1.0) -> bool:
 	if not _begin_request():
 		return false
 	if not player.is_ultimate_ready() or not player.consume_ap(ultimate_ap_cost):
 		return _end_request(false)
 
 	var spent := player.spend_moxie_for_ultimate()
-	_queue_action(UltimateAction.new(spent, ultimate_base_damage))
+	_queue_action(UltimateAction.new(spent, ultimate_base_damage, rhythm_bonus))
 	return _end_request(true, State.RESOLVE_ACTIONS)
 
 

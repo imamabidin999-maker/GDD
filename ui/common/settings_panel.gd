@@ -100,6 +100,9 @@ func _ready() -> void:
 	grid.add_child(_text_label("SETTINGS_HINTS"))
 	grid.add_child(_checkbox(GameState.hints_enabled, func(on: bool) -> void: GameState.set_hints_enabled(on)))
 
+	grid.add_child(_text_label("SETTINGS_RHYTHM"))
+	grid.add_child(_checkbox(GameState.rhythm_enabled, func(on: bool) -> void: GameState.set_rhythm_enabled(on)))
+
 	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_close.pressed.connect(func() -> void:
