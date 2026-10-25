@@ -89,6 +89,16 @@ func _enemy(type: EnemyButo.ButoType, hp: int, attack: int, scale: float = 1.0, 
 	return spec
 
 
+## Buto Murka: dikuatkan Buto Hitam dan bisa Ngamuk. start_amuk menggeser
+## kapan Ngamuk pertamanya datang.
+func _murka(type: EnemyButo.ButoType, hp: int, attack: int, scale: float = 1.0, start_amuk: int = 0) -> EnemySpec:
+	var spec := _enemy(type, hp, attack, scale)
+	spec.murka = true
+	spec.can_ngamuk = true
+	spec.start_amuk = start_amuk
+	return spec
+
+
 func _stage(number: int, enemies: Array[EnemySpec], map_pos: Vector2, tint: Color, intro: int, win: int) -> StageData:
 	var stage := StageData.new()
 	stage.stage_number = number
@@ -119,37 +129,84 @@ func _with_speakers(keys: PackedStringArray, speakers: Array[String]) -> PackedS
 func _build_stages() -> void:
 	var K := EnemyButo.ButoType
 	var catalog := StageCatalog.new()
+	var stages: Array[StageData] = []
 
+	# Bagian I: Kedatangan Buto
 	var s1 := _stage(1, [_enemy(K.KUNING, 95, 10)] as Array[EnemySpec],
-		Vector2(92, 268), Color(1, 1, 1), 4, 2)
+		Vector2(56, 304), Color(1, 1, 1), 4, 2)
 	s1.intro_dialog = _with_speakers(s1.intro_dialog, ["narator", "eyang", "buto_kuning", "eyang"])
 	s1.victory_dialog = _with_speakers(s1.victory_dialog, ["warga", "eyang"])
 	s1.tutorial_dialog = _with_speakers(PackedStringArray(["TUT_1", "TUT_2", "TUT_3", "TUT_4", "TUT_5", "TUT_6"]),
 		["eyang", "eyang", "eyang", "eyang", "eyang", "eyang"])
+	stages.append(s1)
 
 	var s2 := _stage(2, [_enemy(K.HIJAU, 110, 11), _enemy(K.KUNING, 70, 9, 0.9)] as Array[EnemySpec],
-		Vector2(206, 196), Color(0.82, 1.0, 0.88), 3, 2)
+		Vector2(148, 260), Color(0.82, 1.0, 0.88), 3, 2)
 	s2.intro_dialog = _with_speakers(s2.intro_dialog, ["narator", "buto_hijau", "eyang"])
 	s2.victory_dialog = _with_speakers(s2.victory_dialog, ["eyang", "narator"])
+	stages.append(s2)
 
 	var s3 := _stage(3, [_enemy(K.MERAH, 140, 11), _enemy(K.HIJAU, 80, 9, 0.9)] as Array[EnemySpec],
-		Vector2(318, 262), Color(0.82, 0.88, 1.06), 3, 2)
+		Vector2(256, 304), Color(0.82, 0.88, 1.06), 3, 2)
 	s3.intro_dialog = _with_speakers(s3.intro_dialog, ["narator", "buto_merah", "eyang"])
 	s3.victory_dialog = _with_speakers(s3.victory_dialog, ["eyang", "roro_ayu"])
+	stages.append(s3)
 
 	var s4 := _stage(4, [_enemy(K.PUTIH, 160, 15), _enemy(K.MERAH, 135, 12, 0.9)] as Array[EnemySpec],
-		Vector2(438, 188), Color(1.0, 0.9, 0.82), 3, 2)
+		Vector2(356, 252), Color(1.0, 0.9, 0.82), 3, 4)
 	s4.intro_dialog = _with_speakers(s4.intro_dialog, ["narator", "buto_putih", "eyang"])
-	s4.victory_dialog = _with_speakers(s4.victory_dialog, ["eyang", "narator"])
+	s4.victory_dialog = _with_speakers(s4.victory_dialog, ["eyang", "narator", "buto_hitam", "narator"])
+	stages.append(s4)
 
-	var s5 := _stage(5, [_enemy(K.HITAM, 420, 18, 1.15)] as Array[EnemySpec],
+	# Bagian II: Buto Murka
+	var s5 := _stage(5, [_murka(K.KUNING, 170, 13), _enemy(K.HIJAU, 90, 10, 0.9)] as Array[EnemySpec],
+		Vector2(280, 192), Color(1.0, 0.95, 0.8), 4, 2)
+	s5.intro_dialog = _with_speakers(s5.intro_dialog, ["narator", "buto_kuning", "roro_ayu", "eyang"])
+	s5.victory_dialog = _with_speakers(s5.victory_dialog, ["eyang", "roro_ayu"])
+	stages.append(s5)
+
+	var s6 := _stage(6, [_murka(K.HIJAU, 160, 11), _enemy(K.MERAH, 95, 10, 0.9)] as Array[EnemySpec],
+		Vector2(176, 184), Color(0.74, 0.92, 0.8), 3, 2)
+	s6.intro_dialog = _with_speakers(s6.intro_dialog, ["narator", "buto_hijau", "eyang"])
+	s6.victory_dialog = _with_speakers(s6.victory_dialog, ["narator", "eyang"])
+	stages.append(s6)
+
+	var s7 := _stage(7, [_murka(K.MERAH, 210, 12), _enemy(K.PUTIH, 100, 10, 0.9)] as Array[EnemySpec],
+		Vector2(104, 128), Color(0.8, 0.9, 1.06), 3, 2)
+	s7.intro_dialog = _with_speakers(s7.intro_dialog, ["narator", "buto_merah", "eyang"])
+	s7.victory_dialog = _with_speakers(s7.victory_dialog, ["eyang", "narator"])
+	stages.append(s7)
+
+	var s8 := _stage(8, [_murka(K.PUTIH, 290, 19), _enemy(K.KUNING, 140, 14, 0.9)] as Array[EnemySpec],
+		Vector2(196, 112), Color(0.9, 0.95, 1.04), 3, 2)
+	s8.intro_dialog = _with_speakers(s8.intro_dialog, ["narator", "buto_putih", "eyang"])
+	s8.victory_dialog = _with_speakers(s8.victory_dialog, ["roro_ayu", "eyang"])
+	stages.append(s8)
+
+	# Bagian III: Candi Pagebluk
+	# Titik Amuk awal dibedakan supaya tidak ada dua Buto yang Ngamuk di giliran yang sama.
+	var s9 := _stage(9, [
+		_murka(K.KUNING, 70, 7, 1.0, 0),
+		_murka(K.HIJAU, 75, 6, 1.0, 1),
+		_murka(K.MERAH, 85, 7, 1.0, 2),
+		_murka(K.PUTIH, 80, 7, 1.0, -1),
+	] as Array[EnemySpec], Vector2(392, 140), Color(1.0, 0.84, 0.84), 4, 2)
+	s9.intro_dialog = _with_speakers(s9.intro_dialog, ["narator", "buto_merah", "buto_kuning", "eyang"])
+	s9.victory_dialog = _with_speakers(s9.victory_dialog, ["narator", "buto_hitam"])
+	stages.append(s9)
+
+	var s10 := _stage(10, [_enemy(K.HITAM, 520, 18, 1.15)] as Array[EnemySpec],
 		Vector2(554, 112), Color(0.92, 0.72, 0.78), 4, 2)
-	s5.music = "boss"
-	s5.is_boss = true
-	s5.intro_dialog = _with_speakers(s5.intro_dialog, ["narator", "buto_hitam", "eyang", "buto_hitam"])
-	s5.victory_dialog = _with_speakers(s5.victory_dialog, ["buto_hitam", "eyang"])
+	s10.music = "boss"
+	s10.is_boss = true
+	s10.intro_dialog = _with_speakers(s10.intro_dialog, ["narator", "buto_hitam", "eyang", "buto_hitam"])
+	s10.victory_dialog = _with_speakers(s10.victory_dialog, ["buto_hitam", "eyang"])
+	stages.append(s10)
 
-	for stage: StageData in [s1, s2, s3, s4, s5]:
+	for stage: StageData in stages:
+		stage.chapter = 1 if stage.stage_number <= 4 else (2 if stage.stage_number <= 8 else 3)
+
+	for stage: StageData in stages:
 		var path := "%sstage_%d.tres" % [STAGE_DIR, stage.stage_number]
 		_save(stage, path)
 		catalog.stages.append(load(path) as StageData)

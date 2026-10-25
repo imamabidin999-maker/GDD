@@ -1,5 +1,5 @@
 extends Node
-## Data yang bertahan sepanjang game: progres 5 stage, isi deck pemain,
+## Data yang bertahan sepanjang game: progres 10 babak, isi deck pemain,
 ## dan pengaturan. Disimpan ke user://save.cfg.
 ##
 ## Deck disimpan sebagai daftar "tipe:rank", misalnya "serang:2". CardDB yang
@@ -9,7 +9,11 @@ signal settings_changed
 signal progress_changed
 
 const SAVE_PATH := "user://save.cfg"
-const STAGE_COUNT := 5
+## Versi format simpanan. Versi 1 dari masa 5 babak, versi 2 untuk 10 babak.
+const SAVE_VERSION := 2
+const STAGE_COUNT := 10
+## Babak lama (versi 1) yang isinya masih sama di versi 10 babak.
+const V1_KEPT_STAGES := 4
 const BASE_MAX_HP := 70
 const MAX_RANK := 3
 const STARTER_DECK: Array[String] = [
@@ -223,6 +227,7 @@ func _set_bus_volume(bus_name: String, value: float) -> void:
 
 func save_game() -> void:
 	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "save_version", SAVE_VERSION)
 	cfg.set_value("progress", "unlocked_stage", unlocked_stage)
 	cfg.set_value("progress", "cleared_stages", cleared_stages)
 	cfg.set_value("progress", "max_hp", max_hp)
@@ -256,6 +261,22 @@ func load_game() -> void:
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))
 	sfx_volume = float(cfg.get_value("settings", "sfx_volume", 0.9))
 	fullscreen = bool(cfg.get_value("settings", "fullscreen", false))
+	if int(cfg.get_value("meta", "save_version", 1)) < SAVE_VERSION:
+		_migrate_from_v1()
+		save_game()
+
+
+# Simpanan dari masa 5 babak. Babak 1-4 isinya sama, jadi tetap dianggap
+# selesai. Babak 5 dulu melawan Buto Hitam, sekarang Buto Kuning Murka, jadi
+# babak 5 ke atas dibuka ulang dan tamat harus diraih lagi.
+func _migrate_from_v1() -> void:
+	var kept: Array[int] = []
+	for stage: int in cleared_stages:
+		if stage >= 1 and stage <= V1_KEPT_STAGES and not kept.has(stage):
+			kept.append(stage)
+	cleared_stages = kept
+	unlocked_stage = mini(unlocked_stage, V1_KEPT_STAGES + 1)
+	game_completed = false
 
 
 func _is_valid_deck(saved: Array) -> bool:

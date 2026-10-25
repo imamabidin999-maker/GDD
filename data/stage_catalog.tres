@@ -1,15 +1,20 @@
-[gd_resource type="Resource" script_class="StageCatalog" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="StageCatalog" format=3]
 
-[ext_resource type="Script" path="res://data/definitions/stage_catalog.gd" id="1_ftsno"]
-[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_3fwn3"]
-[ext_resource type="Resource" path="res://data/stages/stage_1.tres" id="3_xlr08"]
-[ext_resource type="Resource" path="res://data/stages/stage_2.tres" id="4_vmse7"]
-[ext_resource type="Resource" path="res://data/stages/stage_3.tres" id="5_leshr"]
-[ext_resource type="Resource" path="res://data/stages/stage_4.tres" id="6_6abqv"]
-[ext_resource type="Resource" path="res://data/stages/stage_5.tres" id="7_xt378"]
+[ext_resource type="Script" path="res://data/definitions/stage_catalog.gd" id="1_sf3m0"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_5e2dk"]
+[ext_resource type="Resource" path="res://data/stages/stage_1.tres" id="3_8ed71"]
+[ext_resource type="Resource" path="res://data/stages/stage_2.tres" id="4_rwkvs"]
+[ext_resource type="Resource" path="res://data/stages/stage_3.tres" id="5_r6edn"]
+[ext_resource type="Resource" path="res://data/stages/stage_4.tres" id="6_b8upf"]
+[ext_resource type="Resource" path="res://data/stages/stage_5.tres" id="7_qou71"]
+[ext_resource type="Resource" path="res://data/stages/stage_6.tres" id="8_nfsbm"]
+[ext_resource type="Resource" path="res://data/stages/stage_7.tres" id="9_b16q2"]
+[ext_resource type="Resource" path="res://data/stages/stage_8.tres" id="10_ljj83"]
+[ext_resource type="Resource" path="res://data/stages/stage_9.tres" id="11_t2awk"]
+[ext_resource type="Resource" path="res://data/stages/stage_10.tres" id="12_gq5ln"]
 
 [resource]
-script = ExtResource("1_ftsno")
-stages = Array[ExtResource("2_3fwn3")]([ExtResource("3_xlr08"), ExtResource("4_vmse7"), ExtResource("5_leshr"), ExtResource("6_6abqv"), ExtResource("7_xt378")])
+script = ExtResource("1_sf3m0")
+stages = Array[ExtResource("2_5e2dk")]([ExtResource("3_8ed71"), ExtResource("4_rwkvs"), ExtResource("5_r6edn"), ExtResource("6_b8upf"), ExtResource("7_qou71"), ExtResource("8_nfsbm"), ExtResource("9_b16q2"), ExtResource("10_ljj83"), ExtResource("11_t2awk"), ExtResource("12_gq5ln")])
 prologue_dialog = PackedStringArray("narator|PROLOGUE_1", "narator|PROLOGUE_2", "warga|PROLOGUE_3", "narator|PROLOGUE_4", "eyang|PROLOGUE_5")
 ending_dialog = PackedStringArray("narator|ENDING_1", "roro_ayu|ENDING_2", "eyang|ENDING_3", "narator|ENDING_4", "narator|ENDING_5")

@@ -7,8 +7,10 @@ hijau kelam, tanah coklat, bata candi merah tua.
 Digambar di kanvas 320x180 lalu diperbesar 2x (nearest) supaya pikselnya
 sebesar piksel sprite di layar 640x360.
 
-Posisi titik stage harus sama dengan map_position di tools/generate_data.gd
-(dibagi dua karena kanvasnya setengah ukuran layar).
+Posisi titik babak harus sama dengan map_position di tools/generate_data.gd
+(dibagi dua karena kanvasnya setengah ukuran layar). Urutannya: Desa Mejayan,
+rumpun bambu, sendang, gapura, Tegal Ilalang, Alas Jati Peteng, Kali Watu,
+Jembatan Pring, Pelataran Candi, Candi Pagebluk.
 
 Pemakaian: python3 tools/build_map.py
 """
@@ -53,12 +55,30 @@ TREE = (14, 30, 27)
 TREE_M = (20, 40, 34)
 TREE_L = (30, 56, 42)
 FIREFLY = (255, 226, 130)
+ROCK = (74, 78, 86)
+ROCK_D = (46, 48, 56)
+ROCK_L = (112, 116, 122)
+REED = (92, 104, 60)
+REED_L = (168, 160, 104)
+TEAK = (12, 24, 22)
+TEAK_M = (18, 34, 28)
+TEAK_L = (34, 54, 38)
+BRIDGE = (124, 132, 74)
+BRIDGE_D = (78, 84, 50)
+PAVE = (64, 60, 62)
+PAVE_D = (44, 42, 46)
+PAVE_L = (90, 84, 82)
 
-# Titik stage di kanvas setengah ukuran (map_position / 2).
-STAGES = [(46, 134), (103, 98), (159, 131), (219, 94), (277, 56)]
+# Titik babak di kanvas setengah ukuran (map_position / 2).
+STAGES = [(28, 152), (74, 130), (128, 152), (178, 126), (140, 96),
+          (88, 92), (52, 64), (98, 56), (196, 70), (277, 56)]
+# Kali Watu: turun dari kaki gunung, menyeberangi jalan di Jembatan Pring,
+# lalu mengalir ke timur di atas panel info.
+RIVER = [(76, 40), (79, 52), (84, 63), (100, 74), (130, 80), (165, 86),
+         (200, 91), (240, 91), (322, 87)]
 PATH_START = (2, 178)
 # Area panel info di kanan bawah (dalam kanvas ini), dibiarkan polos.
-INFO_PANEL = (214, 106, 320, 180)
+INFO_PANEL = (214, 98, 320, 180)
 
 canvas = np.zeros((H, W, 3), dtype=np.float32)
 
@@ -178,6 +198,28 @@ def catmull(points, steps=40):
     return out
 
 
+river = catmull(RIVER, 30)
+for i, (x, y) in enumerate(river):
+    w = 2.2 + min(1.6, i / 90.0)
+    disc(x, y + 0.5, w + 1.2, (36, 44, 40))
+for i, (x, y) in enumerate(river):
+    w = 2.2 + min(1.6, i / 90.0)
+    disc(x, y, w, WATER_D)
+for i, (x, y) in enumerate(river):
+    w = 2.2 + min(1.6, i / 90.0)
+    disc(x, y - 0.3, w - 0.9, WATER)
+for i, (x, y) in enumerate(river):
+    if i % 9 == 0:
+        put(x + rng.uniform(-1.5, 1.5), y + rng.uniform(-0.8, 0.8), WATER_L, 0.8)
+
+
+def near_river(x, y, dist):
+    for (rx, ry) in river[::2]:
+        if (rx - x) ** 2 + (ry - y) ** 2 < dist * dist:
+            return True
+    return False
+
+
 path = catmull([PATH_START] + STAGES)
 for (x, y) in path:
     w = 3.4 - 1.2 * (1.0 - y / H)
@@ -199,9 +241,9 @@ def near_path(x, y, dist):
     return False
 
 
-# --- Stage 3: sendang (kolam) ---------------------------------------------------
+# --- Babak 3: sendang (kolam) ---------------------------------------------------
 
-PCX, PCY, PRX, PRY = 186, 150, 22, 8
+PCX, PCY, PRX, PRY = 152, 168, 18, 6
 for y in range(PCY - PRY - 2, PCY + PRY + 3):
     for x in range(PCX - PRX - 2, PCX + PRX + 3):
         d = ((x - PCX) / PRX) ** 2 + ((y - PCY) / PRY) ** 2
@@ -317,6 +359,87 @@ def candi(cx, base_y):
         put(cx + rng.randint(-20, 20), base_y - rng.randint(0, 30), MOSS)
 
 
+def rock(cx, cy, r):
+    """Batu kali bulat dengan sisi terang di kiri atas."""
+    for y in range(int(cy - r), int(cy + r * 0.7) + 1):
+        for x in range(int(cx - r), int(cx + r) + 1):
+            d = ((x - cx) / r) ** 2 + ((y - cy) / (r * 0.75)) ** 2
+            if d <= 1.0:
+                c = ROCK
+                if x - cx + y - cy < -r * 0.6:
+                    c = ROCK_L
+                elif x - cx + y - cy > r * 0.5:
+                    c = ROCK_D
+                put(x, y, c)
+
+
+def reeds(x0, y0, x1, y1, count):
+    """Ilalang: batang tipis bermalai pucat."""
+    for _ in range(count):
+        x = rng.uniform(x0, x1)
+        y = rng.uniform(y0, y1)
+        if near_path(x, y, 5) or near_river(x, y, 5):
+            continue
+        h = rng.randint(3, 6)
+        lean = rng.choice([-0.3, -0.15, 0.15, 0.3])
+        for k in range(h):
+            put(x + lean * k, y - k, REED)
+        put(x + lean * h, y - h, REED_L)
+        put(x + lean * (h - 1) + 0.5, y - h + 1, REED_L, 0.6)
+
+
+def teak(x, y, size):
+    """Pohon jati: batang lurus tinggi, tajuk lebar dan gelap."""
+    rect(x, y - size, x + 1, y, (40, 30, 26))
+    put(x, y - size // 2, (56, 42, 34))
+    cy = y - size - size * 0.25
+    for _ in range(7):
+        disc(x + rng.uniform(-size * 0.7, size * 0.7), cy + rng.uniform(-size * 0.2, size * 0.25),
+             size * rng.uniform(0.32, 0.45), TEAK)
+    for _ in range(4):
+        disc(x + rng.uniform(-size * 0.5, size * 0.3), cy - size * rng.uniform(0.05, 0.25),
+             size * 0.22, TEAK_M)
+    for _ in range(5):
+        put(x + rng.uniform(-size * 0.5, size * 0.2), cy - size * rng.uniform(0.2, 0.4), TEAK_L)
+
+
+def bamboo_bridge(cx, cy, half_len, along):
+    """Jembatan bambu melintang di atas sungai. along = arah jalan."""
+    ax, ay = along
+    nx, ny = -ay, ax
+    for t in range(-half_len, half_len + 1):
+        for k in range(-2, 3):
+            put(cx + ax * t + nx * k, cy + ay * t + ny * k, BRIDGE if k not in (-2, 2) else BRIDGE_D)
+        if t % 2 == 0:
+            put(cx + ax * t, cy + ay * t, BRIDGE_D, 0.6)
+    for k in (-3, 3):  # pagar bambu
+        for t in range(-half_len, half_len + 1):
+            put(cx + ax * t + nx * k, cy + ay * t + ny * k - 1, BAMBOO_L)
+        for t in range(-half_len, half_len + 1, 3):
+            put(cx + ax * t + nx * k, cy + ay * t + ny * k - 2, BAMBOO_L)
+
+
+def courtyard(cx, cy, rx, ry):
+    """Pelataran batu di depan candi: lantai ubin dan dua stupa kecil."""
+    for y in range(int(cy - ry), int(cy + ry) + 1):
+        for x in range(int(cx - rx), int(cx + rx) + 1):
+            d = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2
+            if d <= 1.0:
+                c = PAVE
+                if (x // 4 + y // 3) % 2 == 0:
+                    c = PAVE_D
+                if y % 3 == 0 or x % 4 == 0:
+                    c = PAVE_D
+                put(x, y, c, 0.9 if d < 0.8 else 0.6)
+    for sx in (cx - rx + 3, cx + rx - 4):
+        rect(sx - 2, cy - 7, sx + 2, cy - 3, BRICK)
+        rect(sx - 1, cy - 9, sx + 1, cy - 8, BRICK_L)
+        put(sx, cy - 10, BRICK_L)
+        rect(sx + 1, cy - 7, sx + 2, cy - 3, BRICK_D)
+    for _ in range(10):
+        put(cx + rng.randint(-rx, rx), cy + rng.randint(-ry, ry), MOSS)
+
+
 def tree(x, y, size):
     """Pohon bulat gelap. (x, y) = pangkal batang."""
     rect(x, y - size // 2, x + 1, y, (34, 26, 24))
@@ -331,30 +454,48 @@ def tree(x, y, size):
         put(x + rng.uniform(-size * 0.4, size * 0.1), cy - size * rng.uniform(0.3, 0.6), TREE_L)
 
 
-# Stage 1: rumah warga Desa Mejayan.
-house(10, 126)
-house(22, 160, 18)
-house(62, 160)
-house(72, 124, 14)
+# Babak 1: rumah warga Desa Mejayan.
+house(4, 140)
+house(8, 176, 18)
+house(40, 176)
+house(42, 140, 14)
 
-# Stage 2: rumpun bambu wingit.
-bamboo_clump(86, 100, 7)
-bamboo_clump(124, 94, 6)
-bamboo_clump(96, 78, 4)
+# Babak 2: rumpun bambu wingit.
+bamboo_clump(62, 118, 6)
+bamboo_clump(100, 132, 5)
+bamboo_clump(58, 102, 3)
 
-# Stage 4 & 5.
-gapura(219, 98)
+# Babak 4: gapura.
+gapura(178, 130)
+
+# Babak 5: Tegal Ilalang.
+reeds(112, 84, 178, 112, 170)
+
+# Babak 6: Alas Jati Peteng.
+for (tx, ty, ts) in [(66, 100, 9), (108, 104, 8), (74, 82, 7), (112, 88, 7)]:
+    teak(tx, ty, ts)
+glow(88, 92, 26, (10, 20, 18), 0.35)
+
+# Babak 7 dan 8: batu di Kali Watu dan jembatan bambu.
+for (rx, ry, rr) in [(78, 46, 2.5), (83, 56, 2), (74, 54, 1.6), (40, 70, 3), (36, 60, 2.2),
+                     (64, 74, 2.6), (90, 68, 1.8), (46, 52, 1.8)]:
+    rock(rx, ry, rr)
+bamboo_bridge(83, 60, 6, (0.996, -0.09))
+
+# Babak 9 dan 10: pelataran lalu candi.
+courtyard(196, 72, 18, 7)
 candi(283, 64)
 
-# Pohon tersebar, menjauhi jalan, landmark, titik stage, dan panel info.
-blocked = [(10, 100, 90, 162), (78, 60, 134, 104), (160, 136, 212, 164),
-           (196, 64, 242, 100), (254, 10, 312, 68)]
+# Pohon tersebar, menjauhi jalan, sungai, landmark, titik babak, dan panel info.
+blocked = [(0, 118, 64, 178), (48, 96, 112, 140), (132, 156, 174, 178),
+           (154, 88, 202, 134), (108, 80, 180, 114), (54, 70, 122, 112),
+           (30, 40, 110, 80), (174, 56, 220, 84), (254, 10, 312, 68)]
 trees = []
 tries = 0
-while len(trees) < 34 and tries < 4000:
+while len(trees) < 26 and tries < 4000:
     tries += 1
     x, y = rng.randint(4, W - 4), rng.randint(58, H - 2)
-    if near_path(x, y, 10):
+    if near_path(x, y, 10) or near_river(x, y, 8):
         continue
     if any(x0 <= x <= x1 and y0 <= y <= y1 for (x0, y0, x1, y1) in blocked):
         continue

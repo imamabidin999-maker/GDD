@@ -1,6 +1,6 @@
 extends SceneTree
 ## Tes ujung-ke-ujung: menamatkan kampanye lewat scene asli dengan klik mouse
-## sungguhan (menu -> peta -> 5 battle -> berkah -> ending -> peta -> menu).
+## sungguhan (menu -> peta -> 10 babak -> berkah -> ending -> peta -> menu).
 ## Battle dimainkan bot sederhana. Waktu game dipercepat 8x.
 ##   godot --headless -s tests/test_campaign_flow.gd
 
@@ -133,6 +133,10 @@ func _bot_turn(bm: BattleManager) -> void:
 		bm.request_end_turn()
 
 
+func _stage_count() -> int:
+	return int(root.get_node("GameState").get("STAGE_COUNT"))
+
+
 func _scene_name() -> String:
 	return current_scene.scene_file_path.get_file().get_basename() if current_scene != null else ""
 
@@ -152,12 +156,12 @@ func _play_stage(n: int) -> bool:
 			await _bot_turn(bm)
 		await _wait(0.5)
 		var won := is_instance_valid(bm) and bm.get_state() == BattleManager.State.VICTORY
-		print("  stage %d percobaan %d: %s (turn %d, HP %d)" % [n, attempt + 1, "menang" if won else "kalah", bm.turn_number, bm.hero_health.current_hp])
+		print("  babak %d percobaan %d: %s (giliran %d, Nyawa %d)" % [n, attempt + 1, "menang" if won else "kalah", bm.turn_number, bm.hero_health.current_hp])
 		if won:
 			await _wait(2.0)
 			await clear_dialogs(40)
 			await _wait(0.6)
-			if n < 5:
+			if n < _stage_count():
 				var rp: Node = null
 				for c: Node in current_scene.find_children("*", "", true, false):
 					if _is_class(c, "RewardPanel"):
@@ -194,23 +198,28 @@ func _run() -> void:
 	check(_scene_name() == "stage_map", "masuk ke peta")
 	await clear_dialogs()
 	check(gs.get("prologue_seen") == true, "prolog selesai dengan klik")
+	# Bot di sini sengaja sederhana; yang dites alurnya, bukan keseimbangannya
+	# (itu tugas tools/simulate_balance.gd). Nyawa besar supaya bot tidak
+	# tersangkut di babak Murka. Dipasang setelah Petualangan Baru karena
+	# tombol itu mereset Nyawa.
+	gs.set("max_hp", 400)
 
-	print("[Lima stage]")
-	for n: int in range(1, 6):
+	print("[Sepuluh babak]")
+	for n: int in range(1, _stage_count() + 1):
 		var won := await _play_stage(n)
-		check(won, "stage %d dimenangkan" % n)
+		check(won, "babak %d dimenangkan" % n)
 		if not won:
 			break
-		if n < 5:
-			check(_scene_name() == "stage_map", "kembali ke peta setelah berkah stage %d" % n)
+		if n < _stage_count():
+			check(_scene_name() == "stage_map", "kembali ke peta setelah berkah babak %d" % n)
 
 	print("[Ending]")
 	await _wait(1.5)
-	check(_scene_name() == "ending", "masuk ke ending setelah stage 5")
+	check(_scene_name() == "ending", "masuk ke ending setelah babak terakhir")
 	await clear_dialogs(40)
 	await _wait(2.0)
 	check(gs.get("game_completed") == true, "game tercatat tamat")
-	check((gs.get("cleared_stages") as Array).size() == 5, "lima stage tercatat selesai")
+	check((gs.get("cleared_stages") as Array).size() == _stage_count(), "semua babak tercatat selesai")
 	check(await click_button(tr("BTN_TO_MAP")), "tombol Ke Peta di kredit")
 	await _wait(1.5)
 	check(find_button(tr("MAP_ENDING")) != null, "peta menampilkan tombol Akhir Cerita")

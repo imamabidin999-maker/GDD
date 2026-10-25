@@ -1,25 +1,30 @@
-[gd_resource type="Resource" script_class="StageData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="StageData" format=3]
 
-[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_8cdoq"]
-[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_7m3yv"]
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_xvkfg"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_psnyy"]
 
-[sub_resource type="Resource" id="Resource_mq5ag"]
-script = ExtResource("1_8cdoq")
-buto_type = 4
-max_hp = 420
-attack_power = 18
-skill_cooldown_turns = 2
-sprite_scale = 1.15
+[sub_resource type="Resource" id="Resource_m87ml"]
+script = ExtResource("1_xvkfg")
+max_hp = 170
+attack_power = 13
+murka = true
+can_ngamuk = true
+
+[sub_resource type="Resource" id="Resource_alyot"]
+script = ExtResource("1_xvkfg")
+buto_type = 1
+max_hp = 90
+attack_power = 10
+sprite_scale = 0.9
 
 [resource]
-script = ExtResource("2_7m3yv")
+script = ExtResource("2_psnyy")
 stage_number = 5
+chapter = 2
 title_key = "STAGE_5_TITLE"
-enemies = Array[ExtResource("1_8cdoq")]([SubResource("Resource_mq5ag")])
-music = "boss"
-is_boss = true
-map_position = Vector2(554, 112)
-background_tint = Color(0.92, 0.72, 0.78, 1)
-intro_dialog = PackedStringArray("narator|S5_INTRO_1", "buto_hitam|S5_INTRO_2", "eyang|S5_INTRO_3", "buto_hitam|S5_INTRO_4")
-victory_dialog = PackedStringArray("buto_hitam|S5_WIN_1", "eyang|S5_WIN_2")
+enemies = Array[ExtResource("1_xvkfg")]([SubResource("Resource_m87ml"), SubResource("Resource_alyot")])
+map_position = Vector2(280, 192)
+background_tint = Color(1, 0.95, 0.8, 1)
+intro_dialog = PackedStringArray("narator|S5_INTRO_1", "buto_kuning|S5_INTRO_2", "roro_ayu|S5_INTRO_3", "eyang|S5_INTRO_4")
+victory_dialog = PackedStringArray("eyang|S5_WIN_1", "roro_ayu|S5_WIN_2")
 tutorial_dialog = PackedStringArray()

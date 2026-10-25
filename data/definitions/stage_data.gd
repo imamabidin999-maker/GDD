@@ -7,6 +7,8 @@ extends Resource
 ## buto_putih, buto_hitam. Teksnya ada di localization/strings.csv.
 
 @export var stage_number: int = 1
+## Bagian cerita: 1 Kedatangan Buto, 2 Buto Murka, 3 Candi Pagebluk.
+@export_range(1, 3) var chapter: int = 1
 @export var title_key: String = ""
 @export var enemies: Array[EnemySpec] = []
 ## Musik battle: "battle" atau "boss".

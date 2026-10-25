@@ -42,7 +42,7 @@ STAGE_1_TITLE,Pinggir Desa Mejayan,Outskirts of Mejayan
 STAGE_2_TITLE,Rumpun Bambu Wingit,The Haunted Bamboo Grove
 STAGE_3_TITLE,Sendang Larangan,The Forbidden Spring
 STAGE_4_TITLE,Gapura Candi Tua,Gate of the Old Temple
-STAGE_5_TITLE,Candi Pagebluk,Temple of the Plague
+STAGE_5_TITLE,Tegal Ilalang,The Reed Meadow
 BATTLE_TURN,Giliran %d,Turn %d
 BATTLE_END_TURN,Akhiri Giliran,End Turn
 BATTLE_ULTIMATE,Gebrakan Dongkrek,Gebrakan Dongkrek
@@ -160,14 +160,14 @@ S3_WIN_2,"Eyang, aku Roro Ayu. Kami para perempuan desa ikut menabuh dari jauh. 
 S4_INTRO_1,Gapura candi tua menjulang. Buto bertopeng putih berjaga di depannya.,The old temple gate towers overhead. A Buto in a white mask stands guard.
 S4_INTRO_2,Ilmu orang tua... akan kubelenggu. Tanganmu takkan bisa bergerak bebas.,An old man's tricks... I'll bind them. Your hands won't move freely.
 S4_INTRO_3,"Jurusku boleh kau sirep, tekadku tidak.","You may cast Sirep on my moves, but not on my resolve."
-S4_WIN_1,Gapura sudah terbuka. Di dalam sana ada sumber semua pagebluk ini.,The gate is open. Inside lies the source of this whole plague.
-S4_WIN_2,Dari dalam candi terdengar geraman yang membuat tanah bergetar.,From inside the temple comes a growl that shakes the ground.
-S5_INTRO_1,"Di jantung candi, Buto Hitam menunggu. Dialah raja para Buto, biang pagebluk.","At the heart of the temple waits Buto Hitam, king of the Buto and the root of the plague."
-S5_INTRO_2,Jadi kau yang mengusir anak buahku. Bunyi bedugmu tak ada artinya di sini!,So you're the one who chased off my servants. Your drums mean nothing here!
-S5_INTRO_3,"Selama warga Mejayan masih menabuh, aku takkan mundur.","As long as Mejayan keeps drumming, I will not step back."
-S5_INTRO_4,"Kalau begitu, akan kuporak-porandakan semua rencanamu!",Then I'll tear every one of your plans apart!
-S5_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
-S5_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.
+S4_WIN_1,Gapura sudah terbuka. Tinggal satu langkah lagi.,The gate is open. Just one more step.
+S4_WIN_2,Tiba-tiba tanah bergetar. Dari dalam candi terdengar tawa yang berat.,Suddenly the ground shakes. A heavy laugh rumbles from inside the temple.
+S5_INTRO_1,"Di tegal ilalang, Buto Kuning kembali. Tubuhnya kini diselimuti cahaya merah.","In the reed meadow, Buto Kuning returns. Its body now glows a burning red."
+S5_INTRO_2,"Sekarang semangatmu kuhisap sampai kering, berapa pun sisanya!","Now I'll drain your spirit dry, every last drop!"
+S5_INTRO_3,"Eyang, hati-hati. Buto yang murka bisa ngamuk dan menyerang dua kali. Lihat api di atas kepalanya.","Eyang, be careful. An enraged Buto can go Ngamuk and strike twice. Watch the flames above its head."
+S5_INTRO_4,"Kalau apinya penuh, aku harus waspada dan pasang tameng. Atau kubuyarkan dengan bunyi Dongkrek.",When the flames are full I must stay alert and raise my guard. Or break its rage with the sound of Dongkrek.
+S5_WIN_1,Satu sudah tumbang lagi.,One more has fallen again.
+S5_WIN_2,Buto Hijau yang murka bersembunyi di hutan jati. Napasnya makin pekat.,The enraged Buto Hijau hides in the teak forest. Its breath grows thicker.
 ENDING_TITLE,Pagebluk Sirna,The Plague Is Lifted
 ENDING_1,Pagebluk pun sirna. Satu per satu warga Mejayan pulih dari sakitnya.,"And so the plague was lifted. One by one, the people of Mejayan recovered."
 ENDING_2,"Mulai hari ini kita tabuh bedug dan korek setiap tahun, supaya para Buto tak lupa.","From now on we'll play the bedug and korek every year, so the Buto never forget."
@@ -290,3 +290,58 @@ INTENT_NGAMUK,Ngamuk! Beraksi dua kali:,Ngamuk! Acts twice:
 AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gebrakan Dongkrek mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gebrakan Dongkrek empties it."
 PRAYITNA_TIP,Prayitna: ada Buto yang bersiap ngamuk. Tameng dari kartu +50% di giliran ini.,Prayitna (vigilance): a Buto is about to go Ngamuk. Block from cards +50% this turn.
 CARD_PRAYITNA_TIP,Prayitna: Tameng +50%,Prayitna: Block +50%
+STAGE_6_TITLE,Alas Jati Peteng,The Dark Teak Forest
+STAGE_7_TITLE,Kali Watu,The Rocky River
+STAGE_8_TITLE,Jembatan Pring,The Bamboo Bridge
+STAGE_9_TITLE,Pelataran Candi,The Temple Courtyard
+STAGE_10_TITLE,Candi Pagebluk,Temple of the Plague
+CHAPTER_1,Bagian I: Kedatangan Buto,Part I: The Buto Arrive
+CHAPTER_2,Bagian II: Buto Murka,Part II: The Enraged Buto
+CHAPTER_3,Bagian III: Candi Pagebluk,Part III: Temple of the Plague
+BUTO_MURKA_FMT,%s Murka,%s Murka
+INTENT_DRAIN_MURKA,Menyerang %d dan menghisap %d%% Greget,Attacks for %d and drains %d%% Greget
+PUSTAKA_MURKA,Buto Murka,Buto Murka
+PUSTAKA_MURKA_TEXT,"Buto yang sudah kalah lalu dibangkitkan lagi oleh Buto Hitam dengan kekuatan pagebluk. Tubuhnya diselimuti aura merah keunguan, dan semuanya bisa Ngamuk.
+
+Kuning Murka menghisap Greget dari berapa pun sisanya, bukan hanya Greget Memuncak.
+Hijau Murka menyembur 5 Lara dengan tenaga penuh.
+Merah Murka langsung Ancang-ancang lalu Gebug Raksasa yang lebih keras, dan bertameng saat ancang-ancang.
+Putih Murka menyirep dua kartu terkuat sekaligus.
+
+Siasat: perhatikan api Amuk di atas kepala mereka. Saat tanda x2 muncul, pasang Tameng (Prayitna menambahnya) atau buyarkan dengan Gebrakan Dongkrek.","Defeated Buto raised again by Buto Hitam with the power of the plague. A reddish-purple aura surrounds them, and every one of them can go Ngamuk.
+
+Kuning Murka drains Greget at any level, not only Greget Memuncak.
+Hijau Murka spits 5 Lara at full strength.
+Merah Murka winds up straight away for a harder Gebug Raksasa, and gains Block while winding up.
+Putih Murka casts Sirep on your two strongest cards at once.
+
+Tip: watch the Amuk flames above their heads. When the x2 mark appears, raise your Block (Prayitna boosts it) or break their rage with Gebrakan Dongkrek."
+S4_WIN_3,"Kau kira sudah menang, Pak Tua? Bangkitlah, anak-anakku! Kuberi kalian kekuatan pagebluk!","You think you've won, old man? Rise, my children! I give you the power of the plague!"
+S4_WIN_4,"Keempat Buto yang kalah bangkit lagi dengan mata menyala, lalu lari ke empat penjuru.",The four defeated Buto rise again with burning eyes and flee in four directions.
+S6_INTRO_1,Hutan jati gelap dan lembap. Kabut beracun merayap di antara batang-batang besar.,The teak forest is dark and damp. A sickly mist creeps between the great trunks.
+S6_INTRO_2,"Laraku kini lebih pekat. Sekali sembur, kau takkan bisa berdiri!",My sickness is stronger now. One breath and you won't stand again!
+S6_INTRO_3,"Napasmu boleh beracun, tapi tekad warga Mejayan lebih kuat.","Your breath may be poison, but Mejayan's resolve is stronger."
+S6_WIN_1,Kabut tersibak. Dari arah sungai terdengar batu-batu yang dihantam.,The mist parts. From the river comes the sound of stones being smashed.
+S6_WIN_2,Buto Merah. Ia pasti sudah menunggu.,Buto Merah. It must be waiting.
+S7_INTRO_1,"Di Kali Watu, Buto Merah menghantam batu-batu sungai sampai pecah.","At the rocky river, Buto Merah pounds the river stones to pieces."
+S7_INTRO_2,Sekarang aku tak perlu lama-lama ancang-ancang! GRAAAH!,I don't need a long wind-up anymore! GRAAAH!
+S7_INTRO_3,Ancang-ancangmu memang lebih cepat. Tapi niatmu tetap terbaca.,"Your wind-up is faster, true. But your intent is still easy to read."
+S7_WIN_1,Tinggal Buto Putih.,Only Buto Putih remains.
+S7_WIN_2,"Di seberang jembatan bambu, cahaya pucat menunggu.","Across the bamboo bridge, a pale light is waiting."
+S8_INTRO_1,Jembatan bambu berderit di atas sungai. Buto Putih berdiri di tengahnya.,The bamboo bridge creaks over the river. Buto Putih stands in the middle.
+S8_INTRO_2,"Dua jurusmu akan kusirep sekaligus. Tanganmu akan kosong, Pak Tua.","I'll put two of your moves under Sirep at once. Your hands will be empty, old man."
+S8_INTRO_3,"Jurus bisa kau sirep. Tapi Dongkrek ada di hati, bukan di tangan.","You can put my moves to sleep. But Dongkrek lives in the heart, not the hands."
+S8_WIN_1,"Eyang, keempatnya berkumpul di pelataran candi. Mereka menunggumu bersama-sama.","Eyang, all four are gathering in the temple courtyard. They're waiting for you together."
+S8_WIN_2,Biar mereka datang sekaligus. Kita selesaikan malam ini.,Let them come all at once. We finish this tonight.
+S9_INTRO_1,"Di pelataran candi, keempat Buto Murka berdiri melingkar. Api amuk menyala di atas kepala mereka.","In the temple courtyard, the four Buto Murka stand in a circle. Flames of rage burn above their heads."
+S9_INTRO_2,Kali ini kami tidak sendiri-sendiri!,This time we fight together!
+S9_INTRO_3,Kami hisap semangatmu bersama-sama!,We'll drain your spirit together!
+S9_INTRO_4,"Warga Mejayan, tabuh lebih keras! Dung... krek!","People of Mejayan, drum harder! Dung... krek!"
+S9_WIN_1,Keempat Buto roboh dan cahaya merahnya padam.,The four Buto collapse and their red glow fades.
+S9_WIN_2,Cukup. Biar aku sendiri yang menghabisimu.,Enough. I'll finish you myself.
+S10_INTRO_1,"Di jantung candi, Buto Hitam menunggu. Dialah raja para Buto, biang pagebluk.","In the heart of the temple, Buto Hitam waits. The king of the Buto, the root of the plague."
+S10_INTRO_2,Jadi kau yang mengusir anak buahku. Bunyi bedugmu tak ada artinya di sini!,So you're the one who chased off my servants. Your drums mean nothing here!
+S10_INTRO_3,"Selama warga Mejayan masih menabuh, aku takkan mundur.","As long as Mejayan keeps drumming, I will not step back."
+S10_INTRO_4,"Kalau begitu, rasakan Ajian Lebur Saketi!",Then taste the Ajian Lebur Saketi!
+S10_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
+S10_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.

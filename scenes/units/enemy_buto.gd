@@ -39,10 +39,15 @@ signal skill_used(skill: Skill, succeeded: bool)
 signal phase_changed(phase: int)
 
 @export var buto_type: ButoType = ButoType.KUNING
+## Buto Murka (dikuatkan Buto Hitam). Panggil apply_murka() setelah mengisi
+## buto_type supaya angka-angka ilmunya ikut naik.
+@export var murka: bool = false
 
 @export_group("Kuning")
 ## Moxie Overcharge yang dikuras setiap serangan Buto Kuning (dalam persen).
 @export var overcharge_drain: float = 25.0
+## Kuning Murka: Greget yang dihisap dari level berapa pun.
+@export var murka_drain: float = 20.0
 
 @export_group("Hijau")
 ## Tumpukan racun dari satu semburan.
@@ -51,6 +56,8 @@ signal phase_changed(phase: int)
 @export_group("Merah")
 ## Pukulan berat = attack_power × pengali ini.
 @export var heavy_multiplier: float = 2.5
+## Merah Murka: Tameng yang didapat saat ancang-ancang.
+@export var murka_charge_block: int = 10
 
 @export_group("Putih")
 ## Berapa giliran pemain kartu yang disirep tetap tersirep.
@@ -82,6 +89,7 @@ var _merah_step: int = 0
 var _pending_hand_lock: bool = false
 var _rng := RandomNumberGenerator.new()
 var _drain_receiver: Callable
+var _player: PlayerState
 
 
 ## Kunci untuk teks dan gambar, misalnya "kuning".
@@ -103,7 +111,27 @@ func get_heavy_damage() -> int:
 
 
 func get_spit_damage() -> int:
-	return ceili(attack_power * 0.5)
+	# Hijau Murka menyembur dengan tenaga penuh.
+	return attack_power if murka else ceili(attack_power * 0.5)
+
+
+## Menjadikan Buto ini Buto Murka: aura, Ngamuk, dan ilmu yang lebih kuat.
+func apply_murka() -> void:
+	murka = true
+	can_ngamuk = true
+	match buto_type:
+		ButoType.HIJAU:
+			poison_stacks = 5
+		ButoType.MERAH:
+			heavy_multiplier = 3.0
+		ButoType.PUTIH:
+			sirep_count = 2
+
+
+# Panjang pola Merah: biasa 3 langkah (serang, ancang-ancang, gebug),
+# Murka 2 langkah (ancang-ancang, gebug).
+func _merah_cycle() -> int:
+	return 2 if murka else 3
 
 
 #region Siklus battle
@@ -123,6 +151,7 @@ func on_battle_started(battle: BattleManager) -> void:
 		_rng.randomize()
 
 	_connect_drain_to(battle.player.drain_overcharge)
+	_player = battle.player
 	if health != null and not health.hp_changed.is_connected(_on_hp_changed):
 		health.hp_changed.connect(_on_hp_changed)
 	if previous_phase != phase:
@@ -140,10 +169,16 @@ func on_player_turn_started(battle: BattleManager) -> void:
 ## Dihitung ulang setiap tangan berubah, jadi ikon niat selalu jujur
 ## (misalnya Buto Hitam batal mengacak kalau kartu bebas tinggal satu).
 func get_intent(battle: BattleManager) -> EnemyIntent:
+	var intent := _build_intent(battle)
+	intent.murka = murka
+	return intent
+
+
+func _build_intent(battle: BattleManager) -> EnemyIntent:
 	var skill := _pick_skill(battle, _turns_until_skill <= 0)
 	match skill:
 		Skill.DRAINING_STRIKE:
-			return EnemyIntent.new(EnemyIntent.Kind.DRAIN, attack_power, roundi(overcharge_drain))
+			return EnemyIntent.new(EnemyIntent.Kind.DRAIN, attack_power, roundi(murka_drain if murka else overcharge_drain))
 		Skill.LOCK_CARD:
 			return EnemyIntent.new(EnemyIntent.Kind.LOCK, 0, sirep_count)
 		Skill.FORCE_SHUFFLE:
@@ -202,6 +237,8 @@ func perform_skill(action: ButoSkillAction, battle: BattleManager) -> void:
 			action.succeeded = true
 		Skill.CHARGE:
 			action.succeeded = true # ancang-ancang: tidak menyerang turn ini
+			if murka and murka_charge_block > 0:
+				health.gain_block(murka_charge_block)
 		Skill.HEAVY_STRIKE:
 			action.damage_dealt = battle.hero_health.take_damage(get_heavy_damage())
 			action.succeeded = true
@@ -217,7 +254,10 @@ func perform_skill(action: ButoSkillAction, battle: BattleManager) -> void:
 ## Mengembalikan damage yang masuk.
 func draining_strike(hero_health: HealthComponent) -> int:
 	var dealt := hero_health.take_damage(attack_power)
-	overcharge_drain_requested.emit(overcharge_drain)
+	if murka and _player != null:
+		_player.drain_moxie(murka_drain)
+	else:
+		overcharge_drain_requested.emit(overcharge_drain)
 	return dealt
 
 
@@ -260,9 +300,10 @@ func _pick_skill(battle: BattleManager, skill_ready: bool) -> Skill:
 			if skill_ready:
 				return Skill.POISON_SPIT
 		ButoType.MERAH:
-			if _merah_step == 1:
+			var charge_step := 0 if murka else 1
+			if _merah_step == charge_step:
 				return Skill.CHARGE
-			if _merah_step == 2:
+			if _merah_step == charge_step + 1:
 				return Skill.HEAVY_STRIKE
 		ButoType.PUTIH:
 			# Tangan kosong (misalnya mode buang-tangan gaya FGO) tetap boleh:
@@ -304,7 +345,7 @@ func _after_pick(skill: Skill) -> void:
 	if skill == Skill.POISON_SPIT or skill == Skill.LOCK_CARD or skill == Skill.FORCE_SHUFFLE:
 		_start_skill_cooldown()
 	if buto_type == ButoType.MERAH:
-		_merah_step = (_merah_step + 1) % 3
+		_merah_step = (_merah_step + 1) % _merah_cycle()
 
 
 # true kalau skill siap dipakai turn ini. Kalau belum, cooldown dihitung mundur.

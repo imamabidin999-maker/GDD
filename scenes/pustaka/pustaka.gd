@@ -71,6 +71,7 @@ func _build() -> void:
 	for key: String in BUTO_KEYS:
 		var seen := GameState.seen_buto.has(key)
 		_add_entry(key, tr("BUTO_" + key.to_upper()) if seen else "? ? ?")
+	_add_entry("murka", tr("PUSTAKA_MURKA") if GameState.seen_buto.has("murka") else "? ? ?")
 	_add_entry("howto", tr("PUSTAKA_HOWTO"))
 	_add_entry("cards", tr("PUSTAKA_CARDS"))
 
@@ -122,6 +123,8 @@ func _show(key: String) -> void:
 			_paragraph(tr("PUSTAKA_HOWTO_TEXT"))
 		"cards":
 			_show_cards()
+		"murka":
+			_show_murka()
 		_:
 			_show_buto(key)
 
@@ -137,6 +140,30 @@ func _show_buto(key: String) -> void:
 		facts.append(tr("PUSTAKA_STATS") % [spec.max_hp, spec.attack_power])
 	facts.append(tr("PUSTAKA_SKILL") % tr("SKILL_" + key.to_upper()))
 	_figure(sprite, tr("BUTO_" + key.to_upper()), facts, tr("PUSTAKA_BUTO_%s_TEXT" % key.to_upper()), false)
+
+
+func _show_murka() -> void:
+	var sprite := load("res://assets/sprites/buto/buto_merah_idle.png") as Texture2D
+	if not GameState.seen_buto.has("murka"):
+		_figure(sprite, "? ? ?", [], tr("PUSTAKA_LOCKED"), true)
+		return
+	_figure(sprite, tr("PUSTAKA_MURKA"), [], tr("PUSTAKA_MURKA_TEXT"), false)
+	# Aura yang sama dengan di medan tempur, di belakang gambar Buto.
+	var pic := (_content.get_child(-1) as Control).get_child(0) as TextureRect
+	var aura := TextureRect.new()
+	aura.texture = sprite
+	aura.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	aura.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	aura.show_behind_parent = true
+	aura.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = UnitView.MURKA_AURA
+	aura.material = mat
+	aura.modulate = Color(0.95, 0.15, 0.5, 0.55)
+	pic.add_child(aura)
+	var t := aura.create_tween().set_loops()
+	t.tween_property(aura, "modulate:a", 0.9, 0.7).set_trans(Tween.TRANS_SINE)
+	t.tween_property(aura, "modulate:a", 0.45, 0.7).set_trans(Tween.TRANS_SINE)
 
 
 func _show_cards() -> void:

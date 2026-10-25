@@ -19,6 +19,9 @@ var damage: int
 ## Nilai tambahan: persen Moxie yang dikuras, tumpukan racun, atau damage
 ## pukulan berat yang sedang disiapkan.
 var extra: int
+## Niat Buto Murka (teks niatnya sedikit berbeda, misalnya Kuning Murka
+## menghisap Greget dari level berapa pun).
+var murka: bool = false
 
 
 func _init(intent_kind: Kind, intent_damage: int = 0, intent_extra: int = 0) -> void:

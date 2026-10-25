@@ -1,32 +1,27 @@
-[gd_resource type="Resource" script_class="StageData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="StageData" format=3]
 
-[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_i3mbp"]
-[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_scox7"]
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_43std"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_veq84"]
 
-[sub_resource type="Resource" id="Resource_134qv"]
-script = ExtResource("1_i3mbp")
+[sub_resource type="Resource" id="Resource_royyr"]
+script = ExtResource("1_43std")
 buto_type = 2
 max_hp = 140
 attack_power = 11
-skill_cooldown_turns = 2
-sprite_scale = 1.0
 
-[sub_resource type="Resource" id="Resource_e724i"]
-script = ExtResource("1_i3mbp")
+[sub_resource type="Resource" id="Resource_vhivs"]
+script = ExtResource("1_43std")
 buto_type = 1
 max_hp = 80
 attack_power = 9
-skill_cooldown_turns = 2
 sprite_scale = 0.9
 
 [resource]
-script = ExtResource("2_scox7")
+script = ExtResource("2_veq84")
 stage_number = 3
 title_key = "STAGE_3_TITLE"
-enemies = Array[ExtResource("1_i3mbp")]([SubResource("Resource_134qv"), SubResource("Resource_e724i")])
-music = "battle"
-is_boss = false
-map_position = Vector2(318, 262)
+enemies = Array[ExtResource("1_43std")]([SubResource("Resource_royyr"), SubResource("Resource_vhivs")])
+map_position = Vector2(256, 304)
 background_tint = Color(0.82, 0.88, 1.06, 1)
 intro_dialog = PackedStringArray("narator|S3_INTRO_1", "buto_merah|S3_INTRO_2", "eyang|S3_INTRO_3")
 victory_dialog = PackedStringArray("eyang|S3_WIN_1", "roro_ayu|S3_WIN_2")

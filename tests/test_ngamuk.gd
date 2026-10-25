@@ -1,5 +1,6 @@
 extends SceneTree
-## Tes sistem Ngamuk, Prayitna, dan Gebrakan Dongkrek yang membuyarkan amukan.
+## Tes sistem Ngamuk, Prayitna, Gebrakan Dongkrek yang membuyarkan amukan,
+## dan ilmu Buto Murka.
 ##   godot --headless -s tests/test_ngamuk.gd
 
 var _failures: int = 0
@@ -190,6 +191,61 @@ func _run() -> void:
 	check(kg.amuk == 1 and kg2.amuk == 1, "Buto yang batal Ngamuk hanya beraksi sekali")
 	# Kuning menyerang 5, Hijau menyembur 3 + Lara 3 yang langsung bekerja.
 	check(fg.hero.current_hp == hp_before - 11, "damage hanya dari satu aksi per Buto")
+
+	print("[Buto Kuning Murka: Hisap Greget di level berapa pun]")
+	var km := make_buto(EnemyButo.ButoType.KUNING, 999, 6, false)
+	km.apply_murka()
+	var fkm := make_fixture([km] as Array[EnemyUnit], 200)
+	fkm.bm.start_battle(fkm.deck_list, fkm.enemies)
+	check(km.can_ngamuk, "apply_murka menyalakan Ngamuk")
+	fkm.player.gain_moxie(50.0)
+	var ikm := km.get_intent(fkm.bm)
+	check(ikm.kind == EnemyIntent.Kind.DRAIN and ikm.murka and ikm.extra == 20, "niat: serang lalu hisap 20% Greget (ditandai murka)")
+	fkm.bm.request_end_turn()
+	check(is_equal_approx(fkm.player.moxie, 30.0) and fkm.hero.current_hp == 194, "Greget 50% -> 30% walau belum Memuncak")
+	var kb := make_buto(EnemyButo.ButoType.KUNING, 999, 6, false)
+	var fkb := make_fixture([kb] as Array[EnemyUnit], 200)
+	fkb.bm.start_battle(fkb.deck_list, fkb.enemies)
+	fkb.player.gain_moxie(50.0)
+	fkb.bm.request_end_turn()
+	check(is_equal_approx(fkb.player.moxie, 50.0), "Kuning biasa tidak menyentuh Greget di bawah 100%")
+
+	print("[Buto Hijau Murka: Sembur Lara penuh]")
+	var hm := make_buto(EnemyButo.ButoType.HIJAU, 999, 6, false)
+	hm.apply_murka()
+	var fhm := make_fixture([hm] as Array[EnemyUnit], 200)
+	fhm.bm.start_battle(fhm.deck_list, fhm.enemies)
+	var ihm := hm.get_intent(fhm.bm)
+	check(ihm.kind == EnemyIntent.Kind.POISON and ihm.damage == 6 and ihm.extra == 5, "niat: sembur 6 (tenaga penuh) + 5 Lara")
+	fhm.bm.request_end_turn()
+	check(fhm.hero.current_hp == 200 - 6 - 5, "semburan 6 lalu Lara 5 langsung bekerja")
+
+	print("[Buto Merah Murka: langsung ancang-ancang, bertameng, gebug x3]")
+	var mm := make_buto(EnemyButo.ButoType.MERAH, 999, 6, false)
+	mm.apply_murka()
+	var fmm := make_fixture([mm] as Array[EnemyUnit], 200)
+	fmm.bm.start_battle(fmm.deck_list, fmm.enemies)
+	var imm := mm.get_intent(fmm.bm)
+	check(imm.kind == EnemyIntent.Kind.CHARGE and imm.extra == 18, "giliran pertama sudah ancang-ancang (gebug 18)")
+	fmm.bm.request_end_turn()
+	check(mm.health.block == 10 and fmm.hero.current_hp == 200, "ancang-ancang memberi Tameng 10, belum menyerang")
+	check(mm.get_intent(fmm.bm).kind == EnemyIntent.Kind.HEAVY, "lalu Gebug Raksasa")
+	fmm.bm.request_end_turn()
+	check(fmm.hero.current_hp == 182 and mm.health.block == 0, "Gebug Raksasa 18 masuk, Tameng Buto habis di giliran musuh berikutnya")
+	check(mm.get_intent(fmm.bm).kind == EnemyIntent.Kind.CHARGE, "pola dua langkah berulang")
+
+	print("[Buto Putih Murka: menyirep dua kartu]")
+	var pm := make_buto(EnemyButo.ButoType.PUTIH, 999, 6, false)
+	pm.apply_murka()
+	var fpm := make_fixture([pm] as Array[EnemyUnit], 200)
+	fpm.bm.start_battle(fpm.deck_list, fpm.enemies)
+	check(pm.sirep_count == 2 and pm.get_intent(fpm.bm).extra == 2, "niat Sirep 2 kartu")
+	fpm.bm.request_end_turn()
+	var sirep_pm := 0
+	for i: int in fpm.hand.get_card_count():
+		if fpm.hand.is_locked_at(i):
+			sirep_pm += 1
+	check(sirep_pm == 2, "dua kartu tersirep")
 
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

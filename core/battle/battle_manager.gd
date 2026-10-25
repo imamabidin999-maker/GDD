@@ -441,6 +441,10 @@ func _setup_new_player_turn() -> void:
 func _enter_enemy_turn() -> void:
 	var battle_id := _battle_id
 	enemy_turn_started.emit()
+	# Tameng Buto (misalnya Merah Murka saat ancang-ancang) bertahan sepanjang
+	# giliran pemain, lalu hilang di awal giliran Buto berikutnya.
+	for enemy: EnemyUnit in get_living_enemies():
+		enemy.health.clear_block()
 	for enemy: EnemyUnit in get_living_enemies():
 		var count := enemy.get_action_count()
 		if count >= 2:

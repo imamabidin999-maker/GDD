@@ -1,6 +1,6 @@
 extends Control
-## Peta perjalanan Eyang Palang: lima titik stage dari Desa Mejayan sampai
-## Candi Pagebluk. Klik titik untuk melihat lawannya, lalu Bertarung.
+## Peta perjalanan Eyang Palang: sepuluh babak dari Desa Mejayan sampai
+## Candi Pagebluk, dibagi tiga bagian cerita. Klik titik untuk melihat lawannya, lalu Bertarung.
 ## Prolog diputar sekali saat peta pertama kali dibuka.
 
 const BG := preload("res://assets/backgrounds/map_mejayan.png")
@@ -121,9 +121,9 @@ func _build_ui() -> void:
 
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"GoldPanel"
-	panel.position = Vector2(430, 212)
-	panel.custom_minimum_size = Vector2(202, 140)
-	panel.size = Vector2(202, 140)
+	panel.position = Vector2(430, 196)
+	panel.custom_minimum_size = Vector2(202, 156)
+	panel.size = Vector2(202, 156)
 	_ui.add_child(panel)
 	_info_col = UIKit.vbox(3)
 	panel.add_child(_info_col)
@@ -151,6 +151,8 @@ func _fill_info(node: StageNode) -> void:
 	if node.state == StageNode.State.CLEARED:
 		head.add_child(UIKit.small_label(tr("MAP_CLEARED"), StageNode.COLOR_CLEARED))
 	_info_col.add_child(head)
+	_info_col.add_child(UIKit.small_label(tr("CHAPTER_%d" % stage.chapter),
+		StageNode.COLOR_MURKA.lightened(0.35) if stage.chapter >= 2 else UIKit.COLOR_DIM))
 	_info_col.add_child(UIKit.label(tr(stage.title_key), &"HeaderLabel"))
 
 	if node.state == StageNode.State.LOCKED:
@@ -161,7 +163,20 @@ func _fill_info(node: StageNode) -> void:
 		_info_col.add_child(why)
 		return
 
-	_info_col.add_child(UIKit.small_label(tr("MAP_ENEMIES"), UIKit.COLOR_DIM))
+	# Lebih dari dua lawan (babak 9) tidak muat satu per baris, jadi dibuat
+	# dua kolom ringkas tanpa nama ilmu.
+	var compact := stage.enemies.size() > 2
+	var list: Container
+	if compact:
+		var grid := GridContainer.new()
+		grid.columns = 2
+		grid.add_theme_constant_override("h_separation", 6)
+		grid.add_theme_constant_override("v_separation", 2)
+		list = grid
+	else:
+		_info_col.add_child(UIKit.small_label(tr("MAP_ENEMIES"), UIKit.COLOR_DIM))
+		list = UIKit.vbox(3)
+	_info_col.add_child(list)
 	for spec: EnemySpec in stage.enemies:
 		var key := StageNode.get_buto_key(spec)
 		var line := UIKit.hbox(4)
@@ -171,10 +186,19 @@ func _fill_info(node: StageNode) -> void:
 		mask.custom_minimum_size = Vector2(16, 16)
 		line.add_child(mask)
 		var info := UIKit.vbox(0)
-		info.add_child(UIKit.label(tr("BUTO_" + key.to_upper()), &"", UIKit.COLOR_TEXT))
-		info.add_child(UIKit.small_label("HP %d  -  %s" % [spec.max_hp, tr("SKILL_" + key.to_upper())], UIKit.COLOR_DIM))
+		var buto_name := tr("BUTO_" + key.to_upper())
+		if compact:
+			buto_name = buto_name.trim_prefix("Buto ")
+		if spec.murka:
+			buto_name = tr("BUTO_MURKA_FMT") % buto_name
+		var name_color := StageNode.COLOR_MURKA.lightened(0.45) if spec.murka else UIKit.COLOR_TEXT
+		info.add_child(UIKit.label(buto_name, &"", name_color))
+		var detail := "HP %d" % spec.max_hp
+		if not compact:
+			detail += "  -  " + tr("SKILL_" + key.to_upper())
+		info.add_child(UIKit.small_label(detail, UIKit.COLOR_DIM))
 		line.add_child(info)
-		_info_col.add_child(line)
+		list.add_child(line)
 
 	var filler := Control.new()
 	filler.size_flags_vertical = Control.SIZE_EXPAND_FILL

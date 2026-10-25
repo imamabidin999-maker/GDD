@@ -50,7 +50,30 @@ Aturan singkatnya:
 | Putih | **Sirep**: kartu terkuatmu tidak bisa dipakai selama satu giliran |
 | Hitam (bos) | Di sisa nyawa separuh ia murka: serangan naik dan kartu di tanganmu diacak |
 
-Petualangan terdiri dari 5 babak di peta Mejayan. Setelah menang, Roro Ayu memberi satu **berkah** pilihan: menaikkan bintang dua kartu atau menambah nyawa maksimal. Babak yang sudah selesai boleh diulang untuk berkah tambahan.
+### Buto Murka dan Ngamuk
+
+Setelah babak 4, Buto Hitam membangkitkan keempat Buto yang sudah kalah menjadi **Buto Murka**: tubuhnya beraura merah keunguan dan ilmunya lebih kuat.
+
+| Buto Murka | Bedanya |
+|---|---|
+| Kuning | Hisap Greget bekerja di level Greget berapa pun |
+| Hijau | Sembur Lara dengan tenaga penuh dan 5 Lara |
+| Merah | Langsung Ancang-ancang (sambil bertameng) lalu Gebug Raksasa yang lebih keras |
+| Putih | Menyirep dua kartu terkuat sekaligus |
+
+Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di atas kepala). Setelah tiga titik penuh muncul tanda **x2**, dan giliran berikutnya Buto itu beraksi dua kali. Selama ada Buto yang siap Ngamuk, Eyang Palang mendapat **Prayitna**: Tameng dari semua kartu +50%. Gebrakan Dongkrek juga membuyarkan semua titik Amuk.
+
+### Sepuluh babak
+
+| Bagian | Babak |
+|---|---|
+| I. Kedatangan Buto | 1 Desa Mejayan, 2 Rumpun Bambu, 3 Sendang, 4 Gapura |
+| II. Buto Murka | 5 Tegal Ilalang, 6 Alas Jati Peteng, 7 Kali Watu, 8 Jembatan Pring (masing-masing satu Buto Murka dan satu pendamping) |
+| III. Candi Pagebluk | 9 Pelataran Candi (keempat Buto Murka sekaligus), 10 Candi Pagebluk (Buto Hitam) |
+
+Setelah menang, Roro Ayu memberi satu **berkah** pilihan: menaikkan bintang dua kartu atau menambah nyawa maksimal. Babak yang sudah selesai boleh diulang untuk berkah tambahan.
+
+Simpanan dari versi 5 babak tetap bisa dipakai: babak 1–4 tetap tercatat selesai, sedangkan babak 5 ke atas dibuka ulang karena isinya sudah berubah.
 
 Bahasa bisa diganti antara **Indonesia** dan **English** di menu Pengaturan. Progres tersimpan otomatis.
 
@@ -71,7 +94,7 @@ Versi Web bisa langsung diunggah ke itch.io (pilih "This file will be played in 
 ```
 autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
 core/          Logika battle: BattleManager, DeckController, HandManager, PlayerState, aksi
-data/          Data kartu, resep merge, dan stage (dibuat oleh tools/generate_data.gd)
+data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Pustaka, ending, dan unit
 ui/            Kartu, tangan, HUD, dialog, pengaturan, tooltip, titik peta
 assets/        Sprite, latar, kartu, ikon, font, shader, musik, dan efek suara
@@ -100,7 +123,7 @@ Tes otomatis:
 for t in tests/test_*.gd; do godot --headless -s "$t"; done
 ```
 
-`test_campaign_flow.gd` menamatkan seluruh kampanye dengan klik mouse sungguhan, dari menu utama sampai ending (sekitar 25 detik).
+`test_campaign_flow.gd` menamatkan seluruh kampanye 10 babak dengan klik mouse sungguhan, dari menu utama sampai ending (sekitar satu menit).
 
 Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` memang disengaja: tes itu sengaja memberi input salah untuk memastikan input tersebut ditolak.
 

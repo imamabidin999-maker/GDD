@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="StageData" format=3]
+
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_dr2wk"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_gw6x7"]
+
+[sub_resource type="Resource" id="Resource_k5ul6"]
+script = ExtResource("1_dr2wk")
+buto_type = 3
+max_hp = 290
+attack_power = 19
+murka = true
+can_ngamuk = true
+
+[sub_resource type="Resource" id="Resource_ok74u"]
+script = ExtResource("1_dr2wk")
+max_hp = 140
+attack_power = 14
+sprite_scale = 0.9
+
+[resource]
+script = ExtResource("2_gw6x7")
+stage_number = 8
+chapter = 2
+title_key = "STAGE_8_TITLE"
+enemies = Array[ExtResource("1_dr2wk")]([SubResource("Resource_k5ul6"), SubResource("Resource_ok74u")])
+map_position = Vector2(196, 112)
+background_tint = Color(0.9, 0.95, 1.04, 1)
+intro_dialog = PackedStringArray("narator|S8_INTRO_1", "buto_putih|S8_INTRO_2", "eyang|S8_INTRO_3")
+victory_dialog = PackedStringArray("roro_ayu|S8_WIN_1", "eyang|S8_WIN_2")
+tutorial_dialog = PackedStringArray()

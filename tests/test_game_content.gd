@@ -188,14 +188,63 @@ func _run() -> void:
 
 	print("[Data stage]")
 	var catalog := StageCatalog.load_default()
-	check(catalog != null and catalog.stages.size() == 5, "5 stage")
-	check(catalog.get_stage(5).is_boss and catalog.get_stage(5).enemies[0].buto_type == EnemyButo.ButoType.HITAM, "stage 5: boss Buto Hitam")
+	check(catalog != null and catalog.stages.size() == 10, "10 babak")
+	check(catalog.get_stage(10).is_boss and catalog.get_stage(10).enemies[0].buto_type == EnemyButo.ButoType.HITAM, "babak 10: bos Buto Hitam")
 	var all_lines_ok := true
+	var all_translated := true
 	for stage: StageData in catalog.stages:
+		for key: String in [stage.title_key, "CHAPTER_%d" % stage.chapter]:
+			if tr(key) == key:
+				all_translated = false
+				print("    belum diterjemahkan: ", key)
 		for line: String in stage.intro_dialog + stage.victory_dialog + stage.tutorial_dialog:
-			if line.split("|").size() != 2:
+			var parts := line.split("|")
+			if parts.size() != 2:
 				all_lines_ok = false
+			elif tr(parts[1]) == parts[1]:
+				all_translated = false
+				print("    belum diterjemahkan: ", parts[1])
 	check(all_lines_ok, "semua baris dialog berformat pembicara|KUNCI")
+	check(all_translated, "semua judul, bagian, dan dialog babak punya terjemahan")
+	var chapters_ok := true
+	for n: int in range(1, 11):
+		var expected := 1 if n <= 4 else (2 if n <= 8 else 3)
+		if catalog.get_stage(n).chapter != expected:
+			chapters_ok = false
+	check(chapters_ok, "bagian cerita: 1-4, 5-8, 9-10")
+	var normal_ok := true
+	for n: int in range(1, 5):
+		for spec: EnemySpec in catalog.get_stage(n).enemies:
+			if spec.murka or spec.can_ngamuk:
+				normal_ok = false
+	check(normal_ok, "babak 1-4 tanpa Buto Murka")
+	var murka_ok := true
+	var murka_types := {}
+	for n: int in range(5, 9):
+		var enemies := catalog.get_stage(n).enemies
+		if enemies.size() != 2 or not enemies[0].murka or not enemies[0].can_ngamuk or enemies[1].murka:
+			murka_ok = false
+		murka_types[enemies[0].buto_type] = true
+	check(murka_ok and murka_types.size() == 4, "babak 5-8: satu Buto Murka (empat warna berbeda) dengan satu pendamping biasa")
+	var s9 := catalog.get_stage(9).enemies
+	var starts := {}
+	var types9 := {}
+	var s9_murka := true
+	for spec: EnemySpec in s9:
+		starts[spec.start_amuk] = true
+		types9[spec.buto_type] = true
+		s9_murka = s9_murka and spec.murka and spec.can_ngamuk
+	check(s9.size() == 4 and s9_murka and types9.size() == 4, "babak 9: keempat Buto Murka sekaligus")
+	check(starts.size() == 4, "babak 9: titik Amuk awal berbeda-beda supaya tidak Ngamuk bersamaan")
+	var spread_ok := true
+	var info_panel := Rect2(430, 196, 202, 156)
+	for a: StageData in catalog.stages:
+		if info_panel.grow(16).has_point(a.map_position):
+			spread_ok = false
+		for b: StageData in catalog.stages:
+			if a != b and a.map_position.distance_to(b.map_position) < 60.0:
+				spread_ok = false
+	check(spread_ok, "titik peta tidak bertumpuk dan tidak tertutup panel info")
 
 	print("[Berkah GameState]")
 	var gs := game_state()
@@ -225,6 +274,29 @@ func _run() -> void:
 	(gs.get("deck") as Array).assign(saved_deck)
 	gs.set("max_hp", saved_hp)
 	gs.call("save_game")
+
+	print("[Simpanan lama (5 babak)]")
+	var old_cfg := ConfigFile.new()
+	old_cfg.set_value("progress", "unlocked_stage", 5)
+	old_cfg.set_value("progress", "cleared_stages", [1, 2, 3, 4, 5])
+	old_cfg.set_value("progress", "game_completed", true)
+	old_cfg.set_value("progress", "max_hp", 90)
+	old_cfg.set_value("progress", "seen_buto", ["kuning", "hitam"])
+	old_cfg.save("user://test_save.cfg")
+	gs.call("load_game")
+	var cleared: Array = gs.get("cleared_stages")
+	check(cleared == [1, 2, 3, 4], "babak 1-4 tetap selesai, babak 5 lama (Buto Hitam) dibuka ulang")
+	check(gs.get("unlocked_stage") == 5 and not gs.get("game_completed"), "babak 5 terbuka, status tamat dihapus")
+	check(gs.get("max_hp") == 90 and (gs.get("seen_buto") as Array).has("hitam"), "Nyawa dan Pustaka tetap terbawa")
+	var new_cfg := ConfigFile.new()
+	new_cfg.load("user://test_save.cfg")
+	check(int(new_cfg.get_value("meta", "save_version", 0)) == 2, "simpanan langsung ditulis ulang ke versi 2")
+	gs.call("load_game")
+	check((gs.get("cleared_stages") as Array) == [1, 2, 3, 4] and gs.get("unlocked_stage") == 5, "memuat versi 2 tidak memigrasi lagi")
+	gs.call("complete_stage", 5)
+	gs.call("load_game")
+	check(gs.get("unlocked_stage") == 6, "simpanan versi 2 menyimpan babak di atas 5")
+	gs.call("new_game")
 
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="StageData" format=3]
+
+[ext_resource type="Script" path="res://data/definitions/enemy_spec.gd" id="1_2552q"]
+[ext_resource type="Script" path="res://data/definitions/stage_data.gd" id="2_6agsg"]
+
+[sub_resource type="Resource" id="Resource_j8r6n"]
+script = ExtResource("1_2552q")
+max_hp = 70
+murka = true
+can_ngamuk = true
+
+[sub_resource type="Resource" id="Resource_pulth"]
+script = ExtResource("1_2552q")
+buto_type = 1
+max_hp = 75
+attack_power = 6
+murka = true
+can_ngamuk = true
+start_amuk = 1
+
+[sub_resource type="Resource" id="Resource_p2t5o"]
+script = ExtResource("1_2552q")
+buto_type = 2
+max_hp = 85
+murka = true
+can_ngamuk = true
+start_amuk = 2
+
+[sub_resource type="Resource" id="Resource_lyv7r"]
+script = ExtResource("1_2552q")
+buto_type = 3
+max_hp = 80
+murka = true
+can_ngamuk = true
+start_amuk = -1
+
+[resource]
+script = ExtResource("2_6agsg")
+stage_number = 9
+chapter = 3
+title_key = "STAGE_9_TITLE"
+enemies = Array[ExtResource("1_2552q")]([SubResource("Resource_j8r6n"), SubResource("Resource_pulth"), SubResource("Resource_p2t5o"), SubResource("Resource_lyv7r")])
+map_position = Vector2(392, 140)
+background_tint = Color(1, 0.84, 0.84, 1)
+intro_dialog = PackedStringArray("narator|S9_INTRO_1", "buto_merah|S9_INTRO_2", "buto_kuning|S9_INTRO_3", "eyang|S9_INTRO_4")
+victory_dialog = PackedStringArray("narator|S9_WIN_1", "buto_hitam|S9_WIN_2")
+tutorial_dialog = PackedStringArray()

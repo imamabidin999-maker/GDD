@@ -1,5 +1,5 @@
 extends SceneTree
-## Simulasi keseimbangan: bot memainkan kelima stage berkali-kali dengan
+## Simulasi keseimbangan: bot memainkan kesepuluh babak berkali-kali dengan
 ## aturan battle yang asli (BattleManager tanpa jeda animasi), lalu mencetak
 ## persentase menang, lama battle, dan sisa HP.
 ##
@@ -10,7 +10,8 @@ extends SceneTree
 ##            bersebelahan, langsung memakai Ultimate begitu siap.
 ##
 ## Pemakaian: godot --headless -s tools/simulate_balance.gd [-- runs=200]
-## Untuk mencoba-coba: hpx=1.5 atkx=1.2 mengalikan HP/serangan semua Buto.
+## Untuk mencoba-coba: hpx=1.5 atkx=1.2 mengalikan HP/serangan semua Buto,
+## stages=6,7,9 hanya mensimulasikan babak itu.
 
 const MAX_TURNS := 40
 
@@ -38,7 +39,9 @@ func _run() -> void:
 	for style: String in ["cerdas", "santai"]:
 		print("\n=== Bot %s (%d kali per stage) ===" % [style, runs])
 		print("stage | menang | turn rata2 | sisa HP rata2 (saat menang)")
-		for n: int in range(1, 6):
+		for n: int in range(1, int(_game_state.get("STAGE_COUNT")) + 1):
+			if _arg("stages", "") != "" and not _arg("stages", "").split(",").has(str(n)):
+				continue
 			var stage := catalog.get_stage(n)
 			var wins := 0
 			var turns := 0
@@ -57,7 +60,7 @@ func _run() -> void:
 					wins += 1
 					hp_left += result.z
 				turns += result.y
-			print("  %d   |  %3d%%  |   %5.1f    |   %5.1f" % [n, roundi(100.0 * wins / runs),
+			print("  %2d  |  %3d%%  |   %5.1f    |   %5.1f" % [n, roundi(100.0 * wins / runs),
 				float(turns) / runs, float(hp_left) / maxi(wins, 1)])
 	quit(0)
 
@@ -100,15 +103,10 @@ func _battle(stage: StageData, deck_specs: Array[String], max_hp: int, seed_valu
 		holder.add_child(node)
 	var enemies: Array[EnemyUnit] = []
 	for spec: EnemySpec in stage.enemies:
-		var buto := EnemyButo.new()
-		buto.buto_type = spec.buto_type
+		var buto := spec.create_buto()
 		buto.attack_power = roundi(spec.attack_power * float(_arg("atkx", "1")))
-		buto.skill_cooldown_turns = spec.skill_cooldown_turns
+		buto.health.max_hp = roundi(spec.max_hp * float(_arg("hpx", "1")))
 		buto.rng_seed = seed_value + enemies.size()
-		var h := HealthComponent.new()
-		h.max_hp = roundi(spec.max_hp * float(_arg("hpx", "1")))
-		buto.add_child(h)
-		buto.health = h
 		holder.add_child(buto)
 		enemies.append(buto)
 	root.add_child(holder)
@@ -197,7 +195,12 @@ func _try_ultimate(bm: BattleManager, eager: bool) -> bool:
 		if e.health.current_hp > dmg:
 			lethal = false
 	var danger := bm.hero_health.current_hp <= _incoming_damage(bm) + 5
-	if eager or player.moxie >= PlayerState.MOXIE_MAX or lethal or danger:
+	# Gebrakan membuyarkan amukan: layak dipakai kalau Ngamuk akan sakit.
+	var calm := false
+	for e: EnemyUnit in bm.get_living_enemies():
+		if e.is_ngamuk_ready() and _incoming_damage(bm) >= bm.hero_health.current_hp * 0.3:
+			calm = true
+	if eager or player.moxie >= PlayerState.MOXIE_MAX or lethal or danger or calm:
 		return bm.request_ultimate()
 	return false
 

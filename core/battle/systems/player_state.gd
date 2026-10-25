@@ -219,6 +219,18 @@ func drain_overcharge(amount: float) -> float:
 	return drained
 
 
+## Hisap Greget Buto Kuning Murka: menguras Greget dari level berapa pun.
+## Memakai signal overcharge_drained yang sama supaya tampilannya seragam.
+func drain_moxie(amount: float) -> float:
+	if amount <= 0.0 or moxie <= 0.0:
+		return 0.0
+	var before := moxie
+	moxie = maxf(moxie - amount, 0.0)
+	var drained := before - moxie
+	overcharge_drained.emit(drained)
+	return drained
+
+
 ## Menghabiskan seluruh Moxie untuk Ultimate. Mengembalikan jumlah yang dipakai
 ## (100–200), atau 0 kalau Moxie belum 100%.
 ## Contoh rumus di DamageCalculator nanti:

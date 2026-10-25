@@ -12,7 +12,10 @@ const ENEMY_SLOTS := {
 	1: [Vector2(472, 228)],
 	2: [Vector2(410, 228), Vector2(540, 228)],
 	3: [Vector2(372, 228), Vector2(470, 228), Vector2(568, 228)],
+	4: [Vector2(322, 228), Vector2(406, 228), Vector2(490, 228), Vector2(574, 228)],
 }
+## Empat Buto sekaligus (babak 9) sedikit diperkecil supaya muat.
+const FOUR_SLOT_SCALE := 0.82
 const HIT_DELAY := 0.17
 
 @onready var _battle: BattleManager = $Systems/BattleManager
@@ -89,35 +92,43 @@ func _setup_hero() -> void:
 
 func _setup_enemies() -> void:
 	var specs := _stage.enemies
-	var slots: Array = ENEMY_SLOTS.get(specs.size(), ENEMY_SLOTS[3])
+	var slots: Array = ENEMY_SLOTS.get(specs.size(), ENEMY_SLOTS[4])
+	var layout_scale := FOUR_SLOT_SCALE if specs.size() >= 4 else 1.0
 	for i: int in specs.size():
-		var spec := specs[i]
-		var buto := EnemyButo.new()
-		buto.buto_type = spec.buto_type
-		buto.attack_power = spec.attack_power
-		buto.skill_cooldown_turns = spec.skill_cooldown_turns
-		var health := HealthComponent.new()
-		health.name = "Health"
-		health.max_hp = spec.max_hp
-		buto.add_child(health)
-		buto.health = health
-		buto.name = "Buto%s" % String(EnemyButo.ButoType.keys()[spec.buto_type]).capitalize()
-		buto.display_name = tr("BUTO_" + buto.get_type_key().to_upper())
-		buto.position = slots[i]
-		_enemy_layer.add_child(buto)
+		_create_buto(specs[i], slots[i], layout_scale)
 
-		var key := buto.get_type_key()
-		var idle: Texture2D = load("res://assets/sprites/buto/buto_%s_idle.png" % key)
-		var attacks: Array[Texture2D] = [load("res://assets/sprites/buto/buto_%s_attack.png" % key)]
-		var view := UnitView.new()
-		buto.add_child(view)
-		view.setup(idle, attacks, health, true, spec.sprite_scale)
-		view.clicked.connect(_on_enemy_clicked)
-		view.hover_changed.connect(_on_enemy_hover)
-		_enemy_views[buto] = view
-		_enemies.append(buto)
-		buto.phase_changed.connect(_on_phase_changed.bind(buto))
-		GameState.mark_buto_seen(key)
+
+## Membuat satu Buto lengkap dengan HealthComponent dan UnitView-nya, sesuai
+## EnemySpec. Dipakai di awal battle dan saat Buto Hitam memanggil Bala.
+func _create_buto(spec: EnemySpec, at: Vector2, layout_scale: float = 1.0) -> EnemyButo:
+	var buto := spec.create_buto()
+	var health := buto.health
+	buto.name = "Buto%s%d" % [String(EnemyButo.ButoType.keys()[spec.buto_type]).capitalize(), _enemies.size()]
+	buto.display_name = _buto_name(buto)
+	buto.position = at
+	_enemy_layer.add_child(buto)
+
+	var key := buto.get_type_key()
+	var idle: Texture2D = load("res://assets/sprites/buto/buto_%s_idle.png" % key)
+	var attacks: Array[Texture2D] = [load("res://assets/sprites/buto/buto_%s_attack.png" % key)]
+	var view := UnitView.new()
+	buto.add_child(view)
+	view.setup(idle, attacks, health, true, spec.sprite_scale * layout_scale)
+	view.set_murka(buto.murka)
+	view.clicked.connect(_on_enemy_clicked)
+	view.hover_changed.connect(_on_enemy_hover)
+	_enemy_views[buto] = view
+	_enemies.append(buto)
+	buto.phase_changed.connect(_on_phase_changed.bind(buto))
+	GameState.mark_buto_seen(key)
+	if buto.murka:
+		GameState.mark_buto_seen("murka")
+	return buto
+
+
+func _buto_name(buto: EnemyButo) -> String:
+	var base := tr("BUTO_" + buto.get_type_key().to_upper())
+	return tr("BUTO_MURKA_FMT") % base if buto.murka else base
 
 
 func _stage_title() -> String:
@@ -131,7 +142,7 @@ func _on_settings_changed() -> void:
 	for enemy: EnemyUnit in _enemies:
 		var buto := enemy as EnemyButo
 		if buto != null:
-			buto.display_name = tr("BUTO_" + buto.get_type_key().to_upper())
+			buto.display_name = _buto_name(buto)
 
 
 func _add_fireflies() -> void:
@@ -454,7 +465,7 @@ func _on_hero_hover(_view: UnitView, hovering: bool) -> void:
 func _intent_text(intent: EnemyIntent) -> String:
 	match intent.kind:
 		EnemyIntent.Kind.DRAIN:
-			return tr("INTENT_DRAIN") % [intent.damage, intent.extra]
+			return tr("INTENT_DRAIN_MURKA" if intent.murka else "INTENT_DRAIN") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.LOCK:
 			return tr("INTENT_LOCK") % intent.extra
 		EnemyIntent.Kind.SHUFFLE:

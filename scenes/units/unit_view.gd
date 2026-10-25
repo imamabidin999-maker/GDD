@@ -9,6 +9,7 @@ extends Node2D
 signal clicked(view: UnitView)
 signal hover_changed(view: UnitView, hovering: bool)
 
+const MURKA_AURA := preload("res://assets/shaders/murka_aura.gdshader")
 const SHADER := preload("res://assets/shaders/sprite_fx.gdshader")
 const FEET_Y := 150.0
 const AMUK_FULL := preload("res://assets/ui/amuk_dot.png")
@@ -57,6 +58,10 @@ var _prayitna_icon: TextureRect
 var _marker: Polygon2D
 var _click_area: Control
 var _home := Vector2.ZERO
+var _bar_width: float = BAR_WIDTH
+var _aura: Sprite2D
+var _aura_tween: Tween
+var _embers: CPUParticles2D
 var _bob_tween: Tween
 var _dead: bool = false
 
@@ -81,6 +86,8 @@ func _build() -> void:
 	_material.shader = SHADER
 	_material.set_shader_parameter("outline_color", OUTLINE_NORMAL)
 
+	# Bar nyawa ikut menyempit kalau Buto diperkecil (tata letak 4 Buto).
+	_bar_width = roundf(BAR_WIDTH * clampf(unit_scale, 0.85, 1.0))
 	_sprite = Sprite2D.new()
 	_sprite.texture = _idle_texture
 	_sprite.centered = false
@@ -94,8 +101,8 @@ func _build() -> void:
 	# Bar HP di bawah kaki, angkanya ditulis di atas bar.
 	_bar = ProgressBar.new()
 	_bar.show_percentage = false
-	_bar.size = Vector2(BAR_WIDTH, 8)
-	_bar.position = Vector2(-BAR_WIDTH * 0.5, 3)
+	_bar.size = Vector2(_bar_width, 8)
+	_bar.position = Vector2(-_bar_width * 0.5, 3)
 	_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not is_enemy:
 		var fill := StyleBoxFlat.new()
@@ -105,8 +112,8 @@ func _build() -> void:
 		_bar.add_theme_stylebox_override("fill", fill)
 	add_child(_bar)
 	_bar_label = UIKit.small_label("")
-	_bar_label.size = Vector2(BAR_WIDTH, 8)
-	_bar_label.position = Vector2(-BAR_WIDTH * 0.5, 2)
+	_bar_label.size = Vector2(_bar_width, 8)
+	_bar_label.position = Vector2(-_bar_width * 0.5, 2)
 	_bar_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_bar_label.add_theme_color_override("font_outline_color", Color(0.03, 0.03, 0.06))
 	_bar_label.add_theme_constant_override("outline_size", 2)
@@ -114,7 +121,7 @@ func _build() -> void:
 
 	# Tameng & Racun di kiri bar HP.
 	_status_row = UIKit.hbox(1)
-	_status_row.position = Vector2(-BAR_WIDTH * 0.5 - 36, 1)
+	_status_row.position = Vector2(-_bar_width * 0.5 - 36, 1)
 	_status_row.size = Vector2(34, 12)
 	_status_row.alignment = BoxContainer.ALIGNMENT_END
 	add_child(_status_row)
@@ -378,6 +385,12 @@ func play_death() -> void:
 	if _amuk_pulse != null:
 		_amuk_pulse.kill()
 	_amuk_row.visible = false
+	if _aura_tween != null:
+		_aura_tween.kill()
+	if _aura != null:
+		_aura.visible = false
+	if _embers != null:
+		_embers.emitting = false
 	_click_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if _bob_tween != null:
 		_bob_tween.kill()
@@ -395,6 +408,47 @@ func _set_pose(index: int) -> void:
 		_sprite.texture = _idle_texture
 	else:
 		_sprite.texture = _attack_textures[mini(index, _attack_textures.size() - 1)]
+	if _aura != null:
+		_aura.texture = _sprite.texture
+
+
+## Aura Buto Murka: cahaya merah keunguan yang berdenyut di belakang tubuh
+## dan bara kecil yang naik.
+func set_murka(on: bool) -> void:
+	if not on or _aura != null:
+		return
+	_aura = Sprite2D.new()
+	_aura.texture = _sprite.texture
+	_aura.centered = false
+	_aura.offset = _sprite.offset
+	_aura.flip_h = _sprite.flip_h
+	_aura.scale = _sprite.scale * 1.06
+	_aura.position = Vector2(0, 2)
+	var mat := ShaderMaterial.new()
+	mat.shader = MURKA_AURA
+	_aura.material = mat
+	_aura.modulate = Color(0.95, 0.15, 0.5, 0.55)
+	add_child(_aura)
+	move_child(_aura, _sprite.get_index())
+	_aura_tween = create_tween().set_loops()
+	_aura_tween.tween_property(_aura, "modulate:a", 0.9, 0.7).set_trans(Tween.TRANS_SINE)
+	_aura_tween.tween_property(_aura, "modulate:a", 0.45, 0.7).set_trans(Tween.TRANS_SINE)
+	_embers = CPUParticles2D.new()
+	_embers.amount = 10
+	_embers.lifetime = 1.4
+	_embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_embers.emission_rect_extents = Vector2(40, 30) * unit_scale
+	_embers.position = Vector2(0, -60) * unit_scale
+	_embers.direction = Vector2(0, -1)
+	_embers.spread = 25.0
+	_embers.gravity = Vector2.ZERO
+	_embers.initial_velocity_min = 12.0
+	_embers.initial_velocity_max = 24.0
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(1.0, 0.45, 0.3, 0.9))
+	ramp.set_color(1, Color(0.7, 0.2, 0.8, 0.0))
+	_embers.color_ramp = ramp
+	add_child(_embers)
 
 
 func _set_flash(value: float, color: Color) -> void:

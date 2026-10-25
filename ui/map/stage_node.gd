@@ -2,7 +2,8 @@ class_name StageNode
 extends Control
 ## Satu titik stage di peta: medali bundar berisi topeng Buto penjaganya.
 ## Terkunci = gelap dengan gembok, terbuka = cincin emas berdenyut,
-## selesai = cincin hijau dengan tanda centang.
+## selesai = cincin hijau dengan tanda centang. Babak Buto Murka diberi
+## lingkaran aura merah keunguan.
 
 signal pressed(node: StageNode)
 signal hover_changed(node: StageNode, hovering: bool)
@@ -15,6 +16,7 @@ const COLOR_FILL := Color(0.07, 0.07, 0.13)
 const COLOR_LOCKED := Color(0.36, 0.36, 0.44)
 const COLOR_CLEARED := Color(0.55, 0.86, 0.5)
 const COLOR_BOSS := Color(0.86, 0.3, 0.42)
+const COLOR_MURKA := Color(0.95, 0.2, 0.6)
 
 var stage: StageData
 var state: State = State.LOCKED
@@ -25,6 +27,7 @@ var selected: bool = false:
 
 var _mask: Texture2D
 var _phase: float = 0.0
+var _murka: bool = false
 
 
 func setup(stage_data: StageData, node_state: State) -> void:
@@ -37,6 +40,7 @@ func setup(stage_data: StageData, node_state: State) -> void:
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	if not stage.enemies.is_empty():
 		_mask = load("res://assets/ui/mask_%s.png" % get_buto_key(stage.enemies[0]))
+	_murka = has_murka(stage)
 	mouse_entered.connect(func() -> void:
 		_scale_to(1.12)
 		hover_changed.emit(self, true))
@@ -49,13 +53,20 @@ static func get_buto_key(spec: EnemySpec) -> String:
 	return String(EnemyButo.ButoType.find_key(spec.buto_type)).to_lower()
 
 
+static func has_murka(stage_data: StageData) -> bool:
+	for spec: EnemySpec in stage_data.enemies:
+		if spec.murka:
+			return true
+	return false
+
+
 func _scale_to(value: float) -> void:
 	var t := create_tween()
 	t.tween_property(self, "scale", Vector2.ONE * value, 0.1)
 
 
 func _process(delta: float) -> void:
-	if state == State.OPEN or selected:
+	if state == State.OPEN or selected or (_murka and state != State.LOCKED):
 		_phase += delta
 		queue_redraw()
 
@@ -80,6 +91,11 @@ func _draw() -> void:
 		State.CLEARED:
 			ring = COLOR_CLEARED
 
+	if _murka and state != State.LOCKED:
+		var aura := COLOR_MURKA
+		aura.a = 0.3 + 0.15 * sin(_phase * 3.0)
+		draw_circle(c, RADIUS + 4.0, aura)
+		draw_arc(c, RADIUS + 3.5, 0.0, TAU, 32, Color(COLOR_MURKA, 0.75), 1.0)
 	if selected:
 		var glow := UIKit.COLOR_GOLD
 		glow.a = 0.35 + 0.2 * sin(_phase * 5.0)
@@ -110,11 +126,17 @@ func _draw() -> void:
 		draw_polyline(PackedVector2Array([b + Vector2(-2, 0), b + Vector2(-0.5, 1.5), b + Vector2(2, -1.5)]),
 			Color(0.06, 0.16, 0.08), 1.5)
 
-	# Nomor stage di kiri atas.
+	# Nomor stage di kiri atas. Angka dua digit diberi lencana lonjong.
 	var n := c + Vector2(-RADIUS + 2.0, -RADIUS + 2.0)
-	draw_circle(n, 5.5, ring.darkened(0.45))
-	draw_circle(n, 4.5, COLOR_FILL)
 	var font := UIKit.FONT_SMALL
 	var text := str(stage.stage_number)
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+	var stretch := maxf(0.0, w - 6.0) * 0.5
+	for layer: int in 2:
+		var r := 5.5 - layer
+		var col := ring.darkened(0.45) if layer == 0 else COLOR_FILL
+		draw_circle(n + Vector2(-stretch, 0), r, col)
+		draw_circle(n + Vector2(stretch, 0), r, col)
+		if stretch > 0.0:
+			draw_rect(Rect2(n + Vector2(-stretch, -r), Vector2(stretch * 2.0, r * 2.0)), col)
 	draw_string(font, n + Vector2(-w * 0.5 + 0.5, 3), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ring)
