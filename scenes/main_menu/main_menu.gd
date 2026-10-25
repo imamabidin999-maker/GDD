@@ -74,6 +74,13 @@ func _build_ui() -> void:
 	col.add_child(title)
 	var subtitle := UIKit.label(tr("GAME_SUBTITLE"), &"HeaderLabel", UIKit.COLOR_TEXT)
 	col.add_child(subtitle)
+	# Hadiah 30 Bintang Dongkrek: gelar Juru Dongkrek.
+	if GameState.master_unlocked():
+		var master := UIKit.hbox(3)
+		master.add_child(UIKit.icon(preload("res://assets/ui/mini_star.png")))
+		master.add_child(UIKit.label(tr("MENU_MASTER_TITLE"), &"", UIKit.COLOR_GOLD))
+		master.add_child(UIKit.icon(preload("res://assets/ui/mini_star.png")))
+		col.add_child(master)
 
 	var spacer := Control.new()
 	spacer.custom_minimum_size = Vector2(0, 22)

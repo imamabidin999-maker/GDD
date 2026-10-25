@@ -20,6 +20,8 @@ var targets: Array[EnemyUnit] = []
 var calmed: int = 0
 ## Berapa Buto yang kekuatannya (Ajian) buyar.
 var broken: int = 0
+## Berapa Buto yang sudah siap Ngamuk lalu amukannya buyar.
+var calmed_ready: int = 0
 
 
 func _init(spent_moxie: float, ultimate_base_damage: int) -> void:
@@ -32,6 +34,8 @@ func _apply(battle: BattleManager) -> void:
 	damage_per_target = roundi(base_damage * battle.player.ultimate_damage_multiplier * overcharge_factor)
 	targets = battle.get_living_enemies()
 	for enemy: EnemyUnit in targets:
+		if enemy.is_ngamuk_ready():
+			calmed_ready += 1
 		damage_dealt += enemy.health.take_damage(damage_per_target)
 	calmed = battle.calm_enemies()
 	broken = battle.break_enemy_powers()

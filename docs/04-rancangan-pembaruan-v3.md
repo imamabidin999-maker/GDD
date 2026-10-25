@@ -44,7 +44,7 @@ Setiap babak punya 3 bintang. Bintang pertama didapat dengan menang. Dua lainnya
 | 9 Pelataran Candi | Tidak ada Buto yang sempat Ngamuk | Sisa Nyawa minimal 40% |
 | 10 Candi Pagebluk | Buyarkan Ajian 2 kali | Kalahkan kedua Bala sebelum Buto Hitam |
 
-Bintang tidak harus didapat sekaligus; tiap tantangan dicatat sendiri. Bintang tampil di bawah titik peta, daftar tantangan ada di panel info, dan jumlah totalnya di bar atas peta. Setelah menang muncul panel "Hasil Tantangan".
+Bintang tidak harus didapat sekaligus; tiap tantangan dicatat sendiri. Bintang Dongkrek seperti rekor: tidak hilang saat memulai Petualangan Baru. Bintang tampil di bawah titik peta, daftar tantangan ada di panel info, dan jumlah totalnya di bar atas peta. Setelah menang muncul panel "Hasil Tantangan".
 
 Hadiah Bintang Dongkrek (total 30):
 

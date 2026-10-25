@@ -31,6 +31,20 @@ const CARDS := {
 		"boost": [0.4, 0.6, 0.8], "ap_cost": 0},
 }
 
+# Tantangan bintang ke-2 dan ke-3 setiap babak (lihat core/progress/challenges.gd).
+const STAGE_CHALLENGES := {
+	1: ["turns:4", "hp:80"],
+	2: ["merges:3", "no_ult"],
+	3: ["max_lara:3", "turns:6"],
+	4: ["first:putih", "hp:50"],
+	5: ["calm_ready", "turns:7"],
+	6: ["max_lara:5", "no_ult"],
+	7: ["blocked:60", "hp:50"],
+	8: ["max_sirep:2", "turns:8"],
+	9: ["no_ngamuk", "hp:40"],
+	10: ["ajian:2", "bala_first"],
+}
+
 const RECIPES := [
 	[CardData.CardType.SERANG, CardData.CardType.FOKUS, "crimson"],
 	[CardData.CardType.SERANG, CardData.CardType.TAKTIK, "piercing"],
@@ -223,6 +237,7 @@ func _build_stages() -> void:
 
 	for stage: StageData in stages:
 		stage.chapter = 1 if stage.stage_number <= 4 else (2 if stage.stage_number <= 8 else 3)
+		stage.challenges = PackedStringArray(STAGE_CHALLENGES[stage.stage_number])
 
 	for stage: StageData in stages:
 		var path := "%sstage_%d.tres" % [STAGE_DIR, stage.stage_number]

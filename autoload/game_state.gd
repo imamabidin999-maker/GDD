@@ -43,6 +43,9 @@ var seen_buto: Array[String] = []
 var blessings: Array[String] = []
 ## Babak yang berkah kemenangan pertamanya sudah diterima.
 var blessed_stages: Array[int] = []
+## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
+## Seperti rekor, tidak ikut direset saat petualangan baru.
+var stage_stars: Dictionary = {}
 #endregion
 
 ## Tingkat kesulitan mode cerita. Mengubah Nyawa dan serangan Buto.
@@ -146,7 +149,43 @@ func locked_blessings() -> Array:
 
 ## Kenong masuk undian berkah setelah cukup Bintang Dongkrek.
 func kenong_unlocked() -> bool:
-	return false
+	return total_stars() >= Challenges.KENONG_STARS
+
+
+func reroll_unlocked() -> bool:
+	return total_stars() >= Challenges.REROLL_STARS
+
+
+func ruwatan_blessing_unlocked() -> bool:
+	return total_stars() >= Challenges.RUWATAN_BLESSING_STARS
+
+
+func master_unlocked() -> bool:
+	return total_stars() >= Challenges.MASTER_STARS
+
+
+func stars_of(stage: int) -> int:
+	return int(stage_stars.get(stage, 0))
+
+
+func total_stars() -> int:
+	var total := 0
+	for stage: Variant in stage_stars:
+		total += Challenges.count_bits(int(stage_stars[stage]))
+	return total
+
+
+## Mencatat hasil tantangan. Mengembalikan bintang yang baru didapat
+## (true di posisi bintang yang sebelumnya belum dimiliki).
+func record_stars(stage: int, results: Array[bool]) -> Array[bool]:
+	var before := stars_of(stage)
+	var after := before | Challenges.mask_of(results)
+	stage_stars[stage] = after
+	var fresh: Array[bool] = []
+	for i: int in Challenges.STARS_PER_STAGE:
+		fresh.append(bool(after & (1 << i)) and not bool(before & (1 << i)))
+	save_game()
+	return fresh
 
 
 ## Menerapkan berkah dan mencatat babak asalnya. Mengembalikan daftar kartu
@@ -303,6 +342,10 @@ func save_game() -> void:
 	cfg.set_value("progress", "seen_buto", seen_buto)
 	cfg.set_value("progress", "blessings", blessings)
 	cfg.set_value("progress", "blessed_stages", blessed_stages)
+	var stars_out := {}
+	for stage: Variant in stage_stars:
+		stars_out[str(stage)] = int(stage_stars[stage])
+	cfg.set_value("progress", "stage_stars", stars_out)
 	cfg.set_value("settings", "locale", locale)
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
@@ -333,6 +376,13 @@ func load_game() -> void:
 		if entry is String and Blessings.from_name(entry) >= 0:
 			blessings.append(entry)
 	blessed_stages.assign(cfg.get_value("progress", "blessed_stages", []))
+	stage_stars.clear()
+	var stars_in: Variant = cfg.get_value("progress", "stage_stars", {})
+	if stars_in is Dictionary:
+		for key: Variant in stars_in:
+			var stage := int(str(key))
+			if stage >= 1 and stage <= STAGE_COUNT:
+				stage_stars[stage] = clampi(int(stars_in[key]), 0, (1 << Challenges.STARS_PER_STAGE) - 1)
 	locale = str(cfg.get_value("settings", "locale", "id"))
 	music_volume = float(cfg.get_value("settings", "music_volume", 0.8))
 	sfx_volume = float(cfg.get_value("settings", "sfx_volume", 0.9))

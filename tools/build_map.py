@@ -75,10 +75,10 @@ STAGES = [(28, 152), (74, 130), (128, 152), (178, 126), (140, 96),
 # Kali Watu: turun dari kaki gunung, menyeberangi jalan di Jembatan Pring,
 # lalu mengalir ke timur di atas panel info.
 RIVER = [(76, 40), (79, 52), (84, 63), (100, 74), (130, 80), (165, 86),
-         (200, 91), (240, 91), (322, 87)]
+         (200, 88), (240, 80), (322, 76)]
 PATH_START = (2, 178)
 # Area panel info di kanan bawah (dalam kanvas ini), dibiarkan polos.
-INFO_PANEL = (214, 98, 320, 180)
+INFO_PANEL = (214, 84, 320, 180)
 
 canvas = np.zeros((H, W, 3), dtype=np.float32)
 

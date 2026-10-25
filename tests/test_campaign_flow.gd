@@ -8,6 +8,7 @@ var _failures: int = 0
 var _checks: int = 0
 var _last_reward_already: bool = false
 var _picked_tabuh: int = 0
+var _challenge_panels: int = 0
 
 
 func check(condition: bool, label: String) -> void:
@@ -170,6 +171,12 @@ func _play_stage(n: int) -> bool:
 			await _wait(2.0)
 			await clear_dialogs(40)
 			await _wait(0.6)
+			# Panel Hasil Tantangan muncul lebih dulu.
+			var cp := _find_node("ChallengePanel")
+			if cp != null:
+				_challenge_panels += 1
+				await click_button(tr("BTN_CONTINUE"))
+				await _wait(0.6)
 			if n < _stage_count():
 				var rp: Node = null
 				for c: Node in current_scene.find_children("*", "", true, false):
@@ -210,6 +217,7 @@ func _run() -> void:
 	var gs := root.get_node("GameState")
 	gs.set("save_path", "user://test_save.cfg")
 	gs.call("new_game")
+	(gs.get("stage_stars") as Dictionary).clear()
 	gs.call("set_locale", "id")
 
 	print("[Menu utama -> peta]")
@@ -252,6 +260,7 @@ func _run() -> void:
 	check(_scene_name() == "main_menu", "kembali ke menu utama")
 	check(find_button(tr("MENU_CONTINUE")) != null, "menu utama menampilkan Lanjutkan")
 	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "satu berkah untuk setiap babak 1-9")
+	check(_challenge_panels == _stage_count() and gs.call("total_stars") >= _stage_count(), "Hasil Tantangan setiap babak, minimal satu bintang per babak (%d bintang)" % gs.call("total_stars"))
 	var tabuh_in_deck := 0
 	for spec: String in gs.get("deck"):
 		if Blessings.is_tabuh_spec(spec):

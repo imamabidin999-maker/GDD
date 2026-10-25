@@ -7,6 +7,8 @@ const BG := preload("res://assets/backgrounds/map_mejayan.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const HEART := preload("res://assets/ui/mini_heart.png")
 const DECK := preload("res://assets/ui/mini_deck.png")
+const STAR := preload("res://assets/ui/mini_star.png")
+const STAR_EMPTY := preload("res://assets/ui/mini_star_empty.png")
 const HERO_SCALE := 0.3
 const HERO_OFFSET := Vector2(-24, 10)
 
@@ -79,6 +81,7 @@ func _build_nodes() -> void:
 		elif GameState.is_stage_unlocked(n):
 			state = StageNode.State.OPEN
 		var node := StageNode.new()
+		node.stars = GameState.stars_of(n)
 		node.setup(stage, state)
 		node.pressed.connect(_on_node_pressed)
 		node.hover_changed.connect(_on_node_hover)
@@ -104,6 +107,13 @@ func _build_ui() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(spacer)
+	var stars := UIKit.hbox(1)
+	stars.mouse_filter = Control.MOUSE_FILTER_STOP
+	stars.add_child(UIKit.icon(STAR))
+	stars.add_child(UIKit.label("%d/%d" % [GameState.total_stars(), GameState.STAGE_COUNT * Challenges.STARS_PER_STAGE], &"", UIKit.COLOR_GOLD))
+	stars.mouse_entered.connect(func() -> void: _tooltip.show_text(_stars_tip(), stars.global_position + Vector2(-120, 18)))
+	stars.mouse_exited.connect(_tooltip.hide_tip)
+	row.add_child(stars)
 	row.add_child(UIKit.icon(HEART))
 	row.add_child(UIKit.label(tr("MAP_HP") % GameState.max_hp, &"", UIKit.COLOR_TEXT))
 	if GameState.game_completed:
@@ -121,14 +131,23 @@ func _build_ui() -> void:
 
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"GoldPanel"
-	panel.position = Vector2(430, 196)
-	panel.custom_minimum_size = Vector2(202, 156)
-	panel.size = Vector2(202, 156)
+	panel.position = Vector2(430, 168)
+	panel.custom_minimum_size = Vector2(202, 184)
+	panel.size = Vector2(202, 184)
 	_ui.add_child(panel)
 	_info_col = UIKit.vbox(3)
 	panel.add_child(_info_col)
 	if _selected != null:
 		_fill_info(_selected)
+
+
+func _stars_tip() -> String:
+	var lines: Array[String] = [tr("MAP_STARS_TIP")]
+	var total := GameState.total_stars()
+	for reward: Array in Challenges.rewards():
+		var color := "b8ff8c" if total >= int(reward[0]) else "9aa0b8"
+		lines.append("[color=#%s]%s[/color]" % [color, tr("STAR_REWARD_LINE") % [int(reward[0]), tr(str(reward[1]))]])
+	return "\n".join(lines)
 
 
 func _bar_button(text: String, action: Callable) -> Button:
@@ -174,7 +193,6 @@ func _fill_info(node: StageNode) -> void:
 		grid.add_theme_constant_override("v_separation", 2)
 		list = grid
 	else:
-		_info_col.add_child(UIKit.small_label(tr("MAP_ENEMIES"), UIKit.COLOR_DIM))
 		list = UIKit.vbox(3)
 	_info_col.add_child(list)
 	for spec: EnemySpec in stage.enemies:
@@ -200,12 +218,27 @@ func _fill_info(node: StageNode) -> void:
 		line.add_child(info)
 		list.add_child(line)
 
+	# Tiga bintang babak ini dan tantangannya.
+	var owned := GameState.stars_of(stage.stage_number)
+	var lines := Challenges.describe_stage(stage.challenges)
+	var ch_col := UIKit.vbox(0)
+	for i: int in lines.size():
+		var ch := UIKit.hbox(3)
+		var lit := bool(owned & (1 << i))
+		ch.add_child(UIKit.icon(STAR if lit else STAR_EMPTY))
+		ch.add_child(UIKit.label(lines[i], &"", UIKit.COLOR_TEXT if not lit else UIKit.COLOR_GOLD))
+		ch_col.add_child(ch)
+	_info_col.add_child(ch_col)
+
 	var filler := Control.new()
 	filler.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	filler.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_info_col.add_child(filler)
 	if node.state == StageNode.State.CLEARED:
-		_info_col.add_child(UIKit.small_label(tr("MAP_REPLAY"), UIKit.COLOR_DIM))
+		var replay := UIKit.label(tr("MAP_REPLAY"), &"", UIKit.COLOR_DIM)
+		replay.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		replay.custom_minimum_size = Vector2(186, 0)
+		_info_col.add_child(replay)
 	var fight := UIKit.button(tr("BTN_FIGHT"), 120, true)
 	fight.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	fight.pressed.connect(_start_battle)

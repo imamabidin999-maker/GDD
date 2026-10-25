@@ -531,6 +531,17 @@ def mini_icon(kind: str) -> Image.Image:
     elif kind == "chain":
         d.ellipse([0, 3, 6, 9], outline=(232, 182, 72, 255), width=2)
         d.ellipse([5, 2, 11, 8], outline=(255, 220, 120, 255), width=2)
+    elif kind in ("star", "star_empty"):
+        pts = []
+        for i in range(10):
+            ang = -math.pi / 2 + i * math.pi / 5
+            r = 5.6 if i % 2 == 0 else 2.4
+            pts.append((5.5 + r * math.cos(ang), 6.0 + r * math.sin(ang)))
+        if kind == "star":
+            d.polygon(pts, fill=(255, 210, 90, 255))
+            d.point((5, 4), fill=(255, 245, 200, 255))
+        else:
+            d.polygon(pts, fill=(58, 56, 76, 255))
     elif kind == "all":
         # semua sasaran: tiga titik bidik
         for (x, y) in ((1, 6), (5, 1), (9, 6)):
@@ -641,7 +652,7 @@ def build_icons(eye: Image.Image) -> None:
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",
                  "amuk", "amuk_empty", "prayitna", "plague", "ajian", "summon", "stagger",
-                 "bala_shield", "all", "calm", "boost"):
+                 "bala_shield", "all", "calm", "boost", "star", "star_empty"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
     for kind in ("kendang", "leluhur", "pusaka", "jimat", "kencur"):
         save(blessing_icon(kind), f"ui/bless_{kind}.png")

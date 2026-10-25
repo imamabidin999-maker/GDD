@@ -50,6 +50,7 @@ var _bala_spawned: int = 0
 # Dialog singkat saat Buto Hitam masuk fase 2, diputar begitu pemain bisa beraksi lagi.
 var _phase_dialog_pending: bool = false
 var _hints: HintToast
+var _stats: BattleStats
 # Skala waktu sebelum battle (tes otomatis mempercepatnya). Kecepatan battle
 # dikalikan ke sini dan dikembalikan saat scene ditutup.
 var _base_time_scale: float = 1.0
@@ -98,6 +99,8 @@ func _begin() -> void:
 		GameState.save_game()
 	var deck_list := CardDB.build_deck_list(GameState.deck)
 	GameState.prepare_player(_player)
+	_stats = BattleStats.new()
+	_stats.attach(_battle, _enemies)
 	_battle.start_battle(deck_list, _enemies)
 	for enemy: EnemyUnit in _enemies:
 		var view: UnitView = _enemy_views[enemy]
@@ -118,6 +121,7 @@ func _setup_hero() -> void:
 	_hero_view = UnitView.new()
 	_hero_node.add_child(_hero_view)
 	_hero_view.setup(HERO_IDLE, HERO_ATTACKS, _hero_health, false)
+	_hero_view.set_golden_aura(GameState.master_unlocked())
 	_hero_view.hover_changed.connect(_on_hero_hover)
 
 
@@ -775,6 +779,7 @@ func _victory() -> void:
 	_hud.show_banner(tr("BATTLE_VICTORY"), UIKit.COLOR_GOLD)
 	await get_tree().create_timer(1.6).timeout
 	await _play_dialog(_stage.victory_dialog)
+	await _show_challenges()
 	var first_win := not GameState.is_stage_blessed(_stage.stage_number)
 	GameState.complete_stage(_stage.stage_number)
 	if _stage.stage_number >= GameState.STAGE_COUNT:
@@ -786,6 +791,22 @@ func _victory() -> void:
 	_overlay.add_child(reward)
 	await reward.done
 	SceneRouter.go_to(SceneRouter.STAGE_MAP)
+
+
+# Bintang Dongkrek dari tantangan babak ini.
+func _show_challenges() -> void:
+	var results := Challenges.evaluate(_stage.challenges, _stats)
+	var before := GameState.total_stars()
+	var fresh := GameState.record_stars(_stage.stage_number, results)
+	var panel := ChallengePanel.new()
+	panel.lines = Challenges.describe_stage(_stage.challenges)
+	panel.results = results
+	panel.fresh = fresh
+	panel.owned_mask = GameState.stars_of(_stage.stage_number)
+	panel.total_before = before
+	panel.total_after = GameState.total_stars()
+	_overlay.add_child(panel)
+	await panel.done
 
 
 func _defeat() -> void:

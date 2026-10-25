@@ -31,6 +31,7 @@ var already_received: bool = false
 
 var _col: VBoxContainer
 var _choices: HBoxContainer
+var _reroll: Button
 
 
 func _ready() -> void:
@@ -62,6 +63,25 @@ func _ready() -> void:
 	_col.add_child(hint)
 	_choices = UIKit.hbox(8)
 	_col.add_child(_choices)
+	_fill_choices(options)
+	# Hadiah 16 Bintang Dongkrek: sekali undi ulang di setiap panel berkah.
+	if GameState.reroll_unlocked():
+		_reroll = UIKit.button(tr("REWARD_REROLL"), 120)
+		_reroll.tooltip_text = tr("REWARD_REROLL_TIP")
+		_reroll.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		_reroll.pressed.connect(func() -> void:
+			AudioManager.play_sfx("kentongan")
+			_reroll.queue_free()
+			_reroll = null
+			var again := GameState.roll_blessings(rng)
+			if not again.is_empty():
+				_fill_choices(again))
+		_col.add_child(_reroll)
+
+
+func _fill_choices(options: Array[Blessings.Kind]) -> void:
+	for child: Node in _choices.get_children():
+		child.queue_free()
 	for blessing: Blessings.Kind in options:
 		_choices.add_child(_make_choice(blessing))
 
@@ -146,6 +166,9 @@ func _choose(blessing: Blessings.Kind) -> void:
 	var upgraded := GameState.apply_blessing(blessing, stage_number)
 	for child: Node in _choices.get_children():
 		child.queue_free()
+	if _reroll != null:
+		_reroll.queue_free()
+		_reroll = null
 	var msg := tr("REWARD_DONE")
 	if Blessings.TABUH_FAMILY.has(blessing):
 		msg += "\n" + await _place_tabuh(Blessings.TABUH_FAMILY[blessing])

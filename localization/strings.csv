@@ -289,7 +289,7 @@ SKILL_PUTIH,Sirep,Sirep
 SKILL_HITAM,Ajian Lebur Saketi,Ajian Lebur Saketi
 MAP_BOSS,Pertarungan Bos,Boss Fight
 MAP_MENU,Menu,Menu
-MAP_REPLAY,Berkah babak ini sudah diterima. Babak boleh diulang untuk berlatih.,Blessing already received. You can replay it for practice.
+MAP_REPLAY,Berkah sudah diterima. Ulangi untuk mengejar bintang.,Blessing received. Replay to chase the stars.
 MAP_LOCKED_HINT,Menangkan babak sebelumnya dulu.,Clear the previous act first.
 DECK_TITLE,Jurus Eyang Palang,Eyang Palang's Deck
 DECK_HINT,15 kartu. Berkah Roro Ayu menaikkan bintang kartu.,15 cards. Roro Ayu's blessings raise card ranks.
@@ -480,3 +480,30 @@ HINT_TABUH_TITLE,Jurus Tabuh,Tabuh Cards
 HINT_TABUH,Kartu Tabuh punya efek khusus dan tidak bisa digabung. Arahkan kursor ke kartu untuk melihat efeknya.,Tabuh cards have special effects and can't be merged. Hover over a card to see what it does.
 BATTLE_CALMED_ONE,Amuk buyar!,Rage broken!
 BATTLE_KENONG,Kenong +%d%%,Kenong +%d%%
+CH_WIN,Menangkan babak,Win the act
+CH_TURNS,Menang paling lama %d giliran,Win within %d turns
+CH_HP,Sisa Nyawa minimal %d%%,Finish with at least %d%% HP
+CH_MERGES,Gabung kartu minimal %d kali,Merge cards at least %d times
+CH_NO_ULT,Menang tanpa Gebrakan Dongkrek,Win without Gebrakan Dongkrek
+CH_MAX_LARA,Lara tidak pernah lebih dari %d,Never have more than %d Lara
+CH_FIRST,Kalahkan %s lebih dulu,Defeat %s first
+CH_CALM_READY,Buyarkan amukan Buto yang siap Ngamuk,Break the rage of a Buto about to go Ngamuk
+CH_BLOCKED,Tameng menahan total %d damage,Block a total of %d damage
+CH_MAX_SIREP,Paling banyak %d kartu tersirep,No more than %d cards hit by Sirep
+CH_NO_NGAMUK,Tidak ada Buto yang sempat Ngamuk,Don't let any Buto go Ngamuk
+CH_AJIAN,Buyarkan Ajian %d kali,Break the Ajian %d times
+CH_BALA_FIRST,Kalahkan kedua Bala sebelum Buto Hitam,Defeat both Bala before Buto Hitam
+CHALLENGE_TITLE,Hasil Tantangan,Challenge Results
+CHALLENGE_NEW,baru!,new!
+CHALLENGE_TOTAL,Bintang Dongkrek: %d/%d,Dongkrek Stars: %d/%d
+CHALLENGE_UNLOCKED,Hadiah baru: %s,New reward: %s
+MAP_CHALLENGES,Tantangan:,Challenges:
+MAP_STARS_TIP,Bintang Dongkrek dari tantangan babak. Hadiahnya:,Dongkrek Stars from act challenges. Rewards:
+STAR_REWARD_KENONG,Kenong masuk ke pilihan berkah,Kenong joins the blessing choices
+STAR_REWARD_REROLL,"Tombol ""Pilihan lain"" di panel berkah","A ""Reroll"" button on the blessing panel"
+STAR_REWARD_RUWATAN,Ruwatan dimulai dengan satu berkah acak,Ruwatan starts with one random blessing
+STAR_REWARD_MASTER,Gelar Juru Dongkrek dan aura emas Eyang Palang,The Juru Dongkrek title and Eyang Palang's golden aura
+STAR_REWARD_LINE,%d bintang: %s,%d stars: %s
+REWARD_REROLL,Pilihan lain,Reroll
+REWARD_REROLL_TIP,Undi ulang tiga pilihan berkah (sekali).,Reroll the three blessing choices (once).
+MENU_MASTER_TITLE,Juru Dongkrek,Juru Dongkrek

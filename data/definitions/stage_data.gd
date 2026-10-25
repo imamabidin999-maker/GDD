@@ -22,3 +22,5 @@ extends Resource
 @export var victory_dialog: PackedStringArray = []
 ## Tips yang muncul di awal battle (dipakai di stage pertama sebagai tutorial).
 @export var tutorial_dialog: PackedStringArray = []
+## Dua tantangan untuk bintang ke-2 dan ke-3 (lihat Challenges).
+@export var challenges: PackedStringArray = []

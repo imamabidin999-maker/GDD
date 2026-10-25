@@ -28,6 +28,8 @@ var selected: bool = false:
 var _mask: Texture2D
 var _phase: float = 0.0
 var _murka: bool = false
+## Bintang Dongkrek babak ini (bitmask 3 bintang).
+var stars: int = 0
 
 
 func setup(stage_data: StageData, node_state: State) -> void:
@@ -126,6 +128,14 @@ func _draw() -> void:
 		draw_polyline(PackedVector2Array([b + Vector2(-2, 0), b + Vector2(-0.5, 1.5), b + Vector2(2, -1.5)]),
 			Color(0.06, 0.16, 0.08), 1.5)
 
+	# Tiga Bintang Dongkrek di bawah medali.
+	if state != State.LOCKED or stars != 0:
+		for i: int in Challenges.STARS_PER_STAGE:
+			var sc := c + Vector2((i - 1) * 8.0, RADIUS + 5.0)
+			var lit := bool(stars & (1 << i))
+			_draw_star(sc, 3.6, Color(0.05, 0.05, 0.1))
+			_draw_star(sc, 2.8, UIKit.COLOR_GOLD if lit else Color(0.25, 0.25, 0.32))
+
 	# Nomor stage di kiri atas. Angka dua digit diberi lencana lonjong.
 	var n := c + Vector2(-RADIUS + 2.0, -RADIUS + 2.0)
 	var font := UIKit.FONT_SMALL
@@ -140,3 +150,12 @@ func _draw() -> void:
 		if stretch > 0.0:
 			draw_rect(Rect2(n + Vector2(-stretch, -r), Vector2(stretch * 2.0, r * 2.0)), col)
 	draw_string(font, n + Vector2(-w * 0.5 + 0.5, 3), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ring)
+
+
+func _draw_star(center: Vector2, radius: float, color: Color) -> void:
+	var pts := PackedVector2Array()
+	for i: int in 10:
+		var r := radius if i % 2 == 0 else radius * 0.45
+		var ang := -PI / 2.0 + i * PI / 5.0
+		pts.append(center + Vector2(cos(ang), sin(ang)) * r)
+	draw_colored_polygon(pts, color)

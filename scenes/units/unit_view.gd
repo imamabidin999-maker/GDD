@@ -532,22 +532,7 @@ func _set_pose(index: int) -> void:
 func set_murka(on: bool) -> void:
 	if not on or _aura != null:
 		return
-	_aura = Sprite2D.new()
-	_aura.texture = _sprite.texture
-	_aura.centered = false
-	_aura.offset = _sprite.offset
-	_aura.flip_h = _sprite.flip_h
-	_aura.scale = _sprite.scale * 1.06
-	_aura.position = Vector2(0, 2)
-	var mat := ShaderMaterial.new()
-	mat.shader = MURKA_AURA
-	_aura.material = mat
-	_aura.modulate = Color(0.95, 0.15, 0.5, 0.55)
-	add_child(_aura)
-	move_child(_aura, _sprite.get_index())
-	_aura_tween = create_tween().set_loops()
-	_aura_tween.tween_property(_aura, "modulate:a", 0.9, 0.7).set_trans(Tween.TRANS_SINE)
-	_aura_tween.tween_property(_aura, "modulate:a", 0.45, 0.7).set_trans(Tween.TRANS_SINE)
+	_make_aura(Color(0.95, 0.15, 0.5, 0.55), 0.45, 0.9)
 	_embers = CPUParticles2D.new()
 	_embers.amount = 10
 	_embers.lifetime = 1.4
@@ -564,6 +549,32 @@ func set_murka(on: bool) -> void:
 	ramp.set_color(1, Color(0.7, 0.2, 0.8, 0.0))
 	_embers.color_ramp = ramp
 	add_child(_embers)
+
+
+## Aura emas Eyang Palang (hadiah 30 Bintang Dongkrek).
+func set_golden_aura(on: bool) -> void:
+	if on and _aura == null:
+		_make_aura(Color(1.0, 0.78, 0.3, 0.4), 0.3, 0.6)
+
+
+# Siluet bercahaya di belakang sprite yang berdenyut antara dua tingkat alpha.
+func _make_aura(color: Color, alpha_low: float, alpha_high: float) -> void:
+	_aura = Sprite2D.new()
+	_aura.texture = _sprite.texture
+	_aura.centered = false
+	_aura.offset = _sprite.offset
+	_aura.flip_h = _sprite.flip_h
+	_aura.scale = _sprite.scale * 1.06
+	_aura.position = Vector2(0, 2)
+	var mat := ShaderMaterial.new()
+	mat.shader = MURKA_AURA
+	_aura.material = mat
+	_aura.modulate = color
+	add_child(_aura)
+	move_child(_aura, _sprite.get_index())
+	_aura_tween = create_tween().set_loops()
+	_aura_tween.tween_property(_aura, "modulate:a", alpha_high, 0.7).set_trans(Tween.TRANS_SINE)
+	_aura_tween.tween_property(_aura, "modulate:a", alpha_low, 0.7).set_trans(Tween.TRANS_SINE)
 
 
 func _set_flash(value: float, color: Color) -> void:
