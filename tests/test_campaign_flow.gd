@@ -9,6 +9,7 @@ var _checks: int = 0
 var _last_reward_already: bool = false
 var _picked_tabuh: int = 0
 var _challenge_panels: int = 0
+var _events_seen: int = 0
 
 
 func check(condition: bool, label: String) -> void:
@@ -143,6 +144,17 @@ func _find_node(class_title: String) -> Node:
 	return null
 
 
+## Menunggu sampai node berkelas ini muncul (paling lama `seconds`).
+func _wait_for_node(class_title: String, seconds: float) -> Node:
+	var limit := Time.get_ticks_msec() + int(seconds * 1000.0)
+	while Time.get_ticks_msec() < limit:
+		var n := _find_node(class_title)
+		if n != null:
+			return n
+		await process_frame
+	return null
+
+
 func _stage_count() -> int:
 	return int(root.get_node("GameState").get("STAGE_COUNT"))
 
@@ -151,7 +163,32 @@ func _scene_name() -> String:
 	return current_scene.scene_file_path.get_file().get_basename() if current_scene != null else ""
 
 
+# Kejadian di perjalanan di peta: pilih pilihan pertama, pakai pemilih kartu
+# kalau muncul, lalu Lanjut.
+func _handle_event() -> void:
+	var ev := _find_node("EventPanel")
+	if ev == null:
+		return
+	_events_seen += 1
+	var buttons := ev.find_children("*", "Button", true, false)
+	await click((buttons[0] as Button).get_global_rect().get_center())
+	await _wait(0.4)
+	var picker := _find_node("DeckPicker")
+	if picker != null:
+		for n: Node in picker.find_children("*", "Control", true, false):
+			if _is_class(n, "CardView") and n.get("card").data.rank < 3:
+				await click((n as Control).get_global_rect().get_center())
+				break
+		await _wait(0.2)
+		var replace_mode: bool = picker.get("mode") == 0
+		await click_button(tr("PICKER_CONFIRM_REPLACE" if replace_mode else "PICKER_CONFIRM_UPGRADE"))
+		await _wait(0.4)
+	await click_button(tr("BTN_CONTINUE"))
+	await _wait(0.6)
+
+
 func _play_stage(n: int) -> bool:
+	await _handle_event()
 	# Di peta: klik titik stage lalu tombol Bertarung.
 	var catalog := StageCatalog.load_default()
 	await click(catalog.get_stage(n).map_position)
@@ -226,6 +263,7 @@ func _run() -> void:
 	check(await click_button(tr("MENU_NEW")), "tombol Petualangan Baru bisa diklik")
 	await _wait(1.2)
 	check(_scene_name() == "stage_map", "masuk ke peta")
+	await _wait_for_node("DialogBox", 5.0)
 	await clear_dialogs()
 	check(gs.get("prologue_seen") == true, "prolog selesai dengan klik")
 	# Bot di sini sengaja sederhana; yang dites alurnya, bukan keseimbangannya
@@ -261,12 +299,14 @@ func _run() -> void:
 	check(find_button(tr("MENU_CONTINUE")) != null, "menu utama menampilkan Lanjutkan")
 	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "satu berkah untuk setiap babak 1-9")
 	check(_challenge_panels == _stage_count() and gs.call("total_stars") >= _stage_count(), "Hasil Tantangan setiap babak, minimal satu bintang per babak (%d bintang)" % gs.call("total_stars"))
+	check(_events_seen == gs.get("EVENT_STAGES").size() and gs.get("pending_event") == "", "empat kejadian di perjalanan muncul dan selesai")
 	var tabuh_in_deck := 0
 	for spec: String in gs.get("deck"):
 		if Blessings.is_tabuh_spec(spec):
 			tabuh_in_deck += 1
 	print("  berkah kartu Tabuh dipilih %d kali" % _picked_tabuh)
-	check(tabuh_in_deck == _picked_tabuh and (gs.get("deck") as Array).size() == 15, "kartu Tabuh masuk ke Jurus lewat pemilih kartu, deck tetap 15")
+	# Kejadian di perjalanan juga bisa memberi kartu Tabuh.
+	check(tabuh_in_deck >= _picked_tabuh and (gs.get("deck") as Array).size() == 15, "kartu Tabuh masuk ke Jurus lewat pemilih kartu, deck tetap 15")
 
 	print("[Mengulang babak 1]")
 	await click_button(tr("MENU_CONTINUE"))

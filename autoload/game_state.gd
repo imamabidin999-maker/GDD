@@ -43,6 +43,10 @@ var seen_buto: Array[String] = []
 var blessings: Array[String] = []
 ## Babak yang berkah kemenangan pertamanya sudah diterima.
 var blessed_stages: Array[int] = []
+## Kejadian di perjalanan yang menunggu di peta ("" kalau tidak ada).
+var pending_event: String = ""
+## Kejadian yang sudah dialami di petualangan ini (tidak diulang).
+var seen_events: Array[String] = []
 ## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
 ## Seperti rekor, tidak ikut direset saat petualangan baru.
 var stage_stars: Dictionary = {}
@@ -101,6 +105,8 @@ func new_game() -> void:
 	seen_buto.clear()
 	blessings.clear()
 	blessed_stages.clear()
+	pending_event = ""
+	seen_events.clear()
 	save_game()
 	progress_changed.emit()
 
@@ -240,6 +246,68 @@ func upgrade_card(index: int) -> String:
 	return result
 
 
+## Menurunkan satu kartu (paling rendah bintang 1). Mengembalikan spec barunya.
+func downgrade_card(index: int) -> String:
+	if index < 0 or index >= deck.size():
+		return ""
+	var rank := int(deck[index].get_slice(":", 1))
+	if rank > 1:
+		deck[index] = "%s:%d" % [deck[index].get_slice(":", 0), rank - 1]
+		save_game()
+	return deck[index]
+
+
+#region Profil pemain
+# Antarmuka yang sama dengan RuwatanRun, supaya panel berkah, kejadian, dan
+# pemilih kartu bisa dipakai di mode cerita maupun Ruwatan.
+
+func get_deck() -> Array[String]:
+	return deck
+
+
+func get_blessings() -> Array[String]:
+	return blessings
+
+
+func get_max_hp() -> int:
+	return max_hp
+
+
+## Menambah (atau mengurangi) Nyawa maksimal. Paling rendah 30.
+func change_max_hp(delta: int) -> int:
+	max_hp = maxi(30, max_hp + delta)
+	save_game()
+	return max_hp
+
+#endregion
+
+
+#region Kejadian di perjalanan
+
+## Babak yang kemenangan pertamanya disusul kejadian di perjalanan.
+const EVENT_STAGES: Array[int] = [2, 4, 6, 8]
+
+
+## Dipanggil setelah berkah kemenangan pertama. Memilih kejadian acak yang
+## belum pernah dialami untuk ditampilkan di peta.
+func queue_event_after(stage: int, rng: RandomNumberGenerator) -> String:
+	if not EVENT_STAGES.has(stage) or pending_event != "":
+		return ""
+	var id := JourneyEvents.pick(rng, seen_events)
+	if id != "":
+		pending_event = id
+		seen_events.append(id)
+		save_game()
+	return id
+
+
+func finish_event() -> void:
+	pending_event = ""
+	save_game()
+
+#endregion
+
+
 ## Efek berkah untuk battle yang akan dimulai.
 func prepare_player(player: PlayerState) -> void:
 	Blessings.prepare_player(player, blessings)
@@ -349,6 +417,8 @@ func save_game() -> void:
 	cfg.set_value("progress", "seen_buto", seen_buto)
 	cfg.set_value("progress", "blessings", blessings)
 	cfg.set_value("progress", "blessed_stages", blessed_stages)
+	cfg.set_value("progress", "pending_event", pending_event)
+	cfg.set_value("progress", "seen_events", seen_events)
 	var stars_out := {}
 	for stage: Variant in stage_stars:
 		stars_out[str(stage)] = int(stage_stars[stage])
@@ -384,6 +454,10 @@ func load_game() -> void:
 		if entry is String and Blessings.from_name(entry) >= 0:
 			blessings.append(entry)
 	blessed_stages.assign(cfg.get_value("progress", "blessed_stages", []))
+	pending_event = str(cfg.get_value("progress", "pending_event", ""))
+	if not JourneyEvents.exists(pending_event):
+		pending_event = ""
+	seen_events.assign(cfg.get_value("progress", "seen_events", []))
 	stage_stars.clear()
 	var stars_in: Variant = cfg.get_value("progress", "stage_stars", {})
 	if stars_in is Dictionary:

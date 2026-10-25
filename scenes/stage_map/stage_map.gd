@@ -61,6 +61,8 @@ func _ready() -> void:
 	AudioManager.play_music("map")
 	if not GameState.prologue_seen:
 		_play_prologue.call_deferred()
+	elif GameState.pending_event != "":
+		_play_event.call_deferred()
 
 
 func _default_stage() -> int:
@@ -292,7 +294,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _overlay.get_child_count() > 0:
 		# Esc menutup overlay paling atas (kecuali dialog cerita).
 		var top := _overlay.get_child(-1)
-		if event.is_action_pressed("pause") and not (top is DialogBox):
+		if event.is_action_pressed("pause") and not (top is DialogBox or top is EventPanel or top is DeckPicker):
 			_tooltip.hide_tip()
 			top.queue_free()
 			get_viewport().set_input_as_handled()
@@ -320,6 +322,15 @@ func _play_prologue() -> void:
 	await box.play(_catalog.prologue_dialog)
 	GameState.prologue_seen = true
 	GameState.save_game()
+
+
+func _play_event() -> void:
+	var panel := EventPanel.new()
+	panel.event_id = GameState.pending_event
+	_overlay.add_child(panel)
+	await panel.done
+	GameState.finish_event()
+	_build_ui()
 
 
 func _open_deck() -> void:

@@ -802,6 +802,11 @@ func _victory() -> void:
 	reward.already_received = not first_win
 	_overlay.add_child(reward)
 	await reward.done
+	if first_win:
+		# Kejadian di perjalanan menunggu di peta (babak 2, 4, 6, 8).
+		var rng := RandomNumberGenerator.new()
+		rng.randomize()
+		GameState.queue_event_after(_stage.stage_number, rng)
 	SceneRouter.go_to(SceneRouter.STAGE_MAP)
 
 

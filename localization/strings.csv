@@ -514,3 +514,56 @@ RHYTHM_PERFECT,Tepat!,Perfect!
 RHYTHM_GOOD,Cukup,Good
 RHYTHM_MISS,Meleset,Miss
 RHYTHM_RESULT,Irama +%d%%,Rhythm +%d%%
+EVENT_HEADER,Kejadian di Perjalanan,On the Road
+EV_RESULT_HP,Nyawa maksimal %d jadi %d,Max HP went from %d to %d
+EV_RESULT_UPGRADE,%s naik menjadi %s,%s upgraded to %s
+EV_RESULT_DOWNGRADE,%s turun menjadi %s,%s dropped to %s
+EV_RESULT_BLESSING,Berkah baru: %s,New blessing: %s
+EV_WARGA_SAKIT_TITLE,Warga Kena Pagebluk,A Villager Struck by the Plague
+EV_WARGA_SAKIT_TEXT,Di tepi jalan seorang warga terbaring lemas. Napasnya berat dan badannya panas. Di sampingnya tergeletak sebuah kentongan.,"A villager lies weak by the roadside, breathing hard and burning with fever. A kentongan rests beside them."
+EV_WARGA_SAKIT_A,"Rawat dia (Nyawa maks -5, dapat Kentongan Titir)","Tend to them (Max HP -5, gain Kentongan Titir)"
+EV_WARGA_SAKIT_B,"Doakan, lalu lanjutkan perjalanan",Say a prayer and move on
+EV_WARGA_SAKIT_A_RESULT,"Eyang merawatnya sampai demamnya turun. Sebagai tanda terima kasih, warga itu memberikan kentongannya.","Eyang tends to them until the fever breaks. In thanks, the villager hands over the kentongan."
+EV_WARGA_SAKIT_B_RESULT,Eyang mendoakannya dan berjanji mengusir pagebluk secepatnya.,Eyang says a prayer and promises to drive the plague away soon.
+EV_PANDE_TITLE,Pande Gamelan,The Gamelan Smith
+EV_PANDE_TEXT,"Bunyi palu berdentang dari sebuah gubuk. Seorang pande gamelan menawarkan bantuan: menempa jurusmu, atau membuatkan gong baru.","Hammer blows ring out from a hut. A gamelan smith offers to help: reforge one of your moves, or forge you a new gong."
+EV_PANDE_A,"Tempa satu jurus (pilih kartu, +1 bintang)","Reforge a move (choose a card, +1 rank)"
+EV_PANDE_B,Minta dibuatkan Gong,Ask for a Gong
+EV_PANDE_A_RESULT,Bara menyala dan palu berdentang. Jurusmu terasa lebih mantap.,The coals glow and the hammer rings. Your move feels sharper.
+EV_PANDE_B_RESULT,Pande itu menyerahkan gong yang masih hangat dari tempaan.,The smith hands you a gong still warm from the forge.
+EV_MBOK_JAMU_TITLE,Mbok Jamu Gendong,The Jamu Seller
+EV_MBOK_JAMU_TEXT,"Seorang mbok jamu gendong lewat membawa bakulnya. ""Mampir dulu, Eyang. Jamunya masih hangat.""","A jamu seller walks by with her basket. ""Stop for a while, Eyang. The jamu is still warm."""
+EV_MBOK_JAMU_A,Minum kunyit asam (Nyawa maks +5),Drink kunyit asam (Max HP +5)
+EV_MBOK_JAMU_B,Bawa bekal beras kencur,Take some beras kencur for the road
+EV_MBOK_JAMU_A_RESULT,Hangatnya kunyit asam membuat badan lebih segar.,The warm kunyit asam leaves you refreshed.
+EV_MBOK_JAMU_B_RESULT,Mbok jamu membungkuskan sebotol beras kencur.,The seller wraps up a bottle of beras kencur for you.
+EV_LATIHAN_TITLE,Latihan bersama Roro Ayu,Training with Roro Ayu
+EV_LATIHAN_TEXT,"Roro Ayu mengajak Eyang berlatih sebentar di halaman. ""Mau mengulang jurus lama, atau belajar menabuh korek?""","Roro Ayu invites Eyang to train in the yard. ""Shall we polish an old move, or learn to play the korek?"""
+EV_LATIHAN_A,Ulang jurus lama (kartu acak +1 bintang),Polish an old move (random card +1 rank)
+EV_LATIHAN_B,Belajar menabuh Korek,Learn the Korek
+EV_LATIHAN_A_RESULT,Gerakan lama terasa lebih luwes setelah diulang berkali-kali.,"After many repetitions, the old move flows more smoothly."
+EV_LATIHAN_B_RESULT,"""Krek! Krek!"" Bunyinya tajam. Roro Ayu tertawa puas.","""Krek! Krek!"" The sound is sharp. Roro Ayu laughs, pleased."
+EV_SESAJEN_TITLE,Sesajen di Bawah Beringin,Offerings Under the Banyan
+EV_SESAJEN_TEXT,Di bawah pohon beringin tua ada sesajen dan sisa kemenyan. Udaranya terasa tenang.,Beneath an old banyan tree lie offerings and leftover incense. The air feels calm.
+EV_SESAJEN_A,Berdoa sejenak (kartu acak +1 bintang),Pray for a moment (random card +1 rank)
+EV_SESAJEN_B,Bakar kemenyan untuk leluhur,Burn incense for the ancestors
+EV_SESAJEN_A_RESULT,Hati menjadi tenang dan pikiran jernih.,Your heart settles and your mind clears.
+EV_SESAJEN_B_RESULT,Asap kemenyan naik pelan. Semangat para leluhur seakan ikut berjalan bersama Eyang.,The incense smoke rises slowly. The spirit of the ancestors seems to walk with Eyang.
+EV_PERONDA_TITLE,Peronda Desa,The Village Night Watch
+EV_PERONDA_TEXT,"Para peronda berjaga di pos ronda. Mereka menawarkan bedug kecilnya, atau mengajak Eyang ikut ronda semalam.","The night watch keeps guard at their post. They offer their small bedug, or invite Eyang to join the watch tonight."
+EV_PERONDA_A,Pinjam bedugnya,Borrow their bedug
+EV_PERONDA_B,"Ikut ronda (Nyawa maks +8, kartu acak -1 bintang)","Join the watch (Max HP +8, random card -1 rank)"
+EV_PERONDA_A_RESULT,"""Bawa saja, Eyang. Pukul keras-keras di depan Buto.""","""Take it, Eyang. Beat it loud in front of the Buto."""
+EV_PERONDA_B_RESULT,"Semalaman berjaga membuat badan kuat, tapi ada jurus yang sedikit terlupa.","A night on watch toughens the body, but one move slips a little from memory."
+EV_BUTO_KECIL_TITLE,Buto Kecil Tersesat,A Lost Little Buto
+EV_BUTO_KECIL_TEXT,Seekor Buto kecil menangis di semak-semak. Ia terpisah dari kawanannya dan ketakutan melihat Eyang.,A little Buto cries in the bushes. It has lost its pack and is frightened of Eyang.
+EV_BUTO_KECIL_A,Usir dengan bunyi Dongkrek (kartu Tabuh acak +1 bintang),Scare it off with Dongkrek (random Tabuh card +1 rank)
+EV_BUTO_KECIL_B,Tunjukkan jalan pulang (Nyawa maks +8),Show it the way home (Max HP +8)
+EV_BUTO_KECIL_A_RESULT,Buto kecil itu lari terbirit-birit. Tabuhanmu makin mantap.,The little Buto runs off in a hurry. Your drumming grows steadier.
+EV_BUTO_KECIL_B_RESULT,"Buto kecil itu mengikuti Eyang sampai tepi hutan, lalu menghilang. Hati Eyang terasa ringan.","The little Buto follows Eyang to the edge of the forest, then disappears. Eyang's heart feels light."
+EV_PENGAMEN_TITLE,Pengamen Kenong,The Kenong Busker
+EV_PENGAMEN_TEXT,Seorang pengamen memainkan kenong di simpang jalan. Iramanya enak didengar.,A busker plays a kenong at the crossroads. The rhythm is pleasant to hear.
+EV_PENGAMEN_A,Beli kenongnya (Nyawa maks -5),Buy the kenong (Max HP -5)
+EV_PENGAMEN_B,Dengarkan sebentar (Nyawa maks +3),Listen for a while (Max HP +3)
+EV_PENGAMEN_A_RESULT,Pengamen itu menyerahkan kenongnya dengan senyum lebar.,The busker hands over the kenong with a wide smile.
+EV_PENGAMEN_B_RESULT,Iramanya menenangkan hati sebelum pertempuran berikutnya.,The rhythm calms you before the next battle.
