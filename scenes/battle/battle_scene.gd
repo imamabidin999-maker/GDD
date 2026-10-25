@@ -268,7 +268,7 @@ func _present_card(action: PlayCardAction) -> void:
 	if action.moxie_gained > 0.0:
 		_float_text("+%d%%" % roundi(action.moxie_gained), _hud.get_moxie_point() + Vector2(0, -6), UIKit.COLOR_BLUE)
 	if action.ap_gained > 0:
-		_float_text("+%d AP" % action.ap_gained, _hud.get_ap_point() + Vector2(0, -6), UIKit.COLOR_GOLD)
+		_float_text(tr("EFFECT_AP") % action.ap_gained, _hud.get_ap_point() + Vector2(0, -6), UIKit.COLOR_GOLD)
 
 
 func _present_ultimate(action: UltimateAction) -> void:

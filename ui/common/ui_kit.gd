@@ -14,7 +14,8 @@ const COLOR_PURPLE := Color(0.8, 0.5, 0.95)
 const TEXT_LARGE := 16
 
 const FONT_SMALL := preload("res://assets/fonts/Silkscreen-Regular.ttf")
-const FONT_BOLD := preload("res://assets/fonts/Tiny5-Regular.ttf")
+## Huruf utama game (Tiny5). Ukuran tajamnya kelipatan 8.
+const FONT_MAIN := preload("res://assets/fonts/Tiny5-Regular.ttf")
 
 
 static func label(text: String, variation: StringName = &"", color: Color = Color(0, 0, 0, 0)) -> Label:

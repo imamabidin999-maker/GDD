@@ -136,7 +136,7 @@ func _build_bottom_panel() -> void:
 	left.size = Vector2(80, 96)
 	add_child(left)
 
-	var ap_title := UIKit.small_label("AP", UIKit.COLOR_GOLD)
+	var ap_title := UIKit.small_label("HUD_AP", UIKit.COLOR_GOLD)
 	left.add_child(ap_title)
 	_ap_row = UIKit.hbox(1)
 	left.add_child(_ap_row)
@@ -144,7 +144,7 @@ func _build_bottom_panel() -> void:
 	_hover_tip(_ap_row, func() -> String: return tr("BATTLE_AP_TIP"))
 	_ap_row.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	left.add_child(UIKit.small_label("MOXIE", UIKit.COLOR_BLUE))
+	left.add_child(UIKit.small_label("HUD_MOXIE", UIKit.COLOR_BLUE))
 	var moxie_holder := Control.new()
 	moxie_holder.custom_minimum_size = Vector2(76, 10)
 	moxie_holder.mouse_filter = Control.MOUSE_FILTER_PASS

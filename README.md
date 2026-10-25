@@ -2,7 +2,7 @@
 
 Game RPG turn-based bergaya pixel art yang terinspirasi dari kesenian **Dongkrek** dari Mejayan, Madiun. Kamu bermain sebagai Eyang Palang, sesepuh desa yang mengusir para Buto pembawa pagebluk. Senjatanya tongkat dan bunyi bedug serta korek.
 
-Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: deck 15 kartu, AP terbatas, kartu yang bisa digabung jadi kartu hybrid, dan jurus pamungkas yang bisa diisi sampai 200%.
+Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Gebrakan Dongkrek yang bisa diisi sampai 200%.
 
 ## Cara menjalankan
 
@@ -20,37 +20,37 @@ Seluruh game bisa dimainkan dengan mouse.
 
 | Aksi | Mouse | Keyboard |
 |---|---|---|
-| Mainkan kartu | Klik kartu | Angka 1–9 |
-| Geser kartu (1 AP) | Seret kartu ke posisi lain | – |
+| Mainkan kartu | Klik kartu, atau seret ke tubuh Buto | Angka 1–9 |
+| Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – |
 | Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
 | Pilih target | Klik Buto | – |
-| Gebrakan Palang (Ultimate) | Tombol gong | Q |
-| Akhiri turn | Tombol Akhiri Turn | E atau Spasi |
+| Gebrakan Dongkrek | Tombol gong | Q |
+| Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
 | Jeda | Tombol II | Esc |
 
 Aturan singkatnya:
 
-- **AP**: 4 AP setiap turn. Memainkan kartu 1 AP, menggeser kartu 1 AP. Kartu di tangan tidak dibuang di akhir turn, dan tangan diisi ulang sampai 7 kartu.
-- **Tiga jenis kartu**: Serang (merah) memberi damage, Fokus (biru) mengisi Moxie, Taktik (hijau) memberi Tameng.
-- **Hybrid Merging**: dua kartu bersebelahan yang beda warna tapi bintangnya sama bisa digabung.
-  - Serang + Fokus = **Crimson Focus** (damage besar + Moxie)
-  - Serang + Taktik = **Piercing Strike** (damage + Tameng)
-  - Fokus + Taktik = **Flow State** (Tameng + Moxie + 1 AP)
-- **Moxie**: pada 100% Gebrakan Palang siap dan menghantam semua Buto. Kalau ditahan sampai 200%, damagenya dua kali lipat.
-- **Evolutionary Chain**: memainkan 3 kartu bintang 3 berturut-turut dalam satu turn memperkuat Ultimate sampai battle selesai.
+- **Ketukan**: 4 ketukan setiap giliran, seperti satu *gatra* gamelan. Memainkan kartu 1 ketukan, menggeser kartu 1 ketukan. Kartu di tangan tidak dibuang di akhir giliran, dan tangan diisi ulang sampai 7 kartu.
+- **Tiga jenis jurus**: Sabet (merah) memberi damage, Semedi (biru) mengisi Greget, Tangkis (hijau) memberi Tameng.
+- **Menggabung jurus**: dua kartu bersebelahan yang beda warna tapi bintangnya sama bisa digabung.
+  - Sabet + Semedi = **Tenaga Dalam** (damage besar + Greget)
+  - Sabet + Tangkis = **Tangkis Balik** (damage + Tameng)
+  - Semedi + Tangkis = **Manunggal** (Tameng + Greget + 1 ketukan)
+- **Greget**: pada 100% **Gebrakan Dongkrek** siap dan menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
+- **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Gebrakan Dongkrek sampai battle selesai.
 - **Niat Buto**: ikon di atas kepala Buto menunjukkan rencananya di giliran berikutnya.
 
 ### Para Buto
 
 | Buto | Ilmu |
 |---|---|
-| Kuning | Serangannya menghisap Moxie di atas 100% |
-| Hijau | Menyembur Racun yang menggerogoti HP tiap akhir giliran |
-| Merah | Pola tetap: serang, ancang-ancang, lalu pukulan berat |
-| Putih | Mengunci satu kartu sehingga tidak bisa digeser atau digabung |
-| Hitam (bos) | Di sisa HP separuh ia murka: serangan naik dan kartu di tanganmu diacak |
+| Kuning | **Hisap Greget**: serangannya menghisap Greget di atas 100% |
+| Hijau | **Sembur Lara**: Lara menggerogoti nyawa tiap akhir giliran Buto |
+| Merah | Pola tetap: serang, **Ancang-ancang**, lalu **Gebug Raksasa** |
+| Putih | **Sirep**: kartu terkuatmu tidak bisa dipakai selama satu giliran |
+| Hitam (bos) | Di sisa nyawa separuh ia murka: serangan naik dan kartu di tanganmu diacak |
 
-Petualangan terdiri dari 5 stage di peta Mejayan. Setelah menang, Roro Ayu memberi satu **berkah** pilihan: menaikkan bintang dua kartu atau menambah HP maksimal. Stage yang sudah selesai boleh diulang untuk berkah tambahan.
+Petualangan terdiri dari 5 babak di peta Mejayan. Setelah menang, Roro Ayu memberi satu **berkah** pilihan: menaikkan bintang dua kartu atau menambah nyawa maksimal. Babak yang sudah selesai boleh diulang untuk berkah tambahan.
 
 Bahasa bisa diganti antara **Indonesia** dan **English** di menu Pengaturan. Progres tersimpan otomatis.
 

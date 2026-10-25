@@ -97,6 +97,9 @@ func _build() -> void:
 	add_child(_icon)
 
 	_title = UIKit.small_label("")
+	# Tiny5 lebih ramping dari Silkscreen, jadi nama panjang seperti
+	# TENAGA DALAM masih muat di bar judul kartu.
+	_title.add_theme_font_override("font", UIKit.FONT_MAIN)
 	_title.position = Vector2(10, 10)
 	_title.size = Vector2(56, 10)
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
