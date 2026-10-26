@@ -1,14 +1,22 @@
 """Potret dialog Roro Ayu (80x80, setengah badan), dipanggil dari tools/build_assets.py.
 
-Berbeda dengan potret Eyang Palang dan Buto yang dipotong dari sprite, Roro Ayu
-tidak punya sprite, jadi potretnya dilukis di sini. Bentuk dan bayangan dilukis
-8x lebih besar lalu diperkecil (hasilnya halus seperti sprite lain), kemudian
-mata, alis, hidung, dan bibir digambar piksel demi piksel supaya tetap tajam.
+Roro Ayu tidak punya sprite, jadi potretnya dilukis di sini. Rujukannya:
+- Topeng Roro Ayu dalam kesenian Dongkrek: wajah krem, cantik, tatapan sendu,
+  senyum tipis.
+- Gambaran perempuan cantik dalam Serat Centhini: rambut hitam berkilau, kulit
+  kuning langsat, leher jenjang, sikap halus dan tenang.
+- Sanggul ukel konde gaya Solo: lonjong dan rendah di tengkuk, dihias ronce
+  melati dan tusuk konde. Kebaya kutubaru dengan bef di dada, berpeniti
+  renteng, dan subang di telinga.
+- Teknik potret piksel ala GBA: wajah tiga perempat (sisi dekat dan jauh
+  dibedakan, tidak dicerminkan), shading menggerombol dengan 4-6 warna per
+  bahan, bayangan bergeser ke merah-ungu dan kilau ke kuning.
 
-Penampilannya: wanita Jawa dengan sanggul berhias melati dan tusuk konde emas,
-subang bermata merah, kebaya hijau berkerah sulaman emas, kemben batik, dan
-selendang batik merah di bahu. Wajahnya sedikit menoleh, matanya melirik ke
-kanan, ke arah teks dialog.
+Caranya: setiap bagian (sanggul, badan, leher, rambut, telinga, wajah) dibentuk
+8x lebih besar, diperkecil jadi cakupan per piksel, lalu diwarnai bertingkat
+menurut arah cahaya (kiri atas). Piksel tunggal yang menyendiri dibuang supaya
+bayangannya rapi. Mata, alis, hidung, bibir, perhiasan, melati, dan sulaman
+kebaya kemudian ditempel per piksel.
 """
 import math
 
@@ -17,7 +25,17 @@ from PIL import Image, ImageDraw, ImageFilter
 
 S = 8
 W = 80
-OUTLINE = (16, 12, 24, 255)
+OUTLINE = (30, 18, 32)
+
+# Ramp warna, gelap -> terang. Bayangan bergeser ke merah-ungu, kilau ke kuning.
+SKIN = [(150, 88, 92), (192, 124, 108), (220, 160, 128), (238, 190, 152), (248, 214, 180), (255, 236, 212)]
+HAIR = [(14, 10, 22), (26, 20, 38), (42, 36, 62), (66, 62, 98), (104, 104, 146)]
+KEBAYA = [(16, 46, 44), (24, 76, 62), (36, 108, 78), (62, 144, 94), (112, 184, 116)]
+GOLD = [(112, 66, 28), (178, 120, 44), (230, 178, 74), (255, 226, 140)]
+BATIK = [(46, 22, 22), (82, 44, 32), (122, 74, 44), (186, 140, 82)]
+MELATI = [(176, 188, 170), (226, 232, 218), (255, 255, 248)]
+RUBY = (200, 40, 60)
+LIGHT = (-0.72, -0.62)  # cahaya dari kiri atas
 
 
 def P(pts):
@@ -28,279 +46,371 @@ def E(cx, cy, rx, ry):
     return [(cx - rx) * S, (cy - ry) * S, (cx + rx) * S, (cy + ry) * S]
 
 
-def mirror(pts, axis):
-    return [(2 * axis - x, y) for x, y in reversed(pts)]
-
-
-def new_layer():
-    return Image.new("RGBA", (W * S, W * S), (0, 0, 0, 0))
-
-
-def mask_of(draw_fn):
+def big_mask(fn):
     m = Image.new("L", (W * S, W * S), 0)
-    draw_fn(ImageDraw.Draw(m))
+    fn(ImageDraw.Draw(m))
     return m
 
 
-def shaded(mask, base, light, dark, light_dir=(-0.6, -0.8), edge=3.0, center=None, spread=14.0, edge_dark=0.55):
-    """Mengisi mask dengan warna bergradasi: terang ke arah cahaya, gelap di tepi dan sisi seberang."""
-    m = np.asarray(mask).astype(np.float64) / 255.0
-    ys, xs = np.nonzero(m > 0.5)
-    if center is None:
-        center = (xs.mean() / S, ys.mean() / S)
-    yy, xx = np.mgrid[0:W * S, 0:W * S].astype(np.float64) / S
-    lx, ly = light_dir
-    dirv = ((xx - center[0]) * lx + (yy - center[1]) * ly) / spread
-    blur = np.asarray(mask.filter(ImageFilter.GaussianBlur(edge * S))).astype(np.float64) / 255.0
-    inner = np.clip((blur - 0.5) * 2.0, 0.0, 1.0)
-    t = np.clip(0.5 + 0.5 * dirv, 0.0, 1.0) * (1 - edge_dark) + inner * edge_dark
-    base = np.array(base[:3], dtype=np.float64)
-    light = np.array(light[:3], dtype=np.float64)
-    dark = np.array(dark[:3], dtype=np.float64)
-    t3 = t[..., None]
-    col = np.where(t3 > 0.5, base + (light - base) * (t3 - 0.5) * 2.0, dark + (base - dark) * t3 * 2.0)
-    out = np.dstack([col, m * 255.0]).clip(0, 255).astype(np.uint8)
-    return Image.fromarray(out, "RGBA")
+def smooth_poly(pts, steps=6):
+    """Kurva Catmull-Rom tertutup lewat titik-titik kendali."""
+    out = []
+    n = len(pts)
+    for i in range(n):
+        p0, p1, p2, p3 = pts[i - 1], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]
+        for k in range(steps):
+            t = k / steps
+            t2, t3 = t * t, t * t * t
+            x = 0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3)
+            y = 0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)
+            out.append((x, y))
+    return out
 
 
-def paste(dst, layer):
-    dst.alpha_composite(layer)
+def down(mask_big):
+    """Mask besar -> cakupan 0..1 per piksel akhir."""
+    return np.asarray(mask_big.resize((W, W), Image.BOX)).astype(np.float64) / 255.0
 
 
-SKIN = (238, 194, 156)
-SKIN_L = (252, 222, 192)
-SKIN_D = (196, 134, 106)
-HAIR = (30, 24, 36)
-HAIR_L = (92, 86, 128)
-HAIR_D = (12, 9, 16)
-KEBAYA = (36, 118, 74)
-KEBAYA_L = (86, 172, 110)
-KEBAYA_D = (16, 62, 40)
-GOLD = (236, 184, 76)
-GOLD_L = (255, 230, 150)
-GOLD_D = (156, 104, 34)
-BATIK = (126, 36, 44)
-BATIK_L = (176, 70, 70)
-BATIK_D = (70, 18, 28)
-MELATI = (250, 250, 240)
-MELATI_D = (200, 210, 192)
-RUBY = (214, 52, 64)
-
-FACE_R = [(43, 16), (48, 16.8), (51.6, 19.5), (53.4, 24), (53.7, 29), (52.7, 34), (50.6, 38.5), (47.6, 42.5), (45, 45.2), (43, 46.2)]
-FACE = FACE_R[:-1] + mirror(FACE_R, 43)[1:]
-# Kepala diturunkan sedikit supaya leher tidak terlalu panjang.
-HEAD_DY = 2
+def blur(mask_big, r):
+    return down(mask_big.filter(ImageFilter.GaussianBlur(r * S)))
 
 
-def clip(a, b):
-    return Image.fromarray(np.minimum(np.asarray(a), np.asarray(b)))
+YY, XX = np.mgrid[0:W, 0:W].astype(np.float64) + 0.5
 
 
-def tint(img, mask, color, strength):
-    m = (np.asarray(mask).astype(np.float64) * strength).clip(0, 255).astype(np.uint8)
-    img.paste(Image.new("RGBA", img.size, tuple(color) + (255,)), (0, 0), Image.fromarray(m))
+def light_field(cx, cy, spread):
+    """1 di sisi yang menghadap cahaya, 0 di sisi seberang."""
+    lx, ly = LIGHT
+    d = -((XX - cx) * lx + (YY - cy) * ly) / spread
+    return np.clip(0.5 - 0.5 * d, 0.0, 1.0)
 
 
-def melati(d, x, y, r=1.5):
-    d.ellipse(E(x, y, r, r * 0.92), fill=MELATI_D + (255,))
-    d.ellipse(E(x - 0.3, y - 0.3, r * 0.62, r * 0.56), fill=MELATI + (255,))
+class Canvas:
+    def __init__(self):
+        self.rgb = np.zeros((W, W, 3), dtype=np.float64)
+        self.alpha = np.zeros((W, W), dtype=bool)
+        self.region = np.full((W, W), -1, dtype=np.int32)
+        self.level = np.zeros((W, W), dtype=np.int32)
+        self.ramps = []
+
+    def fill(self, cover, value, ramp, thresholds=None):
+        """Mengisi piksel yang tertutup >= 50% dengan warna ramp sesuai nilai terang (0..1)."""
+        rid = len(self.ramps)
+        self.ramps.append(ramp)
+        m = cover >= 0.5
+        n = len(ramp)
+        if thresholds is None:
+            thresholds = [(i + 1) / n for i in range(n - 1)]
+        lvl = np.zeros((W, W), dtype=np.int32)
+        for t in thresholds:
+            lvl += (value >= t).astype(np.int32)
+        self.region[m] = rid
+        self.level[m] = lvl[m]
+        self.alpha |= m
+        return m
+
+    def clean(self):
+        """Buang piksel tunggal yang berbeda dari keempat tetangganya (agar shading menggerombol)."""
+        lv = self.level.copy()
+        for y in range(1, W - 1):
+            for x in range(1, W - 1):
+                r = self.region[y, x]
+                if r < 0:
+                    continue
+                nb = [(y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)]
+                if any(self.region[a, b] != r for a, b in nb):
+                    continue
+                vals = [self.level[a, b] for a, b in nb]
+                if all(v != self.level[y, x] for v in vals) and len(set(vals)) == 1:
+                    lv[y, x] = vals[0]
+        self.level = lv
+
+    def image(self):
+        out = np.zeros((W, W, 4), dtype=np.uint8)
+        for y in range(W):
+            for x in range(W):
+                r = self.region[y, x]
+                if r >= 0:
+                    out[y, x, :3] = self.ramps[r][self.level[y, x]]
+                    out[y, x, 3] = 255
+        return Image.fromarray(out, "RGBA").copy()
 
 
-def paint() -> Image.Image:
-    img = new_layer()
+# ---------------------------------------------------------------------------
+# Bentuk (koordinat piksel akhir 80x80)
+# ---------------------------------------------------------------------------
 
-    # --- leher
-    neck = mask_of(lambda m: m.polygon(P([(38, 40), (48, 40), (49.5, 57.5), (36.5, 57.5)]), fill=255))
-    paste(img, shaded(neck, SKIN, SKIN_L, SKIN_D, light_dir=(-0.9, 0.1), center=(43, 50), spread=7, edge_dark=0.3))
-    chin_shadow = mask_of(lambda m: m.chord(E(43, 43.5 + HEAD_DY, 8, 6), 0, 180, fill=255)).filter(ImageFilter.GaussianBlur(0.6 * S))
-    tint(img, clip(chin_shadow, neck), SKIN_D, 0.9)
-
-    # --- bahu dan kebaya
-    body_pts = [(0, 80), (0.5, 71), (5, 65.5), (15, 61.5), (27, 58.5), (36, 56.5), (50, 56.5), (59, 58.5), (71, 61.5), (79, 66), (80, 71), (80, 80)]
-    body = mask_of(lambda m: m.polygon(P(body_pts), fill=255))
-    paste(img, shaded(body, KEBAYA, KEBAYA_L, KEBAYA_D, center=(42, 70), spread=24, edge=2.5, edge_dark=0.35))
-    d = ImageDraw.Draw(img)
-    # dada di leher kebaya (bentuk V), lalu kemben batik
-    vneck = [(36, 56.5), (50, 56.5), (47.5, 63), (43, 71), (38.5, 63)]
-    vmask = mask_of(lambda m: m.polygon(P(vneck), fill=255))
-    paste(img, shaded(vmask, SKIN, SKIN_L, SKIN_D, light_dir=(-0.9, 0.0), center=(43, 60), spread=7, edge_dark=0.25))
-    kemben = clip(mask_of(lambda m: m.polygon(P([(36, 64), (50, 64), (43, 73)]), fill=255)), vmask)
-    img.paste(Image.new("RGBA", img.size, BATIK_D + (255,)), (0, 0), kemben)
-    d = ImageDraw.Draw(img)
-    for x, y in ((40.5, 66), (43, 66), (45.5, 66), (42, 68.3), (44, 68.3)):
-        d.ellipse(E(x, y, 0.55, 0.55), fill=GOLD + (255,))
-    # motif brokat kecil di kain kebaya
-    for x, y in ((24, 66), (30, 71), (21, 75), (58, 66), (64, 72), (56, 77), (70, 76), (34, 77)):
-        d.ellipse(E(x, y, 0.9, 0.9), fill=KEBAYA_L + (255,))
-        d.ellipse(E(x, y, 0.4, 0.4), fill=KEBAYA_D + (255,))
-    # kerah kebaya bersulam emas
-    for side in (-1, 1):
-        edge = [(43 + side * 7.5, 56.5), (43 + side * 4.6, 63), (43, 71.5)]
-        d.line(P(edge), fill=GOLD_D + (255,), width=int(2.6 * S))
-        d.line(P(edge), fill=GOLD + (255,), width=int(1.5 * S))
-        for k in range(6):
-            t = (k + 0.5) / 6
-            if t < 0.5:
-                x = edge[0][0] + (edge[1][0] - edge[0][0]) * t * 2
-                y = edge[0][1] + (edge[1][1] - edge[0][1]) * t * 2
-            else:
-                x = edge[1][0] + (edge[2][0] - edge[1][0]) * (t - 0.5) * 2
-                y = edge[1][1] + (edge[2][1] - edge[1][1]) * (t - 0.5) * 2
-            d.ellipse(E(x, y, 0.45, 0.45), fill=GOLD_L + (255,))
-    # selendang batik merah di bahu kiri
-    shawl = [(1, 68), (7, 63.5), (14, 61.5), (22, 72), (26, 80), (8, 80), (3, 74)]
-    smask = mask_of(lambda m: m.polygon(P(shawl), fill=255))
-    paste(img, shaded(clip(smask, body), BATIK, BATIK_L, BATIK_D, center=(12, 70), spread=10, edge_dark=0.3))
-    d = ImageDraw.Draw(img)
-    d.line(P([(14, 61.5), (22, 72), (26, 80)]), fill=GOLD + (255,), width=int(1.1 * S))
-    for x, y in ((7, 69), (11, 66.5), (12, 73), (16, 70), (17, 77), (8, 76), (21, 79)):
-        d.ellipse(E(x, y, 0.9, 0.9), fill=GOLD + (255,))
-        d.ellipse(E(x, y, 0.35, 0.35), fill=BATIK_D + (255,))
-    # kalung emas tipis
-    d.arc(E(43, 52.5, 6.4, 4.2), 20, 160, fill=GOLD + (255,), width=int(0.8 * S))
-    d.ellipse(E(43, 57.0, 1.1, 1.3), fill=GOLD + (255,))
-    d.ellipse(E(43, 57.1, 0.5, 0.6), fill=RUBY + (255,))
-
-    # --- kepala digambar di lapisan sendiri lalu diturunkan HEAD_DY piksel
-    body_img = img
-    img = new_layer()
-    # --- sanggul (konde) di belakang kepala, tampak dari samping kiri karena wajah sedikit menoleh
-    bun = mask_of(lambda m: m.ellipse(E(28, 21, 9.5, 8.5), fill=255))
-    paste(img, shaded(bun, HAIR, HAIR_L, HAIR_D, center=(25, 18), spread=9))
-    d = ImageDraw.Draw(img)
-    for r in (3.0, 6.0):
-        d.arc(E(27, 21, r + 1.2, r), 190, 320, fill=HAIR_L + (255,), width=S)
-    # tusuk konde emas berhias bunga kecil
-    d.line(P([(17, 10.5), (31, 23)]), fill=GOLD_D + (255,), width=int(1.6 * S))
-    d.line(P([(17, 10.0), (30, 21.6)]), fill=GOLD + (255,), width=int(0.9 * S))
-    for dx, dy in ((0, -1.6), (1.6, 0), (0, 1.6), (-1.6, 0)):
-        d.ellipse(E(16.5 + dx, 10 + dy, 1.4, 1.4), fill=GOLD + (255,))
-    d.ellipse(E(16.5, 10, 1.1, 1.1), fill=RUBY + (255,))
-    d.ellipse(E(16.1, 9.6, 0.4, 0.4), fill=(255, 170, 170, 255))
-    # melati melingkari sanggul
-    for i in range(8):
-        a = math.radians(105 + i * 19)
-        melati(d, 28 + 9.4 * math.cos(a), 21 + 8.4 * math.sin(a), 1.4)
-
-    # --- rambut: disisir rapi ke belakang
-    back = mask_of(lambda m: m.ellipse(E(42.6, 23.5, 13.6, 14.2), fill=255))
-    paste(img, shaded(back, HAIR, HAIR_L, HAIR_D, center=(39, 17), spread=13))
-
-    # --- telinga
-    d = ImageDraw.Draw(img)
-    for x, flip in ((32.6, -1), (53.4, 1)):
-        ear = mask_of(lambda m, x=x: m.ellipse(E(x, 33.2, 1.5, 2.7), fill=255))
-        paste(img, shaded(ear, SKIN, SKIN_L, SKIN_D, center=(x, 33), spread=3, edge_dark=0.5))
-
-    # --- wajah
-    face = mask_of(lambda m: m.polygon(P(FACE), fill=255))
-    paste(img, shaded(face, SKIN, SKIN_L, SKIN_D, light_dir=(-0.8, -0.4), center=(42, 30), spread=15, edge=2.0, edge_dark=0.45))
-    # bayangan rambut di dahi
-    hair_shadow = mask_of(lambda m: m.ellipse(E(43, 15.5, 11, 5.5), fill=255)).filter(ImageFilter.GaussianBlur(1.0 * S))
-    tint(img, clip(hair_shadow, face), SKIN_D, 0.45)
-    # rona pipi dan kilau tulang pipi
-    for cx in (36.3, 49.7):
-        blush = mask_of(lambda m, cx=cx: m.ellipse(E(cx, 36.2, 3.0, 1.7), fill=255)).filter(ImageFilter.GaussianBlur(0.9 * S))
-        tint(img, clip(blush, face), (236, 146, 138), 0.55)
-    shine = mask_of(lambda m: m.ellipse(E(36.5, 33.5, 2.2, 1.2), fill=255)).filter(ImageFilter.GaussianBlur(0.6 * S))
-    tint(img, clip(shine, face), SKIN_L, 0.5)
-
-    # --- rambut depan: belah tengah, menutupi pelipis sampai atas telinga
-    left = [(43, 13.2), (38.6, 14.0), (34.6, 16.4), (31.6, 20.4), (30.4, 25.4), (30.8, 30.6), (32.6, 31.6),
-            (33.2, 27.0), (34.5, 22.6), (37.2, 19.6), (40.5, 18.1), (43, 17.8)]
-    right = mirror(left, 43)
-    front = mask_of(lambda m: (m.polygon(P(left), fill=255), m.polygon(P(right), fill=255),
-                               m.ellipse(E(43, 14.6, 11.2, 4.6), fill=255)))
-    paste(img, shaded(front, HAIR, HAIR_L, HAIR_D, center=(37, 14), spread=10, edge_dark=0.2))
-    d = ImageDraw.Draw(img)
-    d.arc(E(39.5, 23, 9.5, 12.5), 205, 250, fill=HAIR_L + (255,), width=S)
-    d.arc(E(46.5, 23, 9.5, 12.5), 292, 318, fill=(66, 62, 96, 255), width=S)
-    d.line(P([(43, 11.0), (43, 16.0)]), fill=HAIR_D + (255,), width=S)
-
-    # --- subang emas di cuping telinga
-    for x in (32.4, 53.6):
-        d.ellipse(E(x, 37.2, 1.6, 1.6), fill=GOLD_D + (255,))
-        d.ellipse(E(x, 37.2, 1.1, 1.1), fill=GOLD + (255,))
-        d.ellipse(E(x, 37.2, 0.55, 0.55), fill=RUBY + (255,))
-
-    shifted = new_layer()
-    shifted.paste(img, (0, HEAD_DY * S))
-    body_img.alpha_composite(shifted)
-    return body_img
+FACE = [(45.5, 15.6), (51.0, 16.6), (54.6, 19.6), (56.0, 24.0), (55.8, 28.4), (55.0, 31.0), (55.6, 33.6),
+        (54.6, 37.2), (52.4, 40.8), (49.0, 43.6), (46.4, 45.0), (43.8, 44.8), (40.0, 42.6), (36.2, 39.2),
+        (33.6, 35.4), (33.0, 29.6), (34.2, 23.4), (37.4, 18.6), (41.2, 16.2)]
+HEAD = [(40, 5.6), (48.5, 6.6), (55.4, 11.0), (58.6, 17.6), (58.2, 24.0), (55.2, 26.0), (34.0, 36.8),
+        (28.6, 37.6), (25.6, 30.4), (26.0, 20.4), (29.6, 12.0), (34.0, 7.6)]
+# rambut depan: belah di (45.6, 15), disisir ke samping menutupi pelipis dan atas telinga
+FRINGE_NEAR = [(45.8, 13.4), (45.6, 16.6), (41.0, 18.0), (37.8, 20.4), (35.8, 24.2), (35.0, 28.4), (34.8, 30.6),
+               (31.0, 30.4), (27.6, 27.0), (28.0, 19.0), (32.6, 12.2), (39.0, 9.2)]
+FRINGE_FAR = [(45.8, 13.4), (51.0, 11.6), (55.8, 13.8), (58.4, 18.6), (57.8, 23.6), (56.4, 24.4), (55.2, 20.8),
+              (52.4, 18.0), (49.0, 16.6), (45.6, 16.6)]
+EAR = [(30.4, 29.6), (32.6, 29.0), (34.4, 31.0), (34.4, 35.6), (33.0, 37.0), (31.0, 35.8), (30.0, 32.4)]
+NECK = [(38.4, 40.0), (49.6, 42.0), (50.0, 48.0), (51.2, 57.6), (37.0, 57.6), (38.0, 48.0)]
+BUN = (22.8, 35.6, 8.4, 7.2)
+BODY = [(0, 80), (0.4, 68.6), (5.0, 62.8), (14.0, 59), (26.0, 56.4), (35.0, 54.2), (52.6, 54.4), (62.0, 56.8),
+        (71.0, 61), (77.6, 66.6), (80, 72), (80, 80)]
+VNECK = [(37.0, 54.4), (51.6, 54.6), (49.6, 60.6), (46.0, 64.8), (42.6, 60.8)]
+BEF = [(40.6, 64.4), (52.0, 63.8), (53.4, 80), (39.6, 80)]
 
 
-def downscale(img: Image.Image) -> Image.Image:
-    small = img.convert("RGBa").resize((W, W), Image.BOX).convert("RGBA")
-    a = np.asarray(small).copy()
-    a[..., 3] = np.where(a[..., 3] >= 110, 255, 0)
-    return Image.fromarray(a, "RGBA").copy()
+def build_base() -> Canvas:
+    c = Canvas()
+
+    # sanggul ukel konde: lonjong, rendah di tengkuk
+    bx, by, brx, bry = BUN
+    bun = big_mask(lambda d: d.ellipse(E(bx, by, brx, bry), fill=255))
+    v = light_field(bx - 1, by - 2, 9.0) * 0.8 + 0.2 * blur(bun, 1.6)
+    c.fill(down(bun), v, HAIR, [0.28, 0.5, 0.72, 0.9])
+
+    # badan dan kebaya
+    body = big_mask(lambda d: d.polygon(P(BODY), fill=255))
+    v = light_field(30, 66, 30.0) * 0.75 + 0.25 * blur(body, 2.2)
+    c.fill(down(body), v, KEBAYA, [0.3, 0.46, 0.64, 0.84])
+
+    # leher: bayangan rahang di atasnya, sisi kanan lebih gelap
+    neck = big_mask(lambda d: d.polygon(P(smooth_poly(NECK, 4)), fill=255))
+    jaw_shadow = big_mask(lambda d: d.polygon(P(smooth_poly(FACE, 6)), fill=255))
+    jaw = blur(jaw_shadow.transform(jaw_shadow.size, Image.AFFINE, (1, 0, 0, 0, 1, -2.0 * S)), 1.2)
+    v = light_field(41, 52, 10.0) * 0.8 + 0.2 * blur(neck, 1.4) - 0.22 * jaw
+    c.fill(down(neck), v, SKIN, [0.12, 0.3, 0.5, 0.78, 0.97])
+
+    # dada di leher kebaya, kemben batik, dan bef kutubaru
+    vneck = big_mask(lambda d: d.polygon(P(VNECK), fill=255))
+    v = light_field(42, 58, 8.0) * 0.8 + 0.2 * blur(vneck, 1.0)
+    c.fill(down(vneck), v, SKIN, [0.1, 0.28, 0.5, 0.8, 0.98])
+    kemben = big_mask(lambda d: d.polygon(P([(40, 59.6), (51.2, 59.6), (46, 66)]), fill=255))
+    kem = np.minimum(down(kemben), down(vneck))
+    c.fill(kem, np.full((W, W), 0.4), BATIK, [0.3, 0.7, 0.95])
+    bef = big_mask(lambda d: d.polygon(P(BEF), fill=255))
+    v = light_field(44, 72, 14.0) * 0.7 + 0.3 * blur(bef, 1.0)
+    c.fill(down(bef), v, KEBAYA, [0.22, 0.42, 0.62, 0.86])
+
+    # rambut belakang (kepala) dan sunggar
+    head = big_mask(lambda d: d.polygon(P(smooth_poly(HEAD, 6)), fill=255))
+    v = light_field(38, 16, 16.0) * 0.8 + 0.2 * blur(head, 2.0)
+    c.fill(down(head), v, HAIR, [0.3, 0.52, 0.74, 0.92])
+
+    # telinga dekat
+    ear = big_mask(lambda d: d.polygon(P(smooth_poly(EAR, 4)), fill=255))
+    v = light_field(32, 32, 4.0) * 0.6 + 0.4 * blur(ear, 0.8)
+    c.fill(down(ear), v, SKIN, [0.15, 0.36, 0.56, 0.84, 0.99])
+
+    # wajah
+    face_big = big_mask(lambda d: d.polygon(P(smooth_poly(FACE, 6)), fill=255))
+    v = light_field(42, 30, 15.0) * 0.66 + 0.34 * blur(face_big, 1.6)
+    # bayangan rambut di dahi, rongga mata, bawah hidung/bibir; kilau tulang pipi & dahi
+    fringe_big = big_mask(lambda d: (d.polygon(P(smooth_poly(FRINGE_NEAR, 4)), fill=255),
+                                     d.polygon(P(smooth_poly(FRINGE_FAR, 4)), fill=255)))
+    under_hair = blur(fringe_big.transform(fringe_big.size, Image.AFFINE, (1, 0, 0, 0, 1, -1.6 * S)), 0.9)
+    sockets = blur(big_mask(lambda d: (d.ellipse(E(39.6, 30.4, 4.6, 2.6), fill=255), d.ellipse(E(51.4, 30.4, 3.4, 2.4), fill=255))), 1.0)
+    cheek = blur(big_mask(lambda d: d.ellipse(E(38.6, 36.4, 4.4, 3.0), fill=255)), 1.2)
+    forehead = blur(big_mask(lambda d: d.ellipse(E(42.6, 21.0, 4.6, 2.6), fill=255)), 1.0)
+    far_side = blur(big_mask(lambda d: d.polygon(P([(54.2, 26), (57, 26), (57, 44), (51.6, 47.6), (54.4, 38)]), fill=255)), 0.8)
+    v = v - 0.42 * under_hair - 0.12 * sockets + 0.18 * cheek + 0.07 * forehead - 0.22 * far_side
+    c.fill(down(face_big), v, SKIN, [0.1, 0.26, 0.44, 0.7, 0.9])
+
+    # rambut depan
+    fn = big_mask(lambda d: d.polygon(P(smooth_poly(FRINGE_NEAR, 4)), fill=255))
+    v = light_field(34, 16, 9.0) * 0.75 + 0.25 * blur(fn, 1.0)
+    c.fill(down(fn), v, HAIR, [0.26, 0.5, 0.74, 0.92])
+    ff = big_mask(lambda d: d.polygon(P(smooth_poly(FRINGE_FAR, 4)), fill=255))
+    v = light_field(48, 12, 9.0) * 0.6 + 0.4 * blur(ff, 0.8)
+    c.fill(down(ff), v, HAIR, [0.3, 0.55, 0.8, 0.95])
+
+    c.clean()
+    return c
 
 
-def features(img: Image.Image) -> Image.Image:
-    """Mata, alis, hidung, dan bibir digambar piksel demi piksel supaya tajam."""
+LASH = (38, 20, 30)
+WHITE = (246, 240, 236)
+WHITE_D = (214, 200, 200)
+IRIS = (58, 30, 26)
+IRIS_L = (122, 72, 46)
+SHINE = (255, 255, 255)
+BROW = (86, 54, 46)
+BROW_L = (124, 82, 70)
+SHADOW_LID = (222, 162, 140)
+LIP_LINE = (138, 42, 60)
+LIP_UP = (180, 68, 82)
+LIP_LO = (218, 102, 112)
+LIP_HI = (244, 156, 152)
+BLUSH = (244, 180, 160)
+
+
+def polyline(px, points, color, where=None):
+    """Garis piksel lewat titik-titik; `where(x, y)` bisa membatasi piksel mana yang boleh diwarnai."""
+    for (x0, y0), (x1, y1) in zip(points, points[1:]):
+        n = max(abs(x1 - x0), abs(y1 - y0), 1)
+        for k in range(n + 1):
+            x = round(x0 + (x1 - x0) * k / n)
+            y = round(y0 + (y1 - y0) * k / n)
+            if 0 <= x < W and 0 <= y < W and (where is None or where(x, y)):
+                px[x, y] = color + (255,)
+
+
+def stamp(px, x0, y0, rows, colors):
+    """Menempel pola huruf: tiap huruf = satu warna, '.' = biarkan."""
+    for dy, row in enumerate(rows):
+        for dx, ch in enumerate(row):
+            if ch != ".":
+                px[x0 + dx, y0 + dy] = colors[ch] + (255,)
+
+
+def details(img: Image.Image, c: Canvas) -> Image.Image:
     px = img.load()
 
-    def put(x, y, c):
-        px[x, y + HEAD_DY] = tuple(c[:3]) + (255,)
+    def skin(x, y, level):
+        px[x, y] = SKIN[level] + (255,)
 
-    brow = (84, 54, 44)
-    brow_l = (150, 104, 84)
-    lash = (36, 20, 26)
-    white = (242, 238, 234)
-    white_d = (214, 200, 196)
-    iris = (66, 38, 30)
-    iris_l = (128, 82, 56)
-    lid = (220, 164, 134)
-    under = (224, 172, 146)
-    for cx, side in ((38, -1), (48, 1)):
-        # cx = tengah mata, side = arah sudut luarnya (-1 kiri, 1 kanan)
-        def X(dx, cx=cx, side=side):
-            return cx + side * dx
-        # alis: tipis, melengkung, ujung luar sedikit turun
-        for dx, y, c in ((-2, 27, brow_l), (-1, 27, brow), (0, 26, brow), (1, 26, brow), (2, 26, brow), (3, 27, brow), (4, 28, brow_l)):
-            put(X(dx), y, c)
-        # lipatan kelopak tipis
-        for dx in (-1, 0, 1, 2):
-            put(X(dx), 29, lid)
-        # bulu mata atas tebal, bersayap di sudut luar
-        for dx in (-2, -1, 0, 1, 2, 3):
-            put(X(dx), 30, lash)
-        put(X(4), 29, lash)
-        # bola mata dua baris; iris besar di kedua mata melirik ke kanan (ke arah teks)
-        x0 = cx - 1 if side < 0 else cx
-        for x, c in ((x0 - 2, white_d), (x0 - 1, white), (x0, iris), (x0 + 1, (250, 250, 255)), (x0 + 2, iris), (x0 + 3, white_d)):
-            put(x, 31, c)
-        for x, c in ((x0 - 1, white_d), (x0, iris_l), (x0 + 1, iris), (x0 + 2, iris_l), (x0 + 3, white_d)):
-            put(x, 32, c)
-        # garis bawah mata lembut
-        for dx in (-1, 0, 1, 2):
-            put(X(dx), 33, under)
-    # hidung: bayangan halus di sisi kanan, ujung terang, cuping
-    for y, c in ((33, (222, 168, 136)), (34, (218, 162, 130)), (35, (212, 154, 124))):
-        put(44, y, c)
-    put(43, 36, (250, 224, 198))
-    put(42, 37, (198, 132, 108))
-    put(44, 37, (190, 124, 102))
-    put(43, 37, (226, 168, 140))
-    # bibir: merah merona, bawah lebih terang dengan kilau
-    upper = (172, 56, 72)
-    lower = (212, 88, 100)
-    put(40, 40, (200, 120, 110))
-    put(41, 40, upper)
-    put(42, 40, upper)
-    put(43, 40, (192, 76, 88))
-    put(44, 40, upper)
-    put(45, 40, upper)
-    put(46, 40, (200, 120, 110))
-    for x in (41, 42, 43, 44, 45):
-        put(x, 41, lower)
-    put(42, 41, (240, 146, 146))
-    for x in (42, 43, 44):
-        put(x, 42, (208, 140, 120))
+    # --- mata: sendu (kelopak atas agak turun), sudut luar sedikit menurun, melirik ke kanan
+    eye_cols = {"c": SHADOW_LID, "L": LASH, "w": WHITE, "v": WHITE_D, "H": SHINE, "I": IRIS, "i": IRIS_L,
+                "s": SKIN[1], "l": SKIN[2]}
+    stamp(px, 35, 28, [
+        ".L.ccc...",
+        "LLLLLLLL.",
+        ".vwIHIIws",
+        ".LwiIIiv.",
+        "...liil..",
+    ], eye_cols)
+    stamp(px, 48, 28, [
+        "..cccL.",
+        ".LLLLLL",
+        "swIHIL.",
+        ".viIiL.",
+        "..lil..",
+    ], eye_cols)
+    # alis tipis melengkung seperti bulan sabit
+    brow_cols = {"d": BROW, "b": BROW_L}
+    stamp(px, 35, 24, [
+        "...dddd.",
+        ".bd....b",
+        "b.......",
+    ], brow_cols)
+    stamp(px, 48, 24, [
+        ".dddd.",
+        "b....b",
+    ], brow_cols)
+    # hidung kecil (ngudhup mlathi): punggung terang pendek, bayangan sisi jauh, ujung, cuping
+    skin(46, 32, 4)
+    for x, y in ((47, 33), (47, 34), (48, 35)):
+        skin(x, y, 2)
+    skin(46, 35, 4)
+    skin(47, 36, 2)
+    skin(46, 37, 2)
+    skin(45, 37, 1)
+    # bibir: senyum tipis, bibir bawah penuh dengan kilau
+    lip_cols = {"x": LIP_LINE, "u": LIP_UP, "o": LIP_LO, "h": LIP_HI, "k": SKIN[2]}
+    stamp(px, 42, 40, [
+        "k......k",
+        ".uuxuuu.",
+        "..ohooo.",
+        "...kkk..",
+    ], lip_cols)
+    # rona pipi
+    for x, y in ((35, 35), (36, 35), (37, 35), (36, 36), (37, 36), (51, 35), (52, 35)):
+        if c.region[y, x] >= 0:
+            px[x, y] = BLUSH + (255,)
+
+    # --- telinga dan subang
+    skin(31, 32, 2)
+    skin(32, 33, 2)
+    skin(31, 33, 1)
+    stamp(px, 31, 36, [
+        ".a.",
+        "brb",
+        ".c.",
+    ], {"a": GOLD[3], "b": GOLD[2], "r": RUBY, "c": GOLD[1]})
+
+    # --- kilau rambut mengikuti lengkung kepala, garis belah, dan helai ke arah sanggul
+    for x, y in ((30, 15), (31, 14), (32, 13), (33, 12), (34, 11), (35, 11), (36, 10), (37, 10), (38, 10)):
+        px[x, y] = HAIR[3] + (255,)
+    for x, y in ((33, 13), (34, 12), (35, 12), (36, 11)):
+        px[x, y] = HAIR[4] + (255,)
+    for x, y in ((29, 18), (29, 19), (30, 17)):
+        px[x, y] = HAIR[3] + (255,)
+    for x, y in ((45, 14), (45, 13), (44, 12), (44, 11), (43, 10), (43, 9)):
+        px[x, y] = HAIR[0] + (255,)
+    for x, y in ((50, 10), (51, 10), (52, 11), (53, 12)):
+        px[x, y] = HAIR[3] + (255,)
+    def on_hair(x, y):
+        return c.region[y, x] >= 0 and c.ramps[c.region[y, x]] is HAIR
+
+    for pts in (((40, 13), (36, 16), (33, 20), (31, 25)), ((42, 15), (38, 18), (35, 22))):
+        polyline(px, pts, HAIR[2], on_hair)
+
+    # --- sanggul: ronce melati melingkar dan tusuk konde emas
+    bx, by, brx, bry = BUN
+
+    def on_bun(x, y):
+        return ((x + 0.5 - bx) / (brx - 0.8)) ** 2 + ((y + 0.5 - by) / (bry - 0.8)) ** 2 <= 1.0
+
+    # ronce melati: pita kuntum melati mengikuti tepi luar bawah sanggul
+    def in_band(x, y):
+        inner = ((x + 0.5 - bx - 2.4) / (brx - 3.2)) ** 2 + ((y + 0.5 - by + 2.0) / (bry - 2.6)) ** 2
+        return on_bun(x, y) and inner > 1.0
+
+    for y in range(int(by - bry), int(by + bry) + 1):
+        for x in range(int(bx - brx), int(bx + brx) + 1):
+            if not in_band(x, y) or (x + 2 * (y // 2)) % 3 != 0 or y % 2 != 0:
+                continue
+            for dx, dy, col in ((0, 0, MELATI[2]), (1, 0, MELATI[1]), (0, 1, MELATI[1]), (1, 1, MELATI[0])):
+                if on_bun(x + dx, y + dy):
+                    px[x + dx, y + dy] = col + (255,)
+    for x, y in ((25, 32), (24, 31), (23, 30), (22, 29), (21, 28), (20, 27), (19, 26)):
+        px[x, y] = GOLD[2] + (255,)
+        px[x, y + 1] = GOLD[1] + (255,)
+    stamp(px, 16, 23, [
+        ".a.",
+        "ara",
+        ".a.",
+    ], {"a": GOLD[2], "r": RUBY})
+    px[17, 23] = GOLD[3] + (255,)
+
+    # --- kebaya kutubaru: tepi bersulam emas, bef, peniti renteng, dan kalung
+    polyline(px, [(37, 54), (42, 60), (45, 64)], GOLD[2])
+    polyline(px, [(38, 54), (43, 60)], GOLD[1])
+    polyline(px, [(51, 54), (49, 60), (47, 64)], GOLD[2])
+    polyline(px, [(41, 64), (40, 79)], GOLD[2])
+    polyline(px, [(52, 64), (53, 79)], GOLD[2])
+    polyline(px, [(41, 64), (52, 64)], GOLD[1])
+    for x, y in ((38, 55), (41, 59), (44, 63), (50, 56), (48, 62), (40, 68), (40, 73), (53, 68), (53, 74)):
+        px[x, y] = GOLD[3] + (255,)
+    # peniti renteng: tiga bros emas yang dirangkai rantai di bef
+    for i, y in enumerate((66, 71, 76)):
+        stamp(px, 45, y, [
+            ".a.",
+            "ara",
+            ".b.",
+        ], {"a": GOLD[2], "r": RUBY, "b": GOLD[1]})
+        px[45, y] = GOLD[3] + (255,)
+        if i < 2:
+            for yy in range(y + 3, y + 5):
+                px[46, yy] = GOLD[1] + (255,)
+    # motif brokat di kain kebaya
+    for y in range(60, 80, 5):
+        for x in range(2 + (y // 5 % 2) * 3, 80, 6):
+            if c.region[y, x] >= 0 and c.ramps[c.region[y, x]] is KEBAYA and not (38 <= x <= 54):
+                lvl = c.level[y, x]
+                px[x, y] = KEBAYA[min(lvl + 1, 4)] + (255,)
+    # kemben batik: titik-titik emas
+    for x, y in ((44, 61), (47, 61), (46, 63)):
+        if c.region[y, x] >= 0:
+            px[x, y] = BATIK[3] + (255,)
+    # kalung emas tipis dengan liontin, di atas kerah
+    polyline(px, [(40, 50), (42, 52), (45, 53)], GOLD[2])
+    polyline(px, [(49, 51), (47, 53), (46, 53)], GOLD[2])
+    stamp(px, 45, 54, ["ab", "rb"], {"a": GOLD[3], "b": GOLD[1], "r": RUBY})
     return img
 
 
-def add_outline(img, color=OUTLINE):
+def outline(img: Image.Image) -> Image.Image:
     a = np.asarray(img).copy()
     alpha = a[..., 3] > 0
     grow = np.zeros_like(alpha)
@@ -309,9 +419,11 @@ def add_outline(img, color=OUTLINE):
     grow[:, 1:] |= alpha[:, :-1]
     grow[:, :-1] |= alpha[:, 1:]
     ring = grow & ~alpha
-    a[ring] = color
+    a[ring] = OUTLINE + (255,)
     return Image.fromarray(a, "RGBA")
 
 
 def draw_roro_ayu() -> Image.Image:
-    return add_outline(features(downscale(paint())))
+    c = build_base()
+    return outline(details(c.image(), c))
+

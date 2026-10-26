@@ -213,4 +213,10 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
   - **Tangkis**: perisai bergaya Eropa diganti **tameng** prajurit Jawa yang lonjong runcing, berbingkai emas, dengan motif tumpal di ujung dan kawung di tengah.
 - **Tangkis Balik**: mata tombak sebelumnya bergeser dari garis tangkainya. Tombak digambar ulang sehingga mata tombak, methuk emas, dan tangkai berada di satu garis lurus, dan garis anginnya tidak lagi menimpa tangkai.
 - **Tenaga Dalam** tetap memakai mata merah, tetapi pedang kecil di belakangnya ikut diganti keris.
-- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan: sanggul berhias melati dan tusuk konde emas, subang bermata merah, kebaya hijau berkerah sulaman emas, kemben batik, dan selendang batik merah. Karena tidak punya sprite, potretnya dilukis oleh `tools/portrait_roro_ayu.py` (dilukis 8x lebih besar lalu diperkecil, kemudian mata, alis, hidung, dan bibir digambar per piksel).
+- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan dan menoleh tiga perempat ke kanan (ke arah teks). Potret ini sudah digambar ulang berdasarkan rujukan berikut:
+  - Topeng Roro Ayu dalam Dongkrek digambarkan berwajah krem, cantik, dengan tatapan sendu dan senyum tipis. Itu yang dipakai untuk wajahnya: kulit kuning langsat, mata besar yang lembut dengan kelopak sedikit turun, dan senyum tipis.
+  - Gambaran perempuan cantik dalam Serat Centhini: rambut hitam berkilau, kulit kuning langsat, leher jenjang, halus dan tenang.
+  - Sanggul ukel konde gaya Solo letaknya rendah di tengkuk dan lonjong, jadi sanggulnya diturunkan ke tengkuk, dihias untaian melati dan tusuk konde emas.
+  - Kebaya kutubaru (khas Jawa, ada bef di dada) dengan peniti renteng tiga bros, subang bermata merah, dan kalung tipis. Selendang di bahu dibuang karena lebih khas Bali.
+  - Teknik potret piksel ala GBA: wajah tiga perempat yang sisi dekat dan jauhnya berbeda, shading menggerombol dengan 4-6 warna per bahan, bayangan bergeser ke merah-ungu dan kilau ke kuning, tanpa garis di bawah mata (membuat wajah tampak tua).
+  - Potretnya dilukis oleh `tools/portrait_roro_ayu.py`: bentuk tiap bagian dibuat 8x lebih besar, diperkecil, lalu diwarnai bertingkat menurut arah cahaya; mata, alis, hidung, bibir, perhiasan, melati, dan sulaman ditempel per piksel.
