@@ -45,9 +45,9 @@ STAGE_4_TITLE,Gapura Candi Tua,Gate of the Old Temple
 STAGE_5_TITLE,Tegal Ilalang,The Reed Meadow
 BATTLE_TURN,Giliran %d,Turn %d
 BATTLE_END_TURN,Akhiri Giliran,End Turn
-BATTLE_ULTIMATE,Gebrakan Dongkrek,Gebrakan Dongkrek
+BATTLE_ULTIMATE,Gebrakan Dung-Krek,Gebrakan Dung-Krek
 BATTLE_ULTIMATE_SHORT,GEBRAKAN,GEBRAKAN
-BATTLE_ULTIMATE_TIP,"Gebrakan Dongkrek: bedug dan korek berbunyi serentak, menghantam SEMUA Buto %d. Butuh Greget 100%%. Di 200%% damage-nya dua kali lipat.","Gebrakan Dongkrek: the bedug drum and korek ring out together, hitting EVERY Buto for %d. Needs 100%% Greget. At 200%% it deals double damage."
+BATTLE_ULTIMATE_TIP,"Gebrakan Dung-Krek: bedug dan korek berbunyi serentak, menghantam SEMUA Buto %d. Butuh Greget 100%%. Di 200%% damage-nya dua kali lipat.","Gebrakan Dung-Krek: the bedug drum and korek ring out together, hitting EVERY Buto for %d. Needs 100%% Greget. At 200%% it deals double damage."
 BATTLE_PLAYER_TURN,Giliranmu,Your Turn
 BATTLE_ENEMY_TURN,Giliran Buto,Buto's Turn
 BATTLE_VICTORY,MENANG!,VICTORY!
@@ -66,8 +66,8 @@ BATTLE_BLOCK,Tameng,Block
 BATTLE_POISON_TIP,Lara %d: kehilangan %d nyawa di akhir giliran Buto (menembus Tameng).,Lara (sickness) %d: lose %d HP at the end of the Buto's turn (ignores Block).
 BATTLE_BLOCK_TIP,Tameng %d: menahan damage sampai awal giliranmu berikutnya.,Block %d: absorbs damage until your next turn.
 BATTLE_AP_TIP,"Ketukan: tiap giliran ada 4 ketukan, seperti satu gatra gamelan. Main kartu 1 ketukan, geser kartu 1 ketukan.","Ketukan (beats): you get 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1."
-BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Gebrakan Dongkrek siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Gebrakan Dongkrek ready, up to 200%% = Greget Memuncak (overcharged)."
-BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Gebrakan Dongkrek (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Gebrakan Dongkrek (now x%.2f).
+BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Gebrakan Dung-Krek siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Gebrakan Dung-Krek ready, up to 200%% = Greget Memuncak (overcharged)."
+BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Gebrakan Dung-Krek (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Gebrakan Dung-Krek (now x%.2f).
 BATTLE_HELP,Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target  |  Spasi: akhiri giliran,Click card: play  |  Drag card: move  |  Click Buto: target  |  Space: end turn
 BATTLE_CARD_LOCKED_BY,Sirep!,Sirep!
 BATTLE_MOXIE_DRAINED,Greget -%d%%,Greget -%d%%
@@ -128,22 +128,22 @@ SPEAKER_BUTO_HIJAU,Buto Hijau,Buto Hijau
 SPEAKER_BUTO_MERAH,Buto Merah,Buto Merah
 SPEAKER_BUTO_PUTIH,Buto Putih,Buto Putih
 SPEAKER_BUTO_HITAM,Buto Hitam,Buto Hitam
-PROLOGUE_1,"Madiun, masa silam. Pagebluk melanda Desa Mejayan. Pagi sakit, sore meninggal. Sore sakit, pagi meninggal.","Madiun, long ago. A plague swept through the village of Mejayan. Sick in the morning, gone by evening. Sick by evening, gone by morning."
-PROLOGUE_2,"Para sesepuh percaya pagebluk itu dibawa para Buto, raksasa jahat dari candi tua di tengah hutan.","The elders believed the plague was brought by the Buto, wicked giants from an old temple deep in the forest."
-PROLOGUE_3,"Eyang... kalau terus begini, desa kita bisa habis.","Eyang... if this goes on, there won't be a village left."
-PROLOGUE_4,"Dalam semedinya, Eyang Palang mendapat petunjuk: Buto takut pada bunyi bedug yang bertalu dan korek yang berderak. Dung... krek. Dung... krek.","In meditation, Eyang Palang received a sign: the Buto fear the pounding bedug drum and the rattling korek. Dung... krek. Dung... krek."
-PROLOGUE_5,Ambilkan tongkatku. Malam ini juga kita usir mereka dari Mejayan.,Fetch my staff. Tonight we drive them out of Mejayan.
+PROLOGUE_1,"Mejayan, Madiun, sekitar tahun 1867. Pagebluk melanda desa. Pagi sakit, sore meninggal. Sore sakit, pagi meninggal.","Mejayan, Madiun, around the year 1867. A plague sweeps the village. Sick in the morning, dead by evening. Sick in the evening, dead by morning."
+PROLOGUE_2,"Para sesepuh percaya pagebluk itu dibawa para Buto, raksasa jahat dari candi tua di tengah hutan.","The elders believe the plague is carried by the Buto, evil giants from an old temple deep in the forest."
+PROLOGUE_3,"Eyang... kalau terus begini, desa kita bisa habis.","Eyang... if this goes on, our village will be wiped out."
+PROLOGUE_4,"Raden Ngabehi Lo Prawirodipuro, sesepuh Mejayan yang dipanggil warga Eyang Palang, bersemedi memohon petunjuk. Ia mendapat wangsit: para Buto takut pada bunyi bedug yang bertalu dan korek yang berderak.","Raden Ngabehi Lo Prawirodipuro, the Mejayan elder the villagers call Eyang Palang, meditates and prays for guidance. A sign comes to him: the Buto fear the pounding of the bedug drum and the rattle of the korek."
+PROLOGUE_5,"Dung... krek. Dung... krek. Belum pernah ada tabuhan seperti ini. Kumpulkan bedug dan korek, kita tabuh bersama-sama.","Dung... krek. Dung... krek. No one has ever played a beat like this. Gather every bedug and korek, and we'll play them together."
 S1_INTRO_1,"Di pinggir desa, sesosok raksasa bertopeng kuning mengendus-endus pagar bambu.","At the edge of the village, a giant in a yellow mask sniffs along the bamboo fence."
 S1_INTRO_2,Buto Kuning. Yang paling rakus di antara mereka.,Buto Kuning. The greediest of them all.
 S1_INTRO_3,"Hrrgh... semangatmu harum sekali, Pak Tua. Biar kuhisap sampai habis!","Hrrgh... your spirit smells delicious, old man. I'll drain every last drop!"
-S1_INTRO_4,Coba saja kalau berani.,"Try it, if you dare."
-S1_WIN_1,Buto itu lari! Eyang berhasil!,The Buto ran off! Eyang did it!
+S1_INTRO_4,"Coba saja kalau berani. Warga, tabuh bedug dan korek kalian!","Try it if you dare. Everyone, strike your bedug and korek!"
+S1_WIN_1,Buto itu lari mendengar tabuhan kita! Wangsit Eyang benar!,The Buto fled from our drumming! Eyang's sign was true!
 S1_WIN_2,Itu baru satu. Jejaknya mengarah ke rumpun bambu di utara.,That was only one. Its tracks lead to the bamboo grove up north.
 TUT_1,Setiap giliran kamu punya 4 Ketukan. Klik sebuah kartu untuk memainkannya ke Buto yang sedang jadi target. Biayanya 1 ketukan.,Each turn you have 4 Ketukan (beats). Click a card to play it on the targeted Buto. It costs 1 Ketukan.
 TUT_2,"Kartu merah (Sabet) memberi damage, kartu biru (Semedi) mengisi Greget, kartu hijau (Tangkis) memberi Tameng.","Red cards (Sabet) deal damage, blue cards (Semedi) charge Greget, green cards (Tangkis) give Block."
 TUT_3,"Seret kartu ke posisi lain untuk menggesernya (1 ketukan). Kalau ia bersebelahan dengan kartu beda warna yang bintangnya sama, keduanya bergabung jadi jurus gabungan yang lebih kuat.","Drag a card to another position to move it (1 Ketukan). If it lands next to a different-colored card of the same rank, they merge into a stronger combined move."
 TUT_4,Kartu yang sudah bersebelahan bisa langsung digabung gratis lewat tombol kecil di antara keduanya.,Cards that are already side by side can be merged for free with the small button between them.
-TUT_5,"Saat Greget mencapai 100%, Gebrakan Dongkrek siap dan menghantam semua Buto. Tahan sampai 200% untuk damage dua kali lipat.","When Greget reaches 100%, Gebrakan Dongkrek is ready and hits every Buto. Hold it until 200% for double damage."
+TUT_5,"Saat Greget mencapai 100%, Gebrakan Dung-Krek siap dan menghantam semua Buto. Tahan sampai 200% untuk damage dua kali lipat.","When Greget reaches 100%, Gebrakan Dung-Krek is ready and hits every Buto. Hold it until 200% for double damage."
 TUT_6,"Perhatikan ikon di atas kepala Buto: itu rencana mereka di giliran berikutnya. Kalau sudah selesai, tekan Akhiri Giliran.","Watch the icon above each Buto's head: it shows what they plan to do next. When you're done, press End Turn."
 S2_INTRO_1,Rumpun bambu berderit tertiup angin. Bau anyir menusuk hidung.,The bamboo creaks in the wind. A foul stench fills the air.
 S2_INTRO_2,"Hehehe... napasku membawa penyakit. Hirup dalam-dalam, Pak Tua!","Hehehe... my breath carries sickness. Breathe deep, old man!"
@@ -163,15 +163,15 @@ S4_WIN_2,Tiba-tiba tanah bergetar. Dari dalam candi terdengar tawa yang berat.,S
 S5_INTRO_1,"Di tegal ilalang, Buto Kuning kembali. Tubuhnya kini diselimuti cahaya merah.","In the reed meadow, Buto Kuning returns. Its body now glows a burning red."
 S5_INTRO_2,"Sekarang semangatmu kuhisap sampai kering, berapa pun sisanya!","Now I'll drain your spirit dry, every last drop!"
 S5_INTRO_3,"Eyang, hati-hati. Buto yang murka bisa ngamuk dan menyerang dua kali. Lihat api di atas kepalanya.","Eyang, be careful. An enraged Buto can go Ngamuk and strike twice. Watch the flames above its head."
-S5_INTRO_4,"Kalau apinya penuh, aku harus waspada dan pasang tameng. Atau kubuyarkan dengan bunyi Dongkrek.",When the flames are full I must stay alert and raise my guard. Or break its rage with the sound of Dongkrek.
+S5_INTRO_4,"Kalau apinya penuh, aku harus waspada dan pasang tameng. Atau kubuyarkan amukannya dengan bunyi dung-krek.",When the flames are full I must stay alert and raise my guard. Or break its rage with the dung-krek beat.
 S5_WIN_1,Satu sudah tumbang lagi.,One more has fallen again.
 S5_WIN_2,Buto Hijau yang murka bersembunyi di hutan jati. Napasnya makin pekat.,The enraged Buto Hijau hides in the teak forest. Its breath grows thicker.
 ENDING_TITLE,Pagebluk Sirna,The Plague Is Lifted
-ENDING_1,Pagebluk pun sirna. Satu per satu warga Mejayan pulih dari sakitnya.,"And so the plague was lifted. One by one, the people of Mejayan recovered."
-ENDING_2,"Mulai hari ini kita tabuh bedug dan korek setiap tahun, supaya para Buto tak lupa.","From now on we'll play the bedug and korek every year, so the Buto never forget."
-ENDING_3,Dan supaya anak cucu kita ingat: warga yang bersatu lebih kuat dari raksasa mana pun.,And so our grandchildren remember: a village that stands together is stronger than any giant.
-ENDING_4,"Dari peristiwa itu lahirlah Dongkrek, kesenian tolak bala khas Madiun yang masih dimainkan sampai sekarang.","From that night came Dongkrek, Madiun's art of warding off evil, still performed to this day."
-ENDING_5,Terima kasih sudah menemani perjalanan Eyang Palang.,Thank you for joining Eyang Palang on his journey.
+ENDING_1,Pagebluk pun sirna. Satu per satu warga Mejayan pulih dari sakitnya.,"And so the plague lifts. One by one, the people of Mejayan recover."
+ENDING_2,"Eyang, tabuhan semalam itu perlu diberi nama, supaya anak cucu kita tidak lupa.","Eyang, the drumming from that night needs a name, so our children and grandchildren never forget it."
+ENDING_3,Dengarkan saja bunyinya: dung... krek. Kita namai Dongkrek.,Just listen to it: dung... krek. We'll call it Dongkrek.
+ENDING_4,"Setiap tahun kita tabuh dan arak keliling desa, lengkap dengan topeng para Buto, supaya mereka tak berani kembali. Dan supaya anak cucu kita ingat: warga yang bersatu lebih kuat dari raksasa mana pun.","Every year we'll play it and parade around the village, Buto masks and all, so they never dare return. And so our children remember: villagers who stand together are stronger than any giant."
+ENDING_5,"Begitulah Dongkrek lahir di Mejayan. Sampai sekarang kesenian tolak bala itu masih dimainkan: bedug dan korek bertalu, para Buto bertopeng menari, lalu Eyang Palang datang menaklukkan mereka.","That is how Dongkrek was born in Mejayan. The art of warding off evil is still performed to this day: the bedug and korek ring out, masked Buto dance, and then Eyang Palang arrives to subdue them."
 CREDITS_TITLE,Kredit,Credits
 CREDITS_TEXT,"Desain karakter, kartu, dan latar: pemilik proyek
 Pemrograman, aset tambahan, musik, dan efek suara: dibuat bersama Claude
@@ -191,22 +191,22 @@ PUSTAKA_DONGKREK_TEXT,"Dongkrek adalah kesenian dari Mejayan, Kabupaten Madiun, 
 
 Menurut cerita turun-temurun, kesenian ini lahir sekitar tahun 1867 untuk mengusir pagebluk yang melanda desa. Pertunjukannya menampilkan para Buto bertopeng, Roro Ayu dan Roro Perot, serta Eyang Palang yang akhirnya menaklukkan para Buto.
 
-Kisah di game ini terinspirasi dari cerita tersebut, tetapi beberapa bagiannya dikarang untuk kebutuhan permainan. Desa Mejayan memang ada, sedangkan rumpun bambu, sendang, gapura, dan candi di peta adalah tempat rekaan. Warna dan ilmu tiap Buto juga dibuat khusus untuk game ini.","Dongkrek is a folk art from Mejayan in Madiun Regency, East Java. Its name comes from the sound of the bedug drum (dung) and the korek (krek), a notched wooden instrument that is scraped.
+Game ini menceritakan masa sebelum kesenian itu punya nama: malam-malam ketika Eyang Palang dan warga Mejayan pertama kali menabuh dung-krek melawan para Buto. Kisahnya terinspirasi dari cerita tersebut, tetapi beberapa bagiannya dikarang untuk kebutuhan permainan. Desa Mejayan memang ada, sedangkan rumpun bambu, sendang, gapura, dan candi di peta adalah tempat rekaan. Warna dan ilmu tiap Buto juga dibuat khusus untuk game ini.","Dongkrek is a folk art from Mejayan in Madiun Regency, East Java. Its name comes from the sound of the bedug drum (dung) and the korek (krek), a notched wooden instrument that is scraped.
 
 According to local tradition, it was created around 1867 to drive away a plague that struck the village. Performances feature masked Buto giants, Roro Ayu and Roro Perot, and Eyang Palang, who finally subdues the Buto.
 
-The story in this game is inspired by that tale, but some parts were invented for the game. Mejayan is a real village, while the bamboo grove, spring, gate, and temple on the map are fictional places. Each Buto's color and skill were also created for this game."
+This game tells of the time before the art had a name: the nights when Eyang Palang and the people of Mejayan first played the dung-krek beat against the Buto. The story is inspired by that tale, but some parts were invented for the game. Mejayan is a real village, while the bamboo grove, spring, gate, and temple on the map are fictional places. Each Buto's color and skill were also created for this game."
 PUSTAKA_EYANG,Eyang Palang,Eyang Palang
-PUSTAKA_EYANG_TEXT,"Sesepuh desa yang berwibawa, selalu membawa tongkat. Dalam cerita asal-usul Dongkrek, tokoh ini dikenal sebagai Raden Ngabehi Lo Prawirodipuro dari Mejayan. Lewat semedi ia mendapat petunjuk untuk membuat tarian yang mengiringi keluarnya makhluk jahat dari desa. Dalam pertunjukan Dongkrek, dialah yang menaklukkan para Buto dan mengembalikan ketenteraman desa.
+PUSTAKA_EYANG_TEXT,"Sesepuh desa yang berwibawa, selalu membawa tongkat. Dalam cerita asal-usul Dongkrek, tokoh ini dikenal sebagai Raden Ngabehi Lo Prawirodipuro dari Mejayan. Lewat semedi ia mendapat wangsit untuk mengusir pagebluk dengan tabuhan bedug dan korek serta arak-arakan keliling desa. Dari peristiwa itulah kesenian Dongkrek lahir, dan dalam pertunjukannya dialah yang menaklukkan para Buto.
 
-Di game ini Eyang Palang bertarung dengan tiga jenis jurus: Serang (merah), Fokus (biru), dan Taktik (hijau).","A dignified village elder who always carries a staff. In the origin story of Dongkrek, he is known as Raden Ngabehi Lo Prawirodipuro of Mejayan. Through meditation he received guidance to create a dance that would lead the evil beings out of the village. In Dongkrek performances, he is the one who subdues the Buto and restores peace to the village.
+Di game ini Eyang Palang bertarung dengan tiga jenis jurus: Sabet (merah), Semedi (biru), dan Tangkis (hijau), ditambah jurus Tabuh dari alat musik yang ia temukan di perjalanan.","A dignified village elder who always carries a staff. In the origin story of Dongkrek, he is known as Raden Ngabehi Lo Prawirodipuro of Mejayan. Through meditation he received a sign to drive away the plague with the beat of the bedug and korek and a procession around the village. Dongkrek was born from those events, and in its performances he is the one who subdues the Buto.
 
-In this game Eyang Palang fights with three kinds of techniques: Attack (red), Focus (blue), and Tactic (green)."
+In this game Eyang Palang fights with three kinds of techniques: Sabet (red), Semedi (blue), and Tangkis (green), plus Tabuh techniques from the instruments he finds along the way."
 PUSTAKA_BUTO_KUNING_TEXT,"Buto paling rakus. Setiap serangannya menghisap semangat lawan: Greget di atas 100% berkurang. Greget di bawah 100% aman.
 
-Siasat: pakai Gebrakan Dongkrek sebelum ia sempat menghisap Greget Memuncak-mu.","The greediest Buto. Every attack sucks away its foe's spirit: Greget above 100% is drained. Greget below 100% is safe.
+Siasat: pakai Gebrakan Dung-Krek sebelum ia sempat menghisap Greget Memuncak-mu.","The greediest Buto. Every attack sucks away its foe's spirit: Greget above 100% is drained. Greget below 100% is safe.
 
-Tip: use Gebrakan Dongkrek before it drains your Greget Memuncak."
+Tip: use Gebrakan Dung-Krek before it drains your Greget Memuncak."
 PUSTAKA_BUTO_HIJAU_TEXT,"Napasnya membawa penyakit. Semburannya meninggalkan Lara yang menggerogoti nyawa di akhir giliran Buto, menembus Tameng. Lara berkurang satu setiap kali bekerja.
 
 Siasat: kalahkan ia lebih dulu supaya Lara-nya berhenti bertambah.","Its breath carries disease. Its spit leaves Lara (sickness) that eats away HP at the end of the Buto's turn, ignoring Block. Lara drops by one each time it strikes.
@@ -224,13 +224,13 @@ Siasat: mainkan kartu berbintang tinggi sebelum gilirannya tiba.","Guardian of t
 Tip: play your high-rank cards before its turn comes."
 PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk.
 
-Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi sambil bertameng 15. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau di giliran setelah ancang-ancang kamu memberi cukup damage yang menembus Tamengnya (lihat bar Buyarkan di atas bar nyawanya), atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi sambil bertameng 15. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau di giliran setelah ancang-ancang kamu memberi cukup damage yang menembus Tamengnya (lihat bar Buyarkan di atas bar nyawanya), atau memakai Gebrakan Dung-Krek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Saat nyawanya tinggal separuh ia murka: memanggil dua Bala, menebar Pagebluk Merata (tiap giliran Buto kamu mendapat 1 Lara dan Lara tidak berkurang), dan mulai bisa Ngamuk.
 
 Siasat: simpan kartu Sabet kuat atau Greget untuk giliran Buyarkan, dan tuntaskan pertarungan secepatnya sebelum Lara menumpuk.","King of the Buto and root of the plague.
 
-Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi behind 15 Block. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian on the turn after the wind-up by dealing enough damage past its Block (watch the Break bar above its HP bar), or by using Gebrakan Dongkrek. If it breaks, Buto Hitam staggers and loses an action.
+Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi behind 15 Block. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian on the turn after the wind-up by dealing enough damage past its Block (watch the Break bar above its HP bar), or by using Gebrakan Dung-Krek. If it breaks, Buto Hitam staggers and loses an action.
 
 At half HP it becomes enraged: it summons two Bala, spreads Pagebluk Merata (you gain 1 Lara every Buto turn and Lara no longer wears off), and can go Ngamuk.
 
@@ -242,9 +242,9 @@ Kartu: Sabet memberi damage, Semedi mengisi Greget, Tangkis memberi Tameng. Bint
 
 Menggabung jurus: dua kartu beda warna dengan bintang sama yang bersebelahan bisa digabung. Sabet + Semedi = Tenaga Dalam, Sabet + Tangkis = Tangkis Balik, Semedi + Tangkis = Manunggal. Seret kartu untuk menggesernya, atau klik tombol gabung di antara dua kartu.
 
-Greget dan Gebrakan Dongkrek: pada 100% Gebrakan Dongkrek siap dan menghantam semua Buto. Simpan sampai 200% (Greget Memuncak) untuk damage dua kali lipat.
+Greget dan Gebrakan Dung-Krek: pada 100% Gebrakan Dung-Krek siap dan menghantam semua Buto. Simpan sampai 200% (Greget Memuncak) untuk damage dua kali lipat.
 
-Wirama: mainkan 3 kartu bintang 3 berturut-turut dalam satu giliran untuk memperkuat Gebrakan Dongkrek sampai battle selesai.
+Wirama: mainkan 3 kartu bintang 3 berturut-turut dalam satu giliran untuk memperkuat Gebrakan Dung-Krek sampai battle selesai.
 
 Niat Buto: ikon di atas kepala Buto menunjukkan apa yang akan ia lakukan di giliran berikutnya.
 
@@ -252,9 +252,9 @@ Sirep: ilmu Buto Putih. Kartu yang tersirep tidak bisa dimainkan, digeser, atau 
 
 Ngamuk: sebagian Buto punya tiga titik Amuk berbentuk api di atas kepalanya. Setiap aksinya mengisi satu titik. Saat ketiganya penuh muncul tanda x2, dan di giliran berikutnya ia beraksi dua kali.
 
-Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dongkrek juga membuyarkan amukan: semua titik Amuk kembali kosong.
+Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dung-Krek juga membuyarkan amukan: semua titik Amuk kembali kosong.
 
-Ajian Lebur Saketi: setelah Buto Hitam ancang-ancang, bar Buyarkan muncul di atas bar nyawanya. Penuhi bar itu dengan damage di giliranmu, atau pakai Gebrakan Dongkrek, supaya ajiannya buyar dan ia terhuyung.
+Ajian Lebur Saketi: setelah Buto Hitam ancang-ancang, bar Buyarkan muncul di atas bar nyawanya. Penuhi bar itu dengan damage di giliranmu, atau pakai Gebrakan Dung-Krek, supaya ajiannya buyar dan ia terhuyung.
 
 Bala: Buto bayangan panggilan Buto Hitam. Selama Bala masih hidup, Buto Hitam hanya menerima separuh damage.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
 
@@ -262,9 +262,9 @@ Cards: Sabet deals damage, Semedi charges Greget, Tangkis gives Block. Stars sho
 
 Merging moves: two adjacent cards of different colors with the same rank can be merged. Sabet + Semedi = Tenaga Dalam, Sabet + Tangkis = Tangkis Balik, Semedi + Tangkis = Manunggal. Drag a card to move it, or click the merge button between two cards.
 
-Greget and Gebrakan Dongkrek: at 100% Greget (fighting spirit), Gebrakan Dongkrek is ready and hits every Buto. Save it up to 200% (Greget Memuncak) for double damage.
+Greget and Gebrakan Dung-Krek: at 100% Greget (fighting spirit), Gebrakan Dung-Krek is ready and hits every Buto. Save it up to 200% (Greget Memuncak) for double damage.
 
-Wirama (rhythm): play 3 rank-3 cards in a row in one turn to power up Gebrakan Dongkrek for the rest of the battle.
+Wirama (rhythm): play 3 rank-3 cards in a row in one turn to power up Gebrakan Dung-Krek for the rest of the battle.
 
 Buto intent: the icon above each Buto shows what it will do on its next turn.
 
@@ -272,9 +272,9 @@ Sirep: Buto Putih's spell. A card under Sirep can't be played, moved, or merged 
 
 Ngamuk (rampage): some Buto have three flame-shaped Amuk points above their heads. Each of their actions fills one point. When all three are full an x2 mark appears, and on its next turn the Buto acts twice.
 
-Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dongkrek also breaks their rage: every Amuk point is emptied.
+Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dung-Krek also breaks their rage: every Amuk point is emptied.
 
-Ajian Lebur Saketi: after Buto Hitam winds up, a Break bar appears above its HP bar. Fill it with damage on your turn, or use Gebrakan Dongkrek, to break the Ajian and make it stagger.
+Ajian Lebur Saketi: after Buto Hitam winds up, a Break bar appears above its HP bar. Fill it with damage on your turn, or use Gebrakan Dung-Krek, to break the Ajian and make it stagger.
 
 Bala: shadow Buto summoned by Buto Hitam. While any Bala lives, Buto Hitam takes only half damage."
 PUSTAKA_CARDS,Kartu,Cards
@@ -301,7 +301,7 @@ BATTLE_NGAMUK,Ngamuk!,Ngamuk!
 BATTLE_PRAYITNA,Prayitna!,Prayitna!
 BATTLE_AMUK_CALMED,Amukan buyar!,Their rage is broken!
 INTENT_NGAMUK,Ngamuk! Beraksi dua kali:,Ngamuk! Acts twice:
-AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gebrakan Dongkrek mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gebrakan Dongkrek empties it."
+AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gebrakan Dung-Krek mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gebrakan Dung-Krek empties it."
 PRAYITNA_TIP,Prayitna: ada Buto yang bersiap ngamuk. Tameng dari kartu +50% di giliran ini.,Prayitna (vigilance): a Buto is about to go Ngamuk. Block from cards +50% this turn.
 CARD_PRAYITNA_TIP,Prayitna: Tameng +50%,Prayitna: Block +50%
 STAGE_6_TITLE,Alas Jati Peteng,The Dark Teak Forest
@@ -322,14 +322,14 @@ Hijau Murka menyembur 5 Lara dengan tenaga penuh.
 Merah Murka langsung Ancang-ancang lalu Gebug Raksasa yang lebih keras, dan bertameng saat ancang-ancang.
 Putih Murka menyirep dua kartu terkuat sekaligus.
 
-Siasat: perhatikan api Amuk di atas kepala mereka. Saat tanda x2 muncul, pasang Tameng (Prayitna menambahnya) atau buyarkan dengan Gebrakan Dongkrek.","Defeated Buto raised again by Buto Hitam with the power of the plague. A reddish-purple aura surrounds them, and every one of them can go Ngamuk.
+Siasat: perhatikan api Amuk di atas kepala mereka. Saat tanda x2 muncul, pasang Tameng (Prayitna menambahnya) atau buyarkan dengan Gebrakan Dung-Krek.","Defeated Buto raised again by Buto Hitam with the power of the plague. A reddish-purple aura surrounds them, and every one of them can go Ngamuk.
 
 Kuning Murka drains Greget at any level, not only Greget Memuncak.
 Hijau Murka spits 5 Lara at full strength.
 Merah Murka winds up straight away for a harder Gebug Raksasa, and gains Block while winding up.
 Putih Murka casts Sirep on your two strongest cards at once.
 
-Tip: watch the Amuk flames above their heads. When the x2 mark appears, raise your Block (Prayitna boosts it) or break their rage with Gebrakan Dongkrek."
+Tip: watch the Amuk flames above their heads. When the x2 mark appears, raise your Block (Prayitna boosts it) or break their rage with Gebrakan Dung-Krek."
 S4_WIN_3,"Kau kira sudah menang, Pak Tua? Bangkitlah, anak-anakku! Kuberi kalian kekuatan pagebluk!","You think you've won, old man? Rise, my children! I give you the power of the plague!"
 S4_WIN_4,"Keempat Buto yang kalah bangkit lagi dengan mata menyala, lalu lari ke empat penjuru.",The four defeated Buto rise again with burning eyes and flee in four directions.
 S6_INTRO_1,Hutan jati gelap dan lembap. Kabut beracun merayap di antara batang-batang besar.,The teak forest is dark and damp. A sickly mist creeps between the great trunks.
@@ -344,7 +344,7 @@ S7_WIN_1,Tinggal Buto Putih.,Only Buto Putih remains.
 S7_WIN_2,"Di seberang jembatan bambu, cahaya pucat menunggu.","Across the bamboo bridge, a pale light is waiting."
 S8_INTRO_1,Jembatan bambu berderit di atas sungai. Buto Putih berdiri di tengahnya.,The bamboo bridge creaks over the river. Buto Putih stands in the middle.
 S8_INTRO_2,"Dua jurusmu akan kusirep sekaligus. Tanganmu akan kosong, Pak Tua.","I'll put two of your moves under Sirep at once. Your hands will be empty, old man."
-S8_INTRO_3,"Jurus bisa kau sirep. Tapi Dongkrek ada di hati, bukan di tangan.","You can put my moves to sleep. But Dongkrek lives in the heart, not the hands."
+S8_INTRO_3,"Jurusku boleh kau sirep. Tapi tabuhan warga ada di hati, bukan di tangan.","You can put my moves to sleep. But the villagers' drumming lives in the heart, not the hands."
 S8_WIN_1,"Eyang, keempatnya berkumpul di pelataran candi. Mereka menunggumu bersama-sama.","Eyang, all four are gathering in the temple courtyard. They're waiting for you together."
 S8_WIN_2,Biar mereka datang sekaligus. Kita selesaikan malam ini.,Let them come all at once. We finish this tonight.
 S9_INTRO_1,"Di pelataran candi, keempat Buto Murka berdiri melingkar. Api amuk menyala di atas kepala mereka.","In the temple courtyard, the four Buto Murka stand in a circle. Flames of rage burn above their heads."
@@ -360,7 +360,7 @@ S10_INTRO_4,"Kalau begitu, rasakan Ajian Lebur Saketi!",Then taste the Ajian Leb
 S10_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
 S10_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.
 AJIAN_BREAK_BAR,Buyarkan %d/%d,Break %d/%d
-AJIAN_BREAK_TIP,Beri %d damage ke Nyawanya giliran ini untuk membuyarkan Ajian (%d/%d). Tameng menahan damage lebih dulu dan tidak ikut dihitung. Atau pakai Gebrakan Dongkrek.,Deal %d damage to its HP this turn to break the Ajian (%d/%d). Its Block soaks damage first and doesn't count. Or use Gebrakan Dongkrek.
+AJIAN_BREAK_TIP,Beri %d damage ke Nyawanya giliran ini untuk membuyarkan Ajian (%d/%d). Tameng menahan damage lebih dulu dan tidak ikut dihitung. Atau pakai Gebrakan Dung-Krek.,Deal %d damage to its HP this turn to break the Ajian (%d/%d). Its Block soaks damage first and doesn't count. Or use Gebrakan Dung-Krek.
 BALA_SHIELD_TIP,Dilindungi Bala: hanya menerima separuh damage selama masih ada Bala yang hidup.,Shielded by Bala: takes only half damage while any Bala still stands.
 BALA_TIP,Buto bayangan panggilan Buto Hitam. Lenyap kalau Buto Hitam tumbang.,A shadow Buto summoned by Buto Hitam. Vanishes when Buto Hitam falls.
 BALA_FMT,Bala %s,Bala %s
@@ -376,17 +376,17 @@ INTENT_AJIAN,Ajian Lebur Saketi: %d damage dan %d Lara,Ajian Lebur Saketi: %d da
 INTENT_SUMMON,Memanggil %d Bala,Summons %d Bala
 INTENT_STAGGER,"Terhuyung, tidak beraksi","Staggered, does nothing"
 S10_PHASE2_1,Cukup main-mainnya! Rasakan pagebluk yang sebenarnya!,Enough games! Now feel the true plague!
-S10_PHASE2_2,"Tabuh terus! Selama Dongkrek berbunyi, kita tidak akan kalah.","Keep drumming! As long as Dongkrek sounds, we will not fall."
+S10_PHASE2_2,"Tabuh terus! Selama dung dan krek masih berbunyi, kita tidak akan kalah.","Keep drumming! As long as the dung and the krek ring out, we will not fall."
 PUSTAKA_BALA,Bala,Bala
 PUSTAKA_BALA_TEXT,"Buto bayangan yang dipanggil Buto Hitam saat ia murka. Wujudnya gelap tembus pandang, tapi ilmunya sama dengan Buto berwarna aslinya.
 
 Selama masih ada Bala yang berdiri, Buto Hitam hanya menerima separuh damage. Begitu Buto Hitam tumbang, semua Bala ikut lenyap.
 
-Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gebrakan Dongkrek.","Shadow Buto summoned by Buto Hitam in its rage. They look dark and translucent, but they use the same skills as the Buto whose color they bear.
+Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gebrakan Dung-Krek.","Shadow Buto summoned by Buto Hitam in its rage. They look dark and translucent, but they use the same skills as the Buto whose color they bear.
 
 While any Bala still stands, Buto Hitam takes only half damage. When Buto Hitam falls, every Bala vanishes with it.
 
-Tip: take down the Bala first, or hit them all at once with Gebrakan Dongkrek."
+Tip: take down the Bala first, or hit them all at once with Gebrakan Dung-Krek."
 BLESS_KENDANG,Kendang Pembuka,Kendang Pembuka
 BLESS_KENDANG_DESC,+1 Ketukan di giliran pertama setiap battle.,+1 Ketukan on the first turn of every battle.
 BLESS_LELUHUR,Greget Leluhur,Greget Leluhur
@@ -424,7 +424,7 @@ HINT_SIREP,"Buto Putih akan menyirep kartu terkuatmu. Kartu tersirep tidak bisa 
 HINT_LARA_TITLE,Lara,Lara
 HINT_LARA,"Lara mengurangi Nyawa di akhir setiap giliran Buto, menembus Tameng, lalu berkurang satu.","Lara drains HP at the end of every Buto turn, ignores Block, then goes down by one."
 HINT_AJIAN_TITLE,Ajian Lebur Saketi,Ajian Lebur Saketi
-HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat sambil bertameng. Isi bar Buyarkan dengan damage yang menembus Tamengnya, atau pakai Gebrakan Dongkrek, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow behind a Block. Fill the Break bar with damage that gets past the Block, or use Gebrakan Dongkrek, to break it."
+HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat sambil bertameng. Isi bar Buyarkan dengan damage yang menembus Tamengnya, atau pakai Gebrakan Dung-Krek, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow behind a Block. Fill the Break bar with damage that gets past the Block, or use Gebrakan Dung-Krek, to break it."
 HINT_BALA_TITLE,Bala,Bala
 HINT_BALA,"Selama masih ada Bala yang hidup, Buto Hitam hanya menerima separuh damage. Habisi Bala lebih dulu.","While any Bala lives, Buto Hitam takes only half damage. Take the Bala down first."
 HINT_PAGEBLUK_TITLE,Pagebluk Merata,Pagebluk Merata
@@ -484,7 +484,7 @@ CH_WIN,Menangkan babak,Win the act
 CH_TURNS,Menang paling lama %d giliran,Win within %d turns
 CH_HP,Sisa Nyawa minimal %d%%,Finish with at least %d%% HP
 CH_MERGES,Gabung kartu minimal %d kali,Merge cards at least %d times
-CH_NO_ULT,Menang tanpa Gebrakan Dongkrek,Win without Gebrakan Dongkrek
+CH_NO_ULT,Menang tanpa Gebrakan Dung-Krek,Win without Gebrakan Dung-Krek
 CH_MAX_LARA,Lara tidak pernah lebih dari %d,Never have more than %d Lara
 CH_FIRST,Kalahkan %s lebih dulu,Defeat %s first
 CH_CALM_READY,Buyarkan amukan Buto yang siap Ngamuk,Break the rage of a Buto about to go Ngamuk
@@ -508,7 +508,7 @@ REWARD_REROLL,Pilihan lain,Reroll
 REWARD_REROLL_TIP,Undi ulang pilihan berkah (sekali).,Reroll the blessing choices (once).
 MENU_MASTER_TITLE,Juru Dongkrek,Juru Dongkrek
 SETTINGS_RHYTHM,Irama Gebrakan,Gebrakan rhythm
-RHYTHM_TITLE,Gebrakan Dongkrek!,Gebrakan Dongkrek!
+RHYTHM_TITLE,Gebrakan Dung-Krek!,Gebrakan Dung-Krek!
 RHYTHM_HINT,"Tunggu hitungan kentongan, lalu tekan saat ketukan masuk lingkaran.","Wait for the kentongan count, then press as each beat reaches the circle."
 RHYTHM_PERFECT,Tepat!,Perfect!
 RHYTHM_GOOD,Cukup,Good
@@ -557,7 +557,7 @@ EV_PERONDA_A_RESULT,"""Bawa saja, Eyang. Pukul keras-keras di depan Buto.""","""
 EV_PERONDA_B_RESULT,"Semalaman berjaga membuat badan kuat, tapi ada jurus yang sedikit terlupa.","A night on watch toughens the body, but one move slips a little from memory."
 EV_BUTO_KECIL_TITLE,Buto Kecil Tersesat,A Lost Little Buto
 EV_BUTO_KECIL_TEXT,Seekor Buto kecil menangis di semak-semak. Ia terpisah dari kawanannya dan ketakutan melihat Eyang.,A little Buto cries in the bushes. It has lost its pack and is frightened of Eyang.
-EV_BUTO_KECIL_A,Usir dengan bunyi Dongkrek (kartu Tabuh acak +1 bintang),Scare it off with Dongkrek (random Tabuh card +1 rank)
+EV_BUTO_KECIL_A,Usir dengan bunyi dung-krek (kartu Tabuh acak +1 bintang),Scare it off with the dung-krek beat (random Tabuh card +1 rank)
 EV_BUTO_KECIL_B,Tunjukkan jalan pulang (Nyawa maks +8),Show it the way home (Max HP +8)
 EV_BUTO_KECIL_A_RESULT,Buto kecil itu lari terbirit-birit. Tabuhanmu makin mantap.,The little Buto runs off in a hurry. Your drumming grows steadier.
 EV_BUTO_KECIL_B_RESULT,"Buto kecil itu mengikuti Eyang sampai tepi hutan, lalu menghilang. Hati Eyang terasa ringan.","The little Buto follows Eyang to the edge of the forest, then disappears. Eyang's heart feels light."
@@ -653,3 +653,5 @@ RHYTHM_PRACTICE_TIP,Latihan irama Gebrakan tanpa bertarung.,Practice the Gebraka
 TUT_GEBRAKAN_1,"Greget-ku sudah penuh. Sekarang aku bisa melepas Gebrakan Dung-Krek: bedug dan korek ditabuh serentak, menghantam semua Buto sekaligus.","My Greget is full. Now I can unleash the Gebrakan Dung-Krek: bedug and korek struck together, hitting every Buto at once."
 TUT_GEBRAKAN_2,"Klik gong GEBRAKAN di kanan bawah, atau tekan Q. Kalau Greget kutahan sampai 200%, pukulannya jadi dua kali lipat.","Click the GEBRAKAN gong at the bottom right, or press Q. If I hold my Greget until 200%, the blow is twice as strong."
 TUT_GEBRAKAN_3,"Lalu ikuti iramanya. Tunggu empat hitungan kentongan, kemudian tekan tepat saat dung dan krek masuk lingkaran. Makin pas tabuhannya, makin keras pukulannya.","Then follow the rhythm. Wait for four kentongan counts, then press right as each dung and krek reaches the circle. The truer the beat, the harder the blow."
+PROLOGUE_6,Ambilkan tongkatku. Malam ini juga kita usir mereka dari Mejayan.,Bring me my staff. Tonight we drive them out of Mejayan.
+ENDING_6,Terima kasih sudah menemani perjalanan Eyang Palang.,Thank you for walking alongside Eyang Palang.

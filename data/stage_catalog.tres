@@ -16,5 +16,5 @@
 [resource]
 script = ExtResource("1_sf3m0")
 stages = Array[ExtResource("2_5e2dk")]([ExtResource("3_8ed71"), ExtResource("4_rwkvs"), ExtResource("5_r6edn"), ExtResource("6_b8upf"), ExtResource("7_qou71"), ExtResource("8_nfsbm"), ExtResource("9_b16q2"), ExtResource("10_ljj83"), ExtResource("11_t2awk"), ExtResource("12_gq5ln")])
-prologue_dialog = PackedStringArray("narator|PROLOGUE_1", "narator|PROLOGUE_2", "warga|PROLOGUE_3", "narator|PROLOGUE_4", "eyang|PROLOGUE_5")
-ending_dialog = PackedStringArray("narator|ENDING_1", "roro_ayu|ENDING_2", "eyang|ENDING_3", "narator|ENDING_4", "narator|ENDING_5")
+prologue_dialog = PackedStringArray("narator|PROLOGUE_1", "narator|PROLOGUE_2", "warga|PROLOGUE_3", "narator|PROLOGUE_4", "eyang|PROLOGUE_5", "eyang|PROLOGUE_6")
+ending_dialog = PackedStringArray("narator|ENDING_1", "roro_ayu|ENDING_2", "eyang|ENDING_3", "eyang|ENDING_4", "narator|ENDING_5", "narator|ENDING_6")

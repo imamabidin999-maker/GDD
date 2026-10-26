@@ -245,11 +245,11 @@ func _build_stages() -> void:
 		catalog.stages.append(load(path) as StageData)
 
 	catalog.prologue_dialog = _with_speakers(
-		PackedStringArray(["PROLOGUE_1", "PROLOGUE_2", "PROLOGUE_3", "PROLOGUE_4", "PROLOGUE_5"]),
-		["narator", "narator", "warga", "narator", "eyang"])
+		PackedStringArray(["PROLOGUE_1", "PROLOGUE_2", "PROLOGUE_3", "PROLOGUE_4", "PROLOGUE_5", "PROLOGUE_6"]),
+		["narator", "narator", "warga", "narator", "eyang", "eyang"])
 	catalog.ending_dialog = _with_speakers(
-		PackedStringArray(["ENDING_1", "ENDING_2", "ENDING_3", "ENDING_4", "ENDING_5"]),
-		["narator", "roro_ayu", "eyang", "narator", "narator"])
+		PackedStringArray(["ENDING_1", "ENDING_2", "ENDING_3", "ENDING_4", "ENDING_5", "ENDING_6"]),
+		["narator", "roro_ayu", "eyang", "eyang", "narator", "narator"])
 	_save(catalog, StageCatalog.PATH)
 
 
