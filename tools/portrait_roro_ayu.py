@@ -152,12 +152,16 @@ FRINGE_NEAR = [(45.8, 13.4), (45.6, 16.6), (41.0, 18.0), (37.8, 20.4), (35.8, 24
 FRINGE_FAR = [(45.8, 13.4), (51.0, 11.6), (55.8, 13.8), (58.4, 18.6), (57.8, 23.6), (56.4, 24.4), (55.2, 20.8),
               (52.4, 18.0), (49.0, 16.6), (45.6, 16.6)]
 EAR = [(30.4, 29.6), (32.6, 29.0), (34.4, 31.0), (34.4, 35.6), (33.0, 37.0), (31.0, 35.8), (30.0, 32.4)]
-NECK = [(38.4, 40.0), (49.6, 42.0), (50.0, 48.0), (51.2, 57.6), (37.0, 57.6), (38.0, 48.0)]
+NECK = [(39.0, 40.0), (49.4, 42.0), (49.2, 48.0), (50.2, 57.6), (38.6, 57.6), (39.4, 48.0)]
 BUN = (22.8, 35.6, 8.4, 7.2)
-BODY = [(0, 80), (0.4, 68.6), (5.0, 62.8), (14.0, 59), (26.0, 56.4), (35.0, 54.2), (52.6, 54.4), (62.0, 56.8),
-        (71.0, 61), (77.6, 66.6), (80, 72), (80, 80)]
-VNECK = [(37.0, 54.4), (51.6, 54.6), (49.6, 60.6), (46.0, 64.8), (42.6, 60.8)]
-BEF = [(40.6, 64.4), (52.0, 63.8), (53.4, 80), (39.6, 80)]
+# Bahu landai selebar kira-kira dua kali kepala; lengan atas terpisah dari badan
+# supaya siluetnya ramping.
+BODY = [(37.2, 55.2), (51.0, 55.4), (57.6, 57.0), (63.2, 59.6), (66.6, 62.6), (67.8, 67.0), (68.0, 72.0),
+        (67.8, 80), (14.2, 80), (14.0, 72.0), (14.4, 66.4), (16.6, 62.6), (20.6, 59.6), (28.0, 57.2)]
+ARM_NEAR = [(16.6, 62.6), (14.4, 66.4), (14.0, 72.0), (14.2, 80), (21.0, 80), (20.6, 72.0), (20.4, 66.0)]
+ARM_FAR = [(66.6, 62.6), (67.8, 67.0), (68.0, 72.0), (67.8, 80), (62.2, 80), (62.4, 72.0), (62.8, 66.0)]
+VNECK = [(38.6, 55.4), (50.2, 55.6), (48.4, 61.0), (45.6, 65.0), (42.8, 61.0)]
+BEF = [(41.8, 64.6), (50.2, 64.2), (50.8, 80), (41.2, 80)]
 
 
 def build_base() -> Canvas:
@@ -170,9 +174,15 @@ def build_base() -> Canvas:
     c.fill(down(bun), v, HAIR, [0.28, 0.5, 0.72, 0.9])
 
     # badan dan kebaya
-    body = big_mask(lambda d: d.polygon(P(BODY), fill=255))
-    v = light_field(30, 66, 30.0) * 0.75 + 0.25 * blur(body, 2.2)
+    body = big_mask(lambda d: d.polygon(P(smooth_poly(BODY, 4)), fill=255))
+    bust = blur(big_mask(lambda d: (d.ellipse(E(32.5, 70.5, 6.5, 4.5), fill=255), d.ellipse(E(56.5, 70.5, 4.5, 4.5), fill=255))), 1.4)
+    under_bust = blur(big_mask(lambda d: (d.chord(E(32.5, 74.5, 7.0, 4.0), 0, 180, fill=255), d.chord(E(56.5, 74.5, 5.0, 4.0), 0, 180, fill=255))), 1.0)
+    v = light_field(36, 66, 22.0) * 0.72 + 0.28 * blur(body, 1.8) + 0.12 * bust - 0.18 * under_bust
     c.fill(down(body), v, KEBAYA, [0.3, 0.46, 0.64, 0.84])
+    for arm, cx in ((ARM_NEAR, 17.0), (ARM_FAR, 65.0)):
+        m = big_mask(lambda d, arm=arm: d.polygon(P(smooth_poly(arm, 4)), fill=255))
+        v = light_field(cx, 68, 9.0) * 0.6 + 0.4 * blur(m, 1.2) - (0.12 if cx > 40 else 0.0)
+        c.fill(down(m), v, KEBAYA, [0.3, 0.46, 0.64, 0.84])
 
     # leher: bayangan rahang di atasnya, sisi kanan lebih gelap
     neck = big_mask(lambda d: d.polygon(P(smooth_poly(NECK, 4)), fill=255))
@@ -185,7 +195,7 @@ def build_base() -> Canvas:
     vneck = big_mask(lambda d: d.polygon(P(VNECK), fill=255))
     v = light_field(42, 58, 8.0) * 0.8 + 0.2 * blur(vneck, 1.0)
     c.fill(down(vneck), v, SKIN, [0.1, 0.28, 0.5, 0.8, 0.98])
-    kemben = big_mask(lambda d: d.polygon(P([(40, 59.6), (51.2, 59.6), (46, 66)]), fill=255))
+    kemben = big_mask(lambda d: d.polygon(P([(40.4, 59.6), (49.6, 59.6), (45.6, 65.6)]), fill=255))
     kem = np.minimum(down(kemben), down(vneck))
     c.fill(kem, np.full((W, W), 0.4), BATIK, [0.3, 0.7, 0.95])
     bef = big_mask(lambda d: d.polygon(P(BEF), fill=255))
@@ -374,13 +384,13 @@ def details(img: Image.Image, c: Canvas) -> Image.Image:
     px[17, 23] = GOLD[3] + (255,)
 
     # --- kebaya kutubaru: tepi bersulam emas, bef, peniti renteng, dan kalung
-    polyline(px, [(37, 54), (42, 60), (45, 64)], GOLD[2])
-    polyline(px, [(38, 54), (43, 60)], GOLD[1])
-    polyline(px, [(51, 54), (49, 60), (47, 64)], GOLD[2])
-    polyline(px, [(41, 64), (40, 79)], GOLD[2])
-    polyline(px, [(52, 64), (53, 79)], GOLD[2])
-    polyline(px, [(41, 64), (52, 64)], GOLD[1])
-    for x, y in ((38, 55), (41, 59), (44, 63), (50, 56), (48, 62), (40, 68), (40, 73), (53, 68), (53, 74)):
+    polyline(px, [(38, 55), (42, 60), (45, 64)], GOLD[2])
+    polyline(px, [(39, 55), (43, 60)], GOLD[1])
+    polyline(px, [(50, 55), (48, 60), (46, 64)], GOLD[2])
+    polyline(px, [(42, 64), (41, 79)], GOLD[2])
+    polyline(px, [(50, 64), (51, 79)], GOLD[2])
+    polyline(px, [(42, 64), (50, 64)], GOLD[1])
+    for x, y in ((39, 56), (42, 60), (44, 63), (49, 57), (47, 62), (41, 69), (41, 75), (51, 70), (51, 76)):
         px[x, y] = GOLD[3] + (255,)
     # peniti renteng: tiga bros emas yang dirangkai rantai di bef
     for i, y in enumerate((66, 71, 76)):
@@ -393,19 +403,21 @@ def details(img: Image.Image, c: Canvas) -> Image.Image:
         if i < 2:
             for yy in range(y + 3, y + 5):
                 px[46, yy] = GOLD[1] + (255,)
+    # lipatan antara lengan dan badan
+    polyline(px, [(20, 66), (20, 72), (21, 79)], KEBAYA[0])
+    polyline(px, [(63, 66), (62, 72), (62, 79)], KEBAYA[0])
     # motif brokat di kain kebaya
     for y in range(60, 80, 5):
         for x in range(2 + (y // 5 % 2) * 3, 80, 6):
-            if c.region[y, x] >= 0 and c.ramps[c.region[y, x]] is KEBAYA and not (38 <= x <= 54):
-                lvl = c.level[y, x]
-                px[x, y] = KEBAYA[min(lvl + 1, 4)] + (255,)
+            if c.region[y, x] >= 0 and c.ramps[c.region[y, x]] is KEBAYA and not (40 <= x <= 52):
+                px[x, y] = KEBAYA[min(c.level[y, x] + 1, 4)] + (255,)
     # kemben batik: titik-titik emas
-    for x, y in ((44, 61), (47, 61), (46, 63)):
+    for x, y in ((44, 60), (47, 60), (45, 62)):
         if c.region[y, x] >= 0:
             px[x, y] = BATIK[3] + (255,)
     # kalung emas tipis dengan liontin, di atas kerah
-    polyline(px, [(40, 50), (42, 52), (45, 53)], GOLD[2])
-    polyline(px, [(49, 51), (47, 53), (46, 53)], GOLD[2])
+    polyline(px, [(41, 50), (43, 52), (45, 53)], GOLD[2])
+    polyline(px, [(48, 51), (47, 53), (46, 53)], GOLD[2])
     stamp(px, 45, 54, ["ab", "rb"], {"a": GOLD[3], "b": GOLD[1], "r": RUBY})
     return img
 

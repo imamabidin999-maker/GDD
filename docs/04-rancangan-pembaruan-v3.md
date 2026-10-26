@@ -219,4 +219,5 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
   - Sanggul ukel konde gaya Solo letaknya rendah di tengkuk dan lonjong, jadi sanggulnya diturunkan ke tengkuk, dihias untaian melati dan tusuk konde emas.
   - Kebaya kutubaru (khas Jawa, ada bef di dada) dengan peniti renteng tiga bros, subang bermata merah, dan kalung tipis. Selendang di bahu dibuang karena lebih khas Bali.
   - Teknik potret piksel ala GBA: wajah tiga perempat yang sisi dekat dan jauhnya berbeda, shading menggerombol dengan 4-6 warna per bahan, bayangan bergeser ke merah-ungu dan kilau ke kuning, tanpa garis di bawah mata (membuat wajah tampak tua).
+  - Proporsi badan dibuat ramping dan anggun: bahu landai selebar kira-kira dua kali lebar kepala (sebelumnya bahu memenuhi seluruh bingkai), lengan atas yang ramping terpisah dari badan dengan lipatan kain, leher jenjang, dan bentuk dada yang samar di balik kebaya.
   - Potretnya dilukis oleh `tools/portrait_roro_ayu.py`: bentuk tiap bagian dibuat 8x lebih besar, diperkecil, lalu diwarnai bertingkat menurut arah cahaya; mata, alis, hidung, bibir, perhiasan, melati, dan sulaman ditempel per piksel.
