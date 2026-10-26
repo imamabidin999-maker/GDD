@@ -863,7 +863,7 @@ func _open_pause() -> void:
 	col.add_child(title)
 	var help := UIKit.label(GameState.fill_keys(tr("BATTLE_HELP")), &"", UIKit.COLOR_DIM)
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	help.custom_minimum_size = Vector2(260, 0)
+	help.custom_minimum_size = Vector2(300, 0)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(help)
 	var resume := UIKit.button(tr("BTN_RESUME"), 160, true)

@@ -18,19 +18,21 @@ Pertama kali dibuka, Godot butuh beberapa detik untuk mengimpor gambar dan suara
 
 ## Cara bermain
 
-Seluruh game bisa dimainkan dengan mouse.
+Seluruh game bisa dimainkan dengan mouse. Keyboard hanya jalan pintas, dan tombolnya bisa diganti di **Pengaturan → Tombol keyboard**. Tabel ini memakai tombol bawaan.
 
 | Aksi | Mouse | Keyboard |
 |---|---|---|
-| Mainkan kartu | Klik kartu, atau seret ke tubuh Buto | Angka 1–9 |
+| Mainkan kartu | Klik kartu, atau seret ke tubuh Buto | Angka 1–9 (kartu ke-1 sampai ke-9) |
 | Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – |
 | Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
-| Pilih target | Klik Buto | – |
+| Pilih target | Klik Buto | Tab (pindah ke Buto berikutnya) |
 | Sapu Jagad | Tombol gong | Q |
-| Menabuh irama Sapu Jagad | Klik kiri | Spasi, Enter, atau Q |
+| Menabuh irama Sapu Jagad | Klik kiri | Spasi, Enter, atau tombol Sapu Jagad |
 | Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
-| Kecepatan battle 1x / 2x | Tombol 1x di atas | – |
+| Kecepatan battle 1x / 2x | Tombol 1x di atas | F |
 | Jeda | Tombol II | Esc |
+
+Nama tombol pilihanmu tampil di pojok tombol gong, di keterangan saat kursor diarahkan ke tombol HUD, di menu jeda, dan di teks tutorial.
 
 Aturan singkatnya:
 
@@ -135,7 +137,7 @@ Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tanta
 
 ### Sapu Jagad berirama
 
-Saat Sapu Jagad dipakai, iringan gamelannya sendiri mulai: empat hitungan kentongan (angka di lingkaran ikut menghitung mundur), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak) datang ke lingkaran satu ketukan demi satu ketukan, sekitar 86 ketukan per menit. Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Selisih sampai 90 ms bernilai penuh, sampai 180 ms bernilai setengah, dan hasilnya menambah damage Sapu Jagad **sampai +30%**. Tekanan yang terlalu cepat diberi tanda tanpa menghabiskan ketukan, dan meleset semua tidak mengurangi damage. Musik battle dipelankan selama irama, lalu pukulannya ditutup bunyi dung-dung, krek, dan gong.
+Saat Sapu Jagad dipakai, iringan gamelannya sendiri mulai: empat hitungan kentongan (angka di lingkaran ikut menghitung mundur), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak) datang ke lingkaran satu ketukan demi satu ketukan, sekitar 86 ketukan per menit. Klik, tekan Spasi, atau tombol Sapu Jagad (bawaannya Q) tepat saat ketukan masuk lingkaran. Selisih sampai 90 ms bernilai penuh, sampai 180 ms bernilai setengah, dan hasilnya menambah damage Sapu Jagad **sampai +30%**. Tekanan yang terlalu cepat diberi tanda tanpa menghabiskan ketukan, dan meleset semua tidak mengurangi damage. Musik battle dipelankan selama irama, lalu pukulannya ditutup bunyi dung-dung, krek, dan gong.
 
 Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Sapu Jagad, dan saat irama pertama kali muncul ada layar cara bermain. Irama bisa dicoba kapan saja lewat tombol **Coba** di Pengaturan, dan bisa dimatikan. Iramanya tidak ikut dipercepat oleh kecepatan battle 2x.
 
@@ -179,6 +181,7 @@ Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, da
 - **Kesulitan** mode cerita: Santai (Nyawa Buto −20%, serangan −15%), Normal, atau Sulit (Nyawa dan serangan +15%). Bisa diganti kapan saja.
 - **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
 - **Petunjuk** dan **Irama Sapu Jagad** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Sapu Jagad membuka latihan irama.
+- **Tombol keyboard**: tombol **Atur** membuka daftar semua tombol. Setiap aksi punya dua tombol. Klik kotaknya lalu tekan tombol baru; klik kanan atau Backspace mengosongkan, Esc membatalkan. Kalau tombol itu sudah dipakai aksi lain, tombolnya dipindah dan kamu diberi tahu. Esc selalu untuk jeda dan kembali, jadi tidak bisa dipindah. **Kembalikan bawaan** memulihkan semuanya. Tombol disimpan menurut letaknya di keyboard, jadi tetap pas di keyboard selain QWERTY.
 
 Progres tersimpan otomatis.
 
@@ -201,11 +204,13 @@ Versi Web bisa langsung diunggah ke itch.io (pilih "This file will be played in 
 ```
 autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
 core/          Logika battle (BattleManager, DeckController, HandManager, PlayerState, aksi)
-               dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan)
+               dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan),
+               serta tombol keyboard (KeyBindings)
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
-ui/            Kartu, tangan, HUD, dialog, pengaturan, tooltip, titik peta, panel berkah,
-               kejadian, tantangan, irama Sapu Jagad, dan pemilih kartu
+ui/            Kartu, tangan, HUD, dialog, pengaturan, panel tombol keyboard, tooltip,
+               titik peta, panel berkah, kejadian, tantangan, irama Sapu Jagad,
+               dan pemilih kartu
 assets/        Sprite, latar, kartu, ikon, font, shader, musik, dan efek suara
 localization/  Teks dua bahasa (dibuat oleh tools/strings_source.py)
 tests/         Tes otomatis

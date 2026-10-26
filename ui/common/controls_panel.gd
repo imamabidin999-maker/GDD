@@ -31,13 +31,13 @@ func _ready() -> void:
 	var title := UIKit.label(tr("KEYS_TITLE"), &"HeaderLabel")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
-	var mouse := UIKit.small_label(tr("KEYS_MOUSE"), UIKit.COLOR_DIM)
+	var mouse := UIKit.label(tr("KEYS_MOUSE"), &"", UIKit.COLOR_DIM)
 	mouse.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	mouse.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mouse.custom_minimum_size.x = 460
 	col.add_child(mouse)
 
-	var columns := UIKit.hbox(24)
+	var columns := UIKit.hbox(32)
 	columns.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_child(columns)
 	var cards: Array[String] = []
@@ -46,7 +46,7 @@ func _ready() -> void:
 	columns.add_child(_group("KEYS_GROUP_BATTLE", BATTLE_ACTIONS))
 	columns.add_child(_group("KEYS_GROUP_CARDS", cards))
 
-	_notice = UIKit.small_label("", UIKit.COLOR_GOLD)
+	_notice = UIKit.label("", &"", UIKit.COLOR_GOLD)
 	_notice.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_notice.custom_minimum_size = Vector2(460, 20)
@@ -73,19 +73,20 @@ func _ready() -> void:
 
 ## Satu kelompok aksi: judul, lalu baris "nama aksi | slot 1 | slot 2".
 func _group(title_key: String, actions: Array[String]) -> VBoxContainer:
-	var box := UIKit.vbox(4)
-	box.add_child(UIKit.label(tr(title_key), &"", UIKit.COLOR_GOLD))
+	var box := UIKit.vbox(2)
+	box.add_child(UIKit.label(tr(title_key), &"BigLabel", UIKit.COLOR_GOLD))
 	var grid := GridContainer.new()
 	grid.columns = 1 + KeyBindings.SLOTS
 	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 3)
+	grid.add_theme_constant_override("v_separation", 1)
 	box.add_child(grid)
 	for action: String in actions:
-		var label := UIKit.label(action_name(action))
-		label.custom_minimum_size.x = 96
+		var label := UIKit.label(action_name(action), &"BigLabel")
+		label.custom_minimum_size.x = 64
 		grid.add_child(label)
 		for slot: int in KeyBindings.SLOTS:
 			var b := UIKit.button("", SLOT_WIDTH)
+			b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			if KeyBindings.is_locked(action, slot):
 				b.disabled = true
 				b.tooltip_text = tr("KEYS_ESC_NOTE")
@@ -110,10 +111,9 @@ func _refresh() -> void:
 		var action := parts[0]
 		var slot := int(parts[1])
 		var b: Button = _slots[key]
-		if action == _waiting_action and slot == _waiting_slot:
-			b.text = "..."
-		else:
-			b.text = KeyBindings.key_name(GameState.key_codes(action)[slot])
+		var waiting := action == _waiting_action and slot == _waiting_slot
+		b.text = "..." if waiting else KeyBindings.key_name(GameState.key_codes(action)[slot])
+		b.modulate = Color(1.4, 1.2, 0.6) if waiting else Color.WHITE
 	if _waiting_action == "" and _notice.text == "":
 		_notice.text = tr("KEYS_HINT")
 

@@ -68,7 +68,9 @@ BATTLE_BLOCK_TIP,Tameng %d: menahan damage sampai awal giliranmu berikutnya.,Blo
 BATTLE_AP_TIP,"Ketukan: tiap giliran ada 4 ketukan, seperti satu gatra gamelan. Main kartu 1 ketukan, geser kartu 1 ketukan.","Ketukan (beats): you get 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1."
 BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Sapu Jagad siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Sapu Jagad ready, up to 200%% = Greget Memuncak (overcharged)."
 BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Sapu Jagad (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Sapu Jagad (now x%.2f).
-BATTLE_HELP,Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target  |  {end_turn}: akhiri giliran  |  {ultimate}: Sapu Jagad  |  {target_next}: ganti sasaran,Click card: play  |  Drag card: move  |  Click Buto: target  |  {end_turn}: end turn  |  {ultimate}: Sapu Jagad  |  {target_next}: next target
+BATTLE_HELP,"Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target
+{end_turn}: akhiri giliran  |  {ultimate}: Sapu Jagad  |  {target_next}: ganti sasaran","Click card: play  |  Drag card: move  |  Click Buto: target
+{end_turn}: end turn  |  {ultimate}: Sapu Jagad  |  {target_next}: next target"
 BATTLE_CARD_LOCKED_BY,Sirep!,Sirep!
 BATTLE_MOXIE_DRAINED,Greget -%d%%,Greget -%d%%
 BATTLE_CHARGING,Ancang-ancang!,Winding up!

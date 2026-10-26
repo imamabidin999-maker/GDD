@@ -194,3 +194,13 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
 
 - Nama "Gebrakan Dung-Krek" terasa janggal, jadi ultimate Eyang Palang sekarang bernama **Sapu Jagad**: "menyapu seisi jagad", nama yang juga dikenal sebagai ajian dalam cerita rakyat Jawa. Di game, bedug dan korek ditabuh serentak dan gelegarnya menyapu semua Buto sekaligus. (Sempat dinamai Gelap Ngampar sebelum dipilih Sapu Jagad.) Nama kode di dalam skrip (`RhythmGebrakan`, bunyi `gebrakan`) tidak berubah.
 - Kartu sekarang punya bunyi sendiri: gabung (hembusan, dua nada saron naik, kenong), main (kibasan kartu), tarik dari dek (jentikan kertas, berurutan saat beberapa kartu masuk), angkat (tik kayu), taruh setelah digeser (tok kayu), dan sorot (tik halus). Bunyi gabung terdengar baik lewat tombol rantai maupun saat kartu digeser bersebelahan. Saat tumpukan buangan dikocok kembali ke dek, bunyi kocok terdengar.
+
+## 11. Tombol Keyboard yang Bisa Diubah
+
+- Pengaturan punya baris **Tombol keyboard** dengan tombol **Atur**. Panelnya mendaftar semua aksi dalam dua kelompok: Pertarungan (Sapu Jagad, Akhiri giliran, Ganti sasaran, Kecepatan 1x/2x, Jeda) dan Kartu di tangan (kartu ke-1 sampai ke-9). Setiap aksi punya dua tombol.
+- Cara mengganti: klik kotak tombol, lalu tekan tombol barunya. Klik kanan atau Backspace mengosongkan, Esc membatalkan. Satu tombol hanya punya satu arti: kalau tombol baru sudah dipakai aksi lain, tombol itu dipindah dan pemain diberi tahu ("Q dipindah dari Sapu Jagad ke Akhiri giliran").
+- Esc dikunci untuk jeda, kembali, dan membatalkan, supaya pemain tidak pernah terkunci di satu layar. Slot kedua Jeda tetap bisa diisi.
+- Dua aksi baru: **Ganti sasaran** (Tab) untuk berpindah Buto tanpa mouse, dan **Kecepatan 1x/2x** (F).
+- Yang disimpan adalah letak tombol di keyboard (physical keycode), bukan hurufnya, jadi tetap pas di keyboard AZERTY atau QWERTZ. Nama yang ditampilkan mengikuti tata letak keyboard pemain.
+- Teks yang menyebut tombol (menu jeda, tutorial Sapu Jagad, layar cara bermain irama) memakai penanda `{ultimate}`, `{end_turn}`, dan seterusnya, yang diisi nama tombol pilihan pemain. Nama tombol juga tampil di pojok gong Sapu Jagad dan di keterangan tombol HUD.
+- Logikanya ada di `core/input/key_bindings.gd`, panelnya di `ui/common/controls_panel.gd`, dan tesnya di `tests/test_keys.gd`.
