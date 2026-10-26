@@ -4,7 +4,7 @@ extends Control
 ## Palang, serta langkah berikutnya (battle, kejadian, atau Buto Hitam).
 ## Berkah setelah menang dan hasil akhir Ruwatan juga ditampilkan di sini.
 
-const BG := preload("res://assets/backgrounds/battle_candi.png")
+const BG := preload("res://assets/backgrounds/stage_9.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const HEART := preload("res://assets/ui/mini_heart.png")
 const DECK := preload("res://assets/ui/mini_deck.png")
@@ -30,8 +30,8 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var bg := TextureRect.new()
 	bg.texture = BG
-	bg.position = Vector2(0, -150)
-	bg.modulate = Color(0.6, 0.52, 0.78)
+	bg.position = Vector2(-8, -8)
+	bg.modulate = Color(0.62, 0.56, 0.8)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	_world = Node2D.new()

@@ -8,7 +8,7 @@ dipakai Godot. Desain asli tidak diubah.
 
 Isinya:
 1. Karakter (Eyang Palang + 5 Buto): latar navy dihapus jadi transparan.
-2. Latar battle: diperbesar 4x (nearest) supaya tetap tajam.
+2. (Latar battle sekarang digambar oleh tools/build_backgrounds.py.)
 3. Bingkai kartu: kartu FOCUS di desain dijadikan template, judul & gambarnya
    dikosongkan, lalu diwarnai ulang untuk tiap tipe kartu.
 4. Ikon yang belum ada di desain (pedang, perisai kawung, tombak, pusaran,
@@ -143,18 +143,7 @@ def build_characters() -> dict[str, Image.Image]:
 # 2. Latar
 # ---------------------------------------------------------------------------
 
-def build_backgrounds() -> None:
-    print("Latar:")
-    im = Image.open(src("8413950758356832246")).convert("RGB")
-    # Desain latar hanya 160x160. Diperbesar halus (Lanczos) lalu sedikit diburamkan
-    # supaya terbaca sebagai latar jauh dan karakter piksel di depannya lebih menonjol.
-    from PIL import ImageFilter
-    smooth = im.resize((640, 640), Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.8))
-    save(smooth, "backgrounds/battle_candi.png")
-    # Versi gelap & lebih buram untuk menu utama dan peta.
-    dark = smooth.filter(ImageFilter.GaussianBlur(2.0))
-    dark = Image.eval(dark, lambda v: int(v * 0.55))
-    save(dark, "backgrounds/menu_candi.png")
+# Latar battle dan layar lain digambar terpisah oleh tools/build_backgrounds.py.
 
 
 # ---------------------------------------------------------------------------
@@ -742,7 +731,6 @@ def build_app_icon() -> None:
 
 def main() -> None:
     chars = build_characters()
-    build_backgrounds()
     eye = build_card_frames()
     build_icons(eye)
     build_masks(chars)

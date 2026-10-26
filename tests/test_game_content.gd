@@ -243,6 +243,17 @@ func _run() -> void:
 			if a != b and a.map_position.distance_to(b.map_position) < 60.0:
 				spread_ok = false
 	check(spread_ok, "titik peta tidak bertumpuk dan tidak tertutup panel info")
+	var bg_ok := true
+	var bg_seen := {}
+	for stage: StageData in catalog.stages:
+		var tex := load(stage.background) as Texture2D if ResourceLoader.exists(stage.background) else null
+		if tex == null or tex.get_width() != 656 or tex.get_height() != 376:
+			bg_ok = false
+			print("    latar tidak ada atau ukurannya salah: ", stage.background)
+		bg_seen[stage.background] = true
+	check(bg_ok and bg_seen.size() == 10, "setiap babak punya latar sendiri berukuran 656x376")
+	for path: String in ["res://assets/backgrounds/menu.png", "res://assets/backgrounds/ending.png"]:
+		check(ResourceLoader.exists(path), "latar %s ada" % path.get_file())
 
 	print("[Berkah GameState]")
 	var gs := game_state()

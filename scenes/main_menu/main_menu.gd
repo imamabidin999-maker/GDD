@@ -3,7 +3,7 @@ extends Control
 ## dan tombol Lanjutkan / Petualangan Baru / Ruwatan / Pustaka / Pengaturan /
 ## Keluar. Ruwatan terkunci sampai cerita tamat sekali.
 
-const BG := preload("res://assets/backgrounds/menu_candi.png")
+const BG := preload("res://assets/backgrounds/menu.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const BOSS := preload("res://assets/sprites/buto/buto_hitam_idle.png")
 const VERSION := "v1.0"
@@ -30,7 +30,7 @@ func _ready() -> void:
 func _build_scenery() -> void:
 	var bg := TextureRect.new()
 	bg.texture = BG
-	bg.position = Vector2(0, -170)
+	bg.position = Vector2(-8, -8)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	# Sisi kiri digelapkan supaya judul dan tombol mudah dibaca.

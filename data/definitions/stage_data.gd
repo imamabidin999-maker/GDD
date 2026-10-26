@@ -16,7 +16,11 @@ extends Resource
 @export var is_boss: bool = false
 ## Posisi titik stage di peta (koordinat layar 640x360).
 @export var map_position: Vector2 = Vector2.ZERO
-## Warna yang dikalikan ke latar battle, supaya tiap stage terasa berbeda.
+## Gambar latar battle (656x376, tepi 8 piksel untuk guncangan layar).
+## Kosong berarti latar bawaan.
+@export var background: String = ""
+## Warna yang dikalikan ke latar battle (dipakai untuk menggelapkan atau
+## mewarnai latar yang dipakai ulang, misalnya di Ruwatan).
 @export var background_tint: Color = Color.WHITE
 @export var intro_dialog: PackedStringArray = []
 @export var victory_dialog: PackedStringArray = []

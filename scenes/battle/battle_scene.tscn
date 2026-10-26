@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://core/battle/systems/player_state.gd" id="4_player"]
 [ext_resource type="Script" path="res://core/battle/battle_manager.gd" id="5_bm"]
 [ext_resource type="Script" path="res://core/components/health_component.gd" id="6_health"]
-[ext_resource type="Texture2D" path="res://assets/backgrounds/battle_candi.png" id="7_bg"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/stage_1.png" id="7_bg"]
 [ext_resource type="Script" path="res://ui/battle/battle_hud.gd" id="8_hud"]
 [ext_resource type="Script" path="res://ui/battle/hand_view.gd" id="9_hand_view"]
 [ext_resource type="Script" path="res://ui/common/tooltip.gd" id="10_tooltip"]
@@ -38,7 +38,7 @@ presentation_delay = 0.55
 [node name="Background" type="Sprite2D" parent="World"]
 texture = ExtResource("7_bg")
 centered = false
-position = Vector2(0, -250)
+position = Vector2(-8, -8)
 
 [node name="Hero" type="Node2D" parent="World"]
 position = Vector2(150, 228)

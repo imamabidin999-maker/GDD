@@ -2,7 +2,7 @@ extends Control
 ## Pustaka: ensiklopedia kecil tentang kesenian Dongkrek, Eyang Palang, para
 ## Buto (terbuka setelah pernah dilawan), cara bermain, dan daftar kartu.
 
-const BG := preload("res://assets/backgrounds/menu_candi.png")
+const BG := preload("res://assets/backgrounds/menu.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const BUTO_KEYS: Array[String] = ["kuning", "hijau", "merah", "putih", "hitam"]
 
@@ -19,7 +19,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var bg := TextureRect.new()
 	bg.texture = BG
-	bg.position = Vector2(0, -170)
+	bg.position = Vector2(-8, -8)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	add_child(UIKit.dimmer(0.55))

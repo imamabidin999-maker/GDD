@@ -72,6 +72,9 @@ func _ready() -> void:
 		if _stage == null:
 			_stage = catalog.stages[0]
 
+	if _stage.background != "" and ResourceLoader.exists(_stage.background):
+		_background.texture = load(_stage.background)
+		_background.position = Vector2(-8, -8)
 	_background.modulate = _stage.background_tint
 	_add_fireflies()
 	_setup_hero()

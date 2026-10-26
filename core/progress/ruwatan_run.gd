@@ -58,10 +58,8 @@ const BOSS := [370, 15]
 const SECOND_HP_MULT := 1.05
 ## Keluarga kartu yang boleh ada di deck simpanan.
 const DECK_FAMILIES: Array[String] = ["serang", "fokus", "taktik", "bedug", "kentongan", "korek", "gong", "kenong"]
-const TINTS: Array[Color] = [
-	Color(1, 1, 1), Color(0.82, 1.0, 0.88), Color(1, 1, 1), Color(1.0, 0.95, 0.8),
-	Color(0.74, 0.92, 0.8), Color(1, 1, 1), Color(1.0, 0.84, 0.84), Color(0.92, 0.72, 0.78),
-]
+## Latar battle yang boleh dipakai tiap langkah (nomor babak cerita).
+const BACKGROUND_POOLS: Array = [[1, 2, 3, 4], [1, 2, 3, 4], [], [5, 6, 7, 8], [5, 6, 7, 8], [], [9], [10]]
 
 var level: int = 1
 var seed_value: int = 0
@@ -83,6 +81,8 @@ var excluded_blessings: Array = []
 var foes: Array = []
 ## Kejadian tiap langkah ("" kalau bukan langkah kejadian).
 var events: Array[String] = []
+## Latar tiap langkah (nomor babak cerita, 0 untuk kejadian).
+var backgrounds: Array[int] = []
 
 
 ## Ruwatan baru di tingkat `level` dengan deck awal `starter`.
@@ -189,7 +189,8 @@ func build_stage(index: int = step) -> StageData:
 	stage.enemies = enemy_specs(index)
 	stage.is_boss = index >= 0 and index < STEPS.size() and STEPS[index] == Step.BOSS
 	stage.music = "boss" if stage.is_boss else "battle"
-	stage.background_tint = TINTS[clampi(index, 0, TINTS.size() - 1)]
+	if index >= 0 and index < backgrounds.size() and backgrounds[index] > 0:
+		stage.background = "res://assets/backgrounds/stage_%d.png" % backgrounds[index]
 	return stage
 
 
@@ -256,6 +257,7 @@ func _generate() -> void:
 	rng.seed = seed_value
 	foes.clear()
 	events.clear()
+	backgrounds.clear()
 	var picked_events: Array[String] = []
 	var last_lead := -1
 	for i: int in STEPS.size():
@@ -285,6 +287,10 @@ func _generate() -> void:
 				picked_events.append(event_id)
 		foes.append(group)
 		events.append(event_id)
+		var pool: Array = BACKGROUND_POOLS[i].duplicate()
+		if i > 0 and backgrounds[i - 1] > 0 and pool.size() > 1:
+			pool.erase(backgrounds[i - 1])
+		backgrounds.append(int(pool[rng.randi_range(0, pool.size() - 1)]) if not pool.is_empty() else 0)
 
 
 func _pick_color(rng: RandomNumberGenerator, avoid: Array) -> EnemyButo.ButoType:

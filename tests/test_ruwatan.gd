@@ -65,6 +65,13 @@ func _run() -> void:
 	check(boss.is_boss and boss.music == "boss" and boss.enemies[0].buto_type == EnemyButo.ButoType.HITAM, "langkah 8: Buto Hitam")
 	check(run.enemy_specs(1)[0].max_hp == roundi(RuwatanRun.LEAD[run.enemy_specs(1)[0].buto_type][0] * RuwatanRun.SECOND_HP_MULT),
 		"battle kedua sedikit lebih alot")
+	var bg_ok := true
+	for i: int in 8:
+		var bg := run.build_stage(i).background
+		if run.is_battle_step(i) and not ResourceLoader.exists(bg):
+			bg_ok = false
+	check(bg_ok and run.build_stage(7).background.ends_with("stage_10.png") and run.build_stage(6).background.ends_with("stage_9.png"),
+		"setiap battle punya latar: candi di langkah 7, Candi Pagebluk di langkah 8")
 	var same := RuwatanRun.create(1, 7, _starter())
 	check(str(same.foes) == str(run.foes) and same.events == run.events, "seed sama, jalur sama")
 	var differs := false

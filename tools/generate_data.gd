@@ -237,6 +237,10 @@ func _build_stages() -> void:
 
 	for stage: StageData in stages:
 		stage.chapter = 1 if stage.stage_number <= 4 else (2 if stage.stage_number <= 8 else 3)
+		# Latar digambar khusus untuk tiap tempat (tools/build_backgrounds.py),
+		# jadi warnanya tidak perlu diwarnai lagi.
+		stage.background = "res://assets/backgrounds/stage_%d.png" % stage.stage_number
+		stage.background_tint = Color.WHITE
 		stage.challenges = PackedStringArray(STAGE_CHALLENGES[stage.stage_number])
 
 	for stage: StageData in stages:

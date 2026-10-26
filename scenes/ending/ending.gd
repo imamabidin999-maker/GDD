@@ -2,7 +2,7 @@ extends Control
 ## Akhir cerita: fajar di Mejayan setelah Buto Hitam kalah, dialog penutup,
 ## lalu judul "Pagebluk Sirna" dan kredit.
 
-const BG := preload("res://assets/backgrounds/battle_candi.png")
+const BG := preload("res://assets/backgrounds/ending.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 
 var _overlay: Control
@@ -13,7 +13,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_bg = TextureRect.new()
 	_bg.texture = BG
-	_bg.position = Vector2(0, -250)
+	_bg.position = Vector2(-8, -8)
 	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_bg.modulate = Color(0.55, 0.55, 0.7)
 	add_child(_bg)
@@ -47,8 +47,8 @@ func _ready() -> void:
 	add_child(_overlay)
 
 	var t := create_tween().set_parallel()
-	t.tween_property(_bg, "modulate", Color(1.0, 0.92, 0.85), 6.0)
-	t.tween_property(dawn, "modulate:a", 1.0, 6.0)
+	t.tween_property(_bg, "modulate", Color.WHITE, 6.0)
+	t.tween_property(dawn, "modulate:a", 0.35, 6.0)
 	AudioManager.play_music("victory")
 	_run.call_deferred()
 
