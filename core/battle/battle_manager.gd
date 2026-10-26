@@ -209,7 +209,7 @@ func is_any_enemy_ngamuk_ready() -> bool:
 	return false
 
 
-## Gebrakan Dongkrek membuyarkan amukan semua Buto. Mengembalikan jumlah Buto
+## Gelap Ngampar membuyarkan amukan semua Buto. Mengembalikan jumlah Buto
 ## yang amukannya buyar.
 func calm_enemies() -> int:
 	var calmed := 0
@@ -219,7 +219,7 @@ func calm_enemies() -> int:
 	return calmed
 
 
-## Gebrakan Dongkrek membuyarkan kekuatan yang sedang disiapkan (Ajian).
+## Gelap Ngampar membuyarkan kekuatan yang sedang disiapkan (Ajian).
 ## Mengembalikan jumlah Buto yang kekuatannya buyar.
 func break_enemy_powers() -> int:
 	var broken := 0

@@ -81,6 +81,7 @@ func _ready() -> void:
 	_setup_enemies()
 
 	_hand.merge_recipes = CardDB.get_recipes()
+	_deck.deck_reshuffled.connect(func(_count: int) -> void: AudioManager.play_sfx("shuffle", 0.05))
 	_hud.setup(_battle, _stage_title())
 	GameState.settings_changed.connect(_on_settings_changed)
 	_hand_view.setup(_battle)
@@ -399,12 +400,12 @@ func _on_action_presented(action: BattleAction) -> void:
 
 func _present_card(action: PlayCardAction) -> void:
 	var data := action.card.data
+	AudioManager.play_sfx("card_play", 0.06)
 	if data.base_power > 0:
 		_hero_view.play_attack(data.base_power >= 14)
 		AudioManager.play_sfx("hit_heavy" if data.base_power >= 14 else "hit", 0.08)
 	else:
 		_hero_view.play_glow(Color(0.5, 0.95, 0.6))
-		AudioManager.play_sfx("card", 0.05)
 	if data.is_tabuh():
 		_present_tabuh(action)
 	if action.moxie_gained > 0.0:

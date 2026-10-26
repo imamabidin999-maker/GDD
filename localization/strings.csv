@@ -45,9 +45,9 @@ STAGE_4_TITLE,Gapura Candi Tua,Gate of the Old Temple
 STAGE_5_TITLE,Tegal Ilalang,The Reed Meadow
 BATTLE_TURN,Giliran %d,Turn %d
 BATTLE_END_TURN,Akhiri Giliran,End Turn
-BATTLE_ULTIMATE,Gebrakan Dung-Krek,Gebrakan Dung-Krek
-BATTLE_ULTIMATE_SHORT,GEBRAKAN,GEBRAKAN
-BATTLE_ULTIMATE_TIP,"Gebrakan Dung-Krek: bedug dan korek berbunyi serentak, menghantam SEMUA Buto %d. Butuh Greget 100%%. Di 200%% damage-nya dua kali lipat.","Gebrakan Dung-Krek: the bedug drum and korek ring out together, hitting EVERY Buto for %d. Needs 100%% Greget. At 200%% it deals double damage."
+BATTLE_ULTIMATE,Gelap Ngampar,Gelap Ngampar
+BATTLE_ULTIMATE_SHORT,GELAP NGAMPAR,GELAP NGAMPAR
+BATTLE_ULTIMATE_TIP,"Gelap Ngampar (petir menyambar): bedug dan korek berbunyi serentak, menghantam SEMUA Buto %d. Butuh Greget 100%%. Di 200%% damage-nya dua kali lipat.","Gelap Ngampar (the thunderbolt strike): the bedug drum and korek ring out together, hitting EVERY Buto for %d. Needs 100%% Greget. At 200%% it deals double damage."
 BATTLE_PLAYER_TURN,Giliranmu,Your Turn
 BATTLE_ENEMY_TURN,Giliran Buto,Buto's Turn
 BATTLE_VICTORY,MENANG!,VICTORY!
@@ -66,8 +66,8 @@ BATTLE_BLOCK,Tameng,Block
 BATTLE_POISON_TIP,Lara %d: kehilangan %d nyawa di akhir giliran Buto (menembus Tameng).,Lara (sickness) %d: lose %d HP at the end of the Buto's turn (ignores Block).
 BATTLE_BLOCK_TIP,Tameng %d: menahan damage sampai awal giliranmu berikutnya.,Block %d: absorbs damage until your next turn.
 BATTLE_AP_TIP,"Ketukan: tiap giliran ada 4 ketukan, seperti satu gatra gamelan. Main kartu 1 ketukan, geser kartu 1 ketukan.","Ketukan (beats): you get 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1."
-BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Gebrakan Dung-Krek siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Gebrakan Dung-Krek ready, up to 200%% = Greget Memuncak (overcharged)."
-BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Gebrakan Dung-Krek (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Gebrakan Dung-Krek (now x%.2f).
+BATTLE_MOXIE_TIP,"Greget %d%%. Kartu Semedi mengisinya. 100%% = Gelap Ngampar siap, sampai 200%% = Greget Memuncak.","Greget (fighting spirit) %d%%. Semedi cards charge it. 100%% = Gelap Ngampar ready, up to 200%% = Greget Memuncak (overcharged)."
+BATTLE_CHAIN_TIP,Wirama %d/3: mainkan 3 kartu bintang 3 berturut-turut untuk memperkuat Gelap Ngampar (sekarang x%.2f).,Wirama (rhythm) %d/3: play 3 rank-3 cards in a row to power up Gelap Ngampar (now x%.2f).
 BATTLE_HELP,Klik kartu: mainkan  |  Seret kartu: geser  |  Klik Buto: pilih target  |  Spasi: akhiri giliran,Click card: play  |  Drag card: move  |  Click Buto: target  |  Space: end turn
 BATTLE_CARD_LOCKED_BY,Sirep!,Sirep!
 BATTLE_MOXIE_DRAINED,Greget -%d%%,Greget -%d%%
@@ -143,7 +143,7 @@ TUT_1,Setiap giliran kamu punya 4 Ketukan. Klik sebuah kartu untuk memainkannya 
 TUT_2,"Kartu merah (Sabet) memberi damage, kartu biru (Semedi) mengisi Greget, kartu hijau (Tangkis) memberi Tameng.","Red cards (Sabet) deal damage, blue cards (Semedi) charge Greget, green cards (Tangkis) give Block."
 TUT_3,"Seret kartu ke posisi lain untuk menggesernya (1 ketukan). Kalau ia bersebelahan dengan kartu beda warna yang bintangnya sama, keduanya bergabung jadi jurus gabungan yang lebih kuat.","Drag a card to another position to move it (1 Ketukan). If it lands next to a different-colored card of the same rank, they merge into a stronger combined move."
 TUT_4,Kartu yang sudah bersebelahan bisa langsung digabung gratis lewat tombol kecil di antara keduanya.,Cards that are already side by side can be merged for free with the small button between them.
-TUT_5,"Saat Greget mencapai 100%, Gebrakan Dung-Krek siap dan menghantam semua Buto. Tahan sampai 200% untuk damage dua kali lipat.","When Greget reaches 100%, Gebrakan Dung-Krek is ready and hits every Buto. Hold it until 200% for double damage."
+TUT_5,"Saat Greget mencapai 100%, Gelap Ngampar siap dan menghantam semua Buto. Tahan sampai 200% untuk damage dua kali lipat.","When Greget reaches 100%, Gelap Ngampar is ready and hits every Buto. Hold it until 200% for double damage."
 TUT_6,"Perhatikan ikon di atas kepala Buto: itu rencana mereka di giliran berikutnya. Kalau sudah selesai, tekan Akhiri Giliran.","Watch the icon above each Buto's head: it shows what they plan to do next. When you're done, press End Turn."
 S2_INTRO_1,Rumpun bambu berderit tertiup angin. Bau anyir menusuk hidung.,The bamboo creaks in the wind. A foul stench fills the air.
 S2_INTRO_2,"Hehehe... napasku membawa penyakit. Hirup dalam-dalam, Pak Tua!","Hehehe... my breath carries sickness. Breathe deep, old man!"
@@ -204,9 +204,9 @@ Di game ini Eyang Palang bertarung dengan tiga jenis jurus: Sabet (merah), Semed
 In this game Eyang Palang fights with three kinds of techniques: Sabet (red), Semedi (blue), and Tangkis (green), plus Tabuh techniques from the instruments he finds along the way."
 PUSTAKA_BUTO_KUNING_TEXT,"Buto paling rakus. Setiap serangannya menghisap semangat lawan: Greget di atas 100% berkurang. Greget di bawah 100% aman.
 
-Siasat: pakai Gebrakan Dung-Krek sebelum ia sempat menghisap Greget Memuncak-mu.","The greediest Buto. Every attack sucks away its foe's spirit: Greget above 100% is drained. Greget below 100% is safe.
+Siasat: pakai Gelap Ngampar sebelum ia sempat menghisap Greget Memuncak-mu.","The greediest Buto. Every attack sucks away its foe's spirit: Greget above 100% is drained. Greget below 100% is safe.
 
-Tip: use Gebrakan Dung-Krek before it drains your Greget Memuncak."
+Tip: use Gelap Ngampar before it drains your Greget Memuncak."
 PUSTAKA_BUTO_HIJAU_TEXT,"Napasnya membawa penyakit. Semburannya meninggalkan Lara yang menggerogoti nyawa di akhir giliran Buto, menembus Tameng. Lara berkurang satu setiap kali bekerja.
 
 Siasat: kalahkan ia lebih dulu supaya Lara-nya berhenti bertambah.","Its breath carries disease. Its spit leaves Lara (sickness) that eats away HP at the end of the Buto's turn, ignoring Block. Lara drops by one each time it strikes.
@@ -224,13 +224,13 @@ Siasat: mainkan kartu berbintang tinggi sebelum gilirannya tiba.","Guardian of t
 Tip: play your high-rank cards before its turn comes."
 PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk.
 
-Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi sambil bertameng 15. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau di giliran setelah ancang-ancang kamu memberi cukup damage yang menembus Tamengnya (lihat bar Buyarkan di atas bar nyawanya), atau memakai Gebrakan Dung-Krek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi sambil bertameng 15. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau di giliran setelah ancang-ancang kamu memberi cukup damage yang menembus Tamengnya (lihat bar Buyarkan di atas bar nyawanya), atau memakai Gelap Ngampar. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Saat nyawanya tinggal separuh ia murka: memanggil dua Bala, menebar Pagebluk Merata (tiap giliran Buto kamu mendapat 1 Lara dan Lara tidak berkurang), dan mulai bisa Ngamuk.
 
 Siasat: simpan kartu Sabet kuat atau Greget untuk giliran Buyarkan, dan tuntaskan pertarungan secepatnya sebelum Lara menumpuk.","King of the Buto and root of the plague.
 
-Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi behind 15 Block. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian on the turn after the wind-up by dealing enough damage past its Block (watch the Break bar above its HP bar), or by using Gebrakan Dung-Krek. If it breaks, Buto Hitam staggers and loses an action.
+Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi behind 15 Block. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian on the turn after the wind-up by dealing enough damage past its Block (watch the Break bar above its HP bar), or by using Gelap Ngampar. If it breaks, Buto Hitam staggers and loses an action.
 
 At half HP it becomes enraged: it summons two Bala, spreads Pagebluk Merata (you gain 1 Lara every Buto turn and Lara no longer wears off), and can go Ngamuk.
 
@@ -242,9 +242,9 @@ Kartu: Sabet memberi damage, Semedi mengisi Greget, Tangkis memberi Tameng. Bint
 
 Menggabung jurus: dua kartu beda warna dengan bintang sama yang bersebelahan bisa digabung. Sabet + Semedi = Tenaga Dalam, Sabet + Tangkis = Tangkis Balik, Semedi + Tangkis = Manunggal. Seret kartu untuk menggesernya, atau klik tombol gabung di antara dua kartu.
 
-Greget dan Gebrakan Dung-Krek: pada 100% Gebrakan Dung-Krek siap dan menghantam semua Buto. Simpan sampai 200% (Greget Memuncak) untuk damage dua kali lipat.
+Greget dan Gelap Ngampar: pada 100% Gelap Ngampar (petir yang menyambar) siap dan menghantam semua Buto. Simpan sampai 200% (Greget Memuncak) untuk damage dua kali lipat.
 
-Wirama: mainkan 3 kartu bintang 3 berturut-turut dalam satu giliran untuk memperkuat Gebrakan Dung-Krek sampai battle selesai.
+Wirama: mainkan 3 kartu bintang 3 berturut-turut dalam satu giliran untuk memperkuat Gelap Ngampar sampai battle selesai.
 
 Niat Buto: ikon di atas kepala Buto menunjukkan apa yang akan ia lakukan di giliran berikutnya.
 
@@ -252,9 +252,9 @@ Sirep: ilmu Buto Putih. Kartu yang tersirep tidak bisa dimainkan, digeser, atau 
 
 Ngamuk: sebagian Buto punya tiga titik Amuk berbentuk api di atas kepalanya. Setiap aksinya mengisi satu titik. Saat ketiganya penuh muncul tanda x2, dan di giliran berikutnya ia beraksi dua kali.
 
-Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gebrakan Dung-Krek juga membuyarkan amukan: semua titik Amuk kembali kosong.
+Prayitna: kalau ada Buto yang bersiap ngamuk, Eyang Palang waspada. Tameng dari kartu bertambah 50% di giliran itu. Gelap Ngampar juga membuyarkan amukan: semua titik Amuk kembali kosong.
 
-Ajian Lebur Saketi: setelah Buto Hitam ancang-ancang, bar Buyarkan muncul di atas bar nyawanya. Penuhi bar itu dengan damage di giliranmu, atau pakai Gebrakan Dung-Krek, supaya ajiannya buyar dan ia terhuyung.
+Ajian Lebur Saketi: setelah Buto Hitam ancang-ancang, bar Buyarkan muncul di atas bar nyawanya. Penuhi bar itu dengan damage di giliranmu, atau pakai Gelap Ngampar, supaya ajiannya buyar dan ia terhuyung.
 
 Bala: Buto bayangan panggilan Buto Hitam. Selama Bala masih hidup, Buto Hitam hanya menerima separuh damage.","Ketukan (beats): you have 4 each turn, like one gatra of gamelan. Playing a card costs 1, moving a card costs 1.
 
@@ -262,9 +262,9 @@ Cards: Sabet deals damage, Semedi charges Greget, Tangkis gives Block. Stars sho
 
 Merging moves: two adjacent cards of different colors with the same rank can be merged. Sabet + Semedi = Tenaga Dalam, Sabet + Tangkis = Tangkis Balik, Semedi + Tangkis = Manunggal. Drag a card to move it, or click the merge button between two cards.
 
-Greget and Gebrakan Dung-Krek: at 100% Greget (fighting spirit), Gebrakan Dung-Krek is ready and hits every Buto. Save it up to 200% (Greget Memuncak) for double damage.
+Greget and Gelap Ngampar: at 100% Greget (fighting spirit), Gelap Ngampar (the thunderbolt strike) is ready and hits every Buto. Save it up to 200% (Greget Memuncak) for double damage.
 
-Wirama (rhythm): play 3 rank-3 cards in a row in one turn to power up Gebrakan Dung-Krek for the rest of the battle.
+Wirama (rhythm): play 3 rank-3 cards in a row in one turn to power up Gelap Ngampar for the rest of the battle.
 
 Buto intent: the icon above each Buto shows what it will do on its next turn.
 
@@ -272,9 +272,9 @@ Sirep: Buto Putih's spell. A card under Sirep can't be played, moved, or merged 
 
 Ngamuk (rampage): some Buto have three flame-shaped Amuk points above their heads. Each of their actions fills one point. When all three are full an x2 mark appears, and on its next turn the Buto acts twice.
 
-Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gebrakan Dung-Krek also breaks their rage: every Amuk point is emptied.
+Prayitna (vigilance): when a Buto is about to go Ngamuk, Eyang Palang stays alert. Block from cards is increased by 50% that turn. Gelap Ngampar also breaks their rage: every Amuk point is emptied.
 
-Ajian Lebur Saketi: after Buto Hitam winds up, a Break bar appears above its HP bar. Fill it with damage on your turn, or use Gebrakan Dung-Krek, to break the Ajian and make it stagger.
+Ajian Lebur Saketi: after Buto Hitam winds up, a Break bar appears above its HP bar. Fill it with damage on your turn, or use Gelap Ngampar, to break the Ajian and make it stagger.
 
 Bala: shadow Buto summoned by Buto Hitam. While any Bala lives, Buto Hitam takes only half damage."
 PUSTAKA_CARDS,Kartu,Cards
@@ -301,7 +301,7 @@ BATTLE_NGAMUK,Ngamuk!,Ngamuk!
 BATTLE_PRAYITNA,Prayitna!,Prayitna!
 BATTLE_AMUK_CALMED,Amukan buyar!,Their rage is broken!
 INTENT_NGAMUK,Ngamuk! Beraksi dua kali:,Ngamuk! Acts twice:
-AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gebrakan Dung-Krek mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gebrakan Dung-Krek empties it."
+AMUK_TIP,"Amuk %d/%d: setiap aksinya mengisi satu titik. Saat penuh, giliran berikutnya ia Ngamuk (beraksi dua kali). Gelap Ngampar mengosongkannya.","Amuk %d/%d: each of its actions fills one point. When full, it goes Ngamuk next turn (acts twice). Gelap Ngampar empties it."
 PRAYITNA_TIP,Prayitna: ada Buto yang bersiap ngamuk. Tameng dari kartu +50% di giliran ini.,Prayitna (vigilance): a Buto is about to go Ngamuk. Block from cards +50% this turn.
 CARD_PRAYITNA_TIP,Prayitna: Tameng +50%,Prayitna: Block +50%
 STAGE_6_TITLE,Alas Jati Peteng,The Dark Teak Forest
@@ -322,14 +322,14 @@ Hijau Murka menyembur 5 Lara dengan tenaga penuh.
 Merah Murka langsung Ancang-ancang lalu Gebug Raksasa yang lebih keras, dan bertameng saat ancang-ancang.
 Putih Murka menyirep dua kartu terkuat sekaligus.
 
-Siasat: perhatikan api Amuk di atas kepala mereka. Saat tanda x2 muncul, pasang Tameng (Prayitna menambahnya) atau buyarkan dengan Gebrakan Dung-Krek.","Defeated Buto raised again by Buto Hitam with the power of the plague. A reddish-purple aura surrounds them, and every one of them can go Ngamuk.
+Siasat: perhatikan api Amuk di atas kepala mereka. Saat tanda x2 muncul, pasang Tameng (Prayitna menambahnya) atau buyarkan dengan Gelap Ngampar.","Defeated Buto raised again by Buto Hitam with the power of the plague. A reddish-purple aura surrounds them, and every one of them can go Ngamuk.
 
 Kuning Murka drains Greget at any level, not only Greget Memuncak.
 Hijau Murka spits 5 Lara at full strength.
 Merah Murka winds up straight away for a harder Gebug Raksasa, and gains Block while winding up.
 Putih Murka casts Sirep on your two strongest cards at once.
 
-Tip: watch the Amuk flames above their heads. When the x2 mark appears, raise your Block (Prayitna boosts it) or break their rage with Gebrakan Dung-Krek."
+Tip: watch the Amuk flames above their heads. When the x2 mark appears, raise your Block (Prayitna boosts it) or break their rage with Gelap Ngampar."
 S4_WIN_3,"Kau kira sudah menang, Pak Tua? Bangkitlah, anak-anakku! Kuberi kalian kekuatan pagebluk!","You think you've won, old man? Rise, my children! I give you the power of the plague!"
 S4_WIN_4,"Keempat Buto yang kalah bangkit lagi dengan mata menyala, lalu lari ke empat penjuru.",The four defeated Buto rise again with burning eyes and flee in four directions.
 S6_INTRO_1,Hutan jati gelap dan lembap. Kabut beracun merayap di antara batang-batang besar.,The teak forest is dark and damp. A sickly mist creeps between the great trunks.
@@ -360,7 +360,7 @@ S10_INTRO_4,"Kalau begitu, rasakan Ajian Lebur Saketi!",Then taste the Ajian Leb
 S10_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
 S10_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.
 AJIAN_BREAK_BAR,Buyarkan %d/%d,Break %d/%d
-AJIAN_BREAK_TIP,Beri %d damage ke Nyawanya giliran ini untuk membuyarkan Ajian (%d/%d). Tameng menahan damage lebih dulu dan tidak ikut dihitung. Atau pakai Gebrakan Dung-Krek.,Deal %d damage to its HP this turn to break the Ajian (%d/%d). Its Block soaks damage first and doesn't count. Or use Gebrakan Dung-Krek.
+AJIAN_BREAK_TIP,Beri %d damage ke Nyawanya giliran ini untuk membuyarkan Ajian (%d/%d). Tameng menahan damage lebih dulu dan tidak ikut dihitung. Atau pakai Gelap Ngampar.,Deal %d damage to its HP this turn to break the Ajian (%d/%d). Its Block soaks damage first and doesn't count. Or use Gelap Ngampar.
 BALA_SHIELD_TIP,Dilindungi Bala: hanya menerima separuh damage selama masih ada Bala yang hidup.,Shielded by Bala: takes only half damage while any Bala still stands.
 BALA_TIP,Buto bayangan panggilan Buto Hitam. Lenyap kalau Buto Hitam tumbang.,A shadow Buto summoned by Buto Hitam. Vanishes when Buto Hitam falls.
 BALA_FMT,Bala %s,Bala %s
@@ -382,11 +382,11 @@ PUSTAKA_BALA_TEXT,"Buto bayangan yang dipanggil Buto Hitam saat ia murka. Wujudn
 
 Selama masih ada Bala yang berdiri, Buto Hitam hanya menerima separuh damage. Begitu Buto Hitam tumbang, semua Bala ikut lenyap.
 
-Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gebrakan Dung-Krek.","Shadow Buto summoned by Buto Hitam in its rage. They look dark and translucent, but they use the same skills as the Buto whose color they bear.
+Siasat: habisi Bala lebih dulu, atau hantam semuanya sekaligus dengan Gelap Ngampar.","Shadow Buto summoned by Buto Hitam in its rage. They look dark and translucent, but they use the same skills as the Buto whose color they bear.
 
 While any Bala still stands, Buto Hitam takes only half damage. When Buto Hitam falls, every Bala vanishes with it.
 
-Tip: take down the Bala first, or hit them all at once with Gebrakan Dung-Krek."
+Tip: take down the Bala first, or hit them all at once with Gelap Ngampar."
 BLESS_KENDANG,Kendang Pembuka,Kendang Pembuka
 BLESS_KENDANG_DESC,+1 Ketukan di giliran pertama setiap battle.,+1 Ketukan on the first turn of every battle.
 BLESS_LELUHUR,Greget Leluhur,Greget Leluhur
@@ -424,7 +424,7 @@ HINT_SIREP,"Buto Putih akan menyirep kartu terkuatmu. Kartu tersirep tidak bisa 
 HINT_LARA_TITLE,Lara,Lara
 HINT_LARA,"Lara mengurangi Nyawa di akhir setiap giliran Buto, menembus Tameng, lalu berkurang satu.","Lara drains HP at the end of every Buto turn, ignores Block, then goes down by one."
 HINT_AJIAN_TITLE,Ajian Lebur Saketi,Ajian Lebur Saketi
-HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat sambil bertameng. Isi bar Buyarkan dengan damage yang menembus Tamengnya, atau pakai Gebrakan Dung-Krek, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow behind a Block. Fill the Break bar with damage that gets past the Block, or use Gebrakan Dung-Krek, to break it."
+HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat sambil bertameng. Isi bar Buyarkan dengan damage yang menembus Tamengnya, atau pakai Gelap Ngampar, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow behind a Block. Fill the Break bar with damage that gets past the Block, or use Gelap Ngampar, to break it."
 HINT_BALA_TITLE,Bala,Bala
 HINT_BALA,"Selama masih ada Bala yang hidup, Buto Hitam hanya menerima separuh damage. Habisi Bala lebih dulu.","While any Bala lives, Buto Hitam takes only half damage. Take the Bala down first."
 HINT_PAGEBLUK_TITLE,Pagebluk Merata,Pagebluk Merata
@@ -484,7 +484,7 @@ CH_WIN,Menangkan babak,Win the act
 CH_TURNS,Menang paling lama %d giliran,Win within %d turns
 CH_HP,Sisa Nyawa minimal %d%%,Finish with at least %d%% HP
 CH_MERGES,Gabung kartu minimal %d kali,Merge cards at least %d times
-CH_NO_ULT,Menang tanpa Gebrakan Dung-Krek,Win without Gebrakan Dung-Krek
+CH_NO_ULT,Menang tanpa Gelap Ngampar,Win without Gelap Ngampar
 CH_MAX_LARA,Lara tidak pernah lebih dari %d,Never have more than %d Lara
 CH_FIRST,Kalahkan %s lebih dulu,Defeat %s first
 CH_CALM_READY,Buyarkan amukan Buto yang siap Ngamuk,Break the rage of a Buto about to go Ngamuk
@@ -507,8 +507,8 @@ STAR_REWARD_LINE,%d bintang: %s,%d stars: %s
 REWARD_REROLL,Pilihan lain,Reroll
 REWARD_REROLL_TIP,Undi ulang pilihan berkah (sekali).,Reroll the blessing choices (once).
 MENU_MASTER_TITLE,Juru Dongkrek,Juru Dongkrek
-SETTINGS_RHYTHM,Irama Gebrakan,Gebrakan rhythm
-RHYTHM_TITLE,Gebrakan Dung-Krek!,Gebrakan Dung-Krek!
+SETTINGS_RHYTHM,Irama Gelap Ngampar,Gelap Ngampar rhythm
+RHYTHM_TITLE,Gelap Ngampar!,Gelap Ngampar!
 RHYTHM_HINT,"Tunggu hitungan kentongan, lalu tekan saat ketukan masuk lingkaran.","Wait for the kentongan count, then press as each beat reaches the circle."
 RHYTHM_PERFECT,Tepat!,Perfect!
 RHYTHM_GOOD,Cukup,Good
@@ -626,32 +626,32 @@ INTENT_AJIAN_CHARGE_BLOCK,"Ancang-ancang Ajian Lebur Saketi (%d damage di gilira
 CARD_BOOST_MOXIE_TIP,Greget diperkuat Kenong.,Greget boosted by Kenong.
 ICON_INTENT_TITLE,Niat %s di giliran depan,%s's plan for next turn
 ICON_HELP_ATTACK,Ikon pedang: serangan biasa. Angkanya damage yang akan kamu terima. Tameng bisa menahannya.,Sword icon: a normal attack. The number is the damage you'll take. Block can soak it.
-ICON_HELP_DRAIN,Ikon tetes ungu: menyerang sambil menghisap Greget. Pakai Gebrakan lebih dulu kalau Greget-mu tinggi.,Purple drop icon: attacks and sucks away Greget. Use your Gebrakan first if your Greget is high.
+ICON_HELP_DRAIN,Ikon tetes ungu: menyerang sambil menghisap Greget. Pakai Gelap Ngampar lebih dulu kalau Greget-mu tinggi.,Purple drop icon: attacks and sucks away Greget. Use Gelap Ngampar first if your Greget is high.
 ICON_HELP_LOCK,"Ikon gembok: Sirep. Kartu terkuat di tanganmu tidak bisa dimainkan, digeser, atau digabung selama satu giliran.","Lock icon: Sirep. Your strongest card can't be played, moved, or merged for one turn."
 ICON_HELP_POISON,Ikon tetes hijau: semburan yang memberi Lara. Lara mengurangi Nyawa di akhir giliran Buto dan menembus Tameng.,Green drop icon: a spit that inflicts Lara. Lara drains HP at the end of the Buto's turn and ignores Block.
 ICON_HELP_CHARGE,"Ikon panah naik: ancang-ancang. Giliran depan ia memukul sangat keras, jadi siapkan Tameng.","Rising arrows icon: winding up. Next turn it hits very hard, so get your Block ready."
 ICON_HELP_HEAVY,"Ikon gada merah: Gebug Raksasa, pukulan sangat keras di giliran ini.","Red club icon: Gebug Raksasa, a very heavy blow this turn."
 ICON_HELP_PLAGUE_STRIKE,"Ikon pedang dan tetes ungu: Gebug Pagebluk, serangan yang sekaligus menambah Lara.","Sword and purple drop icon: Gebug Pagebluk, an attack that also adds Lara."
-ICON_HELP_AJIAN_CHARGE,"Ikon ledakan merah: Buto Hitam bersiap. Giliran depan Ajian Lebur Saketi dilepas. Buyarkan dengan damage yang menembus Tamengnya, atau dengan Gebrakan.","Red burst icon: Buto Hitam is preparing. Next turn it releases Ajian Lebur Saketi. Break it with damage that gets past its Block, or with your Gebrakan."
+ICON_HELP_AJIAN_CHARGE,"Ikon ledakan merah: Buto Hitam bersiap. Giliran depan Ajian Lebur Saketi dilepas. Buyarkan dengan damage yang menembus Tamengnya, atau dengan Gelap Ngampar.","Red burst icon: Buto Hitam is preparing. Next turn it releases Ajian Lebur Saketi. Break it with damage that gets past its Block, or with Gelap Ngampar."
 ICON_HELP_AJIAN,"Ikon ledakan merah: Ajian Lebur Saketi akan dilepas, pukulan dahsyat ditambah Lara.","Red burst icon: Ajian Lebur Saketi is coming, a devastating blow plus Lara."
 ICON_HELP_SUMMON,"Ikon dua bayangan: memanggil Bala, Buto bayangan yang membuat Buto Hitam hanya menerima separuh damage.","Two shadows icon: calls Bala, shadow Buto that make Buto Hitam take only half damage."
 ICON_HELP_STAGGER,"Ikon bintang berputar: terhuyung, tidak beraksi di giliran depan.","Circling stars icon: staggered, does nothing next turn."
 ICON_AMUK_TITLE,Titik Amuk,Amuk points
-ICON_NGAMUK_READY,"x2: giliran depan Buto ini Ngamuk dan beraksi dua kali. Pasang Tameng, atau kosongkan dengan Gebrakan atau kartu Korek.","x2: next turn this Buto goes Ngamuk and acts twice. Raise your Block, or empty it with your Gebrakan or a Korek card."
+ICON_NGAMUK_READY,"x2: giliran depan Buto ini Ngamuk dan beraksi dua kali. Pasang Tameng, atau kosongkan dengan Gelap Ngampar atau kartu Korek.","x2: next turn this Buto goes Ngamuk and acts twice. Raise your Block, or empty it with Gelap Ngampar or a Korek card."
 ICON_BLOCK_ENEMY,Tameng %d: menahan damage sebelum mengenai Nyawa Buto ini. Hilang di awal giliran Buto berikutnya.,Block %d: soaks damage before it reaches this Buto's HP. Disappears at the start of the next Buto turn.
-RHYTHM_INTRO_TITLE,Cara menabuh Gebrakan,How to play the Gebrakan
+RHYTHM_INTRO_TITLE,Cara menabuh Gelap Ngampar,How to play Gelap Ngampar
 RHYTHM_INTRO_1,"Iringan dimulai dengan empat hitungan kentongan: tok, tok, tok, tok. Angka di lingkaran ikut menghitung mundur.","The music opens with four kentongan counts: tok, tok, tok, tok. The number in the circle counts down with them."
 RHYTHM_INTRO_2,"Lalu ketukan dung (bedug) dan krek (korek) datang dari kanan mengikuti irama, satu ketukan demi satu ketukan.","Then the dung (bedug) and krek (korek) beats roll in from the right, one beat at a time."
-RHYTHM_INTRO_3,"Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Tepat bernilai penuh, cukup bernilai setengah. Makin pas, makin keras Gebrakan-nya (sampai +30%). Meleset tidak mengurangi damage.","Click, press Space, or Q right as a beat enters the circle. Perfect counts fully, good counts half. The better your timing, the harder the Gebrakan hits (up to +30%). Misses never lower the damage."
+RHYTHM_INTRO_3,"Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Tepat bernilai penuh, cukup bernilai setengah. Makin pas, makin dahsyat Gelap Ngampar-nya (sampai +30%). Meleset tidak mengurangi damage.","Click, press Space, or Q right as a beat enters the circle. Perfect counts fully, good counts half. The better your timing, the harder Gelap Ngampar strikes (up to +30%). Misses never lower the damage."
 RHYTHM_INTRO_START,Mulai,Start
 RHYTHM_DUNG,dung,dung
 RHYTHM_KREK,krek,krek
 RHYTHM_EARLY,Terlalu cepat,Too early
 RHYTHM_READY,Siap...,Ready...
 RHYTHM_PRACTICE,Coba,Try
-RHYTHM_PRACTICE_TIP,Latihan irama Gebrakan tanpa bertarung.,Practice the Gebrakan rhythm without a battle.
-TUT_GEBRAKAN_1,"Greget-ku sudah penuh. Sekarang aku bisa melepas Gebrakan Dung-Krek: bedug dan korek ditabuh serentak, menghantam semua Buto sekaligus.","My Greget is full. Now I can unleash the Gebrakan Dung-Krek: bedug and korek struck together, hitting every Buto at once."
-TUT_GEBRAKAN_2,"Klik gong GEBRAKAN di kanan bawah, atau tekan Q. Kalau Greget kutahan sampai 200%, pukulannya jadi dua kali lipat.","Click the GEBRAKAN gong at the bottom right, or press Q. If I hold my Greget until 200%, the blow is twice as strong."
-TUT_GEBRAKAN_3,"Lalu ikuti iramanya. Tunggu empat hitungan kentongan, kemudian tekan tepat saat dung dan krek masuk lingkaran. Makin pas tabuhannya, makin keras pukulannya.","Then follow the rhythm. Wait for four kentongan counts, then press right as each dung and krek reaches the circle. The truer the beat, the harder the blow."
+RHYTHM_PRACTICE_TIP,Latihan irama Gelap Ngampar tanpa bertarung.,Practice the Gelap Ngampar rhythm without a battle.
 PROLOGUE_6,Ambilkan tongkatku. Malam ini juga kita usir mereka dari Mejayan.,Bring me my staff. Tonight we drive them out of Mejayan.
 ENDING_6,Terima kasih sudah menemani perjalanan Eyang Palang.,Thank you for walking alongside Eyang Palang.
+TUT_GEBRAKAN_1,"Greget-ku sudah penuh. Sekarang aku bisa melepas Gelap Ngampar: bedug dan korek ditabuh serentak, gelegarnya menyambar semua Buto seperti petir.","My Greget is full. Now I can unleash Gelap Ngampar: bedug and korek struck as one, crashing down on every Buto like a thunderbolt."
+TUT_GEBRAKAN_2,"Klik gong di kanan bawah, atau tekan Q. Kalau Greget kutahan sampai 200%, sambarannya jadi dua kali lipat.","Click the gong at the bottom right, or press Q. If I hold my Greget until 200%, the strike is twice as strong."
+TUT_GEBRAKAN_3,"Lalu ikuti iramanya. Tunggu empat hitungan kentongan, kemudian tekan tepat saat dung dan krek masuk lingkaran. Makin pas tabuhannya, makin dahsyat sambarannya.","Then follow the rhythm. Wait for four kentongan counts, then press right as each dung and krek reaches the circle. The truer the beat, the mightier the strike."

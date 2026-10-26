@@ -189,3 +189,8 @@ Masukan dari uji main dan cara menanganinya:
 8. **Babak 9.** Keempat Buto Murka diperkuat ke Nyawa 80/85/95/95 dan serangan 7-8. Versi Murka penuh (seperti babak 5-8) membuat bot cerdas pun kalah di semua percobaan, jadi dipakai titik tengah.
 
 Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak 9 dan 91% di babak 10, bot santai 45% dan 35%. Ruwatan: bot cerdas 80% di tingkat 1 sampai 3% di tingkat 10.
+
+## 10. Nama Ultimate dan Bunyi Kartu
+
+- Nama "Gebrakan Dung-Krek" terasa janggal, jadi ultimate Eyang Palang sekarang bernama **Gelap Ngampar**: dalam bahasa Jawa *gelap* berarti petir dan *ngampar* berarti menyambar. Namanya juga dikenal sebagai ajian dalam cerita rakyat Jawa. Di game, bedug dan korek ditabuh serentak dan gelegarnya menyambar semua Buto seperti petir. Nama kode di dalam skrip (`RhythmGebrakan`, bunyi `gebrakan`) tidak berubah.
+- Kartu sekarang punya bunyi sendiri: gabung (hembusan, dua nada saron naik, kenong), main (kibasan kartu), tarik dari dek (jentikan kertas, berurutan saat beberapa kartu masuk), angkat (tik kayu), taruh setelah digeser (tok kayu), dan sorot (tik halus). Bunyi gabung terdengar baik lewat tombol rantai maupun saat kartu digeser bersebelahan. Saat tumpukan buangan dikocok kembali ke dek, bunyi kocok terdengar.

@@ -130,7 +130,7 @@ func _run() -> void:
 	check(f2.hero.current_hp == hp_before - lara_before and f2.player.poison == maxi(lara_before - 1, 0), "terhuyung: tidak menyerang, tidak memberi Lara")
 	check(h2.get_intent(f2.bm).kind == EnemyIntent.Kind.PLAGUE_STRIKE, "lalu pola mulai lagi dari Gebug Pagebluk")
 
-	print("[Gebrakan Dongkrek membuyarkan Ajian]")
+	print("[Gelap Ngampar membuyarkan Ajian]")
 	var h3 := make_hitam(1000, 10)
 	# Ambang tinggi supaya yang membuyarkan benar-benar bunyi Gebrakan, bukan
 	# damage-nya (damage Gebrakan sendiri biasanya sudah melewati ambang).
@@ -145,7 +145,7 @@ func _run() -> void:
 		f3.bm.request_end_turn()
 	check(h3.is_ajian_charged(), "Ajian disiapkan")
 	f3.player.gain_moxie(100.0)
-	check(f3.bm.request_ultimate(), "Gebrakan Dongkrek dipakai")
+	check(f3.bm.request_ultimate(), "Gelap Ngampar dipakai")
 	check(not h3.is_ajian_charged() and ults.size() == 1 and ults[0].broken == 1, "Ajian buyar oleh Gebrakan (UltimateAction.broken = 1)")
 	check(h3.get_intent(f3.bm).kind == EnemyIntent.Kind.STAGGER, "Buto Hitam terhuyung")
 

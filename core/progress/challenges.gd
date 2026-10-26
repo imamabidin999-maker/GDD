@@ -8,7 +8,7 @@ extends RefCounted
 ##   turns:N      menang paling lama N giliran
 ##   hp:P         sisa Nyawa minimal P persen
 ##   merges:N     gabung kartu minimal N kali
-##   no_ult       menang tanpa Gebrakan Dongkrek
+##   no_ult       menang tanpa Gelap Ngampar
 ##   max_lara:N   Lara tidak pernah lebih dari N
 ##   first:WARNA  Buto berwarna itu tumbang lebih dulu
 ##   calm_ready   membuyarkan amukan Buto yang siap Ngamuk

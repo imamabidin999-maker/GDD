@@ -1,5 +1,5 @@
 extends SceneTree
-## Tes sistem Ngamuk, Prayitna, Gebrakan Dongkrek yang membuyarkan amukan,
+## Tes sistem Ngamuk, Prayitna, Gelap Ngampar yang membuyarkan amukan,
 ## dan ilmu Buto Murka.
 ##   godot --headless -s tests/test_ngamuk.gd
 
@@ -173,7 +173,7 @@ func _run() -> void:
 	fk.bm.request_play_card(pi)
 	check(fk.hero.block == 18, "Tangkis Balik ikut bertambah (4 -> 6)")
 
-	print("[Gebrakan Dongkrek membuyarkan amukan]")
+	print("[Gelap Ngampar membuyarkan amukan]")
 	var kg := make_buto(EnemyButo.ButoType.KUNING, 999, 5, true, 3)
 	var kg2 := make_buto(EnemyButo.ButoType.HIJAU, 999, 5, true, 1)
 	var fg := make_fixture([kg, kg2] as Array[EnemyUnit], 200)
@@ -183,7 +183,7 @@ func _run() -> void:
 	fg.bm.action_presentation_started.connect(func(a: BattleAction) -> void:
 		if a is UltimateAction:
 			ult_actions.append(a as UltimateAction))
-	check(fg.bm.request_ultimate(), "Gebrakan Dongkrek dipakai")
+	check(fg.bm.request_ultimate(), "Gelap Ngampar dipakai")
 	check(kg.amuk == 0 and kg2.amuk == 0 and not kg.is_ngamuk_ready(), "semua titik Amuk kosong")
 	check(ult_actions.size() == 1 and ult_actions[0].calmed == 2, "UltimateAction mencatat 2 Buto yang buyar")
 	var hp_before := fg.hero.current_hp

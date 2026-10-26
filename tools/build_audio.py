@@ -7,7 +7,8 @@ slendro (lagu biasa) dan pelog (lagu bos).
 
 Butuh: numpy, scipy, ffmpeg (encoder libvorbis).
 Pemakaian: python3 tools/build_audio.py
-           python3 tools/build_audio.py --gebrakan   (hanya bunyi Gebrakan)
+           python3 tools/build_audio.py --gebrakan   (hanya bunyi Gelap Ngampar)
+           python3 tools/build_audio.py --kartu      (hanya bunyi kartu)
 """
 import os
 import subprocess
@@ -599,7 +600,7 @@ def sfx_all():
     return s
 
 
-# --- Gebrakan Dung-Krek ----------------------------------------------------------
+# --- Gelap Ngampar ----------------------------------------------------------
 # Angka waktu ini harus sama dengan ui/battle/rhythm_gebrakan.gd.
 RHYTHM_PRE_ROLL = 0.5   # detik sebelum ketukan hitungan pertama
 RHYTHM_BEAT = 0.7       # satu ketukan (sekitar 86 ketukan per menit)
@@ -654,9 +655,65 @@ def build_gebrakan():
     write_ogg(os.path.join(OUT_SFX, "gebrakan.ogg"), strike, quality=5)
 
 
+# --- Bunyi kartu ------------------------------------------------------------------
+
+def card_sounds():
+    """Bunyi kartu di tangan: gabung, main, tarik, angkat, taruh, sorot."""
+    s = {}
+
+    def swish(dur, lo, hi, rise=True):
+        tt = t_axis(dur)
+        env = np.sin(np.pi * np.clip(tt / dur, 0, 1)) ** (1.5 if rise else 3)
+        return bp(noise(len(tt)), lo, hi) * env
+
+    # Gabung: hembusan masuk, dua nada saron naik, lalu kenong berdenting.
+    merge = np.zeros(int(1.1 * SR))
+    place(merge, swish(0.14, 900, 5200), 0, 0.5)
+    place(merge, saron(pitch("3'", SLENDRO, 290.0), 0.9), int(0.07 * SR), 0.8)
+    place(merge, saron(pitch("5'", SLENDRO, 290.0), 1.0), int(0.15 * SR), 0.9)
+    place(merge, kenong(pitch("1''", SLENDRO, 290.0), 0.7), int(0.22 * SR), 0.45)
+    place(merge, kentongan(1500, 0.5)[: int(0.05 * SR)], int(0.07 * SR), 0.4)
+    merge *= np.minimum(1, (len(merge) - np.arange(len(merge))) / (0.3 * SR))
+    s["card_merge"] = merge
+    # Main kartu: kibasan kartu yang jelas dan ketukan kayu kecil.
+    play = np.zeros(int(0.26 * SR))
+    place(play, swish(0.2, 1200, 6500), 0, 1.0)
+    place(play, kentongan(980, 0.7)[: int(0.06 * SR)], int(0.02 * SR), 0.35)
+    s["card_play"] = fade_in(play)
+    # Tarik kartu: jentikan kertas pendek.
+    tt = t_axis(0.07)
+    draw = bp(noise(len(tt)), 2500, 9000) * np.exp(-tt / 0.012)
+    draw += 0.4 * bp(noise(len(tt)), 900, 2600) * np.exp(-tt / 0.03)
+    s["card_draw"] = fade_in(draw)
+    # Angkat kartu: tik kayu ringan.
+    s["card_pick"] = kentongan(1700, 0.6)[: int(0.05 * SR)] * np.linspace(1, 0, int(0.05 * SR))
+    # Taruh kartu: tok kayu yang lebih rendah.
+    tt = t_axis(0.09)
+    put = kentongan(760, 0.8)[: len(tt)] * np.exp(-tt / 0.03)
+    put += 0.3 * lp(noise(len(tt)), 600) * np.exp(-tt / 0.01)
+    s["card_place"] = fade_in(put)
+    # Sorot kartu: tik halus.
+    tt = t_axis(0.03)
+    s["card_hover"] = np.sin(2 * np.pi * 2300 * tt) * np.exp(-tt / 0.008)
+    return s
+
+
+def build_card_sounds():
+    gains = {"card_merge": 0.9, "card_play": 0.85, "card_draw": 0.6, "card_pick": 0.5, "card_place": 0.7, "card_hover": 0.35}
+    for name, data in card_sounds().items():
+        data = np.asarray(data, dtype=np.float64)
+        data = data / (np.max(np.abs(data)) + 1e-9) * gains[name]
+        tail = min(len(data), int(0.01 * SR))
+        data[len(data) - tail:] *= np.linspace(1, 0, tail)
+        write_ogg(os.path.join(OUT_SFX, name + ".ogg"), data, quality=5)
+
+
 def main():
     if "--gebrakan" in sys.argv:
         build_gebrakan()
+        return
+    if "--kartu" in sys.argv:
+        build_card_sounds()
         return
     os.makedirs(OUT_BGM, exist_ok=True)
     os.makedirs(OUT_SFX, exist_ok=True)
@@ -677,6 +734,7 @@ def main():
         write_ogg(os.path.join(OUT_SFX, name + ".ogg"), data, quality=5)
     # Dibuat paling akhir supaya angka acak bunyi-bunyi lain tidak bergeser.
     build_gebrakan()
+    build_card_sounds()
 
 
 if __name__ == "__main__":

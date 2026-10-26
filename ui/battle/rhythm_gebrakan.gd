@@ -1,6 +1,6 @@
 class_name RhythmGebrakan
 extends Control
-## Permainan irama singkat saat Gebrakan Dung-Krek dipakai.
+## Permainan irama singkat saat Gelap Ngampar dipakai.
 ##
 ## Iringan gamelan dimulai dengan empat hitungan kentongan ("tok tok tok
 ## tok"), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak)

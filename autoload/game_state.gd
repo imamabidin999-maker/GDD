@@ -83,7 +83,7 @@ var hints_enabled: bool = true
 var seen_hints: Array[String] = []
 ## Tingkat kesulitan mode cerita (lihat Difficulty).
 var difficulty: int = Difficulty.NORMAL
-## Permainan irama saat Gebrakan Dongkrek dipakai.
+## Permainan irama saat Gelap Ngampar dipakai.
 var rhythm_enabled: bool = true
 #endregion
 

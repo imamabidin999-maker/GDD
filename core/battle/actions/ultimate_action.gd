@@ -1,6 +1,6 @@
 class_name UltimateAction
 extends BattleAction
-## Ultimate Eyang Palang: "Gebrakan Dongkrek", menghantam SEMUA Buto.
+## Ultimate Eyang Palang: "Gelap Ngampar", menghantam SEMUA Buto.
 ## Bunyinya juga membuyarkan amukan: titik Amuk semua Buto dikosongkan.
 ## Moxie sudah dihabiskan BattleManager saat request, jadi aksi ini tinggal
 ## menghitung damage.

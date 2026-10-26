@@ -211,6 +211,10 @@ func _build_bottom_panel() -> void:
 	ult_label.position = Vector2(562, PANEL_TOP + 47)
 	ult_label.size = Vector2(72, 10)
 	ult_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# "GELAP NGAMPAR" lebih panjang dari lebar tombol kalau memakai huruf kecil
+	# biasa, jadi dipakai Tiny5 ukuran asli (8) yang lebih ramping.
+	ult_label.add_theme_font_override("font", UIKit.FONT_MAIN)
+	ult_label.add_theme_font_size_override("font_size", 8)
 	ult_label.clip_text = true
 	add_child(ult_label)
 	_hover_tip(_ultimate_button, func() -> String:

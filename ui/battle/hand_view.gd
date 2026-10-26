@@ -18,6 +18,8 @@ const CARD_STEP_MAX := 70.0
 const HOVER_RAISE := 14.0
 const DRAG_THRESHOLD := 5.0
 const MERGE_ICON := preload("res://assets/ui/mini_chain.png")
+## Jeda antar bunyi tarik kartu saat beberapa kartu masuk sekaligus.
+const DRAW_SOUND_STEP := 0.07
 
 var battle: BattleManager
 var hand: HandManager
@@ -50,6 +52,11 @@ func setup(battle_manager: BattleManager) -> void:
 	_insert_marker.z_index = 20
 	add_child(_insert_marker)
 	hand.hand_changed.connect(_queue_rebuild)
+	# Bunyi kartu: gabung (lewat tombol atau digeser bersebelahan) dan geser.
+	hand.cards_merged.connect(func(_result: CardInstance, _index: int) -> void:
+		AudioManager.play_sfx("card_merge", 0.02))
+	hand.card_moved.connect(func(_card: CardInstance, _from: int, _to: int) -> void:
+		AudioManager.play_sfx("card_place", 0.06))
 	hand.card_lock_changed.connect(func(_c: CardInstance, _l: bool) -> void: _queue_rebuild())
 	player.moxie_changed.connect(func(_v: float) -> void: _queue_rebuild())
 	player.prayitna_changed.connect(func(_on: bool) -> void: _queue_rebuild())
@@ -82,6 +89,7 @@ func _rebuild() -> void:
 		_animate_leave(view, cards)
 
 	# Kartu baru masuk dari tumpukan dek (atau muncul di tempat kalau hasil merge).
+	var drawn := 0
 	for card: CardInstance in cards:
 		var view: CardView = _views.get(card.uid)
 		if view == null:
@@ -96,6 +104,8 @@ func _rebuild() -> void:
 			else:
 				view.position = deck_point - global_position
 				view.modulate.a = 0.0
+				_play_draw_sound(drawn)
+				drawn += 1
 		view.moxie_gain = player.get_card_moxie(card)
 		view.moxie_boosted = view.moxie_gain > player.get_moxie_gain_from_card(card)
 		view.shield_value = player.get_card_shield(card)
@@ -104,6 +114,15 @@ func _rebuild() -> void:
 
 	_layout(true)
 	_rebuild_merge_buttons()
+
+
+# Bunyi tarik kartu, berurutan kalau beberapa kartu masuk sekaligus.
+func _play_draw_sound(order: int) -> void:
+	if order == 0:
+		AudioManager.play_sfx("card_draw", 0.1)
+		return
+	get_tree().create_timer(order * DRAW_SOUND_STEP).timeout.connect(func() -> void:
+		AudioManager.play_sfx("card_draw", 0.1))
 
 
 func _create_view(card: CardInstance) -> CardView:
@@ -175,9 +194,7 @@ func _rebuild_merge_buttons() -> void:
 		b.position = Vector2(mid_x - 9, -12)
 		b.z_index = 30
 		var a := i
-		b.pressed.connect(func() -> void:
-			if battle.request_merge(a, a + 1):
-				AudioManager.play_sfx("dongkrek", 0.02))
+		b.pressed.connect(func() -> void: battle.request_merge(a, a + 1))
 		add_child(b)
 		_merge_buttons.append(b)
 
@@ -209,6 +226,7 @@ func _on_card_hover(view: CardView, hovering: bool) -> void:
 	if _dragging:
 		return
 	if hovering:
+		AudioManager.play_sfx("card_hover", 0.08, -6.0)
 		card_hovered.emit(view)
 	else:
 		card_unhovered.emit(view)
@@ -216,6 +234,7 @@ func _on_card_hover(view: CardView, hovering: bool) -> void:
 
 
 func _on_card_pressed(view: CardView) -> void:
+	AudioManager.play_sfx("card_pick", 0.08, -3.0)
 	_pressed_view = view
 	_press_point = _mouse
 	_dragging = false
