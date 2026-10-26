@@ -2,7 +2,7 @@
 
 Game RPG turn-based bergaya pixel art yang terinspirasi dari kesenian **Dongkrek** dari Mejayan, Madiun. Kisahnya berlatar sebelum kesenian itu punya nama: Mejayan sekitar tahun 1867, saat pagebluk melanda dan Eyang Palang mendapat wangsit bahwa para Buto takut pada bunyi bedug (dung) dan korek (krek). Kamu bermain sebagai Eyang Palang yang mengusir para Buto dengan tongkat dan tabuhan warga, sampai akhirnya tabuhan itu diberi nama Dongkrek.
 
-Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Gelap Ngampar yang bisa diisi sampai 200%.
+Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Sapu Jagad yang bisa diisi sampai 200%.
 
 Petualangannya berisi 10 babak cerita. Di sepanjang jalan ada kartu Tabuh dari alat musik Dongkrek, tantangan untuk mengumpulkan Bintang Dongkrek, dan kejadian kecil di perjalanan. Setelah tamat, mode **Ruwatan** terbuka: perjalanan acak delapan langkah dengan sepuluh Tingkat Pagebluk.
 
@@ -26,8 +26,8 @@ Seluruh game bisa dimainkan dengan mouse.
 | Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – |
 | Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
 | Pilih target | Klik Buto | – |
-| Gelap Ngampar | Tombol gong | Q |
-| Menabuh irama Gelap Ngampar | Klik kiri | Spasi, Enter, atau Q |
+| Sapu Jagad | Tombol gong | Q |
+| Menabuh irama Sapu Jagad | Klik kiri | Spasi, Enter, atau Q |
 | Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
 | Kecepatan battle 1x / 2x | Tombol 1x di atas | – |
 | Jeda | Tombol II | Esc |
@@ -40,8 +40,8 @@ Aturan singkatnya:
   - Sabet + Semedi = **Tenaga Dalam** (damage besar + Greget)
   - Sabet + Tangkis = **Tangkis Balik** (damage + Tameng)
   - Semedi + Tangkis = **Manunggal** (Tameng + Greget + 1 ketukan)
-- **Greget**: pada 100% **Gelap Ngampar** (bahasa Jawa: petir yang menyambar) siap: bedug dan korek ditabuh serentak dan gelegarnya menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
-- **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Gelap Ngampar sampai battle selesai.
+- **Greget**: pada 100% **Sapu Jagad** (bahasa Jawa: menyapu seisi jagad) siap: bedug dan korek ditabuh serentak dan gelegarnya menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
+- **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Sapu Jagad sampai battle selesai.
 - **Niat Buto**: ikon di atas kepala Buto menunjukkan rencananya di giliran berikutnya. Arahkan kursor ke ikon itu (juga api Amuk, Tameng, Lara, perisai Bala, dan bar Buyarkan) untuk melihat artinya.
 - **Kartu Tabuh** (bingkai emas): jurus dari alat musik Dongkrek. Didapat dari berkah atau kejadian di perjalanan, dan tidak bisa digabung. Lihat bagian Jurus Tabuh di bawah.
 - **Petunjuk**: saat sebuah mekanik muncul pertama kali (Buto Murka, Ngamuk, Lara, Sirep, Ajian, Bala, kartu Tabuh, dan lainnya), keterangan singkat tampil di pojok layar. Petunjuk bisa dimatikan di Pengaturan.
@@ -58,7 +58,7 @@ Aturan singkatnya:
 
 ### Buto Hitam
 
-Saat ancang-ancang, Buto Hitam bertameng 15, lalu melepas **Ajian Lebur Saketi** di giliran berikutnya (40 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 30 damage yang menembus Tamengnya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gelap Ngampar. Damage yang tertahan Tameng tidak ikut dihitung. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Saat ancang-ancang, Buto Hitam bertameng 15, lalu melepas **Ajian Lebur Saketi** di giliran berikutnya (40 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 30 damage yang menembus Tamengnya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Sapu Jagad. Damage yang tertahan Tameng tidak ikut dihitung. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Di sisa nyawa separuh ia murka:
 
@@ -77,7 +77,7 @@ Setelah babak 4, Buto Hitam membangkitkan keempat Buto yang sudah kalah menjadi 
 | Merah | Langsung Ancang-ancang (sambil bertameng) lalu Gebug Raksasa yang lebih keras |
 | Putih | Menyirep dua kartu terkuat sekaligus |
 
-Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di atas kepala). Setelah tiga titik penuh muncul tanda **x2**, dan giliran berikutnya Buto itu beraksi dua kali. Selama ada Buto yang siap Ngamuk, Eyang Palang mendapat **Prayitna**: Tameng dari semua kartu +50%. Gelap Ngampar juga membuyarkan semua titik Amuk.
+Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di atas kepala). Setelah tiga titik penuh muncul tanda **x2**, dan giliran berikutnya Buto itu beraksi dua kali. Selama ada Buto yang siap Ngamuk, Eyang Palang mendapat **Prayitna**: Tameng dari semua kartu +50%. Sapu Jagad juga membuyarkan semua titik Amuk.
 
 ### Sepuluh babak
 
@@ -133,11 +133,11 @@ Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tanta
 | 24 | Ruwatan dimulai dengan satu berkah acak |
 | 30 | Gelar **Juru Dongkrek** di menu utama dan aura emas Eyang Palang |
 
-### Gelap Ngampar berirama
+### Sapu Jagad berirama
 
-Saat Gelap Ngampar dipakai, iringan gamelannya sendiri mulai: empat hitungan kentongan (angka di lingkaran ikut menghitung mundur), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak) datang ke lingkaran satu ketukan demi satu ketukan, sekitar 86 ketukan per menit. Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Selisih sampai 90 ms bernilai penuh, sampai 180 ms bernilai setengah, dan hasilnya menambah damage Gelap Ngampar **sampai +30%**. Tekanan yang terlalu cepat diberi tanda tanpa menghabiskan ketukan, dan meleset semua tidak mengurangi damage. Musik battle dipelankan selama irama, lalu pukulannya ditutup bunyi dung-dung, krek, dan gong.
+Saat Sapu Jagad dipakai, iringan gamelannya sendiri mulai: empat hitungan kentongan (angka di lingkaran ikut menghitung mundur), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak) datang ke lingkaran satu ketukan demi satu ketukan, sekitar 86 ketukan per menit. Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Selisih sampai 90 ms bernilai penuh, sampai 180 ms bernilai setengah, dan hasilnya menambah damage Sapu Jagad **sampai +30%**. Tekanan yang terlalu cepat diberi tanda tanpa menghabiskan ketukan, dan meleset semua tidak mengurangi damage. Musik battle dipelankan selama irama, lalu pukulannya ditutup bunyi dung-dung, krek, dan gong.
 
-Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Gelap Ngampar, dan saat irama pertama kali muncul ada layar cara bermain. Irama bisa dicoba kapan saja lewat tombol **Coba** di Pengaturan, dan bisa dimatikan. Iramanya tidak ikut dipercepat oleh kecepatan battle 2x.
+Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Sapu Jagad, dan saat irama pertama kali muncul ada layar cara bermain. Irama bisa dicoba kapan saja lewat tombol **Coba** di Pengaturan, dan bisa dimatikan. Iramanya tidak ikut dipercepat oleh kecepatan battle 2x.
 
 ## Ruwatan
 
@@ -178,7 +178,7 @@ Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, da
 - **Musik, Efek Suara, Layar Penuh**.
 - **Kesulitan** mode cerita: Santai (Nyawa Buto −20%, serangan −15%), Normal, atau Sulit (Nyawa dan serangan +15%). Bisa diganti kapan saja.
 - **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
-- **Petunjuk** dan **Irama Gelap Ngampar** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Gelap Ngampar membuka latihan irama.
+- **Petunjuk** dan **Irama Sapu Jagad** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Sapu Jagad membuka latihan irama.
 
 Progres tersimpan otomatis.
 
@@ -205,7 +205,7 @@ core/          Logika battle (BattleManager, DeckController, HandManager, Player
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
 ui/            Kartu, tangan, HUD, dialog, pengaturan, tooltip, titik peta, panel berkah,
-               kejadian, tantangan, irama Gelap Ngampar, dan pemilih kartu
+               kejadian, tantangan, irama Sapu Jagad, dan pemilih kartu
 assets/        Sprite, latar, kartu, ikon, font, shader, musik, dan efek suara
 localization/  Teks dua bahasa (dibuat oleh tools/strings_source.py)
 tests/         Tes otomatis
@@ -222,7 +222,7 @@ python3 tools/build_assets.py      # sprite, kartu, ikon dari desain asli (butuh
 python3 tools/build_map.py         # gambar peta perjalanan
 python3 tools/build_backgrounds.py # latar battle tiap babak, menu, dan ending
 python3 tools/build_audio.py       # musik & efek suara (butuh numpy, scipy, ffmpeg)
-                                   # --gebrakan: hanya iringan dan bunyi Gelap Ngampar
+                                   # --gebrakan: hanya iringan dan bunyi Sapu Jagad
                                    # --kartu: hanya bunyi kartu (gabung, main, tarik, geser)
 python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
@@ -244,7 +244,7 @@ Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` mema
 
 ### Keseimbangan
 
-Hasil `simulate_balance.gd` di kesulitan Normal (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya, ditambah kejadian di perjalanan setelah babak 2, 4, 6, dan 8 (pilihannya juga acak). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, memilih kartu Tabuh sesuai keadaan, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Gelap Ngampar begitu siap. Bonus irama Gelap Ngampar tidak ikut dihitung.
+Hasil `simulate_balance.gd` di kesulitan Normal (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya, ditambah kejadian di perjalanan setelah babak 2, 4, 6, dan 8 (pilihannya juga acak). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, memilih kartu Tabuh sesuai keadaan, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Sapu Jagad begitu siap. Bonus irama Sapu Jagad tidak ikut dihitung.
 
 | Babak | Lawan | Menang (cerdas) | Menang (santai) | Lama rata-rata |
 |---|---|---|---|---|

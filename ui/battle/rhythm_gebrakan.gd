@@ -1,6 +1,6 @@
 class_name RhythmGebrakan
 extends Control
-## Permainan irama singkat saat Gelap Ngampar dipakai.
+## Permainan irama singkat saat Sapu Jagad dipakai.
 ##
 ## Iringan gamelan dimulai dengan empat hitungan kentongan ("tok tok tok
 ## tok"), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak)
@@ -148,7 +148,7 @@ func _build_intro() -> void:
 	_col.move_child(_intro, 1)
 	_intro.add_child(UIKit.label(tr("RHYTHM_INTRO_TITLE"), &"BigLabel", UIKit.COLOR_GOLD))
 	for key: String in ["RHYTHM_INTRO_1", "RHYTHM_INTRO_2", "RHYTHM_INTRO_3"]:
-		var line := UIKit.label(tr(key), &"BigLabel", UIKit.COLOR_TEXT)
+		var line := UIKit.label(_fill_keys(tr(key)), &"BigLabel", UIKit.COLOR_TEXT)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.custom_minimum_size = Vector2(TRACK_SIZE.x, 0)
 		_intro.add_child(line)
@@ -245,6 +245,12 @@ func score() -> float:
 	for value: float in judgements:
 		total += maxf(value, 0.0)
 	return total / maxf(1.0, float(judgements.size()))
+
+
+# Nama tombol pilihan pemain di teks ({ultimate} -> "Q"), lewat node seperti _sfx.
+func _fill_keys(text: String) -> String:
+	var gs := get_node_or_null("/root/GameState")
+	return str(gs.call("fill_keys", text)) if gs != null else text
 
 
 # Lewat node, bukan nama autoload, supaya kelas ini bisa dipakai tes yang

@@ -83,8 +83,11 @@ var hints_enabled: bool = true
 var seen_hints: Array[String] = []
 ## Tingkat kesulitan mode cerita (lihat Difficulty).
 var difficulty: int = Difficulty.NORMAL
-## Permainan irama saat Gelap Ngampar dipakai.
+## Permainan irama saat Sapu Jagad dipakai.
 var rhythm_enabled: bool = true
+## Tombol keyboard pilihan pemain: {aksi: [kode, kode]} (lihat KeyBindings).
+## Aksi yang tidak ada di sini memakai tombol bawaan.
+var key_bindings: Dictionary = {}
 #endregion
 
 
@@ -382,6 +385,49 @@ func difficulty_attack_multiplier() -> float:
 	return DIFFICULTY_ATTACK[difficulty]
 
 
+#region Tombol keyboard
+
+## Memasang tombol ke satu slot aksi. Mengembalikan aksi lain yang kehilangan
+## tombol itu ("" kalau tidak ada, "!" kalau ditolak).
+func set_key(action: String, slot: int, code: int) -> String:
+	var displaced := KeyBindings.assign(key_bindings, action, slot, code)
+	if displaced != "!":
+		KeyBindings.apply(key_bindings)
+		save_game()
+		settings_changed.emit()
+	return displaced
+
+
+func clear_key(action: String, slot: int) -> void:
+	KeyBindings.clear(key_bindings, action, slot)
+	KeyBindings.apply(key_bindings)
+	save_game()
+	settings_changed.emit()
+
+
+func reset_keys() -> void:
+	key_bindings.clear()
+	KeyBindings.apply(key_bindings)
+	save_game()
+	settings_changed.emit()
+
+
+func key_codes(action: String) -> Array[int]:
+	return KeyBindings.codes(key_bindings, action)
+
+
+## Nama tombol aksi ini, misalnya "E / Spasi".
+func key_names(action: String) -> String:
+	return KeyBindings.names(key_bindings, action)
+
+
+## Mengganti {aksi} di teks dengan nama tombolnya.
+func fill_keys(text: String) -> String:
+	return KeyBindings.fill(text, key_bindings)
+
+#endregion
+
+
 func set_fullscreen(value: bool) -> void:
 	fullscreen = value
 	apply_settings()
@@ -390,6 +436,7 @@ func set_fullscreen(value: bool) -> void:
 
 func apply_settings() -> void:
 	TranslationServer.set_locale(locale)
+	KeyBindings.apply(key_bindings)
 	_set_bus_volume("Music", music_volume)
 	_set_bus_volume("SFX", sfx_volume)
 	if DisplayServer.get_name() != "headless":
@@ -500,6 +547,7 @@ func save_game() -> void:
 	cfg.set_value("settings", "seen_hints", seen_hints)
 	cfg.set_value("settings", "difficulty", difficulty)
 	cfg.set_value("settings", "rhythm_enabled", rhythm_enabled)
+	cfg.set_value("settings", "keys", key_bindings)
 	cfg.save(save_path)
 
 
@@ -556,6 +604,7 @@ func load_game() -> void:
 	seen_hints.assign(cfg.get_value("settings", "seen_hints", []))
 	difficulty = clampi(int(cfg.get_value("settings", "difficulty", Difficulty.NORMAL)), Difficulty.SANTAI, Difficulty.SULIT)
 	rhythm_enabled = bool(cfg.get_value("settings", "rhythm_enabled", true))
+	key_bindings = KeyBindings.sanitize(cfg.get_value("settings", "keys", {}))
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:
 		_migrate_from_v1()

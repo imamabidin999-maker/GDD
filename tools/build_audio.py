@@ -7,7 +7,7 @@ slendro (lagu biasa) dan pelog (lagu bos).
 
 Butuh: numpy, scipy, ffmpeg (encoder libvorbis).
 Pemakaian: python3 tools/build_audio.py
-           python3 tools/build_audio.py --gebrakan   (hanya bunyi Gelap Ngampar)
+           python3 tools/build_audio.py --gebrakan   (hanya bunyi Sapu Jagad)
            python3 tools/build_audio.py --kartu      (hanya bunyi kartu)
 """
 import os
@@ -600,7 +600,7 @@ def sfx_all():
     return s
 
 
-# --- Gelap Ngampar ----------------------------------------------------------
+# --- Sapu Jagad ----------------------------------------------------------
 # Angka waktu ini harus sama dengan ui/battle/rhythm_gebrakan.gd.
 RHYTHM_PRE_ROLL = 0.5   # detik sebelum ketukan hitungan pertama
 RHYTHM_BEAT = 0.7       # satu ketukan (sekitar 86 ketukan per menit)

@@ -368,15 +368,32 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ultimate"):
 		_on_ultimate()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("target_next"):
+		_cycle_target()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("toggle_speed"):
+		_toggle_speed()
+		get_viewport().set_input_as_handled()
 	else:
-		var key := event as InputEventKey
-		if key != null and key.pressed and not key.echo and key.keycode >= KEY_1 and key.keycode <= KEY_9:
-			var index := key.keycode - KEY_1
-			if _battle.hand.is_locked_at(index):
-				_hand_view.reject_sirep_at(index)
-			else:
-				_battle.request_play_card(index)
-			get_viewport().set_input_as_handled()
+		# Tombol kartu ke-1 sampai ke-9 (bawaannya angka 1-9, bisa diubah).
+		for i: int in KeyBindings.CARD_KEYS:
+			if event.is_action_pressed("card_%d" % (i + 1)):
+				if _battle.hand.is_locked_at(i):
+					_hand_view.reject_sirep_at(i)
+				else:
+					_battle.request_play_card(i)
+				get_viewport().set_input_as_handled()
+				return
+
+
+## Pindah sasaran ke Buto hidup berikutnya (tombol Ganti sasaran).
+func _cycle_target() -> void:
+	var alive := _battle.get_living_enemies()
+	if alive.size() < 2:
+		return
+	var next: EnemyUnit = alive[(alive.find(_battle.get_target()) + 1) % alive.size()]
+	if _battle.select_target(next):
+		AudioManager.play_sfx("click")
 
 #endregion
 
@@ -844,7 +861,7 @@ func _open_pause() -> void:
 	var title := UIKit.label(tr("BATTLE_PAUSED"), &"HeaderLabel")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
-	var help := UIKit.label(tr("BATTLE_HELP"), &"", UIKit.COLOR_DIM)
+	var help := UIKit.label(GameState.fill_keys(tr("BATTLE_HELP")), &"", UIKit.COLOR_DIM)
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help.custom_minimum_size = Vector2(260, 0)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

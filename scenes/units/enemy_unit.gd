@@ -68,7 +68,7 @@ func finish_enemy_turn(actions_taken: int) -> void:
 		amuk = mini(amuk + 1, AMUK_MAX)
 
 
-## Gelap Ngampar juga membuyarkan kekuatan yang sedang disiapkan Buto
+## Sapu Jagad juga membuyarkan kekuatan yang sedang disiapkan Buto
 ## (Ajian Lebur Saketi milik Buto Hitam). Mengembalikan true kalau ada yang buyar.
 func break_power() -> bool:
 	return false
@@ -80,7 +80,7 @@ func get_end_turn_action(_battle: BattleManager) -> BattleAction:
 	return null
 
 
-## Gelap Ngampar membuyarkan amukan. Titik negatif (jeda awal) dibiarkan.
+## Sapu Jagad membuyarkan amukan. Titik negatif (jeda awal) dibiarkan.
 ## Mengembalikan true kalau ada titik Amuk yang hilang.
 func calm_amuk() -> bool:
 	if amuk <= 0:

@@ -119,7 +119,7 @@ func _show_line() -> void:
 	_portrait.texture = PORTRAITS.get(speaker)
 	_name.text = tr("SPEAKER_" + speaker.to_upper())
 	_name.add_theme_color_override("font_color", NAME_COLORS.get(speaker, Color(0.95, 0.55, 0.5)))
-	var body := tr(key)
+	var body := GameState.fill_keys(tr(key))
 	if speaker == "narator":
 		body = "[color=#c9cbe0][i]%s[/i][/color]" % body
 	_text.text = body

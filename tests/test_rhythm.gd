@@ -1,5 +1,5 @@
 extends SceneTree
-## Tes Gelap Ngampar berirama: penilaian ketukan, skor, bonus damage, dan
+## Tes Sapu Jagad berirama: penilaian ketukan, skor, bonus damage, dan
 ## jalannya panel irama sampai selesai.
 ##   godot --headless -s tests/test_rhythm.gd
 

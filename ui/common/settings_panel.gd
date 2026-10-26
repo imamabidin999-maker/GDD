@@ -1,7 +1,7 @@
 class_name SettingsPanel
 extends Control
 ## Panel pengaturan: bahasa, volume musik & efek suara, layar penuh, tingkat
-## kesulitan cerita, kecepatan battle, dan petunjuk.
+## kesulitan cerita, kecepatan battle, petunjuk, irama, dan tombol keyboard.
 ## Dipakai di menu utama dan di menu jeda battle.
 
 signal closed
@@ -116,6 +116,16 @@ func _ready() -> void:
 		add_child(rhythm))
 	rhythm_row.add_child(practice)
 	grid.add_child(rhythm_row)
+
+	# Daftar tombol keyboard, dan pemain bisa menggantinya.
+	grid.add_child(_text_label("SETTINGS_KEYS"))
+	var keys := UIKit.button(tr("KEYS_OPEN"), 60)
+	keys.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_texts[keys] = "KEYS_OPEN"
+	keys.pressed.connect(func() -> void:
+		AudioManager.play_sfx("click")
+		add_child(ControlsPanel.new()))
+	grid.add_child(keys)
 
 	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER

@@ -192,5 +192,5 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
 
 ## 10. Nama Ultimate dan Bunyi Kartu
 
-- Nama "Gebrakan Dung-Krek" terasa janggal, jadi ultimate Eyang Palang sekarang bernama **Gelap Ngampar**: dalam bahasa Jawa *gelap* berarti petir dan *ngampar* berarti menyambar. Namanya juga dikenal sebagai ajian dalam cerita rakyat Jawa. Di game, bedug dan korek ditabuh serentak dan gelegarnya menyambar semua Buto seperti petir. Nama kode di dalam skrip (`RhythmGebrakan`, bunyi `gebrakan`) tidak berubah.
+- Nama "Gebrakan Dung-Krek" terasa janggal, jadi ultimate Eyang Palang sekarang bernama **Sapu Jagad**: "menyapu seisi jagad", nama yang juga dikenal sebagai ajian dalam cerita rakyat Jawa. Di game, bedug dan korek ditabuh serentak dan gelegarnya menyapu semua Buto sekaligus. (Sempat dinamai Gelap Ngampar sebelum dipilih Sapu Jagad.) Nama kode di dalam skrip (`RhythmGebrakan`, bunyi `gebrakan`) tidak berubah.
 - Kartu sekarang punya bunyi sendiri: gabung (hembusan, dua nada saron naik, kenong), main (kibasan kartu), tarik dari dek (jentikan kertas, berurutan saat beberapa kartu masuk), angkat (tik kayu), taruh setelah digeser (tok kayu), dan sorot (tik halus). Bunyi gabung terdengar baik lewat tombol rantai maupun saat kartu digeser bersebelahan. Saat tumpukan buangan dikocok kembali ke dek, bunyi kocok terdengar.

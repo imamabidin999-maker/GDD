@@ -12,7 +12,7 @@ extends EnemyUnit
 ##   Hitam  : bos. Pola empat langkah: Gebug Pagebluk (serangan + Lara),
 ##            Gebug, ancang-ancang Ajian, lalu Ajian Lebur Saketi. Ajian buyar
 ##            kalau pemain memberi cukup damage di giliran setelah ancang-ancang
-##            atau memakai Gelap Ngampar; Buto Hitam lalu terhuyung dan
+##            atau memakai Sapu Jagad; Buto Hitam lalu terhuyung dan
 ##            kehilangan satu aksi. Di fase 2 ia Memanggil Bala (Buto bayangan
 ##            yang membuatnya hanya menerima separuh damage), menebar Pagebluk
 ##            Merata (+Lara tiap giliran, Lara tidak berkurang), dan bisa Ngamuk.
@@ -319,7 +319,7 @@ func finish_enemy_turn(actions_taken: int) -> void:
 	super(actions_taken)
 
 
-## Gelap Ngampar membuyarkan Ajian yang sedang disiapkan.
+## Sapu Jagad membuyarkan Ajian yang sedang disiapkan.
 func break_power() -> bool:
 	if not _ajian_charged:
 		return false

@@ -38,6 +38,8 @@ var _banner: Label
 var _ap_box: Control
 var _ultimate_glow: Tween
 var _speed_button: Button
+# Nama tombol keyboard di pojok tombol HUD: aksi -> Label.
+var _key_badges := {}
 
 
 func setup(battle_manager: BattleManager, stage_title: String) -> void:
@@ -75,6 +77,7 @@ func refresh_texts(stage_title: String) -> void:
 	_stage_label.text = stage_title
 	if battle.turn_number > 0:
 		_turn_label.text = tr("BATTLE_TURN") % battle.turn_number
+	_refresh_key_badges()
 
 
 #region Bangun
@@ -121,7 +124,7 @@ func _build_top_bar(stage_title: String) -> void:
 	_speed_button.add_theme_constant_override("content_margin_left", 2)
 	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	add_child(_speed_button)
-	_hover_tip(_speed_button, func() -> String: return tr("BATTLE_SPEED_TIP"))
+	_hover_tip(_speed_button, func() -> String: return _with_key(tr("BATTLE_SPEED_TIP"), "toggle_speed"))
 	refresh_speed()
 
 	var pause := UIKit.button("II")
@@ -211,21 +214,42 @@ func _build_bottom_panel() -> void:
 	ult_label.position = Vector2(562, PANEL_TOP + 47)
 	ult_label.size = Vector2(72, 10)
 	ult_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	# "GELAP NGAMPAR" lebih panjang dari lebar tombol kalau memakai huruf kecil
-	# biasa, jadi dipakai Tiny5 ukuran asli (8) yang lebih ramping.
-	ult_label.add_theme_font_override("font", UIKit.FONT_MAIN)
-	ult_label.add_theme_font_size_override("font_size", 8)
 	ult_label.clip_text = true
 	add_child(ult_label)
 	_hover_tip(_ultimate_button, func() -> String:
 		var preview := roundi(battle.ultimate_base_damage * battle.player.ultimate_damage_multiplier * maxf(battle.player.moxie, 100.0) / 100.0)
-		return tr("BATTLE_ULTIMATE_TIP") % preview)
+		return _with_key(tr("BATTLE_ULTIMATE_TIP") % preview, "ultimate"))
+	_key_badge("ultimate", Vector2(564, PANEL_TOP + 7))
 
 	_end_turn_button = UIKit.button("BATTLE_END_TURN")
 	_end_turn_button.position = Vector2(562, PANEL_TOP + 66)
 	_end_turn_button.size = Vector2(72, 30)
 	_end_turn_button.pressed.connect(func() -> void: end_turn_pressed.emit())
 	add_child(_end_turn_button)
+	_hover_tip(_end_turn_button, func() -> String: return _with_key(tr("BATTLE_END_TURN_TIP"), "end_turn"))
+	_refresh_key_badges()
+
+
+## Label kecil berisi nama tombol keyboard aksi ini, di pojok kiri atas tombolnya.
+func _key_badge(action: String, pos: Vector2) -> void:
+	var badge := UIKit.small_label("", UIKit.COLOR_DIM)
+	badge.position = pos
+	add_child(badge)
+	_key_badges[action] = badge
+
+
+func _refresh_key_badges() -> void:
+	for action: String in _key_badges:
+		var code: int = GameState.key_codes(action)[0]
+		if code == 0:
+			code = GameState.key_codes(action)[1]
+		(_key_badges[action] as Label).text = KeyBindings.key_name(code) if code != 0 else ""
+
+
+## Menambahkan baris "Tombol: Q" di bawah keterangan, kalau aksinya punya tombol.
+func _with_key(text: String, action: String) -> String:
+	var keys := GameState.key_names(action)
+	return text if keys == "-" else text + "\n" + tr("KEY_TIP") % keys
 
 
 func _build_banner() -> void:
