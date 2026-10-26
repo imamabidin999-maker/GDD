@@ -96,7 +96,8 @@ func _rebuild() -> void:
 			else:
 				view.position = deck_point - global_position
 				view.modulate.a = 0.0
-		view.moxie_gain = player.get_moxie_gain_from_card(card)
+		view.moxie_gain = player.get_card_moxie(card)
+		view.moxie_boosted = view.moxie_gain > player.get_moxie_gain_from_card(card)
 		view.shield_value = player.get_card_shield(card)
 		view.damage_value = player.get_card_damage(card)
 		view.refresh()

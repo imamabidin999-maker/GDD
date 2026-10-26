@@ -300,15 +300,36 @@ func get_card_shield(card: CardInstance) -> int:
 
 
 ## Damage kartu ini kalau dimainkan sekarang (termasuk penguat Kenong).
+## Kartu Semedi tidak ikut: Kenong menaikkan Greget-nya, bukan damage-nya.
 func get_card_damage(card: CardInstance) -> int:
 	if card == null or card.data.base_power <= 0:
 		return 0
+	if is_semedi(card):
+		return card.data.base_power
 	return _boosted(card, float(card.data.base_power))
 
 
+## Greget yang didapat dari kartu ini sekarang. Kartu Semedi yang diperkuat
+## Kenong mendapat Greget lebih banyak.
+func get_card_moxie(card: CardInstance) -> float:
+	var gain := get_moxie_gain_from_card(card)
+	if gain > 0.0 and is_semedi(card) and _boost_applies(card):
+		return ceilf(gain * (1.0 + next_card_boost))
+	return gain
+
+
+## Kartu Semedi murni (bukan gabungan). Kenong menguatkan Greget-nya.
+static func is_semedi(card: CardInstance) -> bool:
+	return card != null and not card.is_hybrid() and card.get_type() == CardData.CardType.FOKUS
+
+
 # Penguat Kenong tidak berlaku untuk kartu Kenong sendiri.
+func _boost_applies(card: CardInstance) -> bool:
+	return next_card_boost > 0.0 and card.data.next_boost <= 0.0
+
+
 func _boosted(card: CardInstance, value: float) -> int:
-	if next_card_boost > 0.0 and card.data.next_boost <= 0.0:
+	if _boost_applies(card):
 		return ceili(value * (1.0 + next_card_boost))
 	return roundi(value)
 
@@ -339,12 +360,13 @@ func _contains_type(card: CardInstance, card_type: CardData.CardType) -> bool:
 #region Evolutionary Chain
 
 ## Mencatat kartu yang baru dimainkan, menambah Moxie kalau kartunya Fokus,
-## lalu mengecek Evolutionary Chain.
-func register_card_played(card: CardInstance) -> void:
+## lalu mengecek Evolutionary Chain. `moxie` < 0 berarti Moxie dasar kartu;
+## PlayCardAction mengisinya dengan Moxie yang sudah termasuk penguat Kenong.
+func register_card_played(card: CardInstance, moxie: float = -1.0) -> void:
 	if card == null:
 		return
 	_played_this_turn.append(card)
-	gain_moxie(get_moxie_gain_from_card(card))
+	gain_moxie(moxie if moxie >= 0.0 else get_moxie_gain_from_card(card))
 	check_evolutionary_chain()
 
 

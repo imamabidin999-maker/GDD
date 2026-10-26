@@ -26,6 +26,9 @@ var extra: int
 ## Niat Buto Murka (teks niatnya sedikit berbeda, misalnya Kuning Murka
 ## menghisap Greget dari level berapa pun).
 var murka: bool = false
+## Tameng yang ikut didapat Buto saat beraksi (ancang-ancang Merah Murka dan
+## Ajian Buto Hitam).
+var block: int = 0
 
 
 func _init(intent_kind: Kind, intent_damage: int = 0, intent_extra: int = 0) -> void:

@@ -174,6 +174,23 @@ func _run() -> void:
 	f5.bm.request_play_card(0)
 	f5.bm.request_play_card(0)
 	check(f5.hero.block == 13, "Kenong +60% juga menguatkan Tameng (8 -> 13)")
+	print("[Kenong pada Semedi: Greget yang naik, bukan damage]")
+	set_hand(f5, ["kenong:2", "fokus:2"])
+	f5.player.current_ap = 4
+	f5.player.moxie = 0.0
+	f5.bm.request_play_card(0)
+	var semedi := f5.hand.get_card(0)
+	var base_moxie := f5.player.get_moxie_gain_from_card(semedi)
+	var hp_semedi := kn.health.current_hp
+	check(f5.player.get_card_damage(semedi) == semedi.data.base_power and f5.player.get_card_moxie(semedi) == ceilf(base_moxie * 1.6),
+		"Semedi tampil dengan damage biasa dan Greget %d -> %d" % [roundi(base_moxie), roundi(ceilf(base_moxie * 1.6))])
+	f5.bm.request_play_card(0)
+	check(hp_semedi - kn.health.current_hp == semedi.data.base_power and is_equal_approx(f5.player.moxie, ceilf(base_moxie * 1.6)),
+		"Semedi dimainkan: damage tidak naik, Greget naik 60%")
+	set_hand(f5, ["kenong:1", "serang:1"])
+	f5.player.current_ap = 4
+	f5.bm.request_play_card(0)
+	check(f5.player.get_card_moxie(f5.hand.get_card(0)) == 0.0, "Sabet tidak mendapat Greget dari Kenong")
 	set_hand(f5, ["kenong:1"])
 	f5.player.current_ap = 4
 	f5.bm.request_play_card(0)

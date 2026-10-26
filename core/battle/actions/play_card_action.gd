@@ -33,6 +33,7 @@ func _apply(battle: BattleManager) -> void:
 	if data.next_boost <= 0.0:
 		boost_used = player.next_card_boost
 	var damage := player.get_card_damage(card) # termasuk penguat Kenong
+	var moxie := player.get_card_moxie(card) # Semedi: Kenong menaikkan Greget
 	if damage > 0:
 		if data.hits_all:
 			for enemy: EnemyUnit in battle.get_living_enemies():
@@ -57,7 +58,7 @@ func _apply(battle: BattleManager) -> void:
 		player.next_card_boost = 0.0
 
 	var moxie_before := player.moxie
-	player.register_card_played(card) # Moxie + Evolutionary Chain
+	player.register_card_played(card, moxie) # Moxie + Evolutionary Chain
 	moxie_gained = player.moxie - moxie_before
 	battle.deck.discard_card(card) # kartu hybrid dipecah lagi jadi 2 kartu dasar
 	# Tarikan Kentongan setelah kartunya dibuang, jadi slotnya sudah kosong.

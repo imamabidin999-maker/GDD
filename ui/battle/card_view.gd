@@ -37,6 +37,8 @@ const MINI_BOOST := preload("res://assets/ui/mini_boost.png")
 var card: CardInstance
 ## Moxie yang didapat kalau kartu ini dimainkan (diisi HandView dari PlayerState).
 var moxie_gain: float = 0.0
+## Greget kartu Semedi sedang diperkuat Kenong.
+var moxie_boosted: bool = false
 ## Tameng yang diberikan kartu ini sekarang. -1 = pakai nilai dasar kartu.
 ## Lebih besar dari nilai dasar saat Prayitna atau Kenong aktif.
 var shield_value: int = -1
@@ -196,7 +198,7 @@ func refresh() -> void:
 		var boosted := shield > data.shield
 		_add_stat(MINI_BLOCK, str(shield), Color(0.75, 1.0, 0.55) if boosted else UIKit.COLOR_GREEN)
 	if moxie_gain > 0.0:
-		_add_stat(MINI_MOXIE, "+%d" % roundi(moxie_gain), UIKit.COLOR_BLUE)
+		_add_stat(MINI_MOXIE, "+%d" % roundi(moxie_gain), Color(0.62, 0.92, 1.0) if moxie_boosted else UIKit.COLOR_BLUE)
 	if data.ap_gain > 0:
 		_add_stat(MINI_AP, "+%d" % data.ap_gain, UIKit.COLOR_GOLD)
 
@@ -291,6 +293,8 @@ func get_tooltip_bbcode() -> String:
 			lines.append("[color=#b8ff8c]%s[/color]" % tr("CARD_PRAYITNA_TIP"))
 	if moxie_gain > 0.0:
 		lines.append(tr("EFFECT_MOXIE") % roundi(moxie_gain))
+		if moxie_boosted:
+			lines.append("[color=#9fe8ff]%s[/color]" % tr("CARD_BOOST_MOXIE_TIP"))
 	if data.ap_gain > 0:
 		lines.append(tr("EFFECT_AP") % data.ap_gain)
 	lines.append("[color=#9aa0b8]%s[/color]" % tr(data.display_name + "_DESC"))

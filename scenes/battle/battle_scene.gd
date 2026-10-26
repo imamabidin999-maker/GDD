@@ -471,6 +471,9 @@ func _present_skill(action: ButoSkillAction) -> void:
 			view.play_charge()
 			AudioManager.play_sfx("gong", 0.0, -4.0)
 			_float_text(tr("BATTLE_AJIAN_CHARGING"), view.get_top_point(), Color(1.0, 0.45, 0.6), true)
+			if action.block_gained > 0:
+				AudioManager.play_sfx("block", 0.05)
+				_float_text("+%d %s" % [action.block_gained, tr("BATTLE_BLOCK")], view.get_hit_point() + Vector2(0, -20), UIKit.COLOR_GREEN)
 		EnemyButo.Skill.AJIAN:
 			view.play_attack(true)
 			AudioManager.play_sfx("hit_heavy")
@@ -693,6 +696,8 @@ func _intent_text(intent: EnemyIntent) -> String:
 		EnemyIntent.Kind.PLAGUE_STRIKE:
 			return tr("INTENT_PLAGUE") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.AJIAN_CHARGE:
+			if intent.block > 0:
+				return tr("INTENT_AJIAN_CHARGE_BLOCK") % [intent.extra, intent.block]
 			return tr("INTENT_AJIAN_CHARGE") % intent.extra
 		EnemyIntent.Kind.AJIAN:
 			return tr("INTENT_AJIAN") % [intent.damage, intent.extra]
@@ -703,6 +708,8 @@ func _intent_text(intent: EnemyIntent) -> String:
 		EnemyIntent.Kind.POISON:
 			return tr("INTENT_POISON") % [intent.damage, intent.extra]
 		EnemyIntent.Kind.CHARGE:
+			if intent.block > 0:
+				return tr("INTENT_CHARGE_BLOCK") % [intent.extra, intent.block]
 			return tr("INTENT_CHARGE") % intent.extra
 		EnemyIntent.Kind.HEAVY:
 			return tr("INTENT_HEAVY") % intent.damage

@@ -224,17 +224,17 @@ Siasat: mainkan kartu berbintang tinggi sebelum gilirannya tiba.","Guardian of t
 Tip: play your high-rank cards before its turn comes."
 PUSTAKA_BUTO_HITAM_TEXT,"Raja para Buto dan biang pagebluk.
 
-Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau kamu memberi cukup damage di giliran setelah ancang-ancang (lihat bar Buyarkan di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Polanya: Gebug Pagebluk (serangan + 2 Lara), Gebug, lalu ancang-ancang Ajian Lebur Saketi sambil bertameng 15. Di giliran berikutnya ajian itu dilepas: pukulan sangat keras ditambah 3 Lara. Ajian bisa dibuyarkan kalau di giliran setelah ancang-ancang kamu memberi cukup damage yang menembus Tamengnya (lihat bar Buyarkan di atas bar nyawanya), atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Saat nyawanya tinggal separuh ia murka: memanggil dua Bala, menebar Pagebluk Merata (tiap giliran Buto kamu mendapat 1 Lara dan Lara tidak berkurang), dan mulai bisa Ngamuk.
 
-Siasat: simpan Greget untuk membuyarkan Ajian di fase kedua, dan tuntaskan pertarungan secepatnya sebelum Lara menumpuk.","King of the Buto and root of the plague.
+Siasat: simpan kartu Sabet kuat atau Greget untuk giliran Buyarkan, dan tuntaskan pertarungan secepatnya sebelum Lara menumpuk.","King of the Buto and root of the plague.
 
-Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian by dealing enough damage on the turn after the wind-up (watch the Break bar above its HP bar) or by using Gebrakan Dongkrek. If it breaks, Buto Hitam staggers and loses an action.
+Its pattern: Gebug Pagebluk (an attack + 2 Lara), Gebug, then it winds up Ajian Lebur Saketi behind 15 Block. On its next turn the Ajian is released: a devastating blow plus 3 Lara. You can break the Ajian on the turn after the wind-up by dealing enough damage past its Block (watch the Break bar above its HP bar), or by using Gebrakan Dongkrek. If it breaks, Buto Hitam staggers and loses an action.
 
 At half HP it becomes enraged: it summons two Bala, spreads Pagebluk Merata (you gain 1 Lara every Buto turn and Lara no longer wears off), and can go Ngamuk.
 
-Tip: keep Greget ready to break the Ajian in the second phase, and finish the fight quickly before Lara piles up."
+Tip: save strong Sabet cards or Greget for the Break turn, and finish the fight quickly before Lara piles up."
 PUSTAKA_HOWTO,Cara Bermain,How to Play
 PUSTAKA_HOWTO_TEXT,"Ketukan: tiap giliran kamu punya 4 ketukan, seperti satu gatra gamelan. Main kartu 1 ketukan, geser kartu 1 ketukan.
 
@@ -360,7 +360,7 @@ S10_INTRO_4,"Kalau begitu, rasakan Ajian Lebur Saketi!",Then taste the Ajian Leb
 S10_WIN_1,Dung... krek... bunyi itu... AAARGH!,Dung... krek... that sound... AAARGH!
 S10_WIN_2,Pulanglah ke tempatmu. Jangan ganggu Mejayan lagi.,Go back where you belong. Leave Mejayan in peace.
 AJIAN_BREAK_BAR,Buyarkan %d/%d,Break %d/%d
-AJIAN_BREAK_TIP,"Beri %d damage giliran ini untuk membuyarkan Ajian (%d/%d), atau pakai Gebrakan Dongkrek.","Deal %d damage this turn to break the Ajian (%d/%d), or use Gebrakan Dongkrek."
+AJIAN_BREAK_TIP,Beri %d damage ke Nyawanya giliran ini untuk membuyarkan Ajian (%d/%d). Tameng menahan damage lebih dulu dan tidak ikut dihitung. Atau pakai Gebrakan Dongkrek.,Deal %d damage to its HP this turn to break the Ajian (%d/%d). Its Block soaks damage first and doesn't count. Or use Gebrakan Dongkrek.
 BALA_SHIELD_TIP,Dilindungi Bala: hanya menerima separuh damage selama masih ada Bala yang hidup.,Shielded by Bala: takes only half damage while any Bala still stands.
 BALA_TIP,Buto bayangan panggilan Buto Hitam. Lenyap kalau Buto Hitam tumbang.,A shadow Buto summoned by Buto Hitam. Vanishes when Buto Hitam falls.
 BALA_FMT,Bala %s,Bala %s
@@ -424,7 +424,7 @@ HINT_SIREP,"Buto Putih akan menyirep kartu terkuatmu. Kartu tersirep tidak bisa 
 HINT_LARA_TITLE,Lara,Lara
 HINT_LARA,"Lara mengurangi Nyawa di akhir setiap giliran Buto, menembus Tameng, lalu berkurang satu.","Lara drains HP at the end of every Buto turn, ignores Block, then goes down by one."
 HINT_AJIAN_TITLE,Ajian Lebur Saketi,Ajian Lebur Saketi
-HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat. Isi bar Buyarkan dengan damage giliran ini, atau pakai Gebrakan Dongkrek, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow. Fill the Break bar with damage this turn, or use Gebrakan Dongkrek, to break it."
+HINT_AJIAN,"Buto Hitam menyiapkan pukulan dahsyat sambil bertameng. Isi bar Buyarkan dengan damage yang menembus Tamengnya, atau pakai Gebrakan Dongkrek, supaya ajiannya buyar.","Buto Hitam is gathering a devastating blow behind a Block. Fill the Break bar with damage that gets past the Block, or use Gebrakan Dongkrek, to break it."
 HINT_BALA_TITLE,Bala,Bala
 HINT_BALA,"Selama masih ada Bala yang hidup, Buto Hitam hanya menerima separuh damage. Habisi Bala lebih dulu.","While any Bala lives, Buto Hitam takes only half damage. Take the Bala down first."
 HINT_PAGEBLUK_TITLE,Pagebluk Merata,Pagebluk Merata
@@ -443,12 +443,12 @@ CARD_GONG_SHORT,GONG,GONG
 CARD_GONG_DESC,Pukulan gong yang berat. Butuh 2 Ketukan.,A heavy gong strike. Costs 2 Ketukan.
 CARD_KENONG,Kenong,Kenong
 CARD_KENONG_SHORT,KENONG,KENONG
-CARD_KENONG_DESC,Kenong menjaga irama: kartu berikutnya giliran ini lebih kuat.,The kenong keeps the beat: your next card this turn is stronger.
+CARD_KENONG_DESC,"Kenong menjaga irama: kartu berikutnya giliran ini lebih kuat. Sabet dan Tangkis naik angkanya, Semedi naik Greget-nya.","The kenong keeps the beat: your next card this turn is stronger. Sabet and Tangkis hit or guard harder, Semedi gives more Greget."
 EFFECT_ALL,%d damage ke semua Buto,%d damage to every Buto
 EFFECT_DRAW,Tarik %d kartu,Draw %d card(s)
 EFFECT_CALM,Mengosongkan Amuk sasaran,Empties the target's Amuk
 EFFECT_COST,Butuh %d Ketukan,Costs %d Ketukan
-EFFECT_BOOST,Kartu berikutnya giliran ini +%d%%,Next card this turn +%d%%
+EFFECT_BOOST,Kartu berikutnya giliran ini +%d%% (Semedi: Greget-nya yang naik),Next card this turn +%d%% (Semedi: boosts its Greget)
 CARD_BOOST_TIP,Diperkuat Kenong.,Boosted by Kenong.
 CARD_TABUH_HINT,Kartu Tabuh tidak bisa digabung.,Tabuh cards can't be merged.
 BLESS_TABUH_BEDUG,Tabuh Bedug,Tabuh Bedug
@@ -621,3 +621,6 @@ RUWATAN_DEFEAT_HINT,Ruwatan berakhir di langkah %d (Tingkat Pagebluk %d). Perjal
 BTN_SEE_RESULT,Lihat Hasil,See Result
 BTN_TO_RUWATAN,Ke Ruwatan,To Ruwatan
 RUWATAN_ACTIVE_RULES,Pagebluk: %s,Pagebluk: %s
+INTENT_CHARGE_BLOCK,Ancang-ancang: giliran depan Gebug Raksasa %d. Selama itu bertameng %d.,Winding up: next turn a Gebug Raksasa for %d. Meanwhile it holds %d Block.
+INTENT_AJIAN_CHARGE_BLOCK,"Ancang-ancang Ajian Lebur Saketi (%d damage di giliran depan), sambil bertameng %d",Winding up Ajian Lebur Saketi (%d damage next turn) behind %d Block
+CARD_BOOST_MOXIE_TIP,Greget diperkuat Kenong.,Greget boosted by Kenong.

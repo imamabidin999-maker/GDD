@@ -109,14 +109,19 @@ func _run() -> void:
 	f2.bm.request_end_turn()
 	h2.health.take_damage(30) # sebelum ancang-ancang: tidak dihitung
 	f2.bm.request_end_turn()
+	var ic := h2.get_intent(f2.bm)
+	check(ic.kind == EnemyIntent.Kind.AJIAN_CHARGE and ic.block == 15, "niat: ancang-ancang Ajian sambil bertameng 15")
 	f2.bm.request_end_turn() # ancang-ancang
 	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 0, "damage sebelum ancang-ancang tidak mengisi bar Buyarkan")
+	check(h2.health.block == 15, "ancang-ancang Ajian memberi Buto Hitam Tameng 15")
 	var ia := h2.get_intent(f2.bm)
 	check(ia.kind == EnemyIntent.Kind.AJIAN and ia.damage == 22 and ia.extra == 3, "niat: Ajian Lebur Saketi 22 + 3 Lara")
 	h2.health.take_damage(29)
-	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 29 and broken[0] == 0, "29 damage belum cukup")
+	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 14 and h2.health.block == 0, "Tameng menahan 15 dari 29 damage, bar hanya terisi 14")
+	h2.health.take_damage(15)
+	check(h2.is_ajian_charged() and h2.get_ajian_progress() == 29 and broken[0] == 0, "29 damage ke Nyawa belum cukup")
 	h2.health.take_damage(1)
-	check(not h2.is_ajian_charged() and broken[0] == 1, "30 damage membuyarkan Ajian")
+	check(not h2.is_ajian_charged() and broken[0] == 1, "30 damage ke Nyawa membuyarkan Ajian")
 	check(progress_log.has(0) and progress_log.has(29) and progress_log[-1] == -1, "bar Buyarkan muncul, terisi, lalu disembunyikan")
 	check(h2.get_intent(f2.bm).kind == EnemyIntent.Kind.STAGGER, "niat berikutnya: terhuyung")
 	var hp_before := f2.hero.current_hp

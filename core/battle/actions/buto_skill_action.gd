@@ -23,6 +23,8 @@ var locked_cards: Array[CardInstance] = []
 var summoned: Array[EnemyUnit] = []
 ## Sirep ditangkal Jimat Penolak Sirep.
 var warded: bool = false
+## Tameng yang didapat Buto dari ancang-ancang (Merah Murka, Ajian Hitam).
+var block_gained: int = 0
 
 
 func _init(user: EnemyButo, used_skill: EnemyButo.Skill) -> void:

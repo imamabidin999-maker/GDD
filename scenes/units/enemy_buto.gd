@@ -91,8 +91,12 @@ signal bala_shield_changed(active: bool)
 @export_range(0, 10) var ajian_poison: int = 3
 ## Lara dari Gebug Pagebluk.
 @export_range(0, 10) var plague_poison: int = 2
-## Total damage dalam satu giliran pemain yang membuyarkan Ajian.
+## Total damage dalam satu giliran pemain yang membuyarkan Ajian. Hanya
+## damage yang menembus Tameng yang dihitung.
 @export var ajian_break_threshold: int = 30
+## Tameng yang didapat saat ancang-ancang Ajian. Bertahan sepanjang giliran
+## pemain, jadi Ajian lebih sulit dibuyarkan.
+@export var ajian_charge_block: int = 15
 ## Jumlah Bala yang dipanggil di fase 2 (warnanya acak dan berbeda).
 @export_range(1, 4) var bala_count: int = 2
 @export var bala_hp: int = 35
@@ -263,7 +267,9 @@ func _build_intent(battle: BattleManager) -> EnemyIntent:
 		Skill.PLAGUE_STRIKE:
 			return EnemyIntent.new(EnemyIntent.Kind.PLAGUE_STRIKE, get_attack_damage(), plague_poison)
 		Skill.AJIAN_CHARGE:
-			return EnemyIntent.new(EnemyIntent.Kind.AJIAN_CHARGE, 0, get_ajian_damage())
+			var ajian := EnemyIntent.new(EnemyIntent.Kind.AJIAN_CHARGE, 0, get_ajian_damage())
+			ajian.block = ajian_charge_block
+			return ajian
 		Skill.AJIAN:
 			return EnemyIntent.new(EnemyIntent.Kind.AJIAN, get_ajian_damage(), ajian_poison)
 		Skill.SUMMON_BALA:
@@ -273,7 +279,9 @@ func _build_intent(battle: BattleManager) -> EnemyIntent:
 		Skill.POISON_SPIT:
 			return EnemyIntent.new(EnemyIntent.Kind.POISON, get_spit_damage(), poison_stacks)
 		Skill.CHARGE:
-			return EnemyIntent.new(EnemyIntent.Kind.CHARGE, 0, get_heavy_damage())
+			var charge := EnemyIntent.new(EnemyIntent.Kind.CHARGE, 0, get_heavy_damage())
+			charge.block = murka_charge_block if murka else 0
+			return charge
 		Skill.HEAVY_STRIKE:
 			return EnemyIntent.new(EnemyIntent.Kind.HEAVY, get_heavy_damage())
 	return EnemyIntent.new(EnemyIntent.Kind.ATTACK, get_attack_damage())
@@ -353,6 +361,9 @@ func perform_skill(action: ButoSkillAction, battle: BattleManager) -> void:
 			action.succeeded = true
 		Skill.AJIAN_CHARGE:
 			action.succeeded = true
+			if ajian_charge_block > 0:
+				health.gain_block(ajian_charge_block)
+				action.block_gained = ajian_charge_block
 			ajian_progress_changed.emit(_ajian_progress, ajian_break_threshold)
 		Skill.AJIAN:
 			action.damage_dealt = battle.hero_health.take_damage(get_ajian_damage())
@@ -375,6 +386,7 @@ func perform_skill(action: ButoSkillAction, battle: BattleManager) -> void:
 			action.succeeded = true # ancang-ancang: tidak menyerang turn ini
 			if murka and murka_charge_block > 0:
 				health.gain_block(murka_charge_block)
+				action.block_gained = murka_charge_block
 		Skill.HEAVY_STRIKE:
 			action.damage_dealt = battle.hero_health.take_damage(get_heavy_damage())
 			action.succeeded = true

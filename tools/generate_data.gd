@@ -218,10 +218,10 @@ func _build_stages() -> void:
 	# Bagian III: Candi Pagebluk
 	# Titik Amuk awal dibedakan supaya tidak ada dua Buto yang Ngamuk di giliran yang sama.
 	var s9 := _stage(9, [
-		_murka(K.KUNING, 65, 7, 1.0, 0),
-		_murka(K.HIJAU, 70, 6, 1.0, 1),
-		_murka(K.MERAH, 80, 7, 1.0, 2),
-		_murka(K.PUTIH, 75, 7, 1.0, -1),
+		_murka(K.KUNING, 80, 8, 1.0, 0),
+		_murka(K.HIJAU, 85, 7, 1.0, 1),
+		_murka(K.MERAH, 95, 7, 1.0, 2),
+		_murka(K.PUTIH, 95, 8, 1.0, -1),
 	] as Array[EnemySpec], Vector2(392, 140), Color(1.0, 0.84, 0.84), 4, 2)
 	s9.intro_dialog = _with_speakers(s9.intro_dialog, ["narator", "buto_merah", "buto_kuning", "eyang"])
 	s9.victory_dialog = _with_speakers(s9.victory_dialog, ["narator", "buto_hitam"])
