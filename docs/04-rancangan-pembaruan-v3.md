@@ -174,3 +174,18 @@ Ruwatan, 200 perjalanan per tingkat:
 Bot memilih berkah dan pilihan kejadian secara acak, jadi angka ini lebih rendah daripada pemain yang memilih dengan cermat. Bonus irama Gebrakan juga tidak dihitung. Selisih tingkat 4 dan 5 masih dalam batas acak simulasi.
 
 Tes baru untuk pembaruan ini: `test_tabuh`, `test_challenges`, `test_rhythm`, `test_events`, dan `test_ruwatan`. `test_campaign_flow` sekarang ikut melewati pemilih kartu Tabuh, panel Hasil Tantangan, empat kejadian di perjalanan, dan satu Ruwatan sampai panel hasil.
+
+## 9. Perubahan Setelah Uji Main
+
+Masukan dari uji main dan cara menanganinya:
+
+1. **Tutorial dan bunyi Gebrakan.** Saat Greget pertama kali penuh, Eyang Palang menjelaskan Gebrakan dalam tiga baris dialog. Saat irama pertama kali muncul ada layar cara bermain dengan tombol Mulai, dan Pengaturan punya tombol "Coba" untuk latihan. Gebrakan punya iringan sendiri (`gebrakan_iringan.ogg`) dan bunyi pukulan sendiri (`gebrakan.ogg`); musik battle dipelankan selama irama.
+2. **Latar.** Latar lama hanya desain 160x160 yang diperbesar dan diburamkan. Sekarang setiap babak, menu, dan ending punya latar sendiri yang digambar piksel demi piksel di ukuran layar oleh `tools/build_backgrounds.py`.
+3. **Dialog asal-usul.** Tidak ada tokoh yang menyebut Dongkrek sebelum ending. Mereka hanya mengenal bunyi dung dan krek dari wangsit Eyang Palang, dan di ending tabuhan itu diberi nama. Gebrakan Dongkrek menjadi Gebrakan Dung-Krek.
+4. **Kenong pada Semedi.** Kenong menaikkan Greget kartu Semedi, bukan damage-nya. Sabet dan Tangkis tetap naik damage dan Tamengnya.
+5. **Irama Gebrakan.** Diuji dengan klik dan Spasi sungguhan, input-nya tidak hilang; masalahnya irama terlalu rapat dan jendela penilaian sempit. Tempo sekarang 700 ms per ketukan tanpa setengah ketukan, ada empat hitungan kentongan, jendela tepat 90 ms dan cukup 180 ms, dan tekanan yang terlalu cepat diberi tanda.
+6. **Tameng Ajian.** Buto Hitam bertameng 15 saat ancang-ancang Ajian. Hanya damage yang menembus Tameng yang mengisi bar Buyarkan.
+7. **Keterangan ikon.** Ikon niat, api Amuk, x2, perisai Bala, Tameng, Lara, Prayitna, dan bar Buyarkan menampilkan penjelasan saat disorot.
+8. **Babak 9.** Keempat Buto Murka diperkuat ke Nyawa 80/85/95/95 dan serangan 7-8. Versi Murka penuh (seperti babak 5-8) membuat bot cerdas pun kalah di semua percobaan, jadi dipakai titik tengah.
+
+Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak 9 dan 91% di babak 10, bot santai 45% dan 35%. Ruwatan: bot cerdas 80% di tingkat 1 sampai 3% di tingkat 10.

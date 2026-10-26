@@ -1,8 +1,8 @@
 # Dongkrek: Legenda Eyang Palang
 
-Game RPG turn-based bergaya pixel art yang terinspirasi dari kesenian **Dongkrek** dari Mejayan, Madiun. Kamu bermain sebagai Eyang Palang, sesepuh desa yang mengusir para Buto pembawa pagebluk. Senjatanya tongkat dan bunyi bedug serta korek.
+Game RPG turn-based bergaya pixel art yang terinspirasi dari kesenian **Dongkrek** dari Mejayan, Madiun. Kisahnya berlatar sebelum kesenian itu punya nama: Mejayan sekitar tahun 1867, saat pagebluk melanda dan Eyang Palang mendapat wangsit bahwa para Buto takut pada bunyi bedug (dung) dan korek (krek). Kamu bermain sebagai Eyang Palang yang mengusir para Buto dengan tongkat dan tabuhan warga, sampai akhirnya tabuhan itu diberi nama Dongkrek.
 
-Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Gebrakan Dongkrek yang bisa diisi sampai 200%.
+Pertarungannya memakai mekanik **Tactical Cycle Synthesis**: 15 kartu jurus, ketukan yang terbatas, jurus yang bisa digabung, dan Gebrakan Dung-Krek yang bisa diisi sampai 200%.
 
 Petualangannya berisi 10 babak cerita. Di sepanjang jalan ada kartu Tabuh dari alat musik Dongkrek, tantangan untuk mengumpulkan Bintang Dongkrek, dan kejadian kecil di perjalanan. Setelah tamat, mode **Ruwatan** terbuka: perjalanan acak delapan langkah dengan sepuluh Tingkat Pagebluk.
 
@@ -26,7 +26,7 @@ Seluruh game bisa dimainkan dengan mouse.
 | Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – |
 | Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
 | Pilih target | Klik Buto | – |
-| Gebrakan Dongkrek | Tombol gong | Q |
+| Gebrakan Dung-Krek | Tombol gong | Q |
 | Menabuh irama Gebrakan | Klik kiri | Spasi, Enter, atau Q |
 | Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
 | Kecepatan battle 1x / 2x | Tombol 1x di atas | – |
@@ -40,9 +40,9 @@ Aturan singkatnya:
   - Sabet + Semedi = **Tenaga Dalam** (damage besar + Greget)
   - Sabet + Tangkis = **Tangkis Balik** (damage + Tameng)
   - Semedi + Tangkis = **Manunggal** (Tameng + Greget + 1 ketukan)
-- **Greget**: pada 100% **Gebrakan Dongkrek** siap dan menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
-- **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Gebrakan Dongkrek sampai battle selesai.
-- **Niat Buto**: ikon di atas kepala Buto menunjukkan rencananya di giliran berikutnya.
+- **Greget**: pada 100% **Gebrakan Dung-Krek** siap dan menghantam semua Buto. Kalau ditahan sampai 200% (Greget Memuncak), damagenya dua kali lipat.
+- **Wirama**: memainkan 3 kartu bintang 3 berturut-turut dalam satu giliran memperkuat Gebrakan Dung-Krek sampai battle selesai.
+- **Niat Buto**: ikon di atas kepala Buto menunjukkan rencananya di giliran berikutnya. Arahkan kursor ke ikon itu (juga api Amuk, Tameng, Lara, perisai Bala, dan bar Buyarkan) untuk melihat artinya.
 - **Kartu Tabuh** (bingkai emas): jurus dari alat musik Dongkrek. Didapat dari berkah atau kejadian di perjalanan, dan tidak bisa digabung. Lihat bagian Jurus Tabuh di bawah.
 - **Petunjuk**: saat sebuah mekanik muncul pertama kali (Buto Murka, Ngamuk, Lara, Sirep, Ajian, Bala, kartu Tabuh, dan lainnya), keterangan singkat tampil di pojok layar. Petunjuk bisa dimatikan di Pengaturan.
 
@@ -58,7 +58,7 @@ Aturan singkatnya:
 
 ### Buto Hitam
 
-Setelah ancang-ancang, Buto Hitam melepas **Ajian Lebur Saketi** di giliran berikutnya (40 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 30 damage kepadanya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gebrakan Dongkrek. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
+Saat ancang-ancang, Buto Hitam bertameng 15, lalu melepas **Ajian Lebur Saketi** di giliran berikutnya (40 damage + 3 Lara). Ajian itu **buyar** kalau di giliranmu kamu memberi 30 damage yang menembus Tamengnya (ada bar *Buyarkan* di atas bar nyawanya) atau memakai Gebrakan Dung-Krek. Damage yang tertahan Tameng tidak ikut dihitung. Kalau buyar, Buto Hitam terhuyung dan kehilangan satu aksi.
 
 Di sisa nyawa separuh ia murka:
 
@@ -77,7 +77,7 @@ Setelah babak 4, Buto Hitam membangkitkan keempat Buto yang sudah kalah menjadi 
 | Merah | Langsung Ancang-ancang (sambil bertameng) lalu Gebug Raksasa yang lebih keras |
 | Putih | Menyirep dua kartu terkuat sekaligus |
 
-Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di atas kepala). Setelah tiga titik penuh muncul tanda **x2**, dan giliran berikutnya Buto itu beraksi dua kali. Selama ada Buto yang siap Ngamuk, Eyang Palang mendapat **Prayitna**: Tameng dari semua kartu +50%. Gebrakan Dongkrek juga membuyarkan semua titik Amuk.
+Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di atas kepala). Setelah tiga titik penuh muncul tanda **x2**, dan giliran berikutnya Buto itu beraksi dua kali. Selama ada Buto yang siap Ngamuk, Eyang Palang mendapat **Prayitna**: Tameng dari semua kartu +50%. Gebrakan Dung-Krek juga membuyarkan semua titik Amuk.
 
 ### Sepuluh babak
 
@@ -116,7 +116,7 @@ Saat berkah kartu Tabuh dipilih, kamu memilih kartu mana yang diganti. Bintang k
 | Kentongan Titir | +1 Ketukan, tarik 2 / 2 / 3 kartu, Tameng 0 / 3 / 5 | 1 |
 | Korek | 4 / 6 / 9 damage, membuyarkan titik Amuk target, Greget +10 / 15 / 20% | 1 |
 | Gong | 18 / 26 / 36 damage | 2 |
-| Kenong | Kartu berikutnya giliran ini +40 / 60 / 80% | 0 |
+| Kenong | Kartu berikutnya giliran ini +40 / 60 / 80%: damage dan Tameng untuk Sabet dan Tangkis, Greget untuk Semedi | 0 |
 
 ### Kejadian di perjalanan
 
@@ -133,9 +133,11 @@ Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tanta
 | 24 | Ruwatan dimulai dengan satu berkah acak |
 | 30 | Gelar **Juru Dongkrek** di menu utama dan aura emas Eyang Palang |
 
-### Gebrakan Dongkrek berirama
+### Gebrakan Dung-Krek berirama
 
-Saat Gebrakan Dongkrek dipakai, muncul permainan irama singkat: enam ketukan "dung" (bedug) dan "krek" (korek) berjalan ke lingkaran. Klik atau tekan Spasi tepat saat ketukan masuk lingkaran. Tepat bernilai penuh, cukup bernilai setengah, dan hasilnya menambah damage Gebrakan **sampai +30%**. Meleset semua tidak mengurangi damage. Irama tidak ikut dipercepat oleh kecepatan battle 2x, dan bisa dimatikan di Pengaturan.
+Saat Gebrakan Dung-Krek dipakai, iringan gamelannya sendiri mulai: empat hitungan kentongan (angka di lingkaran ikut menghitung mundur), lalu enam ketukan "dung" (bedug, bulat) dan "krek" (korek, kotak) datang ke lingkaran satu ketukan demi satu ketukan, sekitar 86 ketukan per menit. Klik, tekan Spasi, atau Q tepat saat ketukan masuk lingkaran. Selisih sampai 90 ms bernilai penuh, sampai 180 ms bernilai setengah, dan hasilnya menambah damage Gebrakan **sampai +30%**. Tekanan yang terlalu cepat diberi tanda tanpa menghabiskan ketukan, dan meleset semua tidak mengurangi damage. Musik battle dipelankan selama irama, lalu pukulannya ditutup bunyi dung-dung, krek, dan gong.
+
+Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Gebrakan, dan saat irama pertama kali muncul ada layar cara bermain. Irama bisa dicoba kapan saja lewat tombol **Coba** di Pengaturan, dan bisa dimatikan. Iramanya tidak ikut dipercepat oleh kecepatan battle 2x.
 
 ## Ruwatan
 
@@ -176,7 +178,7 @@ Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, da
 - **Musik, Efek Suara, Layar Penuh**.
 - **Kesulitan** mode cerita: Santai (Nyawa Buto −20%, serangan −15%), Normal, atau Sulit (Nyawa dan serangan +15%). Bisa diganti kapan saja.
 - **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
-- **Petunjuk** dan **Irama Gebrakan** bisa dinyalakan atau dimatikan.
+- **Petunjuk** dan **Irama Gebrakan** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Gebrakan membuka latihan irama.
 
 Progres tersimpan otomatis.
 
@@ -218,7 +220,9 @@ Semua aset tambahan dibuat ulang dengan skrip, jadi kalau mau mengubah sesuatu c
 ```bash
 python3 tools/build_assets.py      # sprite, kartu, ikon dari desain asli (butuh Pillow, numpy)
 python3 tools/build_map.py         # gambar peta perjalanan
+python3 tools/build_backgrounds.py # latar battle tiap babak, menu, dan ending
 python3 tools/build_audio.py       # musik & efek suara (butuh numpy, scipy, ffmpeg)
+                                   # --gebrakan: hanya iringan dan bunyi Gebrakan
 python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
 godot --headless -s tools/simulate_balance.gd   # simulasi keseimbangan
@@ -246,28 +250,29 @@ Hasil `simulate_balance.gd` di kesulitan Normal (200 battle per babak). Deck, ny
 | 1 | Kuning | 100% | 100% | 3–4 giliran |
 | 2 | Hijau + Kuning | 100% | 100% | 5–6 giliran |
 | 3 | Merah + Hijau | 100% | 97% | 5–6 giliran |
-| 4 | Putih + Merah | 93% | 83% | 7–8 giliran |
-| 5 | Kuning Murka + Hijau | 99% | 81% | 6–7 giliran |
+| 4 | Putih + Merah | 93% | 82% | 7–8 giliran |
+| 5 | Kuning Murka + Hijau | 99% | 82% | 6–7 giliran |
 | 6 | Hijau Murka + Merah | 99% | 73% | 5 giliran |
 | 7 | Merah Murka + Putih | 98% | 81% | 6–7 giliran |
-| 8 | Putih Murka + Kuning | 96% | 85% | 8 giliran |
-| 9 | Keempat Buto Murka | 99% | 86% | 5–6 giliran |
-| 10 | Buto Hitam | 97% | 57% | 10–11 giliran |
+| 8 | Putih Murka + Kuning | 96% | 84% | 8 giliran |
+| 9 | Keempat Buto Murka | 80% | 45% | 6 giliran |
+| 10 | Buto Hitam | 91% | 35% | 10–11 giliran |
 
-Babak 10 sengaja paling menuntut siasat: bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala, jadi angkanya jauh di bawah bot cerdas. Di kesulitan Santai bot santai menang 87–100% di setiap babak; di kesulitan Sulit bot cerdas menang 57–100% dan bot santai 25–100%. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
+Babak 9 dan 10 sengaja paling menuntut siasat. Di babak 9 keempat Buto Murka memakai Nyawa 80–95 dan serangan 7–8 (versi Murka penuh tidak bisa dimenangkan bot sama sekali, jadi dipilih titik tengah). Di babak 10 Buto Hitam bertameng saat menyiapkan Ajian, dan bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala. Di kesulitan Santai bot santai menang 64–100% di setiap babak; di kesulitan Sulit bot cerdas menang 48–100% dan bot santai 11–100%. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
 
 Ruwatan (`mode=ruwatan`, 200 perjalanan per tingkat; berkah dan kejadian dipilih acak, jadi pemain yang memilih dengan cermat akan lebih sering berhasil):
 
 | Tingkat Pagebluk | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Berhasil (cerdas) | 88% | 71% | 58% | 42% | 46% | 38% | 32% | 15% | 12% | 7% |
-| Berhasil (santai) | 28% | 14% | 6% | 3% | 4% | 2% | 2% | 1% | 0% | 0% |
+| Berhasil (cerdas) | 80% | 67% | 46% | 29% | 34% | 40% | 25% | 11% | 9% | 3% |
+| Berhasil (santai) | 17% | 7% | 4% | 1% | 1% | 1% | 0% | 0% | 0% | 0% |
 
 Angka Buto Ruwatan dan aturan tiap tingkat ada di `core/progress/ruwatan_run.gd`. Catatan perancangan lengkap untuk pembaruan ini ada di `docs/04-rancangan-pembaruan-v3.md`.
 
 ## Kredit
 
-- Desain karakter, kartu, dan latar: pemilik proyek (lihat `docs/desain_asli/`)
+- Desain karakter dan kartu: pemilik proyek (lihat `docs/desain_asli/`)
+- Latar, peta, aset tambahan, musik, dan efek suara: digambar dan disintesis lewat skrip di `tools/`
 - Font: Tiny5 dan Silkscreen, lisensi SIL Open Font License (`assets/fonts/OFL.txt`)
 - Mesin: Godot Engine 4.7
 - Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur

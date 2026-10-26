@@ -380,8 +380,8 @@ STRINGS = [
      "That is how Dongkrek was born in Mejayan. The art of warding off evil is still performed to this day: the bedug and korek ring out, masked Buto dance, and then Eyang Palang arrives to subdue them."),
     ("CREDITS_TITLE", "Kredit", "Credits"),
     ("CREDITS_TEXT",
-     "Desain karakter, kartu, dan latar: pemilik proyek\nPemrograman, aset tambahan, musik, dan efek suara: dibuat bersama Claude\nFont: Tiny5 & Silkscreen (SIL Open Font License)\nMesin: Godot Engine\n\nTerinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur.",
-     "Character, card, and background design: project owner\nProgramming, extra assets, music, and sound: made together with Claude\nFonts: Tiny5 & Silkscreen (SIL Open Font License)\nEngine: Godot Engine\n\nInspired by the Dongkrek folk art of Mejayan, Madiun Regency, East Java."),
+     "Desain karakter dan kartu: pemilik proyek\nPemrograman, latar, aset tambahan, musik, dan efek suara: dibuat bersama Claude\nFont: Tiny5 & Silkscreen (SIL Open Font License)\nMesin: Godot Engine\n\nTerinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur.",
+     "Character and card design: project owner\nProgramming, backgrounds, extra assets, music, and sound: made together with Claude\nFonts: Tiny5 & Silkscreen (SIL Open Font License)\nEngine: Godot Engine\n\nInspired by the Dongkrek folk art of Mejayan, Madiun Regency, East Java."),
 
     # ----------------------------------------------------------------- pustaka
     ("PUSTAKA_TITLE", "Pustaka Dongkrek", "Dongkrek Codex"),

@@ -173,13 +173,13 @@ ENDING_3,Dengarkan saja bunyinya: dung... krek. Kita namai Dongkrek.,Just listen
 ENDING_4,"Setiap tahun kita tabuh dan arak keliling desa, lengkap dengan topeng para Buto, supaya mereka tak berani kembali. Dan supaya anak cucu kita ingat: warga yang bersatu lebih kuat dari raksasa mana pun.","Every year we'll play it and parade around the village, Buto masks and all, so they never dare return. And so our children remember: villagers who stand together are stronger than any giant."
 ENDING_5,"Begitulah Dongkrek lahir di Mejayan. Sampai sekarang kesenian tolak bala itu masih dimainkan: bedug dan korek bertalu, para Buto bertopeng menari, lalu Eyang Palang datang menaklukkan mereka.","That is how Dongkrek was born in Mejayan. The art of warding off evil is still performed to this day: the bedug and korek ring out, masked Buto dance, and then Eyang Palang arrives to subdue them."
 CREDITS_TITLE,Kredit,Credits
-CREDITS_TEXT,"Desain karakter, kartu, dan latar: pemilik proyek
-Pemrograman, aset tambahan, musik, dan efek suara: dibuat bersama Claude
+CREDITS_TEXT,"Desain karakter dan kartu: pemilik proyek
+Pemrograman, latar, aset tambahan, musik, dan efek suara: dibuat bersama Claude
 Font: Tiny5 & Silkscreen (SIL Open Font License)
 Mesin: Godot Engine
 
-Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur.","Character, card, and background design: project owner
-Programming, extra assets, music, and sound: made together with Claude
+Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur.","Character and card design: project owner
+Programming, backgrounds, extra assets, music, and sound: made together with Claude
 Fonts: Tiny5 & Silkscreen (SIL Open Font License)
 Engine: Godot Engine
 
