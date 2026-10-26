@@ -213,9 +213,9 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
   - **Tangkis**: perisai bergaya Eropa diganti **tameng** prajurit Jawa yang lonjong runcing, berbingkai emas, dengan motif tumpal di ujung dan kawung di tengah.
 - **Tangkis Balik**: mata tombak sebelumnya bergeser dari garis tangkainya. Tombak digambar ulang sehingga mata tombak, methuk emas, dan tangkai berada di satu garis lurus, dan garis anginnya tidak lagi menimpa tangkai.
 - **Tenaga Dalam** tetap memakai mata merah, tetapi pedang kecil di belakangnya ikut diganti keris.
-- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan, menyamping menghadap kanan (ke arah teks). Rujukan utamanya adalah desain sprite diam Roro Ayu dari pemilik proyek, dan warnanya diambil langsung dari desain itu:
-  - kulit sawo matang, rambut hitam disisir ke belakang dengan helai abu-abu, sanggul bulat di tengkuk, dan rumpun cunduk bunga emas di atas sanggul;
+- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan dan menghadap ke depan. (Versi menyamping sempat dicoba, tetapi kepala yang menyamping di atas badan yang menghadap depan membuat lehernya tampak patah.) Rujukan utamanya adalah desain sprite diam Roro Ayu dari pemilik proyek, dan warnanya diambil langsung dari desain itu:
+  - kulit sawo matang, rambut hitam disisir ke belakang dengan helai abu-abu, sanggul di belakang kepala yang mengintip di sisi kiri, dan rumpun cunduk bunga emas di atas sanggul;
   - subang emas, kalung tipis, alis tegas, bulu mata lentik, rona pipi, dan bibir merah dengan senyum tipis;
   - kebaya hijau terang berlis emas, panel dada hijau tua bermotif belah ketupat emas, dan selendang (sampur) jingga-merah bertepi kuning di bahu.
-  - Proporsinya ramping dan anggun: bahu landai selebar kira-kira dua kali kepala dan leher jenjang. Rujukan sebelumnya tetap dipakai untuk wataknya (topeng Roro Ayu di Dongkrek: cantik, tatapan sendu, senyum tipis) dan tekniknya (potret piksel ala GBA: shading menggerombol 4-6 warna per bahan).
+  - Proporsinya ramping dan anggun: bahu landai selebar kira-kira dua kali kepala, dan leher yang tidak terlalu panjang. Rujukan sebelumnya tetap dipakai untuk wataknya (topeng Roro Ayu di Dongkrek: cantik, tatapan sendu, senyum tipis) dan tekniknya (potret piksel ala GBA: shading menggerombol 4-6 warna per bahan).
   - Potretnya dilukis oleh `tools/portrait_roro_ayu.py`: bentuk tiap bagian dibuat 8x lebih besar, diperkecil, lalu diwarnai bertingkat menurut arah cahaya; mata, alis, bibir, cunduk, subang, dan lis kebaya ditempel per piksel.
