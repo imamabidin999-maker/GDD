@@ -7,9 +7,11 @@ slendro (lagu biasa) dan pelog (lagu bos).
 
 Butuh: numpy, scipy, ffmpeg (encoder libvorbis).
 Pemakaian: python3 tools/build_audio.py
+           python3 tools/build_audio.py --gebrakan   (hanya bunyi Gebrakan)
 """
 import os
 import subprocess
+import sys
 import tempfile
 import wave
 
@@ -597,7 +599,65 @@ def sfx_all():
     return s
 
 
+# --- Gebrakan Dung-Krek ----------------------------------------------------------
+# Angka waktu ini harus sama dengan ui/battle/rhythm_gebrakan.gd.
+RHYTHM_PRE_ROLL = 0.5   # detik sebelum ketukan hitungan pertama
+RHYTHM_BEAT = 0.7       # satu ketukan (sekitar 86 ketukan per menit)
+RHYTHM_COUNT_IN = 4     # hitungan kentongan sebelum ketukan pertama
+RHYTHM_BEATS = 8        # ketukan pola 0..6, gong di ketukan 7
+
+
+def gebrakan_backing():
+    """Iringan permainan irama: hitungan kentongan, lalu kenong, kempul,
+    kendang, dan slompret pelan. Bunyi dung dan krek-nya dari pemain."""
+    beat = RHYTHM_BEAT
+    total = RHYTHM_PRE_ROLL + (RHYTHM_COUNT_IN + RHYTHM_BEATS) * beat + 3.0
+    mix = Mix(total)
+    for k in range(RHYTHM_COUNT_IN):
+        t = RHYTHM_PRE_ROLL + k * beat
+        mix.add(kentongan(980 if k == RHYTHM_COUNT_IN - 1 else 760, 0.9), t, 0.32, 0.1)
+    start = RHYTHM_PRE_ROLL + RHYTHM_COUNT_IN * beat
+    for b in range(RHYTHM_BEATS):
+        t = start + b * beat
+        if b == RHYTHM_BEATS - 1:
+            mix.add(gong(60, 1.0, 4.0), t, 0.6)
+            mix.add(kempul(pitch("6,", SLENDRO, 290.0)), t, 0.25)
+            continue
+        mix.add(kenong(pitch("6" if b % 2 == 0 else "1'", SLENDRO, 290.0), 0.8), t, 0.16, 0.25)
+        if b % 4 == 0:
+            mix.add(kempul(pitch("5,", SLENDRO, 290.0)), t, 0.22, -0.2)
+        mix.add(kendang("tak", 0.6), t + beat * 0.5, 0.13, -0.15)
+        if b % 2 == 1:
+            mix.add(kendang("dang", 0.6), t + beat * 0.75, 0.16, -0.1)
+    lead = [("6", 1), ("1'", 1), ("2'", 1), ("1'", 1), ("6", 1), ("5", 1), ("6", 1)]
+    mix.add(melody_line(lead, 60.0 / beat, SLENDRO, 290.0, "slompret"), start, 0.07, 0.05)
+    return normalize(reverb(mix.buf, wet=0.14), 0.09)
+
+
+def gebrakan_strike():
+    """Pukulan Gebrakan: dung-dung, krek panjang, lalu gong."""
+    d = np.zeros(int(3.2 * SR))
+    place(d, bedug(52, 1.2, 1.2), 0)
+    place(d, korek(1.0, clicks=16, dur=0.5), int(0.05 * SR), 0.7)
+    place(d, bedug(58, 1.1, 1.0), int(0.2 * SR), 0.9)
+    place(d, gong(60, 1.0, 3.0), int(0.32 * SR), 0.9)
+    t = t_axis(0.4)
+    place(d, lp(noise(len(t)), 900) * np.exp(-t / 0.06) * 0.8, int(0.32 * SR))
+    d *= np.minimum(1, (len(d) - np.arange(len(d))) / (0.5 * SR))
+    return d
+
+
+def build_gebrakan():
+    write_ogg(os.path.join(OUT_SFX, "gebrakan_iringan.ogg"), gebrakan_backing(), quality=5)
+    strike = gebrakan_strike()
+    strike = strike / (np.max(np.abs(strike)) + 1e-9) * 0.9
+    write_ogg(os.path.join(OUT_SFX, "gebrakan.ogg"), strike, quality=5)
+
+
 def main():
+    if "--gebrakan" in sys.argv:
+        build_gebrakan()
+        return
     os.makedirs(OUT_BGM, exist_ok=True)
     os.makedirs(OUT_SFX, exist_ok=True)
     songs = {
@@ -615,6 +675,8 @@ def main():
         tail = min(len(data), int(0.015 * SR))
         data[len(data) - tail:] *= np.linspace(1, 0, tail)  # cegah bunyi "klik" di ujung
         write_ogg(os.path.join(OUT_SFX, name + ".ogg"), data, quality=5)
+    # Dibuat paling akhir supaya angka acak bunyi-bunyi lain tidak bergeser.
+    build_gebrakan()
 
 
 if __name__ == "__main__":

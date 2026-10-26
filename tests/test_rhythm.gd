@@ -59,21 +59,27 @@ func _run() -> void:
 	await process_frame
 
 	print("[Penilaian ketukan]")
-	check(RhythmGebrakan.judge(0) == 1.0 and RhythmGebrakan.judge(70) == 1.0 and RhythmGebrakan.judge(-70) == 1.0, "selisih 70 ms masih tepat")
-	check(RhythmGebrakan.judge(71) == 0.5 and RhythmGebrakan.judge(-140) == 0.5, "71-140 ms cukup")
-	check(RhythmGebrakan.judge(141) == 0.0, "lebih dari 140 ms meleset")
+	check(RhythmGebrakan.judge(0) == 1.0 and RhythmGebrakan.judge(90) == 1.0 and RhythmGebrakan.judge(-90) == 1.0, "selisih 90 ms masih tepat")
+	check(RhythmGebrakan.judge(91) == 0.5 and RhythmGebrakan.judge(-180) == 0.5, "91-180 ms cukup")
+	check(RhythmGebrakan.judge(181) == 0.0, "lebih dari 180 ms meleset")
 	check(is_equal_approx(RhythmGebrakan.bonus_for(1.0), 1.3) and is_equal_approx(RhythmGebrakan.bonus_for(0.0), 1.0)
 		and is_equal_approx(RhythmGebrakan.bonus_for(0.5), 1.15), "bonus 0-30%")
 
 	print("[Skor satu permainan]")
 	var r := RhythmGebrakan.new()
 	r.set_pattern(RhythmGebrakan.PATTERNS[0])
-	check(r.note_times.size() == 6 and r.note_times[0] == RhythmGebrakan.LEAD_IN_MS, "6 ketukan setelah jeda pembuka")
+	check(r.note_times.size() == 6 and r.note_times[0] == RhythmGebrakan.first_note_ms()
+		and RhythmGebrakan.first_note_ms() == RhythmGebrakan.PRE_ROLL_MS + 4 * RhythmGebrakan.BEAT_MS, "6 ketukan setelah empat hitungan kentongan")
 	var gaps_ok := true
-	for i: int in range(1, r.note_times.size()):
-		gaps_ok = gaps_ok and r.note_times[i] - r.note_times[i - 1] >= RhythmGebrakan.BEAT_MS / 2
-	check(gaps_ok, "jarak antar ketukan paling dekat setengah ketukan")
+	for pattern: Array in RhythmGebrakan.PATTERNS:
+		var probe := RhythmGebrakan.new()
+		probe.set_pattern(pattern)
+		for i: int in range(1, probe.note_times.size()):
+			gaps_ok = gaps_ok and probe.note_times[i] - probe.note_times[i - 1] >= RhythmGebrakan.BEAT_MS
+		probe.free()
+	check(gaps_ok and RhythmGebrakan.BEAT_MS >= 650, "semua pola: jarak antar ketukan paling dekat satu ketukan penuh (%d ms)" % RhythmGebrakan.BEAT_MS)
 	check(r.press(100) == -1.0, "tekanan jauh dari ketukan diabaikan")
+	check(r.press(r.note_times[0] - 400) == -1.0 and r.judgements[0] == -1.0, "tekanan terlalu cepat tidak menghabiskan ketukan")
 	check(r.press(r.note_times[0] + 20) == 1.0, "ketukan 1 tepat")
 	check(r.press(r.note_times[1] - 100) == 0.5, "ketukan 2 cukup")
 	r._mark_misses(r.note_times[2] + 200)
@@ -110,7 +116,7 @@ func _run() -> void:
 	for i: int in panel.note_times.size():
 		panel.manual_time_ms = panel.note_times[i]
 		panel.press(panel.manual_time_ms)
-	panel.manual_time_ms = panel.note_times[-1] + 1000
+	panel.manual_time_ms = panel.note_times[-1] + RhythmGebrakan.BEAT_MS + 400
 	var result: Array[float] = []
 	panel.finished.connect(func(s: float) -> void: result.append(s))
 	for i: int in 120:
@@ -120,6 +126,26 @@ func _run() -> void:
 	check(result.size() == 1 and is_equal_approx(result[0], 1.0), "semua tepat: skor 1 dan panel selesai sendiri")
 	await process_frame
 	check(not is_instance_valid(panel), "panel menutup diri")
+
+	print("[Cara bermain sebelum mulai]")
+	var intro := RhythmGebrakan.new()
+	intro.set_pattern(RhythmGebrakan.PATTERNS[2])
+	intro.manual_time_ms = 0
+	intro.show_intro = true
+	root.add_child(intro)
+	await process_frame
+	intro.manual_time_ms = intro.note_times[0]
+	var early := intro.press(intro.note_times[0])
+	check(not bool(intro.get("_started")) and intro.find_child("*", true, false) != null, "layar cara bermain tampil, irama belum jalan")
+	var accept := InputEventAction.new()
+	accept.action = "ui_accept"
+	accept.pressed = true
+	root.push_input(accept)
+	await process_frame
+	check(bool(intro.get("_started")), "Spasi/Enter di layar cara bermain memulai irama")
+	intro.queue_free()
+	await process_frame
+	check(early == 1.0 or early == -1.0, "penilaian tetap aman sebelum mulai")
 
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

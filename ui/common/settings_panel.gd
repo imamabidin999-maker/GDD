@@ -101,7 +101,21 @@ func _ready() -> void:
 	grid.add_child(_checkbox(GameState.hints_enabled, func(on: bool) -> void: GameState.set_hints_enabled(on)))
 
 	grid.add_child(_text_label("SETTINGS_RHYTHM"))
-	grid.add_child(_checkbox(GameState.rhythm_enabled, func(on: bool) -> void: GameState.set_rhythm_enabled(on)))
+	var rhythm_row := UIKit.hbox(8)
+	rhythm_row.add_child(_checkbox(GameState.rhythm_enabled, func(on: bool) -> void: GameState.set_rhythm_enabled(on)))
+	# Latihan irama Gebrakan, lengkap dengan cara bermainnya.
+	var practice := UIKit.button(tr("RHYTHM_PRACTICE"), 60)
+	practice.tooltip_text = tr("RHYTHM_PRACTICE_TIP")
+	_texts[practice] = "RHYTHM_PRACTICE"
+	practice.pressed.connect(func() -> void:
+		AudioManager.play_sfx("click")
+		var rhythm := RhythmGebrakan.new()
+		rhythm.show_intro = true
+		AudioManager.duck_music(true)
+		rhythm.tree_exiting.connect(func() -> void: AudioManager.duck_music(false))
+		add_child(rhythm))
+	rhythm_row.add_child(practice)
+	grid.add_child(rhythm_row)
 
 	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER

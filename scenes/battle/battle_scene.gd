@@ -52,6 +52,8 @@ var _current_action: BattleAction
 var _bala_spawned: int = 0
 # Dialog singkat saat Buto Hitam masuk fase 2, diputar begitu pemain bisa beraksi lagi.
 var _phase_dialog_pending: bool = false
+# Penjelasan Gebrakan, diputar sekali saat Greget pertama kali penuh.
+var _gebrakan_tutorial_pending: bool = false
 var _hints: HintToast
 var _stats: BattleStats
 # Skala waktu sebelum battle (tes otomatis mempercepatnya). Kecepatan battle
@@ -276,7 +278,10 @@ func _connect_signals() -> void:
 	_player.evolutionary_chain_triggered.connect(_on_chain)
 	_player.overcharge_drained.connect(func(amount: float) -> void:
 		_float_text(tr("BATTLE_MOXIE_DRAINED") % roundi(amount), _hud.get_moxie_point() + Vector2(0, -6), UIKit.COLOR_PURPLE))
-	_player.ultimate_ready.connect(func() -> void: AudioManager.play_sfx("moxie"))
+	_player.ultimate_ready.connect(func() -> void:
+		AudioManager.play_sfx("moxie")
+		if GameState.hints_enabled and not GameState.seen_hints.has("gebrakan_ready"):
+			_gebrakan_tutorial_pending = true)
 
 	_hero_health.damaged.connect(_on_unit_damaged.bind(_hero_health))
 	_hero_health.damage_blocked.connect(_on_unit_blocked.bind(_hero_health))
@@ -323,8 +328,11 @@ func _on_ultimate() -> void:
 		return
 	_tooltip.hide_tip()
 	var rhythm := RhythmGebrakan.new()
+	rhythm.show_intro = GameState.take_hint("rhythm_intro")
+	AudioManager.duck_music(true)
 	_overlay.add_child(rhythm)
 	var score: float = await rhythm.finished
+	AudioManager.duck_music(false)
 	if is_instance_valid(_battle):
 		_battle.request_ultimate(RhythmGebrakan.bonus_for(score))
 
@@ -428,7 +436,7 @@ func _present_tabuh(action: PlayCardAction) -> void:
 
 func _present_ultimate(action: UltimateAction) -> void:
 	_hero_view.play_attack(true)
-	AudioManager.play_sfx("gong", 0.0)
+	AudioManager.play_sfx("gebrakan", 0.0)
 	_hud.show_banner(tr("BATTLE_ULTIMATE"), UIKit.COLOR_GOLD)
 	_screen_flash(Color(1.0, 0.92, 0.7, 0.55))
 	_shake_world(5.0)
@@ -577,6 +585,11 @@ func _on_ajian_broken(buto: EnemyButo) -> void:
 
 
 func _play_phase_dialog() -> void:
+	if _gebrakan_tutorial_pending and not _battle_over and _overlay.get_child_count() == 0:
+		_gebrakan_tutorial_pending = false
+		if GameState.take_hint("gebrakan_ready"):
+			_tooltip.hide_tip()
+			await _play_dialog(PackedStringArray(["eyang|TUT_GEBRAKAN_1", "eyang|TUT_GEBRAKAN_2", "eyang|TUT_GEBRAKAN_3"]))
 	if not _phase_dialog_pending or _battle_over or _overlay.get_child_count() > 0:
 		return
 	_phase_dialog_pending = false

@@ -19,6 +19,7 @@ const SFX := {
 	"kentongan": "res://assets/audio/sfx/kentongan.ogg",
 	"gong": "res://assets/audio/sfx/gong.ogg",
 	"dongkrek": "res://assets/audio/sfx/dongkrek.ogg",
+	"gebrakan": "res://assets/audio/sfx/gebrakan.ogg",
 	"hit": "res://assets/audio/sfx/hit.ogg",
 	"hit_heavy": "res://assets/audio/sfx/hit_heavy.ogg",
 	"block": "res://assets/audio/sfx/block.ogg",
@@ -34,6 +35,8 @@ const SFX := {
 
 const SFX_VOICES := 8
 const CROSSFADE := 0.8
+## Volume musik saat dipelankan (misalnya selama irama Gebrakan).
+const DUCK_DB := -16.0
 
 var _music_a: AudioStreamPlayer
 var _music_b: AudioStreamPlayer
@@ -71,6 +74,13 @@ func play_music(key: String) -> void:
 		_fade(new, -40.0, true)
 	if old.playing:
 		_fade(old, -40.0, true)
+
+
+## Memelankan musik yang sedang terdengar, atau mengembalikannya.
+func duck_music(on: bool) -> void:
+	var current := _music_a if _music_a.volume_db >= _music_b.volume_db else _music_b
+	if current.playing:
+		_fade(current, DUCK_DB if on else 0.0, false)
 
 
 func stop_music() -> void:
