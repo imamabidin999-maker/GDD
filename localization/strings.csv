@@ -624,3 +624,18 @@ RUWATAN_ACTIVE_RULES,Pagebluk: %s,Pagebluk: %s
 INTENT_CHARGE_BLOCK,Ancang-ancang: giliran depan Gebug Raksasa %d. Selama itu bertameng %d.,Winding up: next turn a Gebug Raksasa for %d. Meanwhile it holds %d Block.
 INTENT_AJIAN_CHARGE_BLOCK,"Ancang-ancang Ajian Lebur Saketi (%d damage di giliran depan), sambil bertameng %d",Winding up Ajian Lebur Saketi (%d damage next turn) behind %d Block
 CARD_BOOST_MOXIE_TIP,Greget diperkuat Kenong.,Greget boosted by Kenong.
+ICON_INTENT_TITLE,Niat %s di giliran depan,%s's plan for next turn
+ICON_HELP_ATTACK,Ikon pedang: serangan biasa. Angkanya damage yang akan kamu terima. Tameng bisa menahannya.,Sword icon: a normal attack. The number is the damage you'll take. Block can soak it.
+ICON_HELP_DRAIN,Ikon tetes ungu: menyerang sambil menghisap Greget. Pakai Gebrakan lebih dulu kalau Greget-mu tinggi.,Purple drop icon: attacks and sucks away Greget. Use your Gebrakan first if your Greget is high.
+ICON_HELP_LOCK,"Ikon gembok: Sirep. Kartu terkuat di tanganmu tidak bisa dimainkan, digeser, atau digabung selama satu giliran.","Lock icon: Sirep. Your strongest card can't be played, moved, or merged for one turn."
+ICON_HELP_POISON,Ikon tetes hijau: semburan yang memberi Lara. Lara mengurangi Nyawa di akhir giliran Buto dan menembus Tameng.,Green drop icon: a spit that inflicts Lara. Lara drains HP at the end of the Buto's turn and ignores Block.
+ICON_HELP_CHARGE,"Ikon panah naik: ancang-ancang. Giliran depan ia memukul sangat keras, jadi siapkan Tameng.","Rising arrows icon: winding up. Next turn it hits very hard, so get your Block ready."
+ICON_HELP_HEAVY,"Ikon gada merah: Gebug Raksasa, pukulan sangat keras di giliran ini.","Red club icon: Gebug Raksasa, a very heavy blow this turn."
+ICON_HELP_PLAGUE_STRIKE,"Ikon pedang dan tetes ungu: Gebug Pagebluk, serangan yang sekaligus menambah Lara.","Sword and purple drop icon: Gebug Pagebluk, an attack that also adds Lara."
+ICON_HELP_AJIAN_CHARGE,"Ikon ledakan merah: Buto Hitam bersiap. Giliran depan Ajian Lebur Saketi dilepas. Buyarkan dengan damage yang menembus Tamengnya, atau dengan Gebrakan.","Red burst icon: Buto Hitam is preparing. Next turn it releases Ajian Lebur Saketi. Break it with damage that gets past its Block, or with your Gebrakan."
+ICON_HELP_AJIAN,"Ikon ledakan merah: Ajian Lebur Saketi akan dilepas, pukulan dahsyat ditambah Lara.","Red burst icon: Ajian Lebur Saketi is coming, a devastating blow plus Lara."
+ICON_HELP_SUMMON,"Ikon dua bayangan: memanggil Bala, Buto bayangan yang membuat Buto Hitam hanya menerima separuh damage.","Two shadows icon: calls Bala, shadow Buto that make Buto Hitam take only half damage."
+ICON_HELP_STAGGER,"Ikon bintang berputar: terhuyung, tidak beraksi di giliran depan.","Circling stars icon: staggered, does nothing next turn."
+ICON_AMUK_TITLE,Titik Amuk,Amuk points
+ICON_NGAMUK_READY,"x2: giliran depan Buto ini Ngamuk dan beraksi dua kali. Pasang Tameng, atau kosongkan dengan Gebrakan atau kartu Korek.","x2: next turn this Buto goes Ngamuk and acts twice. Raise your Block, or empty it with your Gebrakan or a Korek card."
+ICON_BLOCK_ENEMY,Tameng %d: menahan damage sebelum mengenai Nyawa Buto ini. Hilang di awal giliran Buto berikutnya.,Block %d: soaks damage before it reaches this Buto's HP. Disappears at the start of the next Buto turn.

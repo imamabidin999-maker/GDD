@@ -8,6 +8,10 @@ extends Node2D
 
 signal clicked(view: UnitView)
 signal hover_changed(view: UnitView, hovering: bool)
+## Kursor masuk/keluar dari ikon status. `icon`: "intent", "amuk",
+## "bala_shield", "block", "poison", "ajian", atau "prayitna". `at` adalah
+## titik tengah atas ikon itu (koordinat layar), tempat tooltip ditaruh.
+signal icon_hovered(view: UnitView, icon: String, hovering: bool, at: Vector2)
 
 const MURKA_AURA := preload("res://assets/shaders/murka_aura.gdshader")
 const SHADER := preload("res://assets/shaders/sprite_fx.gdshader")
@@ -241,9 +245,28 @@ func _build() -> void:
 	_click_area.mouse_entered.connect(func() -> void: hover_changed.emit(self, true))
 	_click_area.mouse_exited.connect(func() -> void: hover_changed.emit(self, false))
 	add_child(_click_area)
+	# Area badan di bawah ikon-ikon, supaya ikon di atas kepala bisa disorot sendiri.
+	move_child(_click_area, _sprite.get_index() + 1)
+	_hoverable(_intent_box, "intent")
+	_hoverable(_amuk_row, "amuk")
+	_hoverable(_bala_shield, "bala_shield")
+	_hoverable(_block_box, "block")
+	_hoverable(_poison_box, "poison")
+	_hoverable(_ajian_label, "ajian")
+	_hoverable(_prayitna_icon, "prayitna")
 
 	_home = position
 	_start_bob()
+
+
+# Ikon status yang menampilkan keterangan saat disorot.
+func _hoverable(control: Control, icon: String) -> void:
+	control.mouse_filter = Control.MOUSE_FILTER_STOP
+	control.mouse_default_cursor_shape = Control.CURSOR_HELP
+	control.mouse_entered.connect(func() -> void:
+		var rect := control.get_global_rect()
+		icon_hovered.emit(self, icon, true, Vector2(rect.get_center().x, rect.position.y)))
+	control.mouse_exited.connect(func() -> void: icon_hovered.emit(self, icon, false, Vector2.ZERO))
 
 
 ## Posisi awal (dipakai untuk kembali setelah menyerang).

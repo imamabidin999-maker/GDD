@@ -140,6 +140,7 @@ func _setup_hero() -> void:
 	_hero_view.setup(HERO_IDLE, HERO_ATTACKS, _hero_health, false)
 	_hero_view.set_golden_aura(GameState.master_unlocked())
 	_hero_view.hover_changed.connect(_on_hero_hover)
+	_hero_view.icon_hovered.connect(_on_icon_hover)
 
 
 func _setup_enemies() -> void:
@@ -192,6 +193,7 @@ func _register_buto(buto: EnemyButo, view_scale: float) -> UnitView:
 	view.set_shadow(buto.is_bala)
 	view.clicked.connect(_on_enemy_clicked)
 	view.hover_changed.connect(_on_enemy_hover)
+	view.icon_hovered.connect(_on_icon_hover)
 	_enemy_views[buto] = view
 	_enemies.append(buto)
 	buto.phase_changed.connect(_on_phase_changed.bind(buto))
@@ -685,6 +687,58 @@ func _on_hero_hover(_view: UnitView, hovering: bool) -> void:
 	if _player.poison_reduction > 0:
 		lines.append("[color=#ffd36e]%s[/color]" % (tr("HERO_KENCUR_TIP") % _player.poison_reduction))
 	_tooltip.show_text("\n".join(lines), _hero_view.get_top_point() + Vector2(10, 20))
+
+
+func _on_icon_hover(view: UnitView, icon: String, hovering: bool, at: Vector2) -> void:
+	if not hovering:
+		_tooltip.hide_tip()
+		return
+	var text := _icon_tip(view, icon)
+	if text != "":
+		_tooltip.show_text(text, at + Vector2(-60, 0))
+
+
+## Keterangan ikon di atas kepala atau di samping bar nyawa.
+func _icon_tip(view: UnitView, icon: String) -> String:
+	var unit: EnemyUnit = null
+	for enemy: EnemyUnit in _enemies:
+		if _enemy_views[enemy] == view:
+			unit = enemy
+	var buto := unit as EnemyButo
+	var lines: Array[String] = []
+	match icon:
+		"intent":
+			if unit == null or _enemy_phase or not unit.is_alive():
+				return ""
+			lines.append("[b][color=#ffdc80]%s[/color][/b]" % (tr("ICON_INTENT_TITLE") % unit.display_name))
+			var intents := unit.get_intents(_battle)
+			if intents.size() >= 2:
+				lines.append("[color=#ff6a5a]%s[/color]" % tr("INTENT_NGAMUK"))
+			for intent: EnemyIntent in intents:
+				lines.append(_intent_text(intent))
+				lines.append("[color=#9aa0b8]%s[/color]" % tr("ICON_HELP_" + String(EnemyIntent.Kind.keys()[intent.kind])))
+		"amuk":
+			if unit == null:
+				return ""
+			lines.append("[b][color=#ffb070]%s[/color][/b]" % tr("ICON_AMUK_TITLE"))
+			lines.append(tr("AMUK_TIP") % [clampi(unit.amuk, 0, EnemyUnit.AMUK_MAX), EnemyUnit.AMUK_MAX])
+			if unit.get_action_count() >= 2:
+				lines.append("[color=#ff6a5a]%s[/color]" % tr("ICON_NGAMUK_READY"))
+		"bala_shield":
+			lines.append("[color=#c8a8ff]%s[/color]" % tr("BALA_SHIELD_TIP"))
+		"block":
+			var block := view.health.block
+			lines.append(tr("ICON_BLOCK_ENEMY") % block if unit != null else tr("BATTLE_BLOCK_TIP") % block)
+		"poison":
+			lines.append(tr("BATTLE_POISON_TIP") % [_player.poison, _player.poison])
+		"ajian":
+			if buto == null:
+				return ""
+			var progress := buto.get_ajian_progress()
+			lines.append("[color=#ffd36e]%s[/color]" % (tr("AJIAN_BREAK_TIP") % [maxi(buto.ajian_break_threshold - progress, 0), progress, buto.ajian_break_threshold]))
+		"prayitna":
+			lines.append("[color=#b8ff8c]%s[/color]" % tr("PRAYITNA_TIP"))
+	return "\n".join(lines)
 
 
 func _intent_text(intent: EnemyIntent) -> String:
