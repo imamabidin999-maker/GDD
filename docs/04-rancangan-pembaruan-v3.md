@@ -204,3 +204,13 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
 - Yang disimpan adalah letak tombol di keyboard (physical keycode), bukan hurufnya, jadi tetap pas di keyboard AZERTY atau QWERTZ. Nama yang ditampilkan mengikuti tata letak keyboard pemain.
 - Teks yang menyebut tombol (menu jeda, tutorial Sapu Jagad, layar cara bermain irama) memakai penanda `{ultimate}`, `{end_turn}`, dan seterusnya, yang diisi nama tombol pilihan pemain. Nama tombol juga tampil di pojok gong Sapu Jagad dan di keterangan tombol HUD.
 - Logikanya ada di `core/input/key_bindings.gd`, panelnya di `ui/common/controls_panel.gd`, dan tesnya di `tests/test_keys.gd`.
+
+## 12. Gambar Kartu Bernuansa Jawa dan Potret Roro Ayu
+
+- Gambar tiga kartu dasar diganti supaya senada dengan kartu Tabuh (palet kayu dan perunggu, garis tepi gelap):
+  - **Sabet**: pedang diganti **keris** luk lima, lengkap dengan pamor di bilah, ganja, mendak emas, dan deder kayu yang menunduk.
+  - **Semedi**: mata diganti **padupan** perunggu dengan bara kemenyan dan tiga alur asap yang naik.
+  - **Tangkis**: perisai bergaya Eropa diganti **tameng** prajurit Jawa yang lonjong runcing, berbingkai emas, dengan motif tumpal di ujung dan kawung di tengah.
+- **Tangkis Balik**: mata tombak sebelumnya bergeser dari garis tangkainya. Tombak digambar ulang sehingga mata tombak, methuk emas, dan tangkai berada di satu garis lurus, dan garis anginnya tidak lagi menimpa tangkai.
+- **Tenaga Dalam** tetap memakai mata merah, tetapi pedang kecil di belakangnya ikut diganti keris.
+- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan: sanggul berhias melati dan tusuk konde emas, subang bermata merah, kebaya hijau berkerah sulaman emas, kemben batik, dan selendang batik merah. Karena tidak punya sprite, potretnya dilukis oleh `tools/portrait_roro_ayu.py` (dilukis 8x lebih besar lalu diperkecil, kemudian mata, alis, hidung, dan bibir digambar per piksel).

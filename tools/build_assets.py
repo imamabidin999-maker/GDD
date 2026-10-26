@@ -11,9 +11,11 @@ Isinya:
 2. (Latar battle sekarang digambar oleh tools/build_backgrounds.py.)
 3. Bingkai kartu: kartu FOCUS di desain dijadikan template, judul & gambarnya
    dikosongkan, lalu diwarnai ulang untuk tiap tipe kartu.
-4. Ikon yang belum ada di desain (pedang, perisai kawung, tombak, pusaran,
-   gong, ikon niat musuh, gembok, dll.) digambar dengan gaya yang sama.
-5. Ikon topeng Buto dan potret dialog dipotong dari sprite.
+4. Ikon yang belum ada di desain (keris, padupan, tameng kawung, tombak,
+   pusaran, alat musik Tabuh, ikon niat musuh, gembok, dll.) digambar dengan
+   gaya yang sama.
+5. Ikon topeng Buto dan potret dialog dipotong dari sprite; potret Roro Ayu
+   dilukis oleh tools/portrait_roro_ayu.py.
 """
 from __future__ import annotations
 
@@ -23,6 +25,8 @@ from collections import deque
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+from portrait_roro_ayu import draw_roro_ayu
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "docs", "desain_asli")
@@ -246,9 +250,8 @@ def build_card_frames() -> Image.Image:
         save(frame, f"cards/frame_{name}.png")
     hue, sat, val = TABUH_FRAME
     save(recolor(blank, hue, sat_mul=sat, val_mul=val), "cards/frame_tabuh.png")
-    icon = eye_icon(eye)
-    save(icon, "cards/icon_fokus.png")
-    return icon
+    # Mata dari desain asli sekarang hanya dipakai kartu Tenaga Dalam (mata merah).
+    return eye_icon(eye)
 
 
 # ---------------------------------------------------------------------------
@@ -274,51 +277,6 @@ def add_outline(img: Image.Image, color=OUTLINE) -> Image.Image:
 def canvas(w: int, h: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     return img, ImageDraw.Draw(img)
-
-
-def draw_sword(size: int = 40, blade=(214, 220, 232, 255), edge=(140, 150, 170, 255)) -> Image.Image:
-    img, d = canvas(size, size)
-    s = size / 40.0
-    # bilah diagonal dari kiri bawah ke kanan atas
-    d.polygon([(30 * s, 6 * s), (34 * s, 6 * s), (34 * s, 10 * s), (15 * s, 29 * s), (11 * s, 25 * s)], fill=blade)
-    d.line([(32 * s, 8 * s), (14 * s, 26 * s)], fill=edge, width=1)
-    # pelindung tangan (emas)
-    d.line([(9 * s, 23 * s), (17 * s, 31 * s)], fill=(232, 182, 72, 255), width=max(2, int(3 * s)))
-    # gagang (kayu)
-    d.line([(12 * s, 28 * s), (6 * s, 34 * s)], fill=(120, 76, 44, 255), width=max(2, int(3 * s)))
-    d.rectangle([4 * s, 33 * s, 7 * s, 36 * s], fill=(232, 182, 72, 255))
-    return add_outline(img)
-
-
-def draw_kawung_shield(size: int = 40) -> Image.Image:
-    img, d = canvas(size, size)
-    body = (64, 168, 92, 255)
-    dark = (34, 104, 58, 255)
-    rim = (156, 222, 120, 255)
-    pts = [(8, 6), (32, 6), (32, 20), (20, 35), (8, 20)]
-    d.polygon(pts, fill=body)
-    d.line(pts + [pts[0]], fill=rim, width=1)
-    d.polygon([(20, 6), (32, 6), (32, 20), (20, 35)], fill=dark)
-    # motif kawung: empat kelopak mengelilingi titik tengah
-    cx, cy = 20, 18
-    petal = (238, 214, 140, 255)
-    for dx, dy in ((0, -5), (0, 5), (-5, 0), (5, 0)):
-        d.ellipse([cx + dx - 3, cy + dy - 3, cx + dx + 3, cy + dy + 3], fill=petal)
-    d.rectangle([cx - 1, cy - 1, cx + 1, cy + 1], fill=dark)
-    return add_outline(img)
-
-
-def draw_spear(size: int = 40) -> Image.Image:
-    img, d = canvas(size, size)
-    d.line([(5, 35), (27, 13)], fill=(122, 78, 46, 255), width=2)
-    d.polygon([(26, 10), (36, 4), (30, 14)], fill=(220, 226, 238, 255))
-    d.line([(27, 12), (34, 6)], fill=(150, 160, 178, 255), width=1)
-    d.line([(24, 15), (28, 11)], fill=(232, 182, 72, 255), width=3)
-    # garis angin (hijau taktik + merah serang)
-    for i, col in enumerate([(120, 220, 120, 255), (230, 90, 70, 255), (120, 220, 120, 255)]):
-        y = 24 + i * 4
-        d.line([(4 + i * 3, y), (14 + i * 3, y - 10)], fill=col, width=1)
-    return add_outline(img)
 
 
 def draw_swirl(size: int = 40) -> Image.Image:
@@ -443,6 +401,176 @@ def draw_kenong(size: int = 40) -> Image.Image:
     return add_outline(img)
 
 
+# Kartu dasar bernuansa Jawa: keris (Sabet), padupan (Semedi), tameng (Tangkis),
+# dan tombak (Tangkis Balik), dengan palet kayu-perunggu yang sama dengan Tabuh.
+GOLD = (232, 182, 72, 255)
+GOLD_L = (255, 226, 140, 255)
+GOLD_D = (168, 118, 40, 255)
+
+# Sumbu diagonal: dari kiri bawah ke kanan atas.
+U = (1 / math.sqrt(2), -1 / math.sqrt(2))
+N = (1 / math.sqrt(2), 1 / math.sqrt(2))
+
+
+def at(base, s, t):
+    """Titik sejauh s di sepanjang sumbu diagonal dan t tegak lurus darinya."""
+    return (base[0] + U[0] * s + N[0] * t, base[1] + U[1] * s + N[1] * t)
+
+
+def band(d, base, s0, s1, t0, t1, fill):
+    """Pita tegak lurus sumbu, misalnya cincin emas di gagang."""
+    d.polygon([at(base, s0, t0), at(base, s1, t0), at(base, s1, t1), at(base, s0, t1)], fill=fill)
+
+
+def draw_keris(size: int = 40) -> Image.Image:
+    """Keris luk lima: bilah berkelok dengan pamor, ganja, mendak emas, dan deder kayu."""
+    img, d = canvas(size, size)
+    base = (15.0, 25.0)
+    length = 26.0
+    steel = (140, 146, 164, 255)
+    steel_d = (96, 102, 120, 255)
+    pamor = (224, 230, 242, 255)
+
+    def wave(s):
+        ramp = min(1.0, max(0.0, (s - 5.0) / 3.0), max(0.0, (length - 1.0 - s) / 4.0))
+        return 1.2 * ramp * math.sin(2 * math.pi * 2.5 * (s - 5.0) / (length - 5.0))
+
+    def half(s):
+        if s < 5.0:
+            return 3.4 - 0.1 * s
+        return 2.9 - 2.4 * ((s - 5.0) / (length - 5.0)) ** 1.3
+
+    steps = [i * 0.5 for i in range(int(length * 2) + 1)]
+    left = [at(base, s, wave(s) - half(s)) for s in steps]
+    right = [at(base, s, wave(s) + half(s)) for s in reversed(steps)]
+    d.polygon(left + right, fill=steel)
+    shade = [at(base, s, wave(s) + 0.3) for s in steps]
+    d.polygon(shade + right, fill=steel_d)
+    d.line([at(base, s, wave(s) * 0.7 - 1.0) for s in steps[3:-8]], fill=pamor, width=1)
+    # ganja: tumpul di sisi gandik, meruncing di sisi lain
+    d.polygon([at(base, -2.0, -4.4), at(base, 0.6, -4.0), at(base, 0.6, 3.6), at(base, -0.6, 5.6), at(base, -2.0, 4.2)], fill=(70, 74, 90, 255))
+    d.line([at(base, -0.7, -3.9), at(base, -0.7, 4.0)], fill=steel, width=1)
+    # mendak emas
+    band(d, base, -4.0, -2.0, -2.6, 2.6, GOLD)
+    d.line([at(base, -2.6, -2.2), at(base, -2.6, 2.2)], fill=GOLD_L, width=1)
+    # deder kayu yang kepalanya menunduk
+    d.line([at(base, -4.0, 0), at(base, -9.0, 0.6), at(base, -12.0, -1.6), at(base, -12.6, -4.2)], fill=WOOD, width=5)
+    d.line([at(base, -4.4, -1.6), at(base, -9.0, -1.2), at(base, -10.8, -2.8)], fill=WOOD_L, width=1)
+    d.line([at(base, -4.6, 2.0), at(base, -9.6, 2.4)], fill=WOOD_D, width=1)
+    return add_outline(img)
+
+
+def draw_padupan(size: int = 40) -> Image.Image:
+    """Padupan (anglo dupa) perunggu dengan asap kemenyan yang naik berkelok."""
+    img, d = canvas(size, size)
+    # tiga alur asap sejajar, dulu, supaya padupan menutupi pangkalnya
+    smoke = (164, 198, 238, 255)
+    smoke_l = (236, 244, 255, 255)
+    for x0, top in ((14.5, 9.0), (20.0, 2.0), (25.5, 9.0)):
+        pts = []
+        y = 21.0
+        while y >= top:
+            pts.append((x0 + 1.7 * math.sin((21.0 - y) * 0.5), y))
+            y -= 0.5
+        d.line(pts, fill=smoke, width=2)
+        d.line(pts[3:-3], fill=smoke_l, width=1)
+    # kaki dan batang
+    d.polygon([(12, 37), (28, 37), (25, 33), (15, 33)], fill=BRONZE_D)
+    d.line([(14, 34), (26, 34)], fill=BRONZE, width=1)
+    d.rectangle([17, 29, 23, 33], fill=BRONZE)
+    d.line([(18, 29), (18, 33)], fill=BRONZE_L)
+    # mangkuk
+    d.chord([7, 15, 33, 33], 0, 180, fill=BRONZE)
+    d.arc([8, 16, 32, 31], 110, 170, fill=BRONZE_L, width=2)
+    d.arc([7, 15, 33, 33], 20, 70, fill=BRONZE_D, width=2)
+    for x in range(11, 30, 3):
+        d.point((x, 27), fill=BRONZE_L)
+    # telinga mangkuk
+    d.rectangle([4, 22, 7, 24], fill=BRONZE_D)
+    d.rectangle([33, 22, 36, 24], fill=BRONZE_D)
+    # bibir mangkuk dan bara kemenyan
+    d.ellipse([7, 21, 33, 26], fill=BRONZE_L)
+    d.ellipse([9, 22, 31, 25], fill=(58, 34, 22, 255))
+    for x, col in ((13, (236, 96, 48)), (16, (255, 190, 80)), (19, (236, 96, 48)), (22, (255, 220, 120)), (25, (236, 96, 48)), (27, (255, 190, 80))):
+        d.point((x, 23), fill=col + (255,))
+    return add_outline(img)
+
+
+def draw_tameng(size: int = 40) -> Image.Image:
+    """Tameng prajurit Jawa: lonjong runcing, berbingkai emas, motif tumpal dan kawung."""
+    img, d = canvas(size, size)
+    body = (64, 168, 92, 255)
+    dark = (36, 108, 60, 255)
+    light = (120, 206, 128, 255)
+    petal = (238, 214, 140, 255)
+
+    def outline_pts(top, bottom, width):
+        pts_l, pts_r = [], []
+        steps = 40
+        for i in range(steps + 1):
+            k = i / steps
+            y = top + (bottom - top) * k
+            w = width * math.sin(math.pi * k) ** 0.7
+            pts_l.append((20 - w, y))
+            pts_r.append((20 + w, y))
+        return pts_l + list(reversed(pts_r))
+
+    d.polygon(outline_pts(1, 39, 12.5), fill=GOLD)
+    d.polygon(outline_pts(3, 37, 10.6), fill=body)
+    # sisi kanan lebih gelap, kiri disinari
+    right = [p for p in outline_pts(3, 37, 10.6) if p[0] >= 20]
+    d.polygon([(20, 3)] + right + [(20, 37)], fill=dark)
+    d.line([(12, 12), (11, 20), (12, 28)], fill=light, width=1)
+    # tumpal (deret segitiga) di ujung atas dan bawah
+    d.polygon([(16, 10), (20, 4), (24, 10)], fill=petal)
+    d.polygon([(16, 30), (20, 36), (24, 30)], fill=petal)
+    d.polygon([(18, 9), (20, 6), (22, 9)], fill=GOLD_D)
+    d.polygon([(18, 31), (20, 34), (22, 31)], fill=GOLD_D)
+    # kawung di tengah: empat kelopak mengelilingi bulatan emas
+    cx, cy = 20, 20
+    for dx, dy in ((0, -5), (0, 5), (-5, 0), (5, 0)):
+        d.ellipse([cx + dx - 3, cy + dy - 3, cx + dx + 3, cy + dy + 3], fill=petal)
+        d.point((cx + dx, cy + dy), fill=GOLD_D)
+    d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=GOLD)
+    d.point((cx - 1, cy - 1), fill=GOLD_L)
+    # bingkai: garis emas terang di sisi kiri
+    d.line([(9, 14), (8, 20), (9, 26)], fill=GOLD_L, width=1)
+    return add_outline(img)
+
+
+def draw_tombak(size: int = 40) -> Image.Image:
+    """Tombak: mata tombak lurus segaris dengan tangkainya, methuk emas, dan garis angin."""
+    img, d = canvas(size, size)
+    butt = (5.5, 35.5)
+    length = 43.0
+    blade = 12.0
+    sb = length - blade
+    # garis angin (hijau taktik + merah serang), di sisi atas tangkai supaya tidak menimpanya
+    for i, col in enumerate([(120, 220, 120, 255), (230, 90, 70, 255), (120, 220, 120, 255)]):
+        t = -5.0 - i * 3.6
+        s0 = 9.0 + i * 2.0
+        d.line([at(butt, s0, t), at(butt, s0 + 10.0, t)], fill=col, width=1)
+    # tangkai kayu
+    d.line([at(butt, 0, 0), at(butt, sb - 1.5, 0)], fill=WOOD, width=3)
+    d.line([at(butt, 2, -0.9), at(butt, sb - 2, -0.9)], fill=WOOD_L, width=1)
+    d.line([at(butt, 0.5, 0), at(butt, 2.5, 0)], fill=GOLD, width=3)
+    # mata tombak berbentuk daun
+    pts_l, pts_r = [], []
+    for i in range(25):
+        k = i / 24
+        s = sb + blade * k
+        w = 2.9 * math.sin(math.pi * min(1.0, k * 1.35 + 0.08)) ** 0.8 if k < 0.74 else 2.9 * (1 - k) / 0.26 * 0.95
+        pts_l.append(at(butt, s, -w))
+        pts_r.append(at(butt, s, w))
+    d.polygon(pts_l + list(reversed(pts_r)), fill=(220, 226, 238, 255))
+    d.polygon([at(butt, sb, 0)] + pts_r[1:] + [at(butt, length, 0)], fill=(176, 184, 200, 255))
+    d.line([at(butt, sb + 1, 0), at(butt, length - 1.5, 0)], fill=(140, 150, 170, 255), width=1)
+    # methuk emas di pangkal mata tombak
+    band(d, butt, sb - 2.2, sb + 0.2, -2.2, 2.2, GOLD)
+    d.line([at(butt, sb - 1.0, -1.8), at(butt, sb - 1.0, 1.8)], fill=GOLD_L, width=1)
+    return add_outline(img)
+
+
 def crimson_eye(eye: Image.Image) -> Image.Image:
     a = np.asarray(eye).astype(np.float64)
     hsv = rgb_to_hsv(a[..., :3] / 255.0)
@@ -450,10 +578,10 @@ def crimson_eye(eye: Image.Image) -> Image.Image:
     hsv[..., 0] = np.where(blue, 0.99, hsv[..., 0])
     rgb = hsv_to_rgb(hsv) * 255.0
     out = Image.fromarray(np.dstack([rgb, a[..., 3]]).clip(0, 255).astype(np.uint8), "RGBA")
-    # pedang kecil di belakang mata
-    sword = draw_sword(40)
+    # keris kecil di belakang mata
+    keris = draw_keris(40)
     base = Image.new("RGBA", (max(out.width, 44), 40), (0, 0, 0, 0))
-    base.alpha_composite(sword, (2, 0))
+    base.alpha_composite(keris, (2, 0))
     base.alpha_composite(out, ((base.width - out.width) // 2, (40 - out.height) // 2))
     return base
 
@@ -626,10 +754,11 @@ def blessing_icon(kind: str) -> Image.Image:
 
 def build_icons(eye: Image.Image) -> None:
     print("Ikon kartu:")
-    save(draw_sword(), "cards/icon_serang.png")
-    save(draw_kawung_shield(), "cards/icon_taktik.png")
+    save(draw_keris(), "cards/icon_serang.png")
+    save(draw_padupan(), "cards/icon_fokus.png")
+    save(draw_tameng(), "cards/icon_taktik.png")
     save(crimson_eye(eye), "cards/icon_crimson.png")
-    save(draw_spear(), "cards/icon_piercing.png")
+    save(draw_tombak(), "cards/icon_piercing.png")
     save(draw_swirl(), "cards/icon_flow.png")
     save(draw_gong(), "ui/icon_ultimate.png")
     save(draw_bedug(), "cards/icon_bedug.png")
@@ -716,6 +845,8 @@ def build_masks(chars: dict[str, Image.Image]) -> None:
     # kepala Eyang Palang ada di bagian atas siluet
     head_x = int(np.median(xs[ys < top + 18]))
     save(hero.crop((head_x - 40, top - 6, head_x + 40, top + 74)), "ui/portrait_eyang_palang.png")
+    # Roro Ayu tidak punya sprite, jadi potretnya dilukis (tools/portrait_roro_ayu.py).
+    save(draw_roro_ayu(), "ui/portrait_roro_ayu.png")
 
 
 def build_app_icon() -> None:

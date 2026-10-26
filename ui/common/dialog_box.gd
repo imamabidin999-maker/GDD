@@ -14,6 +14,7 @@ signal finished
 const CHARS_PER_SECOND := 55.0
 const PORTRAITS := {
 	"eyang": preload("res://assets/ui/portrait_eyang_palang.png"),
+	"roro_ayu": preload("res://assets/ui/portrait_roro_ayu.png"),
 	"buto_kuning": preload("res://assets/ui/portrait_buto_kuning.png"),
 	"buto_hijau": preload("res://assets/ui/portrait_buto_hijau.png"),
 	"buto_merah": preload("res://assets/ui/portrait_buto_merah.png"),

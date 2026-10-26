@@ -84,10 +84,12 @@ Tambahan selama pengembangan:
 | Bagian | Sumber | Dibuat oleh |
 |---|---|---|
 | Sprite Eyang Palang & Buto | `docs/desain_asli/` | `tools/build_assets.py` (potong latar, rapikan) |
-| Bingkai & ikon kartu | desain kartu asli, diwarnai ulang untuk 6 jenis | `tools/build_assets.py` |
+| Bingkai kartu | desain kartu asli, diwarnai ulang untuk 6 jenis | `tools/build_assets.py` |
+| Ikon kartu | digambar baru bernuansa Jawa (keris, padupan, tameng, tombak, alat musik Tabuh); mata merah Tenaga Dalam dari desain asli | `tools/build_assets.py` |
 | Latar battle & menu | desain latar candi | `tools/build_assets.py` |
 | Peta perjalanan | digambar baru dengan palet latar battle | `tools/build_map.py` |
-| Ikon kecil, topeng, potret | digambar baru | `tools/build_assets.py` |
+| Ikon kecil, topeng, potret Eyang & Buto | digambar baru / dipotong dari sprite | `tools/build_assets.py` |
+| Potret Roro Ayu | dilukis baru (setengah badan) | `tools/portrait_roro_ayu.py` |
 | Musik & efek suara | disintesis (bedug, korek, kentongan, gamelan, slompret, suling) | `tools/build_audio.py` |
 | Kartu, resep, stage | angka di dalam skrip | `tools/generate_data.gd` |
 | Teks dua bahasa | daftar `(kunci, id, en)` | `tools/strings_source.py` |
