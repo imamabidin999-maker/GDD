@@ -352,5 +352,42 @@ func _run() -> void:
 	ps.free()
 	gs.call("new_game")
 
+	print("[Istilah Jawa dan Asli atau Rekaan]")
+	var missing: Array[String] = []
+	for locale: String in ["id", "en"]:
+		TranslationServer.set_locale(locale)
+		var keys: Array[String] = []
+		for cat: String in GlossaryData.CATEGORIES:
+			keys.append("GLOSS_CAT_" + cat.to_upper())
+		for kind: String in GlossaryData.ORIGIN_KINDS:
+			keys.append("ORIGIN_KIND_" + kind.to_upper())
+		for entry: Dictionary in GlossaryData.TERMS:
+			keys.append(entry["key"])
+			if not GlossaryData.CATEGORIES.has(entry["cat"]):
+				missing.append("kelompok " + str(entry["cat"]))
+		for entry: Dictionary in GlossaryData.ORIGINS:
+			keys.append(entry["key"] + "_TITLE")
+			keys.append(entry["key"] + "_TEXT")
+			if not GlossaryData.ORIGIN_KINDS.has(entry["kind"]):
+				missing.append("jenis " + str(entry["kind"]))
+		for key: String in keys:
+			if tr(key) == key or tr(key).is_empty():
+				missing.append("%s (%s)" % [key, locale])
+	gs.call("set_locale", "id")
+	check(missing.is_empty(), "semua istilah dan unsur asli/rekaan punya teks Indonesia dan Inggris" + ("" if missing.is_empty() else ": " + str(missing)))
+	check(GlossaryData.TERMS.size() >= 60 and GlossaryData.ORIGINS.size() >= 15, "%d istilah, %d unsur asli/rekaan" % [GlossaryData.TERMS.size(), GlossaryData.ORIGINS.size()])
+	var pustaka: Node = (load("res://scenes/pustaka/pustaka.tscn") as PackedScene).instantiate()
+	root.add_child(pustaka)
+	await process_frame
+	var content: VBoxContainer = pustaka.get("_content")
+	pustaka.call("_show", "istilah")
+	await process_frame
+	check(content.get_child_count() == 3 + GlossaryData.CATEGORIES.size() * 2, "halaman Istilah Jawa: judul, pengantar, tombol lompat, dan semua kelompok")
+	pustaka.call("_show", "asli")
+	await process_frame
+	check(content.get_child_count() == 2 + GlossaryData.ORIGIN_KINDS.size() * 2, "halaman Asli atau Rekaan: tiga jenis asal beserta isinya")
+	pustaka.queue_free()
+	await process_frame
+
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

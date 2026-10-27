@@ -141,6 +141,15 @@ Saat Sapu Jagad dipakai, iringan gamelannya sendiri mulai: empat hitungan kenton
 
 Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Sapu Jagad, dan saat irama pertama kali muncul ada layar cara bermain. Irama bisa dicoba kapan saja lewat tombol **Coba** di Pengaturan, dan bisa dimatikan. Iramanya tidak ikut dipercepat oleh kecepatan battle 2x.
 
+### Pustaka: belajar sambil bermain
+
+Selain kisah Dongkrek, tokoh, Buto, cara bermain, dan daftar kartu, Pustaka punya dua halaman untuk belajar:
+
+- **Istilah Jawa**: 80 istilah yang dipakai di game (Greget, Wirama, Prayitna, Sirep, Pagebluk, Korek, Kenong, Sendang, Kebaya, dan lainnya), masing-masing dengan arti aslinya lalu perannya di game. Dikelompokkan menjadi tujuh kelompok, dengan tombol untuk melompat ke tiap kelompok.
+- **Asli atau Rekaan**: setiap unsur game diberi tanda asalnya, yaitu **dari kisah Dongkrek** (emas), **dari budaya Jawa** (biru), atau **rekaan untuk game** (ungu), beserta penjelasannya. Tanda yang sama muncul di halaman Kesenian Dongkrek, Eyang Palang, para Buto, Buto Murka, dan Bala.
+
+Isi kedua halaman juga bisa dibaca di `docs/05-istilah-jawa-dan-asli-rekaan.md`.
+
 ## Ruwatan
 
 Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, dan tetap terbuka walau kamu memulai petualangan baru. Ruwatan adalah perjalanan acak delapan langkah dengan deck, berkah, dan Nyawa sendiri:
@@ -205,7 +214,7 @@ Versi Web bisa langsung diunggah ke itch.io (pilih "This file will be played in 
 autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
 core/          Logika battle (BattleManager, DeckController, HandManager, PlayerState, aksi)
                dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan),
-               serta tombol keyboard (KeyBindings)
+               serta tombol keyboard (KeyBindings) dan data Istilah Jawa (GlossaryData)
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
 ui/            Kartu, tangan, HUD, dialog, pengaturan, panel tombol keyboard, tooltip,
@@ -229,6 +238,7 @@ python3 tools/build_backgrounds.py # latar battle tiap babak, menu, dan ending
 python3 tools/build_audio.py       # musik & efek suara (butuh numpy, scipy, ffmpeg)
                                    # --gebrakan: hanya iringan dan bunyi Sapu Jagad
                                    # --kartu: hanya bunyi kartu (gabung, main, tarik, geser)
+python3 tools/glossary_source.py   # Istilah Jawa & Asli atau Rekaan -> data Pustaka + docs/05
 python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
 godot --headless -s tools/simulate_balance.gd   # simulasi keseimbangan

@@ -1,10 +1,13 @@
 extends Control
 ## Pustaka: ensiklopedia kecil tentang kesenian Dongkrek, Eyang Palang, para
-## Buto (terbuka setelah pernah dilawan), cara bermain, dan daftar kartu.
+## Buto (terbuka setelah pernah dilawan), cara bermain, daftar kartu, istilah
+## Jawa, dan tanda mana yang asli dari kisah Dongkrek dan mana yang rekaan.
 
 const BG := preload("res://assets/backgrounds/menu.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 const BUTO_KEYS: Array[String] = ["kuning", "hijau", "merah", "putih", "hitam"]
+## Warna tanda asal-usul: kisah Dongkrek, budaya Jawa, rekaan game.
+const ORIGIN_COLORS := {"asli": UIKit.COLOR_GOLD, "budaya": UIKit.COLOR_BLUE, "rekaan": UIKit.COLOR_PURPLE}
 
 var _content: VBoxContainer
 var _scroll: ScrollContainer
@@ -75,6 +78,8 @@ func _build() -> void:
 	_add_entry("bala", tr("PUSTAKA_BALA") if GameState.seen_buto.has("bala") else "? ? ?")
 	_add_entry("howto", tr("PUSTAKA_HOWTO"))
 	_add_entry("cards", tr("PUSTAKA_CARDS"))
+	_add_entry("istilah", tr("PUSTAKA_GLOSSARY"))
+	_add_entry("asli", tr("PUSTAKA_ORIGINS"))
 
 	var content_panel := PanelContainer.new()
 	content_panel.theme_type_variation = &"GoldPanel"
@@ -116,14 +121,20 @@ func _show(key: String) -> void:
 			for buto: String in BUTO_KEYS:
 				masks.add_child(UIKit.icon(load("res://assets/ui/mask_%s.png" % buto) as Texture2D))
 			_content.add_child(masks)
+			_content.add_child(_origin_tag(["asli"], tr("ORIGIN_TAG_DONGKREK")))
 			_paragraph(tr("PUSTAKA_DONGKREK_TEXT"))
 		"eyang":
-			_figure(HERO, tr("PUSTAKA_EYANG"), [], tr("PUSTAKA_EYANG_TEXT"), false)
+			_figure(HERO, tr("PUSTAKA_EYANG"), [], tr("PUSTAKA_EYANG_TEXT"), false,
+				_origin_tag(["asli"], tr("ORIGIN_TAG_EYANG")))
 		"howto":
 			_heading(tr("PUSTAKA_HOWTO"))
 			_paragraph(tr("PUSTAKA_HOWTO_TEXT"))
 		"cards":
 			_show_cards()
+		"istilah":
+			_show_glossary()
+		"asli":
+			_show_origins()
 		"murka":
 			_show_murka()
 		"bala":
@@ -142,7 +153,8 @@ func _show_buto(key: String) -> void:
 	if spec != null:
 		facts.append(tr("PUSTAKA_STATS") % [spec.max_hp, spec.attack_power])
 	facts.append(tr("PUSTAKA_SKILL") % tr("SKILL_" + key.to_upper()))
-	_figure(sprite, tr("BUTO_" + key.to_upper()), facts, tr("PUSTAKA_BUTO_%s_TEXT" % key.to_upper()), false)
+	_figure(sprite, tr("BUTO_" + key.to_upper()), facts, tr("PUSTAKA_BUTO_%s_TEXT" % key.to_upper()), false,
+		_origin_tag(["asli", "rekaan"], tr("ORIGIN_TAG_BUTO")))
 
 
 func _show_murka() -> void:
@@ -150,7 +162,7 @@ func _show_murka() -> void:
 	if not GameState.seen_buto.has("murka"):
 		_figure(sprite, "? ? ?", [], tr("PUSTAKA_LOCKED"), true)
 		return
-	_figure(sprite, tr("PUSTAKA_MURKA"), [], tr("PUSTAKA_MURKA_TEXT"), false)
+	_figure(sprite, tr("PUSTAKA_MURKA"), [], tr("PUSTAKA_MURKA_TEXT"), false, _origin_tag(["rekaan"], tr("ORIGIN_TAG_REKAAN")))
 	# Aura yang sama dengan di medan tempur, di belakang gambar Buto.
 	var pic := (_content.get_child(-1) as Control).get_child(0) as TextureRect
 	var aura := TextureRect.new()
@@ -178,7 +190,7 @@ func _show_bala() -> void:
 	var hitam := EnemyButo.new()
 	var stats: Array[String] = [tr("PUSTAKA_STATS") % [hitam.bala_hp, hitam.bala_attack]]
 	hitam.free()
-	_figure(sprite, tr("PUSTAKA_BALA"), stats, tr("PUSTAKA_BALA_TEXT"), false)
+	_figure(sprite, tr("PUSTAKA_BALA"), stats, tr("PUSTAKA_BALA_TEXT"), false, _origin_tag(["rekaan"], tr("ORIGIN_TAG_REKAAN")))
 	# Wujud bayangan yang sama dengan di medan tempur.
 	var pic := (_content.get_child(-1) as Control).get_child(0) as TextureRect
 	pic.modulate = Color(0.42, 0.32, 0.6, 0.8)
@@ -215,6 +227,73 @@ func _show_cards() -> void:
 		text.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		line.add_child(text)
 		_content.add_child(line)
+
+
+## Kamus istilah Jawa, dikelompokkan; tombol di atas melompat ke kelompoknya.
+func _show_glossary() -> void:
+	_heading(tr("PUSTAKA_GLOSSARY"))
+	_content.add_child(_note(tr("PUSTAKA_GLOSSARY_INTRO")))
+	var jumps := HFlowContainer.new()
+	jumps.add_theme_constant_override("h_separation", 4)
+	jumps.add_theme_constant_override("v_separation", 4)
+	_content.add_child(jumps)
+	var gold := UIKit.COLOR_GOLD.to_html(false)
+	for cat: String in GlossaryData.CATEGORIES:
+		var heading := UIKit.label(tr("GLOSS_CAT_" + cat.to_upper()), &"HeaderLabel")
+		var jump := UIKit.button(tr("GLOSS_CAT_" + cat.to_upper()))
+		jump.pressed.connect(func() -> void:
+			AudioManager.play_sfx("click")
+			_scroll.scroll_vertical = int(heading.position.y))
+		jumps.add_child(jump)
+		_content.add_child(heading)
+		var lines: Array[String] = []
+		for entry: Dictionary in GlossaryData.TERMS:
+			if entry["cat"] == cat:
+				lines.append("[color=#%s]%s[/color]   %s" % [gold, entry["term"], tr(entry["key"])])
+		_paragraph("\n\n".join(lines))
+
+
+## Unsur-unsur game dan asalnya: kisah Dongkrek, budaya Jawa, atau rekaan.
+func _show_origins() -> void:
+	_heading(tr("PUSTAKA_ORIGINS"))
+	_content.add_child(_note(tr("PUSTAKA_ORIGINS_INTRO")))
+	for kind: String in GlossaryData.ORIGIN_KINDS:
+		var head := _origin_tag([kind], tr("ORIGIN_KIND_" + kind.to_upper()))
+		var label := head.get_child(-1) as Label
+		label.theme_type_variation = &"HeaderLabel"
+		label.add_theme_color_override("font_color", ORIGIN_COLORS[kind])
+		_content.add_child(head)
+		var color := (ORIGIN_COLORS[kind] as Color).to_html(false)
+		var lines: Array[String] = []
+		for entry: Dictionary in GlossaryData.ORIGINS:
+			if entry["kind"] == kind:
+				lines.append("[color=#%s]%s[/color]\n%s" % [color, tr(entry["key"] + "_TITLE"), tr(entry["key"] + "_TEXT")])
+		_paragraph("\n\n".join(lines))
+
+
+## Tanda asal-usul: kotak warna (satu per jenis) lalu keterangannya.
+func _origin_tag(kinds: Array[String], text: String) -> HBoxContainer:
+	var row := UIKit.hbox(3)
+	for kind: String in kinds:
+		var chip := ColorRect.new()
+		chip.color = ORIGIN_COLORS[kind]
+		chip.custom_minimum_size = Vector2(6, 6)
+		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(chip)
+	var label := UIKit.label(text, &"", UIKit.COLOR_TEXT)
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.custom_minimum_size.x = 120
+	row.add_child(label)
+	return row
+
+
+func _note(text: String) -> Label:
+	var l := UIKit.label(text, &"", UIKit.COLOR_DIM)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(440, 0)
+	return l
 
 
 # Satu baris: kartu bintang 1-3 lalu nama dan keterangannya.
@@ -268,7 +347,7 @@ func _paragraph(text: String) -> void:
 
 
 ## Gambar tokoh di kiri, nama/fakta/cerita di kanan.
-func _figure(texture: Texture2D, title: String, facts: Array[String], text: String, silhouette: bool) -> void:
+func _figure(texture: Texture2D, title: String, facts: Array[String], text: String, silhouette: bool, tag: Control = null) -> void:
 	var row := UIKit.hbox(10)
 	var pic := TextureRect.new()
 	pic.texture = texture
@@ -281,6 +360,8 @@ func _figure(texture: Texture2D, title: String, facts: Array[String], text: Stri
 	var col := UIKit.vbox(4)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	col.add_child(UIKit.label(title, &"HeaderLabel"))
+	if tag != null:
+		col.add_child(tag)
 	for fact: String in facts:
 		col.add_child(UIKit.label(fact, &"", UIKit.COLOR_GOLD))
 	var r := RichTextLabel.new()

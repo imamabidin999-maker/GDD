@@ -10,6 +10,8 @@ Kunci yang diakhiri angka/%d dipakai dengan format % di GDScript.
 import csv
 import os
 
+from glossary_source import strings as glossary_strings
+
 STRINGS = [
     # ------------------------------------------------------------------ umum
     ("GAME_TITLE", "DONGKREK", "DONGKREK"),
@@ -1536,7 +1538,34 @@ STRINGS = [
     ("BATTLE_END_TURN_TIP",
      "Selesai giliranmu. Setelah ini para Buto yang bergerak.",
      "End your turn. The Buto move next."),
+    ("PUSTAKA_GLOSSARY",
+     "Istilah Jawa",
+     "Javanese Terms"),
+    ("PUSTAKA_GLOSSARY_INTRO",
+     "Arti istilah Jawa yang dipakai di game ini, lalu (kalau ada) perannya dalam permainan. Klik nama kelompok untuk melompat.",
+     "What the Javanese words in this game mean, and (where it applies) what they do in play. Click a group to jump to it."),
+    ("PUSTAKA_ORIGINS",
+     "Asli atau Rekaan",
+     "Fact or Fiction"),
+    ("PUSTAKA_ORIGINS_INTRO",
+     "Game ini terinspirasi dari kisah Dongkrek, tetapi banyak bagiannya dikarang untuk kebutuhan permainan. Di sini setiap unsur diberi tanda asalnya.",
+     "This game is inspired by the story of Dongkrek, but much of it was made up for play. Here every element is marked by where it comes from."),
+    ("ORIGIN_TAG_DONGKREK",
+     "Dari kisah Dongkrek",
+     "From the Dongkrek story"),
+    ("ORIGIN_TAG_EYANG",
+     "Tokoh dari kisah Dongkrek",
+     "A figure from the Dongkrek story"),
+    ("ORIGIN_TAG_BUTO",
+     "Buto bertopeng dari kisah Dongkrek; warna dan ilmunya rekaan game",
+     "Masked Buto from the Dongkrek story; color and skill made up for the game"),
+    ("ORIGIN_TAG_REKAAN",
+     "Rekaan untuk game",
+     "Made up for the game"),
 ]
+
+# Istilah Jawa dan Asli atau Rekaan di Pustaka; isinya di tools/glossary_source.py.
+STRINGS += glossary_strings()
 
 
 def main() -> None:
