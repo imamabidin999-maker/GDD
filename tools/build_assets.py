@@ -15,7 +15,7 @@ Isinya:
    pusaran, alat musik Tabuh, ikon niat musuh, gembok, dll.) digambar dengan
    gaya yang sama.
 5. Ikon topeng Buto dan potret dialog dipotong dari sprite; potret Roro Ayu
-   dilukis oleh tools/portrait_roro_ayu.py.
+   dipotong dari desain sprite diamnya oleh tools/portrait_roro_ayu.py.
 """
 from __future__ import annotations
 
@@ -845,7 +845,8 @@ def build_masks(chars: dict[str, Image.Image]) -> None:
     # kepala Eyang Palang ada di bagian atas siluet
     head_x = int(np.median(xs[ys < top + 18]))
     save(hero.crop((head_x - 40, top - 6, head_x + 40, top + 74)), "ui/portrait_eyang_palang.png")
-    # Roro Ayu tidak punya sprite, jadi potretnya dilukis (tools/portrait_roro_ayu.py).
+    # Potret Roro Ayu dipotong dari desain sprite diamnya, kebayanya diputihkan
+    # (tools/portrait_roro_ayu.py).
     save(draw_roro_ayu(), "ui/portrait_roro_ayu.png")
 
 

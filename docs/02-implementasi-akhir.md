@@ -89,7 +89,7 @@ Tambahan selama pengembangan:
 | Latar battle & menu | desain latar candi | `tools/build_assets.py` |
 | Peta perjalanan | digambar baru dengan palet latar battle | `tools/build_map.py` |
 | Ikon kecil, topeng, potret Eyang & Buto | digambar baru / dipotong dari sprite | `tools/build_assets.py` |
-| Potret Roro Ayu | dilukis baru dari desain sprite diam Roro Ayu (setengah badan, menghadap ke depan) | `tools/portrait_roro_ayu.py` |
+| Potret Roro Ayu | dipotong dari desain sprite diam Roro Ayu (`docs/desain_asli/roro_ayu_standby.png`), kebaya diputihkan | `tools/portrait_roro_ayu.py` |
 | Musik & efek suara | disintesis (bedug, korek, kentongan, gamelan, slompret, suling) | `tools/build_audio.py` |
 | Kartu, resep, stage | angka di dalam skrip | `tools/generate_data.gd` |
 | Teks dua bahasa | daftar `(kunci, id, en)` | `tools/strings_source.py` |

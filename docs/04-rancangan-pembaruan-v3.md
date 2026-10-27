@@ -213,9 +213,8 @@ Hasil simulasi setelah perubahan ini (kesulitan Normal): bot cerdas 80% di babak
   - **Tangkis**: perisai bergaya Eropa diganti **tameng** prajurit Jawa yang lonjong runcing, berbingkai emas, dengan motif tumpal di ujung dan kawung di tengah.
 - **Tangkis Balik**: mata tombak sebelumnya bergeser dari garis tangkainya. Tombak digambar ulang sehingga mata tombak, methuk emas, dan tangkai berada di satu garis lurus, dan garis anginnya tidak lagi menimpa tangkai.
 - **Tenaga Dalam** tetap memakai mata merah, tetapi pedang kecil di belakangnya ikut diganti keris.
-- **Roro Ayu** sekarang punya potret di kotak dialog, setengah badan dan menghadap ke depan. (Versi menyamping sempat dicoba, tetapi kepala yang menyamping di atas badan yang menghadap depan membuat lehernya tampak patah.) Rujukan utamanya adalah desain sprite diam Roro Ayu dari pemilik proyek, dan warnanya diambil langsung dari desain itu:
-  - kulit sawo matang, rambut hitam disisir ke belakang dengan helai abu-abu, sanggul di tengkuk yang mengintip di belakang leher kiri, dan tiga cunduk mentul bunga emas di atas kepala;
-  - subang emas, kalung tipis, alis tegas, bulu mata lentik, rona pipi, dan bibir merah dengan senyum tipis;
-  - kebaya hijau terang berlis emas, panel dada hijau tua bermotif belah ketupat emas, dan selendang (sampur) jingga-merah bertepi kuning di bahu.
-  - Proporsinya ramping dan anggun: bahu landai selebar kira-kira dua kali kepala, dan leher yang tidak terlalu panjang. Rujukan sebelumnya tetap dipakai untuk wataknya (topeng Roro Ayu di Dongkrek: cantik, tatapan sendu, senyum tipis) dan tekniknya (potret piksel ala GBA: shading menggerombol 4-6 warna per bahan).
-  - Potretnya digambar ulang seperti pixel art buatan tangan oleh `tools/portrait_roro_ayu.py`, dalam tiga lapis: siluet berwarna dasar per bagian, cel shading berupa bidang terang dan bayangan yang digambar sendiri (cahaya dari kiri atas, bukan gradasi otomatis), lalu detail per piksel (mata, alis, hidung, bibir, rona pipi, subang, cunduk, kalung, lis emas, motif panel, tepi selendang).
+- **Roro Ayu** sekarang punya potret di kotak dialog. Setelah beberapa versi lukisan (tiga perempat, menyamping, menghadap depan, dan remodel), potret akhirnya dipotong langsung dari desain sprite diam Roro Ayu buatan pemilik proyek (`docs/desain_asli/roro_ayu_standby.png`), seperti potret Eyang Palang dan Buto yang dipotong dari sprite masing-masing:
+  - bagian yang diambil kepala sampai dada, menghadap kanan ke arah teks dialog; latar desainnya dibuang;
+  - kebaya hijaunya diganti putih (bayangan kebiruan sampai putih gading), terang-gelap lipatannya tetap;
+  - lis emas, panel dada bermotif belah ketupat, selendang jingga-merah, kulit sawo matang, sanggul, cunduk, dan subang tetap seperti desain aslinya.
+  - Prosesnya ada di `tools/portrait_roro_ayu.py` dan dijalankan oleh `tools/build_assets.py`.
