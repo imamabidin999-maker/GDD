@@ -157,7 +157,8 @@ func _build_ui() -> void:
 
 func _stars_tip() -> String:
 	var lines: Array[String] = [tr("MAP_STARS_TIP")]
-	var total := GameState.total_stars()
+	var total := GameState.best_total_stars()
+	lines.append(tr("MAP_STARS_RECORD") % [total, GameState.STAGE_COUNT * Challenges.STARS_PER_STAGE])
 	for reward: Array in Challenges.rewards():
 		var color := "b8ff8c" if total >= int(reward[0]) else "9aa0b8"
 		lines.append("[color=#%s]%s[/color]" % [color, tr("STAR_REWARD_LINE") % [int(reward[0]), tr(str(reward[1]))]])

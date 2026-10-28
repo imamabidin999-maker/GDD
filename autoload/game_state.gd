@@ -49,12 +49,16 @@ var pending_event: String = ""
 var pending_paths: Array[String] = []
 ## Kejadian yang sudah dialami di petualangan ini (tidak diulang).
 var seen_events: Array[String] = []
-## Catatan permainan sepanjang masa (halaman Catatan di Pustaka). Seperti
-## Bintang Dongkrek, tidak ikut direset saat petualangan baru.
+## Catatan permainan sepanjang masa (halaman Catatan di Pustaka). Tidak ikut
+## direset saat petualangan baru.
 var records := PlayRecords.new()
-## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
-## Seperti rekor, tidak ikut direset saat petualangan baru.
+## Bintang Dongkrek petualangan ini: babak -> bitmask 3 bintang (lihat
+## Challenges). Mulai dari nol lagi saat petualangan baru.
 var stage_stars: Dictionary = {}
+## Rekor bintang sepanjang masa, gabungan bintang dari semua petualangan.
+## Hadiah bintang dihitung dari rekor ini, jadi hadiah yang sudah terbuka tetap
+## terbuka walau petualangan baru dimulai.
+var star_record: Dictionary = {}
 #endregion
 
 ## Battle berikutnya milik mode cerita atau Ruwatan. Tidak disimpan.
@@ -133,6 +137,7 @@ func new_game() -> void:
 	pending_event = ""
 	pending_paths.clear()
 	seen_events.clear()
+	stage_stars.clear()
 	save_game()
 	progress_changed.emit()
 
@@ -184,40 +189,53 @@ func locked_blessings() -> Array:
 	return [] if kenong_unlocked() else [Blessings.Kind.TABUH_KENONG]
 
 
-## Kenong masuk undian berkah setelah cukup Bintang Dongkrek.
+## Kenong masuk undian berkah setelah rekor bintang cukup.
 func kenong_unlocked() -> bool:
-	return total_stars() >= Challenges.KENONG_STARS
+	return best_total_stars() >= Challenges.KENONG_STARS
 
 
 func reroll_unlocked() -> bool:
-	return total_stars() >= Challenges.REROLL_STARS
+	return best_total_stars() >= Challenges.REROLL_STARS
 
 
 func ruwatan_blessing_unlocked() -> bool:
-	return total_stars() >= Challenges.RUWATAN_BLESSING_STARS
+	return best_total_stars() >= Challenges.RUWATAN_BLESSING_STARS
 
 
 func master_unlocked() -> bool:
-	return total_stars() >= Challenges.MASTER_STARS
+	return best_total_stars() >= Challenges.MASTER_STARS
 
 
+## Bintang babak ini di petualangan yang sedang berjalan (bitmask).
 func stars_of(stage: int) -> int:
 	return int(stage_stars.get(stage, 0))
 
 
+## Jumlah bintang di petualangan yang sedang berjalan.
 func total_stars() -> int:
+	return _count_stars(stage_stars)
+
+
+## Jumlah rekor bintang sepanjang masa (dasar hadiah bintang).
+func best_total_stars() -> int:
+	return _count_stars(star_record)
+
+
+static func _count_stars(masks: Dictionary) -> int:
 	var total := 0
-	for stage: Variant in stage_stars:
-		total += Challenges.count_bits(int(stage_stars[stage]))
+	for stage: Variant in masks:
+		total += Challenges.count_bits(int(masks[stage]))
 	return total
 
 
-## Mencatat hasil tantangan. Mengembalikan bintang yang baru didapat
-## (true di posisi bintang yang sebelumnya belum dimiliki).
+## Mencatat hasil tantangan di petualangan ini dan di rekor. Mengembalikan
+## bintang yang baru didapat di petualangan ini (true di posisi bintang yang
+## sebelumnya belum dimiliki).
 func record_stars(stage: int, results: Array[bool]) -> Array[bool]:
 	var before := stars_of(stage)
 	var after := before | Challenges.mask_of(results)
 	stage_stars[stage] = after
+	star_record[stage] = int(star_record.get(stage, 0)) | after
 	var fresh: Array[bool] = []
 	for i: int in Challenges.STARS_PER_STAGE:
 		fresh.append(bool(after & (1 << i)) and not bool(before & (1 << i)))
@@ -603,10 +621,8 @@ func save_game() -> void:
 	cfg.set_value("progress", "pending_event", pending_event)
 	cfg.set_value("progress", "pending_paths", pending_paths)
 	cfg.set_value("progress", "seen_events", seen_events)
-	var stars_out := {}
-	for stage: Variant in stage_stars:
-		stars_out[str(stage)] = int(stage_stars[stage])
-	cfg.set_value("progress", "stage_stars", stars_out)
+	cfg.set_value("progress", "stage_stars", _stars_out(stage_stars))
+	cfg.set_value("progress", "star_record", _stars_out(star_record))
 	cfg.set_value("ruwatan", "unlocked", ruwatan_unlocked)
 	var best_out := {}
 	for lvl: Variant in ruwatan_best:
@@ -660,13 +676,19 @@ func load_game() -> void:
 				pending_paths.append(id)
 		if pending_paths.size() != 2:
 			pending_paths.clear()
-	stage_stars.clear()
-	var stars_in: Variant = cfg.get_value("progress", "stage_stars", {})
-	if stars_in is Dictionary:
-		for key: Variant in stars_in:
-			var stage := int(str(key))
-			if stage >= 1 and stage <= STAGE_COUNT:
-				stage_stars[stage] = clampi(int(stars_in[key]), 0, (1 << Challenges.STARS_PER_STAGE) - 1)
+	stage_stars = _stars_in(cfg.get_value("progress", "stage_stars", {}))
+	if cfg.has_section_key("progress", "star_record"):
+		star_record = _stars_in(cfg.get_value("progress", "star_record", {}))
+	else:
+		# Simpanan lama hanya punya satu daftar bintang yang tidak pernah
+		# direset. Semuanya menjadi rekor, dan petualangan yang sedang berjalan
+		# hanya menyimpan bintang babak yang sudah ia selesaikan.
+		star_record = stage_stars.duplicate()
+		for stage: Variant in stage_stars.keys():
+			if not cleared_stages.has(stage):
+				stage_stars.erase(stage)
+	for stage: Variant in stage_stars:
+		star_record[stage] = int(star_record.get(stage, 0)) | int(stage_stars[stage])
 	ruwatan_unlocked = bool(cfg.get_value("ruwatan", "unlocked", false)) or game_completed
 	ruwatan_best.clear()
 	var best_in: Variant = cfg.get_value("ruwatan", "best", {})
@@ -701,6 +723,23 @@ func load_game() -> void:
 		_migrate_from_v2()
 	if version < SAVE_VERSION:
 		save_game()
+
+
+func _stars_out(masks: Dictionary) -> Dictionary:
+	var out := {}
+	for stage: Variant in masks:
+		out[str(stage)] = int(masks[stage])
+	return out
+
+
+func _stars_in(data: Variant) -> Dictionary:
+	var out := {}
+	if data is Dictionary:
+		for key: Variant in data:
+			var stage := int(str(key))
+			if stage >= 1 and stage <= STAGE_COUNT:
+				out[stage] = clampi(int(data[key]), 0, (1 << Challenges.STARS_PER_STAGE) - 1)
+	return out
 
 
 # Simpanan dari masa 5 babak. Babak 1-4 isinya sama, jadi tetap dianggap

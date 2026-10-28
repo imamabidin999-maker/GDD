@@ -156,7 +156,7 @@ func _confirm(message: String, on_yes: Callable) -> void:
 	panel.add_child(col)
 	var text := UIKit.label(message, &"BigLabel", UIKit.COLOR_TEXT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.custom_minimum_size = Vector2(220, 0)
+	text.custom_minimum_size = Vector2(300, 0)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(text)
 	var row := UIKit.hbox(8)

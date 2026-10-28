@@ -343,7 +343,7 @@ func _run() -> void:
 	var gs := root.get_node("GameState")
 	gs.set("save_path", "user://test_save.cfg")
 	gs.call("new_game")
-	(gs.get("stage_stars") as Dictionary).clear()
+	gs.set("star_record", {})
 	gs.call("abandon_ruwatan")
 	gs.set("ruwatan_best", {})
 	# Catatan permainan tidak ikut direset Petualangan Baru, jadi dimulai dari nol di sini.

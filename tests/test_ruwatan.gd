@@ -41,6 +41,7 @@ func _run() -> void:
 	gs.call("abandon_ruwatan")
 	gs.set("ruwatan_best", {})
 	gs.set("stage_stars", {})
+	gs.set("star_record", {})
 	gs.set("ruwatan_unlocked", false)
 
 	print("[Jalur delapan langkah]")
@@ -233,7 +234,7 @@ func _run() -> void:
 	var stars := {}
 	for n: int in range(1, 9):
 		stars[n] = 7
-	gs.set("stage_stars", stars)
+	gs.set("star_record", stars)
 	var bonus: RuwatanRun = gs.call("start_ruwatan", 2, grng)
 	check(bonus.level == 2 and bonus.blessings.size() == 1 and bonus.start_blessing == bonus.blessings[0]
 		and not Blessings.TABUH_FAMILY.has(Blessings.from_name(bonus.start_blessing)), "24 bintang: satu berkah awal yang bukan kartu Tabuh")

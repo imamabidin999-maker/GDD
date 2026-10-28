@@ -36,7 +36,9 @@ STRINGS = [
     ("MENU_PUSTAKA", "Pustaka", "Codex"),
     ("MENU_SETTINGS", "Pengaturan", "Settings"),
     ("MENU_QUIT", "Keluar", "Quit"),
-    ("MENU_CONFIRM_NEW", "Mulai dari awal? Progres yang tersimpan akan hilang.", "Start over? Your saved progress will be lost."),
+    ("MENU_CONFIRM_NEW",
+     "Mulai dari awal? Babak, deck, berkah, dan bintang petualangan ini akan hilang. Hadiah bintang yang sudah terbuka, Ruwatan, dan Catatan tetap ada.",
+     "Start over? This journey's acts, deck, blessings, and stars will be lost. Star rewards you already unlocked, Ruwatan, and your Records stay."),
     ("MENU_CREDIT_LINE", "Terinspirasi dari kesenian Dongkrek, Mejayan, Madiun", "Inspired by the Dongkrek folk art of Mejayan, Madiun"),
 
     # -------------------------------------------------------------- pengaturan
@@ -999,8 +1001,8 @@ STRINGS = [
      "Tantangan:",
      "Challenges:"),
     ("MAP_STARS_TIP",
-     "Bintang Dongkrek dari tantangan babak. Hadiahnya:",
-     "Dongkrek Stars from act challenges. Rewards:"),
+     "Bintang Dongkrek dari tantangan babak di petualangan ini. Hadiahnya dibuka oleh rekor bintangmu, jadi tetap terbuka walau kamu memulai petualangan baru.",
+     "Dongkrek Stars from act challenges on this journey. Rewards follow your best star record, so they stay unlocked when you start a new journey."),
     ("STAR_REWARD_KENONG",
      "Kenong masuk ke pilihan berkah",
      "Kenong joins the blessing choices"),
@@ -1850,6 +1852,12 @@ STRINGS = [
     ("KEYS_GAMEPAD",
      "Stik kiri atau D-pad menggerakkan kursor, A untuk klik (tahan untuk menggeser kartu), stik kanan untuk menggulir. B atau Start: jeda. X: akhiri giliran. Y: Sapu Jagad. RB: ganti sasaran. LB: kecepatan 1x/2x.",
      "Left stick or D-pad moves the cursor, A clicks (hold to drag a card), right stick scrolls. B or Start: pause. X: end turn. Y: Sapu Jagad. RB: next target. LB: speed 1x/2x."),
+    ("MAP_STARS_RECORD",
+     "Rekor bintang: %d/%d",
+     "Star record: %d/%d"),
+    ("RECORDS_STARS",
+     "Rekor Bintang Dongkrek",
+     "Dongkrek Star record"),
 ]
 
 # Istilah Jawa dan Asli atau Rekaan di Pustaka; isinya di tools/glossary_source.py.

@@ -968,15 +968,16 @@ func _ruwatan_victory() -> void:
 # Bintang Dongkrek dari tantangan babak ini.
 func _show_challenges() -> void:
 	var results := Challenges.evaluate(_stage.challenges, _stats)
-	var before := GameState.total_stars()
+	var record_before := GameState.best_total_stars()
 	var fresh := GameState.record_stars(_stage.stage_number, results)
 	var panel := ChallengePanel.new()
 	panel.lines = Challenges.describe_stage(_stage.challenges)
 	panel.results = results
 	panel.fresh = fresh
 	panel.owned_mask = GameState.stars_of(_stage.stage_number)
-	panel.total_before = before
 	panel.total_after = GameState.total_stars()
+	panel.record_before = record_before
+	panel.record_after = GameState.best_total_stars()
 	_overlay.add_child(panel)
 	await panel.done
 

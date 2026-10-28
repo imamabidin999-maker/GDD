@@ -1,8 +1,8 @@
 class_name ChallengePanel
 extends Control
 ## Panel "Hasil Tantangan" setelah menang: tiga bintang babak, mana yang
-## tercapai di battle ini, mana yang baru, total Bintang Dongkrek, dan hadiah
-## yang baru terbuka.
+## tercapai di battle ini, mana yang baru, total Bintang Dongkrek petualangan
+## ini, dan hadiah yang baru terbuka (dari rekor bintang sepanjang masa).
 
 signal done
 
@@ -17,8 +17,11 @@ var results: Array[bool] = []
 var fresh: Array[bool] = []
 ## Sudah dimiliki sesudah battle ini (bitmask).
 var owned_mask: int = 0
-var total_before: int = 0
+## Total bintang petualangan ini sesudah battle.
 var total_after: int = 0
+## Rekor bintang sebelum dan sesudah battle; hadiah terbuka saat rekor naik.
+var record_before: int = 0
+var record_after: int = 0
 
 
 func _ready() -> void:
@@ -58,7 +61,7 @@ func _ready() -> void:
 	total.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(total)
 	for reward: Array in Challenges.rewards():
-		if total_before < int(reward[0]) and total_after >= int(reward[0]):
+		if record_before < int(reward[0]) and record_after >= int(reward[0]):
 			var msg := UIKit.label(tr("CHALLENGE_UNLOCKED") % tr(str(reward[1])), &"", Color(0.75, 1.0, 0.55))
 			msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			msg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

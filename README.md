@@ -129,7 +129,7 @@ Setelah kemenangan pertama di babak 2, 4, 6, dan 8, Eyang tiba di **persimpangan
 
 ### Tantangan dan Bintang Dongkrek
 
-Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tantangan babak itu (misalnya "menang paling lama 6 giliran", "Lara tidak pernah lebih dari 3", "kalahkan kedua Bala sebelum Buto Hitam"). Tantangan dan bintangnya terlihat di panel babak pada peta, dan hasilnya muncul setelah menang. Bintang tetap tercatat walau memulai petualangan baru.
+Setiap babak punya tiga **Bintang Dongkrek**: satu untuk menang, dua untuk tantangan babak itu (misalnya "menang paling lama 6 giliran", "Lara tidak pernah lebih dari 3", "kalahkan kedua Bala sebelum Buto Hitam"). Tantangan dan bintangnya terlihat di panel babak pada peta, dan hasilnya muncul setelah menang. Bintang dihitung per petualangan, jadi peta mulai dari 0 bintang lagi saat memulai petualangan baru. Hadiahnya mengikuti **rekor bintang** sepanjang masa, jadi hadiah yang sudah terbuka tetap terbuka. Rekornya tampil di keterangan bintang di peta dan di halaman Catatan di Pustaka.
 
 | Bintang | Hadiah |
 |---|---|

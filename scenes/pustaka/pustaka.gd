@@ -331,6 +331,7 @@ func _show_records() -> void:
 		["RECORDS_HIT", tr("RECORDS_DAMAGE") % r.biggest_hit if r.biggest_hit > 0 else none],
 		["RECORDS_PARADE", "%d%%" % roundi(r.parade_best * 100.0) if r.parade_best >= 0.0 else none],
 		["RECORDS_STORIES", tr("RECORDS_TIMES") % r.stories_completed],
+		["RECORDS_STARS", "%d/%d" % [GameState.best_total_stars(), GameState.STAGE_COUNT * Challenges.STARS_PER_STAGE]],
 	]
 	for row: Array in rows:
 		grid.add_child(UIKit.label(tr(row[0]), &"BigLabel", UIKit.COLOR_TEXT))
