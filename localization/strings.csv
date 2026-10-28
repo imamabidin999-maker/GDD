@@ -750,6 +750,21 @@ EV_CANGKRIMAN_PATH,Pematang sawah,Rice-field dikes
 EV_CANGKRIMAN_HINT,Ada yang tertawa cekikikan di tengah sawah.,Someone is giggling out in the rice fields.
 EV_BEDAK_DINGIN_PATH,Tepi sendang,Bank of the spring
 EV_BEDAK_DINGIN_HINT,Seorang gadis berwajah putih seperti topeng melambai.,A girl with a face as white as a mask waves at you.
+ENDING_PARADE,"Ayo, kita arak keliling desa sekarang juga! Bedug di depan, korek menyusul. Siapa saja boleh ikut menabuh.","Come, let's parade around the village right now! Bedug in front, korek behind. Anyone can join in."
+ENDING_PEROT,"Eyang, tahun depan aku yang pegang korek, ya! Bedakku sudah siap.","Eyang, next year I get the korek! My powder's already on."
+ENDING_7,"Kalau suatu hari kamu ke Madiun dan mendengar dung... krek... dari kejauhan, itulah Dongkrek, tabuhan yang dulu mengusir pagebluk.","If one day you visit Madiun and hear dung... krek... in the distance, that is Dongkrek, the music that once drove away a plague."
+ARAK_TITLE,Arak-arakan Keliling Desa,Parade Around the Village
+ARAK_HINT,"Tabuh dung dan krek saat masuk lingkaran: klik, Spasi, atau {ultimate}.","Strike dung and krek as they reach the circle: click, Space, or {ultimate}."
+ARAK_HINT_AUTO,Warga menabuh bersama. Nikmati arak-arakannya.,The village plays together. Enjoy the parade.
+ARAK_JOIN_BEDUG,Para pembawa bedug ikut menabuh!,The bedug bearers join in!
+ARAK_JOIN_KOREK,Korek berderak. Roro Ayu dan Roro Perot ikut berjalan!,The korek rasps. Roro Ayu and Roro Perot fall in!
+ARAK_JOIN_GONG,"Gong dan kentongan menyusul, obor dinyalakan!","Gong and kentongan follow, and the torches are lit!"
+ARAK_JOIN_TOPENG,Warga bertopeng Buto menari di belakang!,Villagers in Buto masks dance at the back!
+ARAK_RESULT,Semarak arak-arakan: %d%%,Parade spirit: %d%%
+ARAK_RATING_3,Meriah sekali! Seluruh desa bersorak.,Magnificent! The whole village cheers.
+ARAK_RATING_2,Meriah! Warga menabuh dengan semangat.,Lively! Everyone plays with heart.
+ARAK_RATING_1,Cukup ramai. Yang penting semua ikut.,Fairly lively. What matters is that everyone joined.
+ARAK_RATING_0,"Tabuhannya kacau, tapi warga tetap tertawa dan bersorak.","The rhythm was a mess, but the village laughed and cheered anyway."
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings

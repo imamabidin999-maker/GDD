@@ -903,10 +903,79 @@ def own_rng(seed, fn, *args):
         rng = saved
 
 
+# --- Arak-arakan penutup ---------------------------------------------------
+# Angka waktu ini harus sama dengan scenes/ending/arak_arakan.gd.
+ARAK_PRE_ROLL = 0.5     # detik sebelum hitungan kentongan pertama
+ARAK_BEAT = 0.6         # satu ketukan (100 ketukan per menit)
+ARAK_COUNT_IN = 4       # hitungan kentongan
+ARAK_ROUND_BEATS = 8    # satu putaran untuk setiap rombongan yang ikut
+ARAK_ROUNDS = 4         # bedug, korek, gong, lalu penari topeng
+ARAK_OUTRO = 6          # gong penutup dan seruan "Dongkrek!"
+
+
+def song_arak_arakan():
+    """Iringan arak-arakan keliling desa: alat musik masuk satu per satu, satu
+    putaran untuk tiap rombongan. Ketukan dung dan krek milik pemain tidak ada
+    di sini; bunyinya keluar saat pemain menekan tombol."""
+    beat = ARAK_BEAT
+    scale, base = SLENDRO, 290.0
+    rounds_end = ARAK_COUNT_IN + ARAK_ROUNDS * ARAK_ROUND_BEATS
+    total = rounds_end + ARAK_OUTRO
+    mix = Mix(ARAK_PRE_ROLL + total * beat + 4)
+    t0 = ARAK_PRE_ROLL
+    bal = beats_of("2 3 5 6 | 5 3 2 1 | 2 3 5 3 | 2 1 6, 5,")
+    lead = [("5", 1), ("6", 1), ("1'", 2), ("2'", 1), ("1'", 0.5), ("6", 0.5), ("5", 2),
+            ("3", 1), ("5", 1), ("6", 1), ("1'", 1), ("2'", 2), ("1'", 2)]
+    for b in range(total):
+        t = t0 + b * beat
+        rnd = 0 if b < ARAK_COUNT_IN else min(ARAK_ROUNDS + 1, (b - ARAK_COUNT_IN) // ARAK_ROUND_BEATS + 1)
+        pos = (b - ARAK_COUNT_IN) % ARAK_ROUND_BEATS
+        note = bal[(b - ARAK_COUNT_IN) % len(bal)] if b >= ARAK_COUNT_IN else None
+        if b < ARAK_COUNT_IN:
+            mix.add(kentongan(820, 0.9), t, 0.55)
+            continue
+        if b >= rounds_end:
+            break
+        mix.add(kentongan(700, 0.5), t + beat * 0.5, 0.11, 0.5)
+        if rnd >= 1:
+            if b % 2 == 1:
+                mix.add(bedug(56, 0.55), t, 0.26)
+            mix.add(kendang("tak", 0.5), t + beat * 0.75, 0.11, -0.1)
+        if rnd >= 2:
+            mix.add(korek(0.55, clicks=6, dur=0.18), t + beat * 0.5, 0.11, 0.2)
+            if note:
+                mix.add(saron(pitch(note, scale, base)), t, 0.22, -0.3)
+        if rnd >= 3:
+            if pos in (1, 3, 5) and note:
+                mix.add(kenong(pitch(note, scale, base)), t, 0.18, 0.25)
+            if pos in (2, 6) and note:
+                mix.add(kempul(pitch(note + ",", scale, base)), t, 0.22, -0.25)
+            if pos == 7:
+                mix.add(gong(62.0), t, 0.6, 0.0)
+            if pos == 0 and rnd == 3:
+                mix.add(gong_beri(), t, 0.25, 0.3)
+        if rnd >= 4:
+            if note:
+                mix.add(bonang(pitch(note + "'", scale, base)), t + beat * 0.5, 0.09, 0.45)
+            if pos == 0:
+                mix.add(melody_line(lead, 60.0 / beat, scale, base, "slompret"), t, 0.17, 0.05)
+    # penutup: gong besar, gulungan bedug, lalu dung... krek
+    end = t0 + rounds_end * beat
+    mix.add(gong(58.0, 1.0, 5.0), end, 0.8)
+    for k, tm in enumerate([0.0, 0.14, 0.26, 0.36, 0.44, 0.5]):
+        mix.add(bedug(60, 0.5 + 0.08 * k), end + beat * 2 + tm, 0.4)
+    mix.add(bedug(52, 1.0), end + beat * 3.5, 0.6)
+    mix.add(korek(1.0), end + beat * 4.5, 0.4, 0.15)
+    buf = reverb(mix.buf)
+    n = buf.shape[1]
+    buf *= np.minimum(1.0, (n - np.arange(n)) / (1.5 * SR))
+    return normalize(buf, 0.12)
+
+
 def build_extra_music():
     """Lagu yang ditambahkan belakangan (masing-masing berderet acak sendiri)."""
     songs = {"battle_murka": (41, song_battle_murka), "battle_candi": (43, song_battle_candi),
-             "boss2": (47, song_boss_phase2)}
+             "boss2": (47, song_boss_phase2), "arak_arakan": (53, song_arak_arakan)}
     for name, (seed, fn) in songs.items():
         write_ogg(os.path.join(OUT_BGM, name + ".ogg"), own_rng(seed, fn), quality=4)
 

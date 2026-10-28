@@ -73,3 +73,21 @@ Sebelumnya semua babak memakai satu lagu battle, kecuali Buto Hitam. Sekarang se
 - Persimpangan yang belum dipilih ikut tersimpan (`pending_paths` di simpanan). Simpanan lama yang masih menyimpan satu kejadian tetap berjalan seperti biasa.
 - **Ruwatan**: kedua langkah kejadian juga berupa persimpangan. Cabang keduanya diundi dengan deret acak terpisah dari seed yang sama, jadi lawan, latar, dan kejadian utama dari Ruwatan yang sedang berjalan tidak berubah setelah pembaruan ini.
 - Penunjuk jalan digambar baru: tiang kayu dengan dua papan arah (`ui/crossroads.png`).
+
+## 6. Penutup Arak-arakan
+
+Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling desa untuk mengusir pagebluk. Penutup game sekarang benar-benar memainkannya.
+
+- **Alurnya**: Buto Hitam kalah, fajar di Mejayan, lalu dialog penutup (Roro Ayu meminta tabuhan itu diberi nama, Eyang menamainya Dongkrek, lalu mengajak warga mengarak keliling desa). Setelah itu **arak-arakan**, lalu epilog: Roro Perot ingin memegang korek tahun depan, janji menabuhnya setiap tahun, lahirnya Dongkrek, dan ajakan mendengarkan dung... krek... kalau suatu hari berkunjung ke Madiun. Terakhir judul dan kredit.
+- **Permainannya** mirip irama Sapu Jagad: dung (bulat) dan krek (kotak) datang ke lingkaran, lalu ditabuh dengan klik, Spasi, Enter, atau tombol Sapu Jagad. Temponya 100 ketukan per menit: empat hitungan kentongan, lalu empat putaran delapan ketukan (26 ketukan untuk pemain), dan penutup gong serta gulungan bedug. Totalnya sekitar 26 detik.
+- **Rombongan ikut satu per satu**, dua ketukan sebelum putarannya:
+  1. pembawa bedug;
+  2. penabuh korek, bersama Roro Ayu dan Roro Perot;
+  3. pembawa gong, kentongan, dan obor;
+  4. warga bertopeng Buto yang menari, berganti pose di setiap ketukan.
+- Iringannya ikut bertambah ramai di setiap putaran: kentongan, bedug, korek dan saron, gong-kenong-kempul (dengan desing gong beri), lalu bonang dan slompret.
+- **Tidak ada kalah.** Ketukan yang meleset hanya mengurangi *semarak*. Di akhir tampil persennya dan satu kalimat, dari "Meriah sekali! Seluruh desa bersorak" sampai "Tabuhannya kacau, tapi warga tetap tertawa dan bersorak".
+- Ada tombol **Lewati**. Kalau irama dimatikan di Pengaturan, arak-arakan berjalan sendiri tanpa lintasan ketukan.
+- Setelah selesai, seluruh barisan tetap di layar sebagai gambar penutup di belakang epilog dan kredit.
+- **Gambar**: Eyang Palang, Roro Ayu, Roro Perot, dan lima Buto memakai sprite yang sudah ada. Warga di barisan belakang digambar baru sebagai **siluet yang disinari fajar dari belakang** (`sprites/arak/warga_*.png`), karena belum ada desain warga.
+- Halaman Roro Perot di Pustaka juga terbuka setelah tamat, karena ia ikut arak-arakan.

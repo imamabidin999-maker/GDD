@@ -168,8 +168,11 @@ func _show(key: String) -> void:
 			_show_buto(key)
 
 
-## Roro Perot baru terbuka setelah ditemui di salah satu kejadiannya.
+## Roro Perot baru terbuka setelah ditemui di salah satu kejadiannya, atau
+## setelah tamat (ia ikut arak-arakan penutup).
 func _met_perot() -> bool:
+	if GameState.game_completed:
+		return true
 	for id: String in JourneyEvents.PEROT_EVENTS:
 		if GameState.seen_events.has(id):
 			return true

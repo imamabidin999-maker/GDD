@@ -1,12 +1,14 @@
 extends Control
 ## Akhir cerita: fajar di Mejayan setelah Buto Hitam kalah, dialog penutup,
-## lalu judul "Pagebluk Sirna" dan kredit.
+## arak-arakan keliling desa (ArakArakan), epilog lahirnya Dongkrek, lalu
+## judul "Pagebluk Sirna" dan kredit.
 
 const BG := preload("res://assets/backgrounds/ending.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
 
 var _overlay: Control
 var _bg: TextureRect
+var _hero: Sprite2D
 
 
 func _ready() -> void:
@@ -39,7 +41,8 @@ func _ready() -> void:
 	add_child(world)
 	var motes := Ambient.fireflies(Vector2(320, 200), Vector2(320, 140), 26)
 	world.add_child(motes)
-	world.add_child(Ambient.breathing_sprite(HERO, Vector2(320, 228)))
+	_hero = Ambient.breathing_sprite(HERO, Vector2(320, 228))
+	world.add_child(_hero)
 
 	_overlay = Control.new()
 	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -58,7 +61,19 @@ func _run() -> void:
 	var box := DialogBox.new()
 	_overlay.add_child(box)
 	await box.play(catalog.ending_dialog)
+	# Arak-arakan keliling desa, di bawah lapisan dialog dan kredit.
+	_hero.visible = false
+	AudioManager.stop_music()
+	var parade := ArakArakan.new()
+	parade.auto_play = not GameState.rhythm_enabled
+	add_child(parade)
+	move_child(parade, _overlay.get_index())
+	await parade.finished
+	await get_tree().create_timer(2.0).timeout
 	AudioManager.play_music("menu")
+	box = DialogBox.new()
+	_overlay.add_child(box)
+	await box.play(catalog.epilogue_dialog)
 	AudioManager.play_sfx("gong")
 	_show_credits()
 

@@ -156,9 +156,9 @@ func _build_intro() -> void:
 	legend.custom_minimum_size = Vector2(TRACK_SIZE.x, 26)
 	legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	legend.draw.connect(func() -> void:
-		_draw_note(legend, Vector2(150, 13), Note.DUNG, 1.0)
+		draw_note(legend, Vector2(150, 13), Note.DUNG, 1.0)
 		legend.draw_string(UIKit.FONT_MAIN, Vector2(166, 18), tr("RHYTHM_DUNG"), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, UIKit.COLOR_TEXT)
-		_draw_note(legend, Vector2(260, 13), Note.KREK, 1.0)
+		draw_note(legend, Vector2(260, 13), Note.KREK, 1.0)
 		legend.draw_string(UIKit.FONT_MAIN, Vector2(276, 18), tr("RHYTHM_KREK"), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, UIKit.COLOR_TEXT))
 	_intro.add_child(legend)
 	var start := UIKit.button(tr("RHYTHM_INTRO_START"), 120, true)
@@ -345,10 +345,11 @@ func _draw_track() -> void:
 		if x < -12.0 or x > TRACK_SIZE.x + 12.0:
 			continue
 		var alpha := 0.25 if judgements[i] >= 0.0 else 1.0
-		_draw_note(_track, Vector2(x, mid), note_kinds[i], alpha)
+		draw_note(_track, Vector2(x, mid), note_kinds[i], alpha)
 
 
-func _draw_note(canvas: CanvasItem, c: Vector2, kind: int, alpha: float) -> void:
+## Satu ketukan: dung bulat (bedug), krek kotak (korek). Dipakai juga arak-arakan.
+static func draw_note(canvas: CanvasItem, c: Vector2, kind: int, alpha: float) -> void:
 	if kind == Note.DUNG:
 		canvas.draw_circle(c, 11.0, Color(0.38, 0.22, 0.12, alpha))
 		canvas.draw_circle(c, 8.0, Color(0.91, 0.84, 0.66, alpha))

@@ -451,6 +451,103 @@ def draw_signpost(size: int = 28) -> Image.Image:
     return add_outline(img)
 
 
+# Warga di arak-arakan penutup: siluet yang disinari fajar dari belakang
+# (belum ada desain warga), masing-masing membawa alat musik atau obor.
+SIL = (30, 25, 40, 255)
+SIL_L = (52, 40, 58, 255)
+RIM = (236, 156, 92, 255)
+FLAME = (255, 170, 60, 255)
+FLAME_L = (255, 236, 150, 255)
+
+
+def person(d, x, feet, arm=None, lean=0, udeng=True, step=1):
+    """Satu orang bersiluet menghadap kanan, kaki di (x, feet). Tinggi ~44 px."""
+    top = feet - 44
+    # kaki melangkah: kaki depan condong ke kanan
+    d.line([(x - 2, feet - 11), (x - 4 * step, feet)], fill=SIL, width=2)
+    d.line([(x + 1, feet - 11), (x + 3 * step, feet)], fill=SIL, width=2)
+    d.line([(x + 3 * step, feet), (x + 3 * step + 2, feet)], fill=SIL)
+    # kain jarik dari pinggang sampai lutut, sedikit melebar
+    d.polygon([(x - 4, feet - 22), (x + 4, feet - 22), (x + 5, feet - 10), (x - 5, feet - 10)], fill=SIL)
+    # badan: bahu lebar, pinggang ramping
+    d.polygon([(x - 6, top + 13), (x + 6, top + 13), (x + 4, feet - 21), (x - 4, feet - 21)], fill=SIL)
+    d.line([(x - 1, top + 10), (x - 1, top + 13)], fill=SIL, width=3)
+    # kepala dan udeng
+    d.ellipse([x - 4 + lean, top + 3, x + 3 + lean, top + 11], fill=SIL)
+    if udeng:
+        d.polygon([(x - 5 + lean, top + 5), (x + 3 + lean, top + 3), (x + 4 + lean, top + 6), (x - 4 + lean, top + 7)], fill=SIL)
+        d.line([(x - 5 + lean, top + 5), (x - 8 + lean, top + 8)], fill=SIL, width=2)
+    # cahaya fajar di tepi kanan
+    d.line([(x + 3 + lean, top + 5), (x + 3 + lean, top + 9)], fill=RIM)
+    d.line([(x + 6, top + 14), (x + 4, feet - 22)], fill=RIM)
+    d.line([(x + 5, feet - 20), (x + 5, feet - 12)], fill=RIM)
+    if arm:
+        d.line(arm, fill=SIL, width=2)
+
+
+def warga_bedug():
+    img, d = canvas(76, 52)
+    feet = 51
+    # pikulan dan bedug di tengah
+    d.line([(4, feet - 33), (72, feet - 33)], fill=SIL, width=2)
+    d.line([(30, feet - 33), (30, feet - 27)], fill=SIL)
+    d.line([(46, feet - 33), (46, feet - 27)], fill=SIL)
+    d.rounded_rectangle([24, feet - 28, 52, feet - 12], radius=6, fill=SIL)
+    d.ellipse([47, feet - 28, 55, feet - 12], fill=SIL_L)
+    d.arc([47, feet - 28, 55, feet - 12], 270, 90, fill=RIM)
+    person(d, 12, feet, arm=[(14, feet - 30), (18, feet - 33)])
+    person(d, 62, feet, arm=[(60, feet - 30), (64, feet - 33)])
+    # pemukul bedug di tangan orang depan
+    d.line([(66, feet - 28), (72, feet - 40)], fill=SIL, width=2)
+    return img
+
+
+def warga_korek():
+    img, d = canvas(30, 50)
+    feet = 49
+    person(d, 13, feet, arm=[(16, feet - 30), (20, feet - 24)])
+    d.rectangle([17, feet - 27, 25, feet - 20], fill=SIL)
+    d.line([(17, feet - 27), (25, feet - 27)], fill=RIM)
+    d.line([(21, feet - 24), (28, feet - 34)], fill=SIL, width=2)
+    d.point((28, feet - 35), fill=RIM)
+    return img
+
+
+def warga_kentongan():
+    img, d = canvas(32, 52)
+    feet = 51
+    person(d, 12, feet, arm=[(15, feet - 31), (21, feet - 38)])
+    d.line([(21, feet - 40), (22, feet - 35)], fill=SIL)
+    d.rounded_rectangle([19, feet - 35, 25, feet - 18], radius=2, fill=SIL)
+    d.line([(25, feet - 33), (25, feet - 20)], fill=RIM)
+    d.line([(10, feet - 28), (17, feet - 24)], fill=SIL, width=2)
+    return img
+
+
+def warga_gong():
+    img, d = canvas(76, 54)
+    feet = 53
+    d.line([(4, feet - 33), (72, feet - 33)], fill=SIL, width=2)
+    d.line([(38, feet - 33), (38, feet - 30)], fill=SIL)
+    d.ellipse([28, feet - 31, 48, feet - 11], fill=SIL)
+    d.ellipse([34, feet - 25, 42, feet - 17], fill=SIL_L)
+    d.arc([28, feet - 31, 48, feet - 11], 300, 60, fill=RIM)
+    person(d, 12, feet, arm=[(14, feet - 30), (18, feet - 33)])
+    person(d, 62, feet, arm=[(60, feet - 30), (64, feet - 33)])
+    return img
+
+
+def warga_obor():
+    img, d = canvas(28, 62)
+    feet = 61
+    person(d, 11, feet, arm=[(14, feet - 31), (18, feet - 44)])
+    d.line([(19, feet - 40), (20, feet - 54)], fill=SIL, width=2)
+    # api obor: tidak bersiluet, menyala
+    d.polygon([(17, feet - 54), (20, feet - 61), (23, feet - 55), (22, feet - 52), (18, feet - 52)], fill=FLAME)
+    d.polygon([(19, feet - 54), (20, feet - 58), (21, feet - 54)], fill=FLAME_L)
+    return img
+
+
 # Kartu dasar bernuansa Jawa: keris (Sabet), padupan (Semedi), tameng (Tangkis),
 # dan tombak (Tangkis Balik), dengan palet kayu-perunggu yang sama dengan Tabuh.
 GOLD = (232, 182, 72, 255)
@@ -824,6 +921,9 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_kenong(), "cards/icon_kenong.png")
     save(draw_gong_beri(), "cards/icon_beri.png")
     save(draw_signpost(), "ui/crossroads.png")
+    for name, fn in (("bedug", warga_bedug), ("korek", warga_korek), ("kentongan", warga_kentongan),
+                     ("gong", warga_gong), ("obor", warga_obor)):
+        save(fn(), f"sprites/arak/warga_{name}.png")
     print("Ikon kecil:")
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",

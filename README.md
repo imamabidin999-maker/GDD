@@ -155,6 +155,10 @@ Isi kedua halaman juga bisa dibaca di `docs/05-istilah-jawa-dan-asli-rekaan.md`.
 
 Istilah-istilah itu juga ditandai langsung di teks cerita, panel kejadian, petunjuk battle, dan halaman Pustaka: warnanya jingga dan bergaris bawah, dan artinya muncul saat kursor diarahkan ke situ. Satu istilah hanya ditandai sekali per percakapan. Tanda ini bisa dimatikan lewat **Tandai istilah Jawa** di Pengaturan.
 
+### Penutup: arak-arakan keliling desa
+
+Setelah Buto Hitam kalah, warga mengarak tabuhan baru itu keliling desa, seperti asal-usul Dongkrek. Tabuh dung dan krek saat masuk lingkaran (klik, Spasi, atau tombol Sapu Jagad). Di setiap putaran satu rombongan ikut: pembawa bedug, penabuh korek bersama Roro Ayu dan Roro Perot, pembawa gong dan obor, lalu warga bertopeng Buto yang menari. Tidak ada kalah; ketukan yang meleset hanya mengurangi semaraknya. Arak-arakan bisa dilewati, dan berjalan sendiri kalau irama dimatikan di Pengaturan.
+
 ## Ruwatan
 
 Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, dan tetap terbuka walau kamu memulai petualangan baru. Ruwatan adalah perjalanan acak delapan langkah dengan deck, berkah, dan Nyawa sendiri:

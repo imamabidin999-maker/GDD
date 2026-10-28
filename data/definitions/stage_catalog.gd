@@ -7,6 +7,8 @@ const PATH := "res://data/stage_catalog.tres"
 @export var stages: Array[StageData] = []
 @export var prologue_dialog: PackedStringArray = []
 @export var ending_dialog: PackedStringArray = []
+## Penutup setelah arak-arakan keliling desa.
+@export var epilogue_dialog: PackedStringArray = []
 
 
 static func load_default() -> StageCatalog:

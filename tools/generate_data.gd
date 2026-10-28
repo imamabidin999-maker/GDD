@@ -261,9 +261,13 @@ func _build_stages() -> void:
 	catalog.prologue_dialog = _with_speakers(
 		PackedStringArray(["PROLOGUE_1", "PROLOGUE_2", "PROLOGUE_3", "PROLOGUE_4", "PROLOGUE_5", "PROLOGUE_6"]),
 		["narator", "narator", "warga", "narator", "eyang", "eyang"])
+	# Penutup dibagi dua: sebelum arak-arakan keliling desa, lalu sesudahnya.
 	catalog.ending_dialog = _with_speakers(
-		PackedStringArray(["ENDING_1", "ENDING_2", "ENDING_3", "ENDING_4", "ENDING_5", "ENDING_6"]),
-		["narator", "roro_ayu", "eyang", "eyang", "narator", "narator"])
+		PackedStringArray(["ENDING_1", "ENDING_2", "ENDING_3", "ENDING_PARADE"]),
+		["narator", "roro_ayu", "eyang", "eyang"])
+	catalog.epilogue_dialog = _with_speakers(
+		PackedStringArray(["ENDING_PEROT", "ENDING_4", "ENDING_5", "ENDING_7", "ENDING_6"]),
+		["roro_perot", "eyang", "narator", "narator", "narator"])
 	_save(catalog, StageCatalog.PATH)
 
 

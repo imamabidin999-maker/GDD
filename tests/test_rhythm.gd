@@ -147,5 +147,45 @@ func _run() -> void:
 	await process_frame
 	check(early == 1.0 or early == -1.0, "penilaian tetap aman sebelum mulai")
 
+	print("[Arak-arakan penutup]")
+	# Dimuat saat jalan (bukan lewat nama kelas) karena skripnya memakai autoload.
+	var arak_script: GDScript = load("res://scenes/ending/arak_arakan.gd")
+	var arak: Control = arak_script.new()
+	var times: Array[int] = arak.get("note_times")
+	var spaced := true
+	for i: int in range(1, times.size()):
+		spaced = spaced and times[i] - times[i - 1] >= int(arak_script.get("BEAT_MS"))
+	check(times.size() == 26 and spaced, "26 ketukan dalam empat putaran, jaraknya paling dekat satu ketukan")
+	check(int(arak_script.call("end_ms")) == 500 + 42 * 600, "arak-arakan selesai setelah 42 ketukan (25,7 detik)")
+	var backing := load("res://assets/audio/bgm/arak_arakan.ogg") as AudioStream
+	check(backing != null and backing.get_length() * 1000.0 >= float(arak_script.call("end_ms")), "iringan cukup panjang untuk seluruh arak-arakan")
+	arak.set("manual_time_ms", 0)
+	root.add_child(arak)
+	await process_frame
+	check(int(arak.call("joined_count")) == 0, "awal: hanya Eyang Palang")
+	var joins_ok := true
+	for round_index: int in 4:
+		var start: int = arak_script.call("round_start_beat", round_index)
+		arak.set("manual_time_ms", int(arak_script.call("beat_ms", start - 3)))
+		arak.call("_update_beat", arak.get("manual_time_ms"))
+		joins_ok = joins_ok and int(arak.call("joined_count")) == round_index
+		arak.set("manual_time_ms", int(arak_script.call("beat_ms", start - 2)))
+		arak.call("_update_beat", arak.get("manual_time_ms"))
+		joins_ok = joins_ok and int(arak.call("joined_count")) == round_index + 1
+	check(joins_ok, "setiap rombongan masuk dua ketukan sebelum putarannya")
+	check(arak.call("press", times[0]) == 1.0 and arak.call("press", times[1] + 150) == 0.5, "tepat bernilai 1, selisih 150 ms bernilai setengah")
+	check(arak.call("press", times[2] + 400) == -1.0, "tekanan yang jauh dari ketukan diabaikan")
+	for i: int in range(2, times.size()):
+		arak.call("press", times[i])
+	check(is_equal_approx(float(arak.call("score")), 25.5 / 26.0), "semarak = rata-rata nilai ketukan")
+	check(arak_script.call("rating_key", 0.9) == "ARAK_RATING_3" and arak_script.call("rating_key", 0.1) == "ARAK_RATING_0", "tingkat semarak")
+	var results: Array[float] = []
+	arak.connect("finished", func(v: float) -> void: results.append(v))
+	arak.call("skip")
+	check(results.size() == 1 and results[0] < 0.0 and int(arak.call("joined_count")) == 4, "dilewati: semua rombongan langsung ikut")
+	arak.queue_free()
+	# Bunyi dung dan krek dari tekanan tadi dibiarkan habis dulu sebelum keluar.
+	await create_timer(1.5).timeout
+
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)
