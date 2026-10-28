@@ -75,15 +75,18 @@ func _ready() -> void:
 	grid.add_child(large)
 	grid.add_child(_checkbox(GameState.large_text, func(on: bool) -> void: GameState.set_large_text(on)))
 
-	# Daftar tombol keyboard, dan pemain bisa menggantinya.
+	# Tombol keyboard dan tombol gamepad, masing-masing di panelnya sendiri.
 	grid.add_child(_text_label("SETTINGS_KEYS"))
-	var keys := UIKit.button(tr("KEYS_OPEN"), 60)
-	keys.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_texts[keys] = "KEYS_OPEN"
-	keys.pressed.connect(func() -> void:
-		AudioManager.play_sfx("click")
-		add_child(ControlsPanel.new()))
-	grid.add_child(keys)
+	var controls_row := UIKit.hbox(4)
+	for entry: Array in [["KEYS_OPEN", ControlsPanel], ["PAD_OPEN", GamepadPanel]]:
+		var open := UIKit.button(tr(entry[0]), 60)
+		_texts[open] = entry[0]
+		var panel_class: GDScript = entry[1]
+		open.pressed.connect(func() -> void:
+			AudioManager.play_sfx("click")
+			add_child(panel_class.new()))
+		controls_row.add_child(open)
+	grid.add_child(controls_row)
 
 	grid = _grid()
 	columns.add_child(grid)

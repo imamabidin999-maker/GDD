@@ -118,7 +118,7 @@ Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling
   - petunjuk jalan di persimpangan, dan ringkasan hasil kejadian di perjalanan;
   - catatan kecil di Pustaka: pengantar halaman, keterangan kartu, angka Nyawa dan Serangan Buto, dan tanda asal-usul.
 - Teks cerita, dialog, dan isi Pustaka sudah 16 piksel dari awal, jadi tidak berubah.
-- Angka di HUD, wajah kartu, dan panel Tombol Keyboard tetap kecil. Layar game hanya 640×360, dan bagian-bagian itu akan saling tumpuk kalau hurufnya dua kali lebih besar. Semua angka di sana juga bisa dibaca lebih besar lewat keterangan saat kursor diarahkan.
+- Angka di HUD, wajah kartu, dan panel tombol keyboard dan gamepad tetap kecil. Layar game hanya 640×360, dan bagian-bagian itu akan saling tumpuk kalau hurufnya dua kali lebih besar. Semua angka di sana juga bisa dibaca lebih besar lewat keterangan saat kursor diarahkan.
 - Pilihan ini tersimpan bersama pengaturan lain. Kodenya ada di `UIKit.large_text()` dan `UIKit.small_text_variation()`, jadi layar baru cukup memakai fungsi itu untuk teks kecilnya.
 
 **Gamepad**
@@ -128,8 +128,8 @@ Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling
   - **D-pad** menggerakkan kursor lebih pelan (120 piksel per detik) untuk membidik dengan tepat.
   - **A** adalah klik kiri. Tahan A sambil menggerakkan kursor untuk menggeser kartu.
   - **Stik kanan** menggulir seperti roda mouse, misalnya di Pustaka dan daftar jurus.
-- Tombol lain langsung terpasang ke aksi battle: **X** akhiri giliran, **Y** Sapu Jagad (juga untuk menabuh irama), **RB** ganti sasaran, **LB** kecepatan 1x/2x, **Start** atau **B** untuk jeda dan kembali. B juga menutup panel Tombol Keyboard.
-- Tombol gamepad tetap dan tidak bisa diganti. Daftarnya tampil di panel Tombol Keyboard, dan mengganti tombol keyboard tidak melepas tombol gamepad.
+- Tombol lain langsung terpasang ke aksi battle: **X** akhiri giliran, **Y** Sapu Jagad (juga untuk menabuh irama), **RB** ganti sasaran, **LB** kecepatan 1x/2x, **Start** atau **B** untuk jeda dan kembali. Tombol-tombol ini bisa diganti di panel Tombol Gamepad (lihat bagian 10).
+- Mengganti tombol keyboard tidak melepas tombol gamepad, begitu juga sebaliknya.
 - Aksi bawaan Godot (`ui_accept`, `ui_left`, dan seterusnya) tidak lagi membaca gamepad. Tanpa ini, satu tekanan A terhitung dua kali di irama Sapu Jagad, dan D-pad ikut menggeser slider volume yang sedang aktif.
 - Hanya gamepad pertama yang tersambung yang dibaca, dan hanya saat jendela game sedang aktif, supaya kursor tidak ikut tertarik ketika pemain membuka jendela lain.
 - Tesnya ada di `tests/test_keys.gd`: pemetaan tombol, aksi bawaan yang sudah bersih dari gamepad, dan hitungan kecepatan kursor. Fitur ini belum dicoba dengan gamepad sungguhan, jadi rasa kecepatan kursornya masih perlu dicoba langsung.
@@ -153,3 +153,27 @@ Setelah bagian 1–8 selesai, semua simulasi dijalankan ulang. Angka lengkapnya 
 - Gamepad baru dicoba lewat tes otomatis, belum dengan gamepad sungguhan.
 - Uji main oleh orang lain, terutama babak 6, 9, dan 10 untuk pemain yang bermain santai.
 - Bunyi gamelan masih disintesis. Kalau ada rekaman tabuhan Dongkrek dari sanggar, rekaman itu bisa menggantikan berkas di `assets/audio/`.
+
+## 10. Bintang per Petualangan dan Panel Tombol Gamepad
+
+Dua perubahan dari hasil mencoba game.
+
+**Bintang Dongkrek dihitung ulang setiap petualangan baru**
+
+- Dulu Bintang Dongkrek tidak ikut direset saat memulai petualangan baru, karena bintang membuka hadiah permanen. Akibatnya peta petualangan baru sudah menunjukkan 25/30 bintang, dan babak yang masih terkunci sudah berbintang. Itu terasa seperti petualangannya belum benar-benar baru.
+- Sekarang bintang di peta, di panel babak, dan di panel Hasil Tantangan milik petualangan yang sedang berjalan, dan mulai dari 0 lagi saat Petualangan Baru.
+- Hadiah bintang (Kenong di undian berkah, tombol Pilihan lain, berkah awal Ruwatan, gelar Juru Dongkrek) mengikuti **rekor bintang**, yaitu gabungan bintang dari semua petualangan. Hadiah yang sudah terbuka tidak hilang. Bintang yang diraih lagi di petualangan baru dihitung baru di petualangan itu, tapi rekornya tidak bertambah dua kali.
+- Rekornya tampil di keterangan bintang di peta dan di halaman Catatan.
+- Konfirmasi Petualangan Baru sekarang menyebutkan apa yang hilang (babak, deck, berkah, bintang petualangan ini) dan apa yang tetap (hadiah bintang, Ruwatan, Catatan).
+- Simpanan lama: semua bintang lama menjadi rekor, dan petualangan yang sedang berjalan hanya menyimpan bintang babak yang sudah ia selesaikan.
+
+**Panel tombol gamepad sendiri**
+
+- Baris **Tombol keyboard** di Pengaturan menjadi **Pengaturan tombol** dengan dua tombol: **Keyboard** dan **Gamepad**. Keterangan gamepad di panel keyboard dipindah ke panel gamepad.
+- Panel Tombol Gamepad berisi:
+  - gamepad yang sedang tersambung, atau keterangan kalau belum ada;
+  - tombol kursor (tetap): stik kiri atau D-pad, A untuk klik, tahan A untuk menggeser kartu, stik kanan untuk menggulir;
+  - tombol aksi battle yang bisa diganti seperti di panel keyboard. A, D-pad, dan Start ditolak, dan Start selalu untuk jeda di samping tombol pilihan;
+  - **kecepatan kursor** 50–200%, karena kenyamanannya berbeda di setiap gamepad dan belum dicoba dengan gamepad sungguhan;
+  - nama tombol mengikuti gamepad Xbox, dengan padanannya untuk gamepad PlayStation.
+- Pilihan gamepad disimpan di `settings/pad` dan `settings/pad_cursor_speed`. Aturannya ada di `core/input/pad_bindings.gd`, dan panelnya di `ui/common/gamepad_panel.gd`.

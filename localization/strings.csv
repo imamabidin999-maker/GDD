@@ -657,8 +657,8 @@ ENDING_6,Terima kasih sudah menemani perjalanan Eyang Palang.,Thank you for walk
 TUT_GEBRAKAN_1,"Greget-ku sudah penuh. Sekarang aku bisa melepas Sapu Jagad: bedug dan korek ditabuh serentak, gelegarnya menyapu semua Buto sekaligus.","My Greget is full. Now I can unleash Sapu Jagad: bedug and korek struck as one, their roar sweeping across every Buto at once."
 TUT_GEBRAKAN_2,"Klik gong di kanan bawah, atau tekan {ultimate}. Kalau Greget kutahan sampai 200%, sapuannya jadi dua kali lipat.","Click the gong at the bottom right, or press {ultimate}. If I hold my Greget until 200%, the sweep is twice as strong."
 TUT_GEBRAKAN_3,"Lalu ikuti iramanya. Tunggu empat hitungan kentongan, kemudian tekan tepat saat dung dan krek masuk lingkaran. Makin pas tabuhannya, makin dahsyat sapuannya.","Then follow the rhythm. Wait for four kentongan counts, then press right as each dung and krek reaches the circle. The truer the beat, the mightier the sweep."
-SETTINGS_KEYS,Tombol keyboard,Keyboard keys
-KEYS_OPEN,Atur,Change
+SETTINGS_KEYS,Pengaturan tombol,Controls
+KEYS_OPEN,Keyboard,Keyboard
 KEYS_TITLE,Tombol Keyboard,Keyboard Keys
 KEYS_MOUSE,"Semua bisa dimainkan cukup dengan mouse. Tombol di bawah ini hanya jalan pintas, dan boleh kamu ganti sesukamu.","Everything can be played with just the mouse. These keys are shortcuts, and you can change them however you like."
 KEYS_GROUP_BATTLE,Pertarungan,Battle
@@ -794,10 +794,28 @@ SETTINGS_LARGE_TEXT,Teks besar,Large text
 SETTINGS_LARGE_TEXT_TIP,"Keterangan kartu dan Buto, petunjuk, serta catatan kecil
 memakai huruf yang lebih besar.","Card and Buto details, hints, and small notes
 use bigger letters."
-KEYS_GAMEPAD_TITLE,Gamepad,Gamepad
-KEYS_GAMEPAD,"Stik kiri atau D-pad menggerakkan kursor, A untuk klik (tahan untuk menggeser kartu), stik kanan untuk menggulir. B atau Start: jeda. X: akhiri giliran. Y: Sapu Jagad. RB: ganti sasaran. LB: kecepatan 1x/2x.","Left stick or D-pad moves the cursor, A clicks (hold to drag a card), right stick scrolls. B or Start: pause. X: end turn. Y: Sapu Jagad. RB: next target. LB: speed 1x/2x."
 MAP_STARS_RECORD,Rekor bintang: %d/%d,Star record: %d/%d
 RECORDS_STARS,Rekor Bintang Dongkrek,Dongkrek Star record
+PAD_OPEN,Gamepad,Gamepad
+PAD_TITLE,Tombol Gamepad,Gamepad Buttons
+PAD_INTRO,"Gamepad bekerja seperti mouse, jadi semua layar bisa dimainkan. Nama tombol mengikuti gamepad Xbox. Di gamepad PlayStation, A = silang, B = bulat, X = kotak, Y = segitiga.","The gamepad works like a mouse, so every screen can be played with it. Button names follow the Xbox layout. On a PlayStation pad, A = cross, B = circle, X = square, Y = triangle."
+PAD_CONNECTED,Tersambung: %s,Connected: %s
+PAD_NONE,Belum ada gamepad yang tersambung.,No gamepad connected yet.
+PAD_GROUP_CURSOR,Kursor,Cursor
+PAD_MOVE,Gerakkan kursor,Move cursor
+PAD_MOVE_BUTTON,"Stik kiri, D-pad","Left stick, D-pad"
+PAD_CLICK,Klik,Click
+PAD_DRAG,Geser kartu,Drag a card
+PAD_DRAG_BUTTON,Tahan A,Hold A
+PAD_SCROLL,Menggulir,Scroll
+PAD_SCROLL_BUTTON,Stik kanan,Right stick
+PAD_SPEED,Kecepatan %d%%,Speed %d%%
+PAD_FIXED_NOTE,Tombol kursor tidak bisa diganti.,Cursor buttons can't be changed.
+PAD_START_NOTE,Start selalu dipakai untuk jeda dan kembali.,Start always pauses and goes back.
+PAD_HINT,"Klik kotak tombol, lalu tekan tombol gamepad barunya. Klik kanan untuk mengosongkan.","Click a button box, then press the new gamepad button. Right-click clears it."
+PAD_WAITING,Tekan tombol gamepad untuk %s... (Start atau Esc batal),Press a gamepad button for %s... (Start or Esc cancels)
+PAD_RESERVED,"%s tidak bisa dipakai: A untuk klik, D-pad untuk kursor, dan Start selalu untuk jeda.","%s can't be used: A clicks, the D-pad moves the cursor, and Start always pauses."
+PAD_RESET_DONE,Tombol gamepad dan kecepatan kursor kembali seperti semula.,Gamepad buttons and cursor speed are back to their defaults.
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings

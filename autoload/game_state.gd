@@ -101,6 +101,10 @@ var large_text: bool = false
 ## Tombol keyboard pilihan pemain: {aksi: [kode, kode]} (lihat KeyBindings).
 ## Aksi yang tidak ada di sini memakai tombol bawaan.
 var key_bindings: Dictionary = {}
+## Tombol gamepad pilihan pemain: {aksi: tombol} (lihat PadBindings).
+var pad_bindings: Dictionary = {}
+## Pengali kecepatan kursor gamepad (lihat GamepadCursor), 0,5 sampai 2.
+var pad_cursor_speed: float = 1.0
 #endregion
 
 
@@ -481,22 +485,52 @@ func difficulty_attack_multiplier() -> float:
 func set_key(action: String, slot: int, code: int) -> String:
 	var displaced := KeyBindings.assign(key_bindings, action, slot, code)
 	if displaced != "!":
-		KeyBindings.apply(key_bindings)
-		save_game()
-		settings_changed.emit()
+		_apply_bindings()
 	return displaced
 
 
 func clear_key(action: String, slot: int) -> void:
 	KeyBindings.clear(key_bindings, action, slot)
-	KeyBindings.apply(key_bindings)
-	save_game()
-	settings_changed.emit()
+	_apply_bindings()
 
 
 func reset_keys() -> void:
 	key_bindings.clear()
-	KeyBindings.apply(key_bindings)
+	_apply_bindings()
+
+
+## Memasang tombol gamepad ke aksi. Hasilnya seperti set_key: aksi yang
+## kehilangan tombolnya, "" kalau tidak ada, atau "!" kalau ditolak.
+func set_pad_button(action: String, button: int) -> String:
+	var displaced := PadBindings.assign(pad_bindings, action, button)
+	if displaced != "!":
+		_apply_bindings()
+	return displaced
+
+
+func clear_pad_button(action: String) -> void:
+	PadBindings.clear(pad_bindings, action)
+	_apply_bindings()
+
+
+## Tombol gamepad dan kecepatan kursor kembali seperti semula.
+func reset_pad() -> void:
+	pad_bindings.clear()
+	pad_cursor_speed = 1.0
+	_apply_bindings()
+
+
+func pad_button(action: String) -> int:
+	return PadBindings.button(pad_bindings, action)
+
+
+func set_pad_cursor_speed(value: float) -> void:
+	pad_cursor_speed = clampf(value, 0.5, 2.0)
+	save_game()
+
+
+func _apply_bindings() -> void:
+	KeyBindings.apply(key_bindings, pad_bindings)
 	save_game()
 	settings_changed.emit()
 
@@ -525,7 +559,7 @@ func set_fullscreen(value: bool) -> void:
 
 func apply_settings() -> void:
 	TranslationServer.set_locale(locale)
-	KeyBindings.apply(key_bindings)
+	KeyBindings.apply(key_bindings, pad_bindings)
 	_set_bus_volume("Music", music_volume)
 	_set_bus_volume("SFX", sfx_volume)
 	_apply_text_size()
@@ -642,6 +676,8 @@ func save_game() -> void:
 	cfg.set_value("settings", "glossary_marks", glossary_marks)
 	cfg.set_value("settings", "large_text", large_text)
 	cfg.set_value("settings", "keys", key_bindings)
+	cfg.set_value("settings", "pad", pad_bindings)
+	cfg.set_value("settings", "pad_cursor_speed", pad_cursor_speed)
 	cfg.save(save_path)
 
 
@@ -716,6 +752,8 @@ func load_game() -> void:
 	glossary_marks = bool(cfg.get_value("settings", "glossary_marks", true))
 	large_text = bool(cfg.get_value("settings", "large_text", false))
 	key_bindings = KeyBindings.sanitize(cfg.get_value("settings", "keys", {}))
+	pad_bindings = PadBindings.sanitize(cfg.get_value("settings", "pad", {}))
+	pad_cursor_speed = clampf(float(cfg.get_value("settings", "pad_cursor_speed", 1.0)), 0.5, 2.0)
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:
 		_migrate_from_v1()

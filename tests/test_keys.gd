@@ -54,6 +54,15 @@ func _has_pad_events(action: String) -> bool:
 	return false
 
 
+func _pad_tap(button: JoyButton) -> void:
+	for pressed: bool in [true, false]:
+		var e := InputEventJoypadButton.new()
+		e.button_index = button
+		e.pressed = pressed
+		root.push_input(e)
+		await process_frame
+
+
 func _bound(action: String, code: Key) -> bool:
 	var e := InputEventKey.new()
 	e.physical_keycode = code
@@ -140,6 +149,30 @@ func _run() -> void:
 	gs.call("set_key", "ultimate", 0, KEY_R)
 	check(_pad_bound("ultimate", JOY_BUTTON_Y), "mengganti tombol keyboard tidak melepas tombol gamepad")
 	gs.call("reset_keys")
+	var pb := {}
+	check(PadBindings.button(pb, "end_turn") == JOY_BUTTON_X and _same(PadBindings.buttons(pb, "pause"), [JOY_BUTTON_START, JOY_BUTTON_B]),
+		"bawaan gamepad: X akhiri giliran, Start dan B jeda")
+	check(PadBindings.assign(pb, "end_turn", JOY_BUTTON_Y) == "ultimate" and PadBindings.button(pb, "ultimate") == PadBindings.NONE,
+		"satu tombol gamepad hanya punya satu arti")
+	check(PadBindings.assign(pb, "end_turn", JOY_BUTTON_A) == "!" and PadBindings.assign(pb, "ultimate", JOY_BUTTON_DPAD_UP) == "!"
+		and PadBindings.assign(pb, "pause", JOY_BUTTON_START) == "!", "A, D-pad, dan Start tidak bisa dipasang ke aksi")
+	PadBindings.clear(pb, "pause")
+	check(_same(PadBindings.buttons(pb, "pause"), [JOY_BUTTON_START]), "B dikosongkan, Start tetap untuk jeda")
+	var pclean := PadBindings.sanitize({"ultimate": JOY_BUTTON_A, "end_turn": JOY_BUTTON_LEFT_SHOULDER, "ngawur": 3})
+	check(not pclean.has("ultimate") and int(pclean["end_turn"]) == JOY_BUTTON_LEFT_SHOULDER and int(pclean["toggle_speed"]) == PadBindings.NONE,
+		"simpanan gamepad rusak dibersihkan, pilihan pemain didahulukan")
+	check(String(gs.call("set_pad_button", "target_next", JOY_BUTTON_LEFT_SHOULDER)) == "toggle_speed"
+		and _pad_bound("target_next", JOY_BUTTON_LEFT_SHOULDER) and not _pad_bound("toggle_speed", JOY_BUTTON_LEFT_SHOULDER),
+		"tombol gamepad diganti, InputMap ikut berubah")
+	gs.call("set_pad_cursor_speed", 1.5)
+	gs.set("pad_bindings", {})
+	gs.set("pad_cursor_speed", 1.0)
+	gs.call("load_game")
+	check(int(gs.call("pad_button", "target_next")) == JOY_BUTTON_LEFT_SHOULDER and is_equal_approx(float(gs.get("pad_cursor_speed")), 1.5),
+		"pilihan gamepad dan kecepatan kursor tersimpan")
+	gs.call("reset_pad")
+	check(_pad_bound("toggle_speed", JOY_BUTTON_LEFT_SHOULDER) and _pad_bound("target_next", JOY_BUTTON_RIGHT_SHOULDER)
+		and is_equal_approx(float(gs.get("pad_cursor_speed")), 1.0), "Kembalikan bawaan untuk gamepad")
 	check(not _has_pad_events("ui_accept") and not _has_pad_events("ui_left") and not _has_pad_events("ui_cancel"),
 		"aksi ui_* bawaan tidak membaca gamepad, supaya A tidak terhitung dua kali")
 	var cursor := root.get_node_or_null("GamepadCursor")
@@ -155,13 +188,15 @@ func _run() -> void:
 			"setelah bergerak lama kursor makin cepat")
 		check(is_equal_approx((v.call(Vector2.ZERO, Vector2(1, 1), 0.0) as Vector2).length(), float(consts["DPAD_SPEED"])),
 			"D-pad miring tidak lebih cepat dari lurus")
+		check((cursor.call("cursor_velocity", Vector2(1, 0), Vector2.ZERO, 0.0, 2.0) as Vector2).is_equal_approx(Vector2(speed * 2.0, 0)),
+			"kecepatan kursor 200% dari Pengaturan")
 
 	print("[Panel Tombol Keyboard]")
 	var settings := _new("res://ui/common/settings_panel.gd")
 	root.add_child(settings)
 	await process_frame
 	var open := _find_button(settings, tr("KEYS_OPEN"))
-	check(open != null, "Pengaturan punya tombol Atur untuk keyboard")
+	check(open != null and _find_button(settings, tr("PAD_OPEN")) != null, "Pengaturan tombol: ada tombol Keyboard dan Gamepad")
 	open.pressed.emit()
 	await process_frame
 	var panel: Node = null
@@ -195,6 +230,38 @@ func _run() -> void:
 	check(not is_instance_valid(panel) and is_instance_valid(settings), "Esc menutup panel tombol saja, Pengaturan tetap terbuka")
 	settings.queue_free()
 	gs.call("reset_keys")
+	await process_frame
+
+	print("[Panel Tombol Gamepad]")
+	settings = _new("res://ui/common/settings_panel.gd")
+	root.add_child(settings)
+	await process_frame
+	_find_button(settings, tr("PAD_OPEN")).pressed.emit()
+	await process_frame
+	var pad_panel: Node = null
+	for child: Node in settings.get_children():
+		if child.has_method("press_button"):
+			pad_panel = child
+	check(pad_panel != null, "panel Tombol Gamepad terbuka")
+	var start_box := _find_button(pad_panel, "Start")
+	check(_find_button(pad_panel, "Y") != null and _find_button(pad_panel, "RB") != null and start_box != null and start_box.disabled,
+		"panel menampilkan Y dan RB, dan Start untuk jeda terkunci")
+	pad_panel.call("_start_waiting", "end_turn")
+	await _pad_tap(JOY_BUTTON_A)
+	var pad_notice: Label = pad_panel.get("_notice")
+	check(int(gs.call("pad_button", "end_turn")) == JOY_BUTTON_X and pad_notice.text.begins_with("A "), "A ditolak karena A untuk klik")
+	pad_panel.call("_start_waiting", "end_turn")
+	await _pad_tap(JOY_BUTTON_RIGHT_STICK)
+	check(int(gs.call("pad_button", "end_turn")) == JOY_BUTTON_RIGHT_STICK and _pad_bound("end_turn", JOY_BUTTON_RIGHT_STICK)
+		and _find_button(pad_panel, "RS") != null, "menekan RS memasangnya ke Akhiri giliran")
+	pad_panel.call("_start_waiting", "ultimate")
+	await _pad_tap(JOY_BUTTON_START)
+	check(not pad_panel.call("is_waiting") and int(gs.call("pad_button", "ultimate")) == JOY_BUTTON_Y, "Start saat menunggu hanya membatalkan")
+	await _pad_tap(JOY_BUTTON_B)
+	await process_frame
+	check(not is_instance_valid(pad_panel) and is_instance_valid(settings), "B menutup panel gamepad, Pengaturan tetap terbuka")
+	settings.queue_free()
+	gs.call("reset_pad")
 	await process_frame
 
 	print("[Teks besar]")

@@ -18,7 +18,7 @@ Pertama kali dibuka, Godot butuh beberapa detik untuk mengimpor gambar dan suara
 
 ## Cara bermain
 
-Seluruh game bisa dimainkan dengan mouse. Keyboard hanya jalan pintas, dan tombolnya bisa diganti di **Pengaturan → Tombol keyboard**. Gamepad juga bisa dipakai: stik kiri atau D-pad menggerakkan kursor, tombol A menjadi klik, dan stik kanan menggulir, jadi semua layar bisa dimainkan dengan gamepad. Tabel ini memakai tombol bawaan.
+Seluruh game bisa dimainkan dengan mouse. Keyboard hanya jalan pintas, dan tombolnya bisa diganti di **Pengaturan → Pengaturan tombol → Keyboard**. Gamepad juga bisa dipakai: stik kiri atau D-pad menggerakkan kursor, tombol A menjadi klik, dan stik kanan menggulir, jadi semua layar bisa dimainkan dengan gamepad. Tombol aksinya bisa diganti di **Pengaturan tombol → Gamepad**. Tabel ini memakai tombol bawaan.
 
 | Aksi | Mouse | Keyboard | Gamepad |
 |---|---|---|---|
@@ -202,7 +202,9 @@ Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, da
 - **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
 - **Petunjuk**, **Tandai istilah Jawa**, dan **Irama Sapu Jagad** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Sapu Jagad membuka latihan irama.
 - **Teks besar**: keterangan kartu dan Buto, arti istilah Jawa, petunjuk battle, petunjuk jalan di persimpangan, ringkasan hasil kejadian, dan catatan kecil di Pustaka memakai huruf 16 piksel (bawaannya 8 piksel).
-- **Tombol keyboard**: tombol **Atur** membuka daftar semua tombol. Setiap aksi punya dua tombol. Klik kotaknya lalu tekan tombol baru; klik kanan atau Backspace mengosongkan, Esc membatalkan. Kalau tombol itu sudah dipakai aksi lain, tombolnya dipindah dan kamu diberi tahu. Esc selalu untuk jeda dan kembali, jadi tidak bisa dipindah. **Kembalikan bawaan** memulihkan semuanya. Tombol disimpan menurut letaknya di keyboard, jadi tetap pas di keyboard selain QWERTY. Tombol gamepad tampil di panel yang sama, tetapi tidak bisa diganti.
+- **Pengaturan tombol** punya dua tombol, **Keyboard** dan **Gamepad**, dan masing-masing membuka panelnya sendiri.
+- **Keyboard**: daftar semua tombol keyboard. Setiap aksi punya dua tombol. Klik kotaknya lalu tekan tombol baru; klik kanan atau Backspace mengosongkan, Esc membatalkan. Kalau tombol itu sudah dipakai aksi lain, tombolnya dipindah dan kamu diberi tahu. Esc selalu untuk jeda dan kembali, jadi tidak bisa dipindah. **Kembalikan bawaan** memulihkan semuanya. Tombol disimpan menurut letaknya di keyboard, jadi tetap pas di keyboard selain QWERTY.
+- **Gamepad**: tombol kursor (stik kiri atau D-pad, A untuk klik, tahan A untuk menggeser kartu, stik kanan untuk menggulir) tetap. Tombol aksi battle bisa diganti dengan cara yang sama seperti keyboard: klik kotaknya lalu tekan tombol gamepad baru, klik kanan untuk mengosongkan, Start atau Esc membatalkan. A, D-pad, dan Start tidak bisa dipasang ke aksi, dan Start selalu untuk jeda. Di panel ini juga ada **kecepatan kursor** (50–200%) dan nama gamepad yang sedang tersambung.
 
 Progres tersimpan otomatis.
 
@@ -227,11 +229,11 @@ autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
                GamepadCursor (gamepad sebagai mouse)
 core/          Logika battle (BattleManager, DeckController, HandManager, PlayerState, aksi)
                dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan, catatan
-               permainan), serta tombol keyboard (KeyBindings) dan data Istilah Jawa
-               (GlossaryData)
+               permainan), serta tombol keyboard dan gamepad (KeyBindings, PadBindings)
+               dan data Istilah Jawa (GlossaryData)
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
-ui/            Kartu, tangan, HUD, dialog, pengaturan, panel tombol keyboard, tooltip,
+ui/            Kartu, tangan, HUD, dialog, pengaturan, panel tombol keyboard dan gamepad, tooltip,
                titik peta, panel berkah, kejadian, tantangan, irama Sapu Jagad,
                dan pemilih kartu
 assets/        Sprite, latar, kartu, ikon, font, shader, musik, dan efek suara

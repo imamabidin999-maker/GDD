@@ -4,9 +4,9 @@ extends Node
 ## Karena semua bagian game bisa dimainkan dengan mouse, cara ini langsung
 ## berlaku di semua layar.
 ##
-## Tombol lain dipasang langsung ke aksi lewat KeyBindings.JOYPAD: B dan Start
-## untuk jeda/kembali, X akhiri giliran, Y Sapu Jagad, RB ganti sasaran, LB
-## kecepatan 1x/2x.
+## Tombol lain dipasang langsung ke aksi battle lewat PadBindings, dan bisa
+## diganti pemain di panel Tombol Gamepad. Kecepatan kursor juga diatur di sana
+## (GameState.pad_cursor_speed).
 
 ## Kecepatan kursor (piksel layar game per detik) saat stik didorong penuh.
 const SPEED := 240.0
@@ -38,14 +38,15 @@ func _ready() -> void:
 				InputMap.action_erase_event(action, ev)
 
 
-## Gerak kursor (piksel per detik) dari stik dan D-pad. Statis supaya bisa dites.
-static func cursor_velocity(stick: Vector2, dpad: Vector2, moving_for: float) -> Vector2:
+## Gerak kursor (piksel per detik) dari stik dan D-pad. `speed_scale` adalah
+## pengali kecepatan dari Pengaturan. Statis supaya bisa dites.
+static func cursor_velocity(stick: Vector2, dpad: Vector2, moving_for: float, speed_scale: float = 1.0) -> Vector2:
 	var length := stick.length()
 	var push := Vector2.ZERO
 	if length > DEADZONE:
 		push = stick / length * minf((length - DEADZONE) / (1.0 - DEADZONE), 1.0)
 	var boost := 1.0 + clampf((moving_for - BOOST_AFTER) / BOOST_AFTER, 0.0, 1.0) * (BOOST_MAX - 1.0)
-	return push * SPEED * boost + dpad.limit_length(1.0) * DPAD_SPEED
+	return (push * SPEED * boost + dpad.limit_length(1.0) * DPAD_SPEED) * speed_scale
 
 
 func _process(delta: float) -> void:
@@ -60,7 +61,9 @@ func _process(delta: float) -> void:
 	var dpad := Vector2(
 		float(Input.is_joy_button_pressed(device, JOY_BUTTON_DPAD_RIGHT)) - float(Input.is_joy_button_pressed(device, JOY_BUTTON_DPAD_LEFT)),
 		float(Input.is_joy_button_pressed(device, JOY_BUTTON_DPAD_DOWN)) - float(Input.is_joy_button_pressed(device, JOY_BUTTON_DPAD_UP)))
-	var velocity := cursor_velocity(stick, dpad, _moving_for)
+	var gs := get_node_or_null("/root/GameState")
+	var speed_scale := float(gs.get("pad_cursor_speed")) if gs != null else 1.0
+	var velocity := cursor_velocity(stick, dpad, _moving_for, speed_scale)
 	if velocity == Vector2.ZERO:
 		_moving_for = 0.0
 		return
