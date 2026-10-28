@@ -338,6 +338,7 @@ func _on_ultimate() -> void:
 	_overlay.add_child(rhythm)
 	var score: float = await rhythm.finished
 	AudioManager.duck_music(false)
+	GameState.record_rhythm(score)
 	if is_instance_valid(_battle):
 		_battle.request_ultimate(RhythmGebrakan.bonus_for(score))
 
@@ -917,6 +918,8 @@ func _reopen_pause() -> void:
 func _on_battle_ended(player_won: bool) -> void:
 	_battle_over = true
 	_tooltip.hide_tip()
+	# Ditunda sampai BattleStats selesai mencatat hasil battle ini.
+	GameState.record_battle.call_deferred(_stats)
 	if player_won:
 		await _victory()
 	else:

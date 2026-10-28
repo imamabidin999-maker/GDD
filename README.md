@@ -153,6 +153,8 @@ Selain kisah Dongkrek, tokoh, Buto, cara bermain, dan daftar kartu, Pustaka puny
 
 Isi kedua halaman juga bisa dibaca di `docs/05-istilah-jawa-dan-asli-rekaan.md`.
 
+Halaman **Catatan** berisi catatan sepanjang masa: battle menang dan kalah, Buto yang dikalahkan per warna, Sapu Jagad dan irama terbaiknya, pukulan terbesar, jurus favorit, arak-arakan paling semarak, berapa kali tamat, dan riwayat sepuluh Ruwatan terakhir. Catatan ini tidak terhapus saat memulai petualangan baru.
+
 Istilah-istilah itu juga ditandai langsung di teks cerita, panel kejadian, petunjuk battle, dan halaman Pustaka: warnanya jingga dan bergaris bawah, dan artinya muncul saat kursor diarahkan ke situ. Satu istilah hanya ditandai sekali per percakapan. Tanda ini bisa dimatikan lewat **Tandai istilah Jawa** di Pengaturan.
 
 ### Penutup: arak-arakan keliling desa

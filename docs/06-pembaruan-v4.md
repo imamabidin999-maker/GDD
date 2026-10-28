@@ -91,3 +91,19 @@ Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling
 - Setelah selesai, seluruh barisan tetap di layar sebagai gambar penutup di belakang epilog dan kredit.
 - **Gambar**: Eyang Palang, Roro Ayu, Roro Perot, dan lima Buto memakai sprite yang sudah ada. Warga di barisan belakang digambar baru sebagai **siluet yang disinari fajar dari belakang** (`sprites/arak/warga_*.png`), karena belum ada desain warga.
 - Halaman Roro Perot di Pustaka juga terbuka setelah tamat, karena ia ikut arak-arakan.
+
+## 7. Catatan Permainan dan Riwayat Ruwatan
+
+- Pustaka punya halaman baru, **Catatan**, yang berisi catatan sepanjang masa:
+  - battle yang dimenangkan dan yang kalah;
+  - berapa kali Sapu Jagad dilepas, dan irama Sapu Jagad terbaik;
+  - berapa kali kartu digabung, dan pukulan terbesar (satu kartu atau satu Sapu Jagad, dijumlah untuk semua sasaran);
+  - arak-arakan paling semarak, dan berapa kali tamat;
+  - Buto yang dikalahkan per warna (dengan topengnya), ditambah Buto Murka dan Bala;
+  - **jurus favorit**, kartu yang paling sering dimainkan, lengkap dengan kartunya;
+  - **riwayat Ruwatan**: sepuluh Ruwatan terakhir dengan tanggal, Tingkat Pagebluk, jumlah langkah, dan hasilnya (berhasil atau gugur).
+- Seperti Bintang Dongkrek, catatan ini tidak ikut terhapus saat memulai petualangan baru. Catatan tersimpan di bagian `records` simpanan, dan simpanan lama tanpa bagian ini mulai dari nol.
+- Catatan per battle dikumpulkan oleh `BattleStats` (yang juga dipakai untuk tantangan babak), lalu dijumlahkan di `core/progress/play_records.gd`. Battle cerita dan Ruwatan sama-sama dihitung.
+- Tamat hanya dihitung sekali per petualangan, jadi mengulang babak 10 tidak menambah angkanya.
+- Hasil satu Ruwatan bisa dilaporkan lebih dari sekali (saat selesai dan saat ditutup). Riwayat mengenali Ruwatan yang sama dari seed dan tingkatnya, jadi tetap tercatat satu kali.
+- Tesnya ada di `tests/test_records.gd`, dan tes kampanye memeriksa catatan setelah tamat dan setelah Ruwatan.

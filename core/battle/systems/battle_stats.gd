@@ -1,6 +1,7 @@
 class_name BattleStats
 extends RefCounted
-## Catatan satu battle untuk menilai tantangan babak (Bintang Dongkrek).
+## Catatan satu battle untuk menilai tantangan babak (Bintang Dongkrek) dan
+## untuk catatan permainan sepanjang masa (PlayRecords).
 ##
 ## Pasang dengan attach() sebelum BattleManager.start_battle(). Semua angka
 ## diisi dari signal, jadi BattleManager tidak perlu tahu soal tantangan.
@@ -27,6 +28,12 @@ var first_killed: String = ""
 var bala_summoned: int = 0
 ## Bala yang dikalahkan sebelum Buto Hitam tumbang.
 var bala_killed_before_boss: int = 0
+## Buto yang dikalahkan: kunci warna, "murka", atau "bala" -> jumlah.
+var killed: Dictionary = {}
+## Keluarga kartu -> berapa kali dimainkan.
+var cards_played: Dictionary = {}
+## Damage terbesar dari satu kartu atau satu Sapu Jagad (semua sasaran).
+var biggest_hit: int = 0
 
 var _battle: BattleManager
 var _bosses: Array[EnemyButo] = []
@@ -66,8 +73,12 @@ func _watch_enemy(enemy: EnemyUnit) -> void:
 		if first_killed == "":
 			first_killed = buto.get_type_key()
 		# Bala yang lenyap karena Buto Hitam tumbang tidak dihitung.
-		if buto.is_bala and not _boss_down():
-			bala_killed_before_boss += 1)
+		if buto.is_bala and _boss_down():
+			return
+		if buto.is_bala:
+			bala_killed_before_boss += 1
+		var key := "bala" if buto.is_bala else ("murka" if buto.murka else buto.get_type_key())
+		killed[key] = int(killed.get(key, 0)) + 1)
 
 
 func _boss_down() -> bool:
@@ -81,12 +92,16 @@ func _on_action_resolved(action: BattleAction) -> void:
 	if action is UltimateAction:
 		ultimates_used += 1
 		calmed_ready += (action as UltimateAction).calmed_ready
+		biggest_hit = maxi(biggest_hit, (action as UltimateAction).damage_dealt)
 	elif action is PlayCardAction:
 		var play := action as PlayCardAction
 		if play.calmed_ready:
 			calmed_ready += 1
 		if play.card.data.is_tabuh():
 			tabuh_played += 1
+		var family := play.card.data.get_family()
+		cards_played[family] = int(cards_played.get(family, 0)) + 1
+		biggest_hit = maxi(biggest_hit, play.damage_dealt)
 
 
 func _on_battle_ended(player_won: bool) -> void:

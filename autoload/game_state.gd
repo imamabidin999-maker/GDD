@@ -49,6 +49,9 @@ var pending_event: String = ""
 var pending_paths: Array[String] = []
 ## Kejadian yang sudah dialami di petualangan ini (tidak diulang).
 var seen_events: Array[String] = []
+## Catatan permainan sepanjang masa (halaman Catatan di Pustaka). Seperti
+## Bintang Dongkrek, tidak ikut direset saat petualangan baru.
+var records := PlayRecords.new()
 ## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
 ## Seperti rekor, tidak ikut direset saat petualangan baru.
 var stage_stars: Dictionary = {}
@@ -146,6 +149,8 @@ func complete_stage(stage: int) -> void:
 		cleared_stages.append(stage)
 	unlocked_stage = clampi(maxi(unlocked_stage, stage + 1), 1, STAGE_COUNT)
 	if stage >= STAGE_COUNT:
+		if not game_completed:
+			records.stories_completed += 1
 		game_completed = true
 		ruwatan_unlocked = true
 	save_game()
@@ -345,6 +350,27 @@ func finish_event() -> void:
 func prepare_player(player: PlayerState) -> void:
 	Blessings.prepare_player(player, blessings)
 
+
+#region Catatan permainan
+
+## Dipanggil setelah battle selesai (cerita maupun Ruwatan).
+func record_battle(stats: BattleStats) -> void:
+	records.add_battle(stats)
+	save_game()
+
+
+func record_rhythm(score: float) -> void:
+	records.add_rhythm(score)
+	save_game()
+
+
+## Semarak arak-arakan penutup (score < 0 kalau dilewati).
+func record_parade(score: float) -> void:
+	records.add_parade(score)
+	save_game()
+
+#endregion
+
 #endregion
 
 
@@ -535,6 +561,8 @@ func _on_ruwatan_changed() -> void:
 
 func _record_ruwatan(run: RuwatanRun) -> void:
 	ruwatan_best[run.level] = maxi(ruwatan_best_of(run.level), run.steps_cleared())
+	records.add_ruwatan(run.seed_value, run.level, run.steps_cleared(), run.state == RuwatanRun.State.WON,
+		Time.get_date_string_from_system())
 
 #endregion
 
@@ -567,6 +595,7 @@ func save_game() -> void:
 		best_out[str(lvl)] = int(ruwatan_best[lvl])
 	cfg.set_value("ruwatan", "best", best_out)
 	cfg.set_value("ruwatan", "run", ruwatan.to_dict() if ruwatan != null else {})
+	cfg.set_value("records", "data", records.to_dict())
 	cfg.set_value("settings", "locale", locale)
 	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.set_value("settings", "sfx_volume", sfx_volume)
@@ -627,6 +656,7 @@ func load_game() -> void:
 			var lvl := int(str(key))
 			if lvl >= 1 and lvl <= RuwatanRun.MAX_LEVEL:
 				ruwatan_best[lvl] = clampi(int(best_in[key]), 0, RuwatanRun.STEPS.size())
+	records = PlayRecords.from_dict(cfg.get_value("records", "data", {}))
 	if ruwatan != null:
 		ruwatan.changed.disconnect(_on_ruwatan_changed)
 		ruwatan = null

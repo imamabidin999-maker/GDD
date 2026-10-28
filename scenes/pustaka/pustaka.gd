@@ -1,7 +1,8 @@
 extends Control
-## Pustaka: ensiklopedia kecil tentang kesenian Dongkrek, Eyang Palang, para
-## Buto (terbuka setelah pernah dilawan), cara bermain, daftar kartu, istilah
-## Jawa, dan tanda mana yang asli dari kisah Dongkrek dan mana yang rekaan.
+## Pustaka: ensiklopedia kecil tentang kesenian Dongkrek, Eyang Palang, Roro
+## Ayu dan Roro Perot, para Buto (terbuka setelah pernah dilawan), cara
+## bermain, daftar kartu, istilah Jawa, tanda mana yang asli dari kisah
+## Dongkrek dan mana yang rekaan, serta catatan permainan.
 
 const BG := preload("res://assets/backgrounds/menu.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
@@ -93,6 +94,7 @@ func _build() -> void:
 	_add_entry("cards", tr("PUSTAKA_CARDS"))
 	_add_entry("istilah", tr("PUSTAKA_GLOSSARY"))
 	_add_entry("asli", tr("PUSTAKA_ORIGINS"))
+	_add_entry("catatan", tr("PUSTAKA_RECORDS"))
 
 	var content_panel := PanelContainer.new()
 	content_panel.theme_type_variation = &"GoldPanel"
@@ -160,6 +162,8 @@ func _show(key: String) -> void:
 			_show_glossary()
 		"asli":
 			_show_origins()
+		"catatan":
+			_show_records()
 		"murka":
 			_show_murka()
 		"bala":
@@ -306,6 +310,70 @@ func _show_origins() -> void:
 			if entry["kind"] == kind:
 				lines.append("[color=#%s]%s[/color]\n%s" % [color, tr(entry["key"] + "_TITLE"), tr(entry["key"] + "_TEXT")])
 		_paragraph("\n\n".join(lines))
+
+
+## Catatan permainan sepanjang masa (PlayRecords di GameState).
+func _show_records() -> void:
+	var r := GameState.records
+	_heading(tr("RECORDS_TITLE"))
+	_content.add_child(_note(tr("RECORDS_NOTE")))
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 16)
+	grid.add_theme_constant_override("v_separation", 3)
+	var none := tr("RECORDS_NONE")
+	var rows := [
+		["RECORDS_WON", str(r.battles_won)],
+		["RECORDS_LOST", str(r.battles_lost)],
+		["RECORDS_ULT", tr("RECORDS_TIMES") % r.sapu_jagad],
+		["RECORDS_RHYTHM", "%d%%" % roundi(r.rhythm_best * 100.0) if r.rhythm_best >= 0.0 else none],
+		["RECORDS_MERGES", tr("RECORDS_TIMES") % r.merges],
+		["RECORDS_HIT", tr("RECORDS_DAMAGE") % r.biggest_hit if r.biggest_hit > 0 else none],
+		["RECORDS_PARADE", "%d%%" % roundi(r.parade_best * 100.0) if r.parade_best >= 0.0 else none],
+		["RECORDS_STORIES", tr("RECORDS_TIMES") % r.stories_completed],
+	]
+	for row: Array in rows:
+		grid.add_child(UIKit.label(tr(row[0]), &"BigLabel", UIKit.COLOR_TEXT))
+		grid.add_child(UIKit.label(row[1], &"BigLabel", UIKit.COLOR_GOLD))
+	_content.add_child(grid)
+
+	_heading(tr("RECORDS_BUTO") % r.total_defeated())
+	var masks := UIKit.hbox(10)
+	for key: String in BUTO_KEYS:
+		var cell := UIKit.vbox(0)
+		cell.add_child(UIKit.icon(load("res://assets/ui/mask_%s.png" % key) as Texture2D))
+		var count := UIKit.label(str(int(r.buto_defeated.get(key, 0))), &"BigLabel", UIKit.COLOR_TEXT)
+		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cell.add_child(count)
+		masks.add_child(cell)
+	_content.add_child(masks)
+	_content.add_child(UIKit.label(tr("RECORDS_MURKA_BALA") % [int(r.buto_defeated.get("murka", 0)), int(r.buto_defeated.get("bala", 0))],
+		&"BigLabel", UIKit.COLOR_TEXT))
+
+	_heading(tr("RECORDS_FAVORITE"))
+	var favorite := r.favorite_card()
+	var data := CardDB.get_card(favorite, 1) if favorite != "" else null
+	if data == null:
+		_content.add_child(UIKit.label(none, &"BigLabel", UIKit.COLOR_DIM))
+	else:
+		var fav := UIKit.hbox(8)
+		fav.add_child(_card_with_tooltip(data, []))
+		var line := UIKit.label(tr("RECORDS_FAVORITE_LINE") % [tr(data.display_name), int(r.cards_played[favorite])], &"BigLabel", UIKit.COLOR_TEXT)
+		line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		fav.add_child(line)
+		_content.add_child(fav)
+
+	_heading(tr("RECORDS_HISTORY"))
+	if r.ruwatan_history.is_empty():
+		_content.add_child(UIKit.label(tr("RECORDS_HISTORY_EMPTY"), &"BigLabel", UIKit.COLOR_DIM))
+	for entry: Dictionary in r.ruwatan_history:
+		var line := UIKit.hbox(12)
+		line.add_child(UIKit.label(tr("RECORDS_HISTORY_LINE") % [entry["date"], entry["level"], entry["steps"], RuwatanRun.STEPS.size()],
+			&"BigLabel", UIKit.COLOR_TEXT))
+		var won: bool = entry["won"]
+		line.add_child(UIKit.label(tr("RECORDS_RESULT_WON" if won else "RECORDS_RESULT_LOST"), &"BigLabel",
+			UIKit.COLOR_GOLD if won else UIKit.COLOR_RED))
+		_content.add_child(line)
 
 
 ## Tanda asal-usul: kotak warna (satu per jenis) lalu keterangannya.

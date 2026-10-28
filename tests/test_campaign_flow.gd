@@ -327,6 +327,9 @@ func _play_ruwatan(gs: Node) -> void:
 	await _wait(0.6)
 	check(gs.get("ruwatan") == null and int(gs.call("ruwatan_best_of", 1)) == 8 and int(gs.call("ruwatan_max_level")) == 2,
 		"hasil tercatat dan Tingkat Pagebluk 2 terbuka")
+	var history: Array[Dictionary] = (gs.get("records") as PlayRecords).ruwatan_history
+	check(not history.is_empty() and int(history[0]["level"]) == 1 and int(history[0]["steps"]) == 8 and bool(history[0]["won"]),
+		"Ruwatan yang berhasil masuk riwayat")
 	check(find_button(tr("RUWATAN_START")) != null, "kembali ke pilihan tingkat")
 
 
@@ -343,6 +346,8 @@ func _run() -> void:
 	(gs.get("stage_stars") as Dictionary).clear()
 	gs.call("abandon_ruwatan")
 	gs.set("ruwatan_best", {})
+	# Catatan permainan tidak ikut direset Petualangan Baru, jadi dimulai dari nol di sini.
+	gs.set("records", PlayRecords.new())
 	gs.call("set_locale", "id")
 
 	print("[Menu utama -> peta]")
@@ -383,6 +388,11 @@ func _run() -> void:
 	await clear_dialogs(40)
 	await _wait(2.0)
 	check(gs.get("game_completed") == true, "game tercatat tamat")
+	var records: PlayRecords = gs.get("records")
+	print("  catatan: %d menang, %d kalah, %d Buto, jurus favorit %s" % [records.battles_won, records.battles_lost,
+		records.total_defeated(), records.favorite_card()])
+	check(records.battles_won >= _stage_count() and records.stories_completed == 1 and records.total_defeated() >= 20
+		and records.favorite_card() != "", "catatan permainan terisi: battle, Buto yang dikalahkan, jurus favorit, tamat")
 	check((gs.get("cleared_stages") as Array).size() == _stage_count(), "semua babak tercatat selesai")
 	check(await click_button(tr("BTN_TO_MAP")), "tombol Ke Peta di kredit")
 	await _wait(1.5)

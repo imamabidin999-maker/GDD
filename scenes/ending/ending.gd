@@ -68,7 +68,8 @@ func _run() -> void:
 	parade.auto_play = not GameState.rhythm_enabled
 	add_child(parade)
 	move_child(parade, _overlay.get_index())
-	await parade.finished
+	var parade_score: float = await parade.finished
+	GameState.record_parade(parade_score)
 	await get_tree().create_timer(2.0).timeout
 	AudioManager.play_music("menu")
 	box = DialogBox.new()
