@@ -44,3 +44,22 @@ Sebelumnya semua babak memakai satu lagu battle, kecuali Buto Hitam. Sekarang se
 - Lagu berganti dengan *crossfade* tepat saat Buto Hitam masuk fase kedua.
 - Ruwatan ikut memakai lagu sesuai jenis langkahnya: battle biasa, Buto Murka, dua Buto Murka (lagu Candi Pagebluk), lalu bos.
 - Ketiga lagu dibuat dengan deret acak masing-masing (`build_audio.py --tambahan`), jadi lagu dan bunyi lama tidak berubah. Kekerasan suaranya disamakan dengan lagu lama (RMS sekitar 0,13–0,145), dan ujung loop-nya disambung ke awal supaya tidak terdengar patah.
+
+## 4. Roro Ayu dan Roro Perot di Dunia Game
+
+- **Sprite badan penuh.** Desain sprite diam Roro Ayu (`docs/desain_asli/roro_ayu_standby.png`) ternyata pixel art yang diperbesar sekitar 5,125 kali. Kisi aslinya dibaca ulang (satu warna per sel), jadi satu piksel desain menjadi satu piksel game dan tinggi Roro Ayu hampir sama dengan Eyang Palang. Latar dan bayangan di kakinya dibuang lewat isian dari tepi gambar, supaya rambut yang warnanya mirip latar tidak ikut terhapus. Kebayanya diputihkan dengan cara yang sama seperti potretnya.
+- **Di mana Roro Ayu muncul:**
+  - di kiri panel **Berkah Roro Ayu**, bernapas pelan;
+  - di peta, berjalan di belakang Eyang setelah babak 3 (di cerita ia memperkenalkan diri setelah babak 3);
+  - di Pustaka, halaman **Roro Ayu** dengan tanda asal-usul: topengnya dari kisah Dongkrek, perannya di game rekaan.
+- **Roro Perot** belum punya desain dari pemilik proyek, jadi rupanya dibuat sebagai **rancangan sementara** dari kisi Roro Ayu:
+  - wajah berlapis **bedak dingin** putih (bedak beras tradisional), dengan pipi merah dan tahi lalat;
+  - mulut miring (*perot*), satu alis terangkat;
+  - kebaya lurik nila, hiasan sanggul diganti bunga merah.
+  - Kalau nanti ada desain asli, cukup ganti prosesnya di `tools/roro_sprites.py`.
+- **Dua kejadian baru bersama Roro Perot:**
+  - *Cangkriman Roro Perot*: ia menghadang dengan teka-teki Jawa "pitik walik saba kebon" (jawabannya nanas). Jawab dengan benar untuk mendapat kartu **Gong Beri** titipan bapaknya, oleh-oleh dari saudagar Pecinan, atau pura-pura bingung untuk Nyawa maksimal +5.
+  - *Bedak Dingin*: biarkan wajah Eyang dibedaki (berkah Jamu Beras Kencur, penangkal Lara; kalau sudah punya, Nyawa maksimal +5), atau berlatih ditonton Roro Perot (kartu acak +1 bintang).
+- Halaman Roro Perot di Pustaka berupa siluet sampai ia ditemui di salah satu kejadiannya. Ia juga punya potret dan warna nama sendiri di kotak dialog untuk dipakai di penutup.
+- Istilah baru: **Cangkriman**, **Bedak dingin**, dan **Pecinan**. Catatan Roro Perot di halaman Istilah Jawa diperbarui (sebelumnya tertulis ia tidak muncul di game), dan ada unsur rekaan baru: *Peran Roro Perot*.
+- Di halaman Pustaka tentang seorang tokoh, nama tokoh itu sendiri tidak ditandai sebagai istilah lagi.

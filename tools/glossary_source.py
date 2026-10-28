@@ -51,8 +51,8 @@ GLOSSARY = [
      "Roro (dari rara) berarti gadis, ayu berarti cantik. Dalam Dongkrek, Roro Ayu adalah topeng perempuan berwajah cantik. Di game: gadis desa yang menemani Eyang Palang dan memberi berkah.",
      "Roro (from rara) means maiden and ayu means beautiful. In Dongkrek, Roro Ayu is the mask of a beautiful woman. In the game: the village girl who travels with Eyang Palang and gives blessings."),
     ("tokoh", "Roro Perot",
-     "Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Ia tidak muncul di game.",
-     "Perot means lopsided. The comic female mask in Dongkrek, with a crooked mouth. She does not appear in the game."),
+     "Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Di game: kawan Roro Ayu yang suka bercanda, wajahnya selalu berbedak dingin.",
+     "Perot means lopsided. The comic female mask in Dongkrek, with a crooked mouth. In the game: Roro Ayu's joking friend, her face always covered in bedak dingin."),
     ("tokoh", "Buto",
      "Raksasa dalam wayang dan dongeng Jawa (dari kata buta). Dalam Dongkrek, para Buto bertopeng seram menjadi lambang pagebluk.",
      "An ogre from wayang and Javanese tales (from the word buta). In Dongkrek, the fierce masked Buto stand for the plague."),
@@ -222,6 +222,9 @@ GLOSSARY = [
     ("desa", "Kemenyan",
      "Getah harum yang dibakar dalam doa dan upacara.",
      "A fragrant resin burned during prayers and ceremonies."),
+    ("desa", "Cangkriman",
+     "Teka-teki Jawa. Yang terkenal misalnya pitik walik saba kebon, \"ayam terbalik berkeliaran di kebun\", dan jawabannya nanas.",
+     "A Javanese riddle. A well-known one is pitik walik saba kebon, \"an upside-down chicken roaming the garden\". The answer is a pineapple."),
     ("desa", "Beringin",
      "Pohon besar berakar gantung yang sering dianggap keramat.",
      "A great banyan tree with hanging roots, often held to be sacred."),
@@ -253,6 +256,9 @@ GLOSSARY = [
     ("tempat", "Pring",
      "Bambu. Jembatan Pring berarti jembatan bambu.",
      "Bamboo. Jembatan Pring means the bamboo bridge."),
+    ("tempat", "Pecinan",
+     "Kampung tempat tinggal warga keturunan Cina. Di game: asal gong beri milik bapak Roro Perot.",
+     "The neighborhood where people of Chinese descent live. In the game: where Roro Perot's father got his gong beri."),
     ("tempat", "Pelataran",
      "Halaman luas di depan sebuah bangunan.",
      "A wide courtyard in front of a building."),
@@ -272,6 +278,9 @@ GLOSSARY = [
     ("busana", "Subang",
      "Anting yang dipasang di cuping telinga.",
      "An earring worn in the earlobe."),
+    ("busana", "Bedak dingin",
+     "Bedak tradisional dari beras yang direndam berhari-hari lalu dijemur menjadi butiran. Dipakai dengan sedikit air, rasanya sejuk di wajah. Di game: ciri khas Roro Perot.",
+     "A traditional powder made from rice soaked for days and dried into small beads. Mixed with a little water, it feels cool on the face. In the game: Roro Perot's trademark."),
     ("busana", "Keris",
      "Senjata tikam khas Jawa; banyak yang bilahnya berkelok (luk). Gambar kartu Sabet.",
      "The Javanese dagger, often with a wavy (luk) blade. Shown on the Sabet card."),
@@ -300,6 +309,8 @@ EXTRA_FORMS = {
     "Tangkis": ["tangkisan", "menangkis"],
     "Tempa": ["menempa", "tempaan"],
     "Arak-arakan": ["diarak", "mengarak"],
+    "Bedak dingin": ["berbedak dingin"],
+    "Cangkriman": ["cangkrimanku"],
 }
 
 # Istilah yang juga kata sehari-hari hanya ditandai di dalam nama tempatnya:
@@ -387,6 +398,9 @@ ORIGINS = [
     ("rekaan", "Kejadian di perjalanan", "Events on the road",
      "Pertemuan dengan mbok jamu, pande gamelan, peronda, dan Buto kecil yang tersesat adalah rekaan, meski tokoh-tokohnya akrab dalam kehidupan desa Jawa.",
      "Meeting the jamu seller, the gamelan smith, the night watch, and the lost little Buto are made up, even though such people are familiar in Javanese village life."),
+    ("rekaan", "Peran Roro Perot", "Roro Perot's role",
+     "Di Dongkrek, Roro Perot adalah topeng jenaka. Di game ia menjadi kawan Roro Ayu yang berbedak dingin dan gemar cangkriman. Peran itu rekaan, begitu juga gong beri dari Pecinan milik bapaknya.",
+     "In Dongkrek, Roro Perot is a comic mask. In the game she is Roro Ayu's friend who wears bedak dingin and loves riddles. That role is made up, and so is her father's gong beri from the Pecinan."),
 ]
 
 # Rujukan yang dipakai saat menyusun isi di atas (untuk dokumen).

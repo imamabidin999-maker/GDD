@@ -700,6 +700,33 @@ EFFECT_SHATTER,Tameng semua Buto pecah,Shatters every Buto's Block
 BATTLE_GIRIS,Giris -%d%%,Giris -%d%%
 BATTLE_SHATTER,Tameng pecah!,Block shattered!
 GIRIS_TIP,Giris: serangan Buto ini di giliran berikutnya berkurang %d%%.,Giris (shaken): this Buto's attacks next turn deal %d%% less damage.
+SPEAKER_RORO_PEROT,Roro Perot,Roro Perot
+EV_CANGKRIMAN_TITLE,Cangkriman Roro Perot,Roro Perot's Riddle
+EV_CANGKRIMAN_TEXT,"Seorang gadis berbedak dingin tebal menghadang sambil nyengir miring. ""Aku Roro Perot, kawannya Roro Ayu. Eyang boleh lewat kalau bisa jawab cangkrimanku: pitik walik saba kebon, apa hayo?""","A girl with a thick coat of bedak dingin blocks the path, grinning lopsidedly. ""I'm Roro Perot, Roro Ayu's friend. You may pass if you can answer my riddle: an upside-down chicken roaming the garden. What is it?"""
+EV_CANGKRIMAN_A,"Jawab ""nanas"" (dapat kartu Gong Beri)","Answer ""a pineapple"" (gain a Gong Beri card)"
+EV_CANGKRIMAN_B,Pura-pura bingung (Nyawa maks +5),Play dumb (Max HP +5)
+EV_CANGKRIMAN_A_RESULT,"""Betul, nanas!"" Roro Perot tertawa sampai bedaknya retak. Ia menyerahkan gong beri titipan bapaknya, oleh-oleh dari saudagar Pecinan. ""Pukul keras-keras, biar Buto ciut nyalinya.""","""Right, a pineapple!"" Roro Perot laughs so hard her powder cracks. She hands over a gong beri her father got from a merchant in the Pecinan. ""Strike it hard and the Buto will lose their nerve."""
+EV_CANGKRIMAN_B_RESULT,"Eyang menggaruk kepala lama sekali. Roro Perot tertawa terpingkal-pingkal, warga ikut tertawa, dan perjalanan terasa lebih ringan.","Eyang scratches his head for a long while. Roro Perot doubles over laughing, the villagers join in, and the road feels lighter."
+EV_BEDAK_DINGIN_TITLE,Bedak Dingin,Cooling Powder
+EV_BEDAK_DINGIN_TEXT,"Roro Perot, kawan Roro Ayu yang wajahnya selalu berbedak dingin, datang membawa sebungkus bedak. ""Eyang kelihatan kepanasan. Sini kubedaki biar adem. Atau Eyang mau latihan saja? Aku yang menonton.""","Roro Perot, Roro Ayu's friend whose face is always covered in bedak dingin, comes by with a packet of powder. ""You look overheated, Eyang. Let me powder your face so you cool down. Or would you rather train? I'll watch."""
+EV_BEDAK_DINGIN_A,Biarkan wajah Eyang dibedaki (penangkal Lara),Let her powder your face (wards off Lara)
+EV_BEDAK_DINGIN_B,Latihan ditonton Roro Perot (kartu acak +1 bintang),Train while Roro Perot watches (random card +1 rank)
+EV_BEDAK_DINGIN_A_RESULT,"Wajah Eyang jadi putih seperti topeng. Warga yang lewat menahan tawa, tetapi kulitnya memang terasa sejuk dan napasnya lebih lega.","Eyang's face turns white as a mask. Passing villagers try not to laugh, but his skin does feel cool and his breathing eases."
+EV_BEDAK_DINGIN_B_RESULT,"Setiap jurus Eyang disambut sorakan Roro Perot yang kelewat keras. Anehnya, gerakannya jadi makin mantap.","Every move Eyang makes is met with Roro Perot's far-too-loud cheering. Oddly enough, his form gets sharper."
+PUSTAKA_RORO_AYU,Roro Ayu,Roro Ayu
+PUSTAKA_RORO_AYU_TEXT,"Gadis desa Mejayan yang menemani perjalanan Eyang Palang. Bersama para perempuan desa ia ikut menabuh dari jauh, dan setiap kali Eyang menang, ia memberi berkah untuk perjalanan berikutnya.
+
+Dalam kesenian Dongkrek, Roro Ayu adalah topeng perempuan berwajah cantik. Ia dan Roro Perot menggambarkan warga desa yang diincar makhluk jahat.","A village girl from Mejayan who travels with Eyang Palang. With the other women of the village she plays along from afar, and each time Eyang wins she gives him a blessing for the road ahead.
+
+In Dongkrek, Roro Ayu is the mask of a beautiful woman. She and Roro Perot stand for villagers stalked by evil beings."
+PUSTAKA_RORO_PEROT,Roro Perot,Roro Perot
+PUSTAKA_RORO_PEROT_TEXT,"Kawan Roro Ayu yang paling jenaka. Wajahnya selalu tertutup bedak dingin tebal, senyumnya miring (perot), dan ia gemar menghadang orang dengan cangkriman.
+
+Dalam kesenian Dongkrek, Roro Perot adalah topeng perempuan bermulut miring yang membawa suasana lucu.","Roro Ayu's funniest friend. Her face is always thick with bedak dingin, her smile is lopsided (perot), and she loves stopping people with riddles.
+
+In Dongkrek, Roro Perot is the mask of a woman with a crooked mouth who brings the laughs."
+ORIGIN_TAG_RORO,"Topengnya dari kisah Dongkrek, perannya di game rekaan",The mask comes from the Dongkrek story; the role in the game is made up
+PUSTAKA_PEROT_LOCKED,Belum pernah bertemu. Kabarnya ada gadis jenaka berbedak dingin yang suka menghadang orang di jalan dengan teka-teki.,Not met yet. Word is there's a funny girl in cooling powder who stops travelers on the road with riddles.
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings
@@ -714,7 +741,7 @@ GLOSS_RADEN_NGABEHI,"Gelar priyayi Jawa. Raden menandakan keturunan bangsawan, N
 GLOSS_SESEPUH,Orang yang dituakan di desa dan dimintai nasihat.,An elder whom the village looks to for counsel.
 GLOSS_WANGSIT,"Petunjuk gaib yang diterima lewat mimpi atau semedi. Menurut cerita, Eyang Palang mendapat wangsit untuk mengusir pagebluk dengan tabuhan dan arak-arakan.",A spiritual message received in a dream or in meditation. The story says Eyang Palang received one telling him to drive the plague away with music and a procession.
 GLOSS_RORO_AYU,"Roro (dari rara) berarti gadis, ayu berarti cantik. Dalam Dongkrek, Roro Ayu adalah topeng perempuan berwajah cantik. Di game: gadis desa yang menemani Eyang Palang dan memberi berkah.","Roro (from rara) means maiden and ayu means beautiful. In Dongkrek, Roro Ayu is the mask of a beautiful woman. In the game: the village girl who travels with Eyang Palang and gives blessings."
-GLOSS_RORO_PEROT,Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Ia tidak muncul di game.,"Perot means lopsided. The comic female mask in Dongkrek, with a crooked mouth. She does not appear in the game."
+GLOSS_RORO_PEROT,"Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Di game: kawan Roro Ayu yang suka bercanda, wajahnya selalu berbedak dingin.","Perot means lopsided. The comic female mask in Dongkrek, with a crooked mouth. In the game: Roro Ayu's joking friend, her face always covered in bedak dingin."
 GLOSS_BUTO,"Raksasa dalam wayang dan dongeng Jawa (dari kata buta). Dalam Dongkrek, para Buto bertopeng seram menjadi lambang pagebluk.","An ogre from wayang and Javanese tales (from the word buta). In Dongkrek, the fierce masked Buto stand for the plague."
 GLOSS_GENDERUWO,Makhluk halus bertubuh besar dan berbulu dalam kepercayaan Jawa. Topeng Buto di Dongkrek sering disebut topeng genderuwo.,"A large, hairy spirit in Javanese belief. The Buto masks of Dongkrek are often called genderuwo masks."
 GLOSS_PAGEBLUK,"Wabah penyakit yang menyerang banyak orang dalam waktu singkat. Di game: bencana yang dibawa Buto Hitam, juga nama tingkat kesulitan Ruwatan.","An epidemic that strikes many people at once. In the game: the plague brought by Buto Hitam, and the name of the Ruwatan difficulty levels."
@@ -770,6 +797,7 @@ GLOSS_JAMU_GENDONG,Penjual jamu keliling yang menggendong bakul di punggung.,A h
 GLOSS_RONDA,Jaga malam bergiliran untuk menjaga keamanan desa. Orangnya disebut peronda.,The night watch that villagers take turns keeping. The watchmen are called peronda.
 GLOSS_SESAJEN,"Persembahan berupa bunga, makanan, dan kemenyan untuk menghormati yang gaib.","An offering of flowers, food, and incense to honor the unseen."
 GLOSS_KEMENYAN,Getah harum yang dibakar dalam doa dan upacara.,A fragrant resin burned during prayers and ceremonies.
+GLOSS_CANGKRIMAN,"Teka-teki Jawa. Yang terkenal misalnya pitik walik saba kebon, ""ayam terbalik berkeliaran di kebun"", dan jawabannya nanas.","A Javanese riddle. A well-known one is pitik walik saba kebon, ""an upside-down chicken roaming the garden"". The answer is a pineapple."
 GLOSS_BERINGIN,Pohon besar berakar gantung yang sering dianggap keramat.,"A great banyan tree with hanging roots, often held to be sacred."
 GLOSS_MEJAYAN,"Kecamatan di Kabupaten Madiun, Jawa Timur, tempat Dongkrek lahir. Tempat ini nyata.","A district in Madiun Regency, East Java, where Dongkrek was born. It is a real place."
 GLOSS_WINGIT,"Angker dan keramat, membuat bulu kuduk berdiri. Di game: Rumpun Bambu Wingit.","Eerie and sacred, the kind of place that makes your hair stand on end. In the game: the haunted bamboo grove."
@@ -780,12 +808,14 @@ GLOSS_TEGAL,Ladang atau tanah lapang. Ilalang adalah rumput liar yang tinggi.,A 
 GLOSS_ALAS,Hutan. Alas Jati Peteng berarti hutan jati yang gelap.,Forest. Alas Jati Peteng means the dark teak forest.
 GLOSS_KALI,Sungai. Kali Watu berarti sungai berbatu.,River. Kali Watu means the rocky river.
 GLOSS_PRING,Bambu. Jembatan Pring berarti jembatan bambu.,Bamboo. Jembatan Pring means the bamboo bridge.
+GLOSS_PECINAN,Kampung tempat tinggal warga keturunan Cina. Di game: asal gong beri milik bapak Roro Perot.,The neighborhood where people of Chinese descent live. In the game: where Roro Perot's father got his gong beri.
 GLOSS_PELATARAN,Halaman luas di depan sebuah bangunan.,A wide courtyard in front of a building.
 GLOSS_KEBAYA,Baju perempuan Jawa. Kebaya kutubaru punya kain penghubung (bef) di bagian dada.,The traditional Javanese women's blouse. The kutubaru style has a connecting panel (bef) across the chest.
 GLOSS_SELENDANG,Kain panjang yang disampirkan di bahu. Dalam tari disebut sampur.,A long cloth draped over the shoulder. In dance it is called a sampur.
 GLOSS_SANGGUL,"Rambut yang digelung di belakang kepala, disebut juga konde.","Hair coiled into a bun at the back of the head, also called a konde."
 GLOSS_CUNDUK_MENTUL,"Hiasan sanggul berbentuk bunga di atas tangkai pegas, sehingga bergoyang saat dipakai.","A flower-shaped hair ornament on a spring, so it trembles as the wearer moves."
 GLOSS_SUBANG,Anting yang dipasang di cuping telinga.,An earring worn in the earlobe.
+GLOSS_BEDAK_DINGIN,"Bedak tradisional dari beras yang direndam berhari-hari lalu dijemur menjadi butiran. Dipakai dengan sedikit air, rasanya sejuk di wajah. Di game: ciri khas Roro Perot.","A traditional powder made from rice soaked for days and dried into small beads. Mixed with a little water, it feels cool on the face. In the game: Roro Perot's trademark."
 GLOSS_KERIS,Senjata tikam khas Jawa; banyak yang bilahnya berkelok (luk). Gambar kartu Sabet.,"The Javanese dagger, often with a wavy (luk) blade. Shown on the Sabet card."
 GLOSS_PADUPAN,Tempat membakar dupa atau kemenyan. Gambar kartu Semedi.,A burner for incense. Shown on the Semedi card.
 GLOSS_TOMBAK,Senjata berupa mata tajam di ujung tangkai panjang. Gambar kartu Tangkis Balik.,A spear. Shown on the Tangkis Balik card.
@@ -833,3 +863,5 @@ ORIGIN_ATURAN_PERMAINAN_TITLE,Aturan permainan,The rules of play
 ORIGIN_ATURAN_PERMAINAN_TEXT,"Kartu yang bisa digabung, Greget, Wirama, irama Sapu Jagad, Tantangan, dan Bintang Dongkrek adalah aturan permainan rekaan. Nama-namanya dipinjam dari bahasa dan budaya Jawa.","Mergeable cards, Greget, Wirama, the Sapu Jagad rhythm, challenges, and Dongkrek Stars are game rules. Their names are borrowed from Javanese language and culture."
 ORIGIN_KEJADIAN_DI_PERJALANAN_TITLE,Kejadian di perjalanan,Events on the road
 ORIGIN_KEJADIAN_DI_PERJALANAN_TEXT,"Pertemuan dengan mbok jamu, pande gamelan, peronda, dan Buto kecil yang tersesat adalah rekaan, meski tokoh-tokohnya akrab dalam kehidupan desa Jawa.","Meeting the jamu seller, the gamelan smith, the night watch, and the lost little Buto are made up, even though such people are familiar in Javanese village life."
+ORIGIN_PERAN_RORO_PEROT_TITLE,Peran Roro Perot,Roro Perot's role
+ORIGIN_PERAN_RORO_PEROT_TEXT,"Di Dongkrek, Roro Perot adalah topeng jenaka. Di game ia menjadi kawan Roro Ayu yang berbedak dingin dan gemar cangkriman. Peran itu rekaan, begitu juga gong beri dari Pecinan milik bapaknya.","In Dongkrek, Roro Perot is a comic mask. In the game she is Roro Ayu's friend who wears bedak dingin and loves riddles. That role is made up, and so is her father's gong beri from the Pecinan."

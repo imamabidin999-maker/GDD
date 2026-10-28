@@ -91,6 +91,8 @@ Semua Buto Murka bisa **Ngamuk**: setiap aksi mengisi satu titik Amuk (api di at
 
 ### Berkah Roro Ayu
 
+Roro Ayu, gadis desa yang menemani Eyang Palang, berdiri di samping panel berkah. Setelah babak 3 ia juga ikut berjalan di belakang Eyang di peta. Kawannya yang jenaka, **Roro Perot** (wajahnya selalu berbedak dingin), muncul di dua kejadian perjalanan, dan halamannya di Pustaka terbuka setelah kalian bertemu.
+
 Kemenangan **pertama** di setiap babak memberi satu berkah: pilih satu dari tiga pilihan acak. Babak yang diulang tidak memberi berkah lagi, jadi sepanjang petualangan ada 9 berkah.
 
 | Berkah | Efek | Batas |
@@ -123,7 +125,7 @@ Saat berkah kartu Tabuh dipilih, kamu memilih kartu mana yang diganti. Bintang k
 
 ### Kejadian di perjalanan
 
-Setelah kemenangan pertama di babak 2, 4, 6, dan 8, sebuah kejadian menunggu di peta: Mbok Jamu Gendong, Pande Gamelan, Peronda Desa, Buto Kecil Tersesat, dan lainnya (ada delapan). Setiap kejadian punya dua pilihan, misalnya menukar sedikit Nyawa maksimal dengan kartu Tabuh, menempa satu kartu pilihanmu, atau menerima berkah. Kejadian yang sudah dialami tidak muncul lagi di petualangan yang sama.
+Setelah kemenangan pertama di babak 2, 4, 6, dan 8, sebuah kejadian menunggu di peta: Mbok Jamu Gendong, Pande Gamelan, Peronda Desa, Buto Kecil Tersesat, cangkriman Roro Perot, dan lainnya (ada sepuluh). Setiap kejadian punya dua pilihan, misalnya menukar sedikit Nyawa maksimal dengan kartu Tabuh, menempa satu kartu pilihanmu, atau menerima berkah. Kejadian yang sudah dialami tidak muncul lagi di petualangan yang sama.
 
 ### Tantangan dan Bintang Dongkrek
 

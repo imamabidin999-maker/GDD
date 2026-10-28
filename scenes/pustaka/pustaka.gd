@@ -5,7 +5,16 @@ extends Control
 
 const BG := preload("res://assets/backgrounds/menu.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
+const RORO_AYU := preload("res://assets/sprites/roro/roro_ayu_idle.png")
+const RORO_PEROT := preload("res://assets/sprites/roro/roro_perot_idle.png")
 const BUTO_KEYS: Array[String] = ["kuning", "hijau", "merah", "putih", "hitam"]
+## Istilah yang menjadi pokok halaman itu sendiri, jadi tidak ditandai lagi di sana.
+const PAGE_TERMS := {
+	"dongkrek": ["GLOSS_DONGKREK"],
+	"eyang": ["GLOSS_EYANG", "GLOSS_PALANG"],
+	"roro_ayu": ["GLOSS_RORO_AYU"],
+	"roro_perot": ["GLOSS_RORO_PEROT"],
+}
 ## Warna tanda asal-usul: kisah Dongkrek, budaya Jawa, rekaan game.
 const ORIGIN_COLORS := {"asli": UIKit.COLOR_GOLD, "budaya": UIKit.COLOR_BLUE, "rekaan": UIKit.COLOR_PURPLE}
 
@@ -73,6 +82,8 @@ func _build() -> void:
 	list_panel.add_child(_list)
 	_add_entry("dongkrek", tr("PUSTAKA_DONGKREK"))
 	_add_entry("eyang", tr("PUSTAKA_EYANG"))
+	_add_entry("roro_ayu", tr("PUSTAKA_RORO_AYU"))
+	_add_entry("roro_perot", tr("PUSTAKA_RORO_PEROT") if _met_perot() else "? ? ?")
 	for key: String in BUTO_KEYS:
 		var seen := GameState.seen_buto.has(key)
 		_add_entry(key, tr("BUTO_" + key.to_upper()) if seen else "? ? ?")
@@ -113,6 +124,8 @@ func _show(key: String) -> void:
 	_current = key
 	_tooltip_hide()
 	_glossary_used.clear()
+	for term: String in PAGE_TERMS.get(key, []):
+		_glossary_used[term] = true
 	for child: Node in _content.get_children():
 		child.queue_free()
 	_scroll.scroll_vertical = 0
@@ -129,6 +142,15 @@ func _show(key: String) -> void:
 		"eyang":
 			_figure(HERO, tr("PUSTAKA_EYANG"), [], tr("PUSTAKA_EYANG_TEXT"), false,
 				_origin_tag(["asli"], tr("ORIGIN_TAG_EYANG")))
+		"roro_ayu":
+			_figure(RORO_AYU, tr("PUSTAKA_RORO_AYU"), [], tr("PUSTAKA_RORO_AYU_TEXT"), false,
+				_origin_tag(["asli", "rekaan"], tr("ORIGIN_TAG_RORO")))
+		"roro_perot":
+			if _met_perot():
+				_figure(RORO_PEROT, tr("PUSTAKA_RORO_PEROT"), [], tr("PUSTAKA_RORO_PEROT_TEXT"), false,
+					_origin_tag(["asli", "rekaan"], tr("ORIGIN_TAG_RORO")))
+			else:
+				_figure(RORO_PEROT, "? ? ?", [], tr("PUSTAKA_PEROT_LOCKED"), true)
 		"howto":
 			_heading(tr("PUSTAKA_HOWTO"))
 			_paragraph(tr("PUSTAKA_HOWTO_TEXT"))
@@ -144,6 +166,14 @@ func _show(key: String) -> void:
 			_show_bala()
 		_:
 			_show_buto(key)
+
+
+## Roro Perot baru terbuka setelah ditemui di salah satu kejadiannya.
+func _met_perot() -> bool:
+	for id: String in JourneyEvents.PEROT_EVENTS:
+		if GameState.seen_events.has(id):
+			return true
+	return false
 
 
 func _show_buto(key: String) -> void:

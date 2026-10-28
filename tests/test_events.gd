@@ -31,7 +31,11 @@ func _run() -> void:
 
 	print("[Data kejadian]")
 	var ids := JourneyEvents.ids()
-	check(ids.size() == 8, "delapan kejadian")
+	check(ids.size() == 10, "sepuluh kejadian")
+	var perot_ok := true
+	for id: String in JourneyEvents.PEROT_EVENTS:
+		perot_ok = perot_ok and ids.has(id)
+	check(perot_ok and JourneyEvents.PEROT_EVENTS.size() == 2, "dua kejadian bersama Roro Perot")
 	var effects_ok := true
 	var texts_ok := true
 	var icons_ok := true
@@ -65,12 +69,12 @@ func _run() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 4
 	var seen: Array[String] = []
-	for i: int in 8:
+	for i: int in 10:
 		var id := JourneyEvents.pick(rng, seen)
 		if seen.has(id):
 			break
 		seen.append(id)
-	check(seen.size() == 8, "delapan undian tanpa pengulangan")
+	check(seen.size() == 10, "sepuluh undian tanpa pengulangan")
 	check(JourneyEvents.pick(rng, seen) == "", "semua sudah dialami: kosong")
 
 	print("[Efek pada profil (GameState)]")

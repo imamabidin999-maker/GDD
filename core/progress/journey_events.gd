@@ -26,7 +26,11 @@ const EVENTS := [
 	{"id": "peronda", "icon": "res://assets/cards/icon_bedug.png", "a": "tabuh:bedug", "b": "hp:+8,downgrade_random"},
 	{"id": "buto_kecil", "icon": "res://assets/ui/portrait_buto_kuning.png", "a": "upgrade_random_tabuh", "b": "hp:+8"},
 	{"id": "pengamen", "icon": "res://assets/cards/icon_kenong.png", "a": "hp:-5,tabuh:kenong", "b": "hp:+3"},
+	{"id": "cangkriman", "icon": "res://assets/ui/portrait_roro_perot.png", "a": "tabuh:beri", "b": "hp:+5"},
+	{"id": "bedak_dingin", "icon": "res://assets/ui/portrait_roro_perot.png", "a": "blessing:JAMU_BERAS_KENCUR|hp:+5", "b": "upgrade_random"},
 ]
+## Kejadian yang mempertemukan Eyang dengan Roro Perot (membuka halamannya di Pustaka).
+const PEROT_EVENTS: Array[String] = ["cangkriman", "bedak_dingin"]
 
 
 static func ids() -> Array[String]:

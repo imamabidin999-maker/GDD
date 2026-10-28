@@ -46,6 +46,15 @@ static func button(text: String, min_width: float = 0.0, big: bool = false) -> B
 	return b
 
 
+## Bagian gambar yang tidak transparan saja (misalnya sprite 160x160 yang
+## tokohnya hanya mengisi sebagian kanvas).
+static func trimmed(texture: Texture2D) -> Texture2D:
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(texture.get_image().get_used_rect())
+	return atlas
+
+
 static func icon(texture: Texture2D) -> TextureRect:
 	var t := TextureRect.new()
 	t.texture = texture

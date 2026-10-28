@@ -5,17 +5,22 @@ extends Control
 
 const BG := preload("res://assets/backgrounds/map_mejayan.png")
 const HERO := preload("res://assets/sprites/hero/eyang_palang_idle.png")
+const RORO_AYU := preload("res://assets/sprites/roro/roro_ayu_idle.png")
 const HEART := preload("res://assets/ui/mini_heart.png")
 const DECK := preload("res://assets/ui/mini_deck.png")
 const STAR := preload("res://assets/ui/mini_star.png")
 const STAR_EMPTY := preload("res://assets/ui/mini_star_empty.png")
 const HERO_SCALE := 0.3
 const HERO_OFFSET := Vector2(-24, 10)
+## Roro Ayu berjalan sedikit di belakang Eyang setelah bergabung di babak 3.
+const AYU_OFFSET := Vector2(-48, 9)
+const AYU_JOINS_AFTER := 3
 
 var _catalog: StageCatalog
 var _nodes: Array[StageNode] = []
 var _selected: StageNode
 var _hero: Sprite2D
+var _ayu: Sprite2D
 var _node_layer: Control
 var _ui: Control
 var _overlay: Control
@@ -39,6 +44,9 @@ func _ready() -> void:
 	_node_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_node_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_node_layer)
+	if GameState.is_stage_cleared(AYU_JOINS_AFTER):
+		_ayu = Ambient.breathing_sprite(RORO_AYU, Vector2.ZERO, false, HERO_SCALE)
+		world.add_child(_ayu)
 	_hero = Ambient.breathing_sprite(HERO, Vector2.ZERO, false, HERO_SCALE)
 	world.add_child(_hero)
 
@@ -57,6 +65,8 @@ func _ready() -> void:
 	_build_ui()
 	var start := _nodes[_default_stage() - 1]
 	_hero.position = start.stage.map_position + HERO_OFFSET
+	if _ayu != null:
+		_ayu.position = start.stage.map_position + AYU_OFFSET
 	_select(start, false)
 	AudioManager.play_music("map")
 	if not GameState.prologue_seen:
@@ -278,6 +288,10 @@ func _select(node: StageNode, with_sound: bool) -> void:
 		var target := node.stage.map_position + HERO_OFFSET
 		var t := create_tween()
 		t.tween_property(_hero, "position", target, 0.35).set_trans(Tween.TRANS_SINE)
+		if _ayu != null:
+			var follow := create_tween()
+			follow.tween_interval(0.12)
+			follow.tween_property(_ayu, "position", node.stage.map_position + AYU_OFFSET, 0.35).set_trans(Tween.TRANS_SINE)
 	if _info_col != null:
 		_fill_info(node)
 

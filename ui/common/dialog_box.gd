@@ -15,6 +15,7 @@ const CHARS_PER_SECOND := 55.0
 const PORTRAITS := {
 	"eyang": preload("res://assets/ui/portrait_eyang_palang.png"),
 	"roro_ayu": preload("res://assets/ui/portrait_roro_ayu.png"),
+	"roro_perot": preload("res://assets/ui/portrait_roro_perot.png"),
 	"buto_kuning": preload("res://assets/ui/portrait_buto_kuning.png"),
 	"buto_hijau": preload("res://assets/ui/portrait_buto_hijau.png"),
 	"buto_merah": preload("res://assets/ui/portrait_buto_merah.png"),
@@ -25,6 +26,7 @@ const NAME_COLORS := {
 	"eyang": Color(1.0, 0.86, 0.5),
 	"warga": Color(0.75, 0.85, 1.0),
 	"roro_ayu": Color(1.0, 0.7, 0.8),
+	"roro_perot": Color(0.62, 0.74, 1.0),
 	"narator": Color(0.7, 0.72, 0.82),
 }
 

@@ -27,6 +27,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from portrait_roro_ayu import draw_roro_ayu
+from roro_sprites import draw_ayu_sprite, draw_perot_portrait, draw_perot_sprite
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "docs", "desain_asli")
@@ -886,6 +887,12 @@ def build_masks(chars: dict[str, Image.Image]) -> None:
     # Potret Roro Ayu dipotong dari desain sprite diamnya, kebayanya diputihkan
     # (tools/portrait_roro_ayu.py).
     save(draw_roro_ayu(), "ui/portrait_roro_ayu.png")
+    # Sprite badan penuh Roro Ayu dan Roro Perot, dibaca dari kisi asli desain
+    # yang sama. Roro Perot rancangan sementara turunan Roro Ayu
+    # (tools/roro_sprites.py).
+    save(draw_ayu_sprite(), "sprites/roro/roro_ayu_idle.png")
+    save(draw_perot_sprite(), "sprites/roro/roro_perot_idle.png")
+    save(draw_perot_portrait(), "ui/portrait_roro_perot.png")
 
 
 def build_app_icon() -> None:

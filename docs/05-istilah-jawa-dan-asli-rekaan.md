@@ -17,7 +17,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Sesepuh** | Orang yang dituakan di desa dan dimintai nasihat. |
 | **Wangsit** | Petunjuk gaib yang diterima lewat mimpi atau semedi. Menurut cerita, Eyang Palang mendapat wangsit untuk mengusir pagebluk dengan tabuhan dan arak-arakan. |
 | **Roro Ayu** | Roro (dari rara) berarti gadis, ayu berarti cantik. Dalam Dongkrek, Roro Ayu adalah topeng perempuan berwajah cantik. Di game: gadis desa yang menemani Eyang Palang dan memberi berkah. |
-| **Roro Perot** | Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Ia tidak muncul di game. |
+| **Roro Perot** | Perot berarti mencong. Topeng perempuan berwajah jenaka dengan mulut miring dalam Dongkrek. Di game: kawan Roro Ayu yang suka bercanda, wajahnya selalu berbedak dingin. |
 | **Buto** | Raksasa dalam wayang dan dongeng Jawa (dari kata buta). Dalam Dongkrek, para Buto bertopeng seram menjadi lambang pagebluk. |
 | **Genderuwo** | Makhluk halus bertubuh besar dan berbulu dalam kepercayaan Jawa. Topeng Buto di Dongkrek sering disebut topeng genderuwo. |
 | **Pagebluk** | Wabah penyakit yang menyerang banyak orang dalam waktu singkat. Di game: bencana yang dibawa Buto Hitam, juga nama tingkat kesulitan Ruwatan. |
@@ -93,6 +93,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Ronda** | Jaga malam bergiliran untuk menjaga keamanan desa. Orangnya disebut peronda. |
 | **Sesajen** | Persembahan berupa bunga, makanan, dan kemenyan untuk menghormati yang gaib. |
 | **Kemenyan** | Getah harum yang dibakar dalam doa dan upacara. |
+| **Cangkriman** | Teka-teki Jawa. Yang terkenal misalnya pitik walik saba kebon, "ayam terbalik berkeliaran di kebun", dan jawabannya nanas. |
 | **Beringin** | Pohon besar berakar gantung yang sering dianggap keramat. |
 
 ### Tempat
@@ -108,6 +109,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Alas** | Hutan. Alas Jati Peteng berarti hutan jati yang gelap. |
 | **Kali** | Sungai. Kali Watu berarti sungai berbatu. |
 | **Pring** | Bambu. Jembatan Pring berarti jembatan bambu. |
+| **Pecinan** | Kampung tempat tinggal warga keturunan Cina. Di game: asal gong beri milik bapak Roro Perot. |
 | **Pelataran** | Halaman luas di depan sebuah bangunan. |
 
 ### Busana dan benda
@@ -119,6 +121,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Sanggul** | Rambut yang digelung di belakang kepala, disebut juga konde. |
 | **Cunduk mentul** | Hiasan sanggul berbentuk bunga di atas tangkai pegas, sehingga bergoyang saat dipakai. |
 | **Subang** | Anting yang dipasang di cuping telinga. |
+| **Bedak dingin** | Bedak tradisional dari beras yang direndam berhari-hari lalu dijemur menjadi butiran. Dipakai dengan sedikit air, rasanya sejuk di wajah. Di game: ciri khas Roro Perot. |
 | **Keris** | Senjata tikam khas Jawa; banyak yang bilahnya berkelok (luk). Gambar kartu Sabet. |
 | **Padupan** | Tempat membakar dupa atau kemenyan. Gambar kartu Semedi. |
 | **Tombak** | Senjata berupa mata tajam di ujung tangkai panjang. Gambar kartu Tangkis Balik. |
@@ -160,6 +163,7 @@ Game ini terinspirasi dari kisah Dongkrek, tetapi banyak bagiannya dikarang untu
 - **Peran Roro Ayu.** Di Dongkrek, Roro Ayu adalah topeng dalam pertunjukan. Perannya sebagai gadis desa yang menemani Eyang Palang dan memberi berkah adalah rekaan.
 - **Aturan permainan.** Kartu yang bisa digabung, Greget, Wirama, irama Sapu Jagad, Tantangan, dan Bintang Dongkrek adalah aturan permainan rekaan. Nama-namanya dipinjam dari bahasa dan budaya Jawa.
 - **Kejadian di perjalanan.** Pertemuan dengan mbok jamu, pande gamelan, peronda, dan Buto kecil yang tersesat adalah rekaan, meski tokoh-tokohnya akrab dalam kehidupan desa Jawa.
+- **Peran Roro Perot.** Di Dongkrek, Roro Perot adalah topeng jenaka. Di game ia menjadi kawan Roro Ayu yang berbedak dingin dan gemar cangkriman. Peran itu rekaan, begitu juga gong beri dari Pecinan milik bapaknya.
 
 ## Catatan tentang sumber
 

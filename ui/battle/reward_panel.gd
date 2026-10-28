@@ -7,6 +7,8 @@ extends Control
 
 signal done
 
+const RORO_AYU := preload("res://assets/sprites/roro/roro_ayu_idle.png")
+
 const BLESS_ICONS := {
 	Blessings.Kind.TEMPA_SABET: preload("res://assets/cards/icon_serang.png"),
 	Blessings.Kind.OLAH_SEMEDI: preload("res://assets/cards/icon_fokus.png"),
@@ -47,8 +49,11 @@ func _ready() -> void:
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"GoldPanel"
 	add_child(UIKit.center(panel))
+	var row := UIKit.hbox(10)
+	panel.add_child(row)
+	row.add_child(_roro_ayu())
 	_col = UIKit.vbox(8)
-	panel.add_child(_col)
+	row.add_child(_col)
 	var title := UIKit.label(tr("REWARD_TITLE"), &"HeaderLabel")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_col.add_child(title)
@@ -83,6 +88,21 @@ func _ready() -> void:
 			if not again.is_empty():
 				_fill_choices(again))
 		_col.add_child(_reroll)
+
+
+# Roro Ayu berdiri di kiri panel dan bernapas pelan.
+func _roro_ayu() -> Control:
+	var tex := UIKit.trimmed(RORO_AYU)
+	var holder := Control.new()
+	holder.custom_minimum_size = tex.get_size()
+	holder.size_flags_vertical = Control.SIZE_SHRINK_END
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var figure := UIKit.icon(tex)
+	holder.add_child(figure)
+	var t := figure.create_tween().set_loops()
+	t.tween_property(figure, "position:y", -2.0, 1.2).set_trans(Tween.TRANS_SINE)
+	t.tween_property(figure, "position:y", 0.0, 1.2).set_trans(Tween.TRANS_SINE)
+	return holder
 
 
 func _fill_choices(options: Array[Blessings.Kind]) -> void:
