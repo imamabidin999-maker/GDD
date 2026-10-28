@@ -27,3 +27,20 @@ Catatan untuk rangkaian pembaruan setelah halaman Istilah Jawa dan Asli atau Rek
 - Didapat dari berkah Roro Ayu (sekali, seperti kartu Tabuh lain). Istilah **Gong beri** dan **Giris** masuk ke halaman Istilah Jawa, dan catatan Asli atau Rekaan tentang alat musik Dongkrek diperbarui.
 - Simulasi 200 kali per babak, sebelum dan sesudah Gong Beri masuk undian berkah: bot cerdas 80% → 78% di babak 9 dan 91% → 92% di babak 10. Bot santai (yang memainkan kartu dari kiri tanpa melihat niat Buto) 45% → 38% dan 35% → 31%. Selisihnya masih dalam batas acak undian berkah, dan wajar kalau bot santai sedikit dirugikan, karena kartu tanpa damage hanya berguna kalau dimainkan pada saat yang tepat.
 - Ruwatan (150 kali per tingkat, bot cerdas): tingkat 1 tetap 78%, tingkat 3 48% → 39%, tingkat 5 36% → 33%, tingkat 7 tetap 25%, tingkat 10 3% → 1%. Sedikit turun karena bot memilih berkah secara acak, jadi kadang menukar kartu serang dengan Gong Beri. Pemain yang memilih sendiri tidak terkena masalah ini, jadi angkanya tidak diubah.
+
+## 3. Musik Battle Tambahan
+
+Sebelumnya semua babak memakai satu lagu battle, kecuali Buto Hitam. Sekarang setiap bagian cerita punya lagunya sendiri, dan semuanya tetap disintesis dari bunyi gamelan Dongkrek yang sama (bedug, korek, kentongan, kendang, saron, bonang, kenong, kempul, gong, slompret, suling):
+
+| Lagu | Dipakai di | Ciri |
+|---|---|---|
+| `battle` | Babak 1–4 | Slendro, 132 ketukan per menit (lagu lama) |
+| `battle_murka` | Babak 5–8 (Buto Murka) | Pelog yang lebih gelap, 126 ketukan, dua bonang bergantian (imbal), dengung rendah tipis, kentongan titir tiap delapan ketukan |
+| `battle_candi` | Babak 9 (empat Buto Murka di Candi Pagebluk) | Slendro cepat, 148 ketukan, gong tiap delapan ketukan, desir yang naik menjelang gong |
+| `boss` | Buto Hitam fase pertama | Pelog, 140 ketukan (lagu lama) |
+| `boss2` | Buto Hitam fase kedua | Pola **sampak**: kenong di setiap ketukan, kempul berselang, gong tiap delapan ketukan, 156 ketukan, dengung yang perlahan naik, slompret meraung |
+
+- Sampak dipilih untuk fase kedua karena di pertunjukan wayang, pola inilah yang dipakai untuk adegan perang yang memuncak.
+- Lagu berganti dengan *crossfade* tepat saat Buto Hitam masuk fase kedua.
+- Ruwatan ikut memakai lagu sesuai jenis langkahnya: battle biasa, Buto Murka, dua Buto Murka (lagu Candi Pagebluk), lalu bos.
+- Ketiga lagu dibuat dengan deret acak masing-masing (`build_audio.py --tambahan`), jadi lagu dan bunyi lama tidak berubah. Kekerasan suaranya disamakan dengan lagu lama (RMS sekitar 0,13–0,145), dan ujung loop-nya disambung ke awal supaya tidak terdengar patah.

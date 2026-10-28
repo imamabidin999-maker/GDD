@@ -241,6 +241,7 @@ python3 tools/build_backgrounds.py # latar battle tiap babak, menu, dan ending
 python3 tools/build_audio.py       # musik & efek suara (butuh numpy, scipy, ffmpeg)
                                    # --gebrakan: hanya iringan dan bunyi Sapu Jagad
                                    # --kartu: hanya bunyi kartu (gabung, main, tarik, geser)
+                                   # --tambahan: hanya bunyi gong beri dan lagu battle tambahan
 python3 tools/glossary_source.py   # Istilah Jawa & Asli atau Rekaan -> data Pustaka + docs/05
 python3 tools/strings_source.py    # teks dua bahasa -> localization/strings.csv
 godot --headless -s tools/generate_data.gd      # data kartu & stage
@@ -291,7 +292,7 @@ Angka Buto Ruwatan dan aturan tiap tingkat ada di `core/progress/ruwatan_run.gd`
 ## Kredit
 
 - Desain karakter dan kartu: pemilik proyek (lihat `docs/desain_asli/`)
-- Latar, peta, aset tambahan, musik, dan efek suara: digambar dan disintesis lewat skrip di `tools/`
+- Latar, peta, aset tambahan, musik, dan efek suara: digambar dan disintesis lewat skrip di `tools/`. Ada enam lagu battle: Bagian I, Bagian II (Buto Murka, pelog dengan bonang imbal), babak 9 (Candi Pagebluk), dan Buto Hitam dua fase (fase kedua memakai pola sampak, irama tercepat untuk perang di pertunjukan wayang). Ruwatan memakai lagu yang sama dengan bagian cerita yang setara.
 - Font: Tiny5 dan Silkscreen, lisensi SIL Open Font License (`assets/fonts/OFL.txt`)
 - Mesin: Godot Engine 4.7
 - Terinspirasi dari kesenian Dongkrek, Mejayan, Kabupaten Madiun, Jawa Timur

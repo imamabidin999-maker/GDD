@@ -9,7 +9,8 @@ Butuh: numpy, scipy, ffmpeg (encoder libvorbis).
 Pemakaian: python3 tools/build_audio.py
            python3 tools/build_audio.py --gebrakan   (hanya bunyi Sapu Jagad)
            python3 tools/build_audio.py --kartu      (hanya bunyi kartu)
-           python3 tools/build_audio.py --tambahan   (hanya bunyi tambahan, misalnya gong beri)
+           python3 tools/build_audio.py --tambahan   (hanya bunyi dan lagu tambahan: gong beri,
+                                                      battle Bagian II, babak 9, fase 2 Buto Hitam)
 """
 import os
 import subprocess
@@ -447,6 +448,175 @@ def song_boss():
     return normalize(finish_loop(mix, loop), 0.14)
 
 
+def bonang_imbal(mix, bal, beat, scale, base, gain=0.09):
+    """Dua bonang bergantian (imbal): satu di ketukan, satu di sela ketukan."""
+    for i, note in enumerate(bal):
+        current = note
+        j = i
+        while current is None and j > 0:
+            j -= 1
+            current = bal[j]
+        if current is None:
+            continue
+        nxt = bal[(i + 1) % len(bal)] or current
+        mix.add(bonang(pitch(current + "'", scale, base)), i * beat, gain, 0.45)
+        mix.add(bonang(pitch(nxt + "'", scale, base)), (i + 0.5) * beat, gain * 0.85, -0.45)
+        mix.add(bonang(pitch(current + "'", scale, base)), (i + 0.75) * beat, gain * 0.6, 0.45)
+
+
+def riser(dur, lo=300, hi=3500):
+    """Desir yang naik menjelang gong (derau yang filternya makin terbuka)."""
+    t = t_axis(dur)
+    x = noise(len(t))
+    out = np.zeros(len(t))
+    parts = 8
+    step = len(t) // parts
+    for k in range(parts):
+        f = lo + (hi - lo) * (k + 1) / parts
+        seg = slice(k * step, len(t) if k == parts - 1 else (k + 1) * step)
+        out[seg] = lp(x, f)[seg]
+    return out * (t / dur) ** 2
+
+
+def song_battle_murka():
+    """Battle Bagian II: para Buto Murka. Pelog yang lebih gelap, bonang imbal,
+    dan dengung rendah tipis; lebih tegang daripada battle Bagian I."""
+    bpm, scale, base = 126, PELOG, 240.0
+    beat = 60 / bpm
+    bal = beats_of("6 5 3 2 | 3 5 6 7 | 6 5 3 2 | 1 2 3 5 |"
+                   "6 7 5 6 | 3 2 1 2 | 3 5 6 5 | 3 2 1 6,") * 2
+    loop = len(bal) * beat
+    mix = Mix(loop + 6)
+    for i, note in enumerate(bal):
+        if note:
+            mix.add(saron(pitch(note, scale, base)), i * beat, 0.3, -0.35)
+            mix.add(saron(pitch(note + ",", scale, base)), i * beat, 0.12, -0.1)
+    bonang_imbal(mix, bal, beat, scale, base)
+    colotomic(mix, bal, beat, scale, base, vel=1.05, gong_f=58.0)
+    for i in range(len(bal)):
+        pos = i % 4
+        t = i * beat
+        if pos == 0:
+            mix.add(bedug(54, 1.0), t, 0.55)
+        if pos == 2:
+            mix.add(bedug(54, 0.8), t, 0.45)
+            mix.add(bedug(60, 0.6), t + beat * 0.75, 0.3)
+        mix.add(korek(0.8, clicks=7, dur=0.22), t + beat * 0.5, 0.2, 0.2)
+        if pos == 3:
+            mix.add(korek(1.0), t, 0.24, 0.15)
+        mix.add(kendang("tak", 0.6), t + beat * 0.25, 0.16, -0.1)
+        if pos in (1, 3):
+            mix.add(kendang("dang", 0.8), t + beat * 0.5, 0.26, -0.1)
+        if i % 16 == 14:
+            mix.add(riser(beat * 2), t, 0.06)
+        if i % 16 >= 14:
+            for q in (0.25, 0.5, 0.75):
+                mix.add(kendang("tung", 0.8), t + beat * q, 0.24, -0.1)
+        if i % 8 == 7:
+            for q in (0.0, 0.25, 0.5, 0.75):
+                mix.add(kentongan(760, 0.45), t + beat * q, 0.09, 0.5)
+    t = t_axis(loop + 2)
+    drone_f = pitch("6,", scale, base) / 2
+    drone = np.sin(2 * np.pi * drone_f * t) * (0.6 + 0.4 * np.sin(2 * np.pi * t / (loop / 2)))
+    mix.add(lp(drone, 260), 0, 0.07)
+    lead = [("6", 1), ("7", 1), ("1'", 1.5), ("7", 0.5), ("6", 1), ("5", 1), ("6", 2),
+            ("3'", 1), ("2'", 0.5), ("1'", 0.5), ("7", 1), ("6", 1), ("5", 1), ("3", 1), ("5", 2),
+            ("6", 1), ("1'", 1), ("2'", 1), ("3'", 1), ("5'", 1), ("3'", 0.5), ("2'", 0.5), ("1'", 2),
+            ("2'", 1), ("1'", 0.5), ("7", 0.5), ("6", 1), ("5", 1), ("3", 1), ("5", 1), ("6", 2)]
+    mix.add(melody_line(lead, bpm, scale, base, "slompret"), 0, 0.19, 0.05)
+    mix.add(melody_line(lead, bpm, scale, base, "suling", octave=1), loop / 2, 0.11, -0.05)
+    return normalize(finish_loop(mix, loop), 0.13)
+
+
+def song_battle_candi():
+    """Battle babak 9 di Candi Pagebluk: empat Buto Murka sekaligus. Cepat,
+    gong tiap delapan ketukan, desir naik menjelang gong."""
+    bpm, scale, base = 148, SLENDRO, 262.0
+    beat = 60 / bpm
+    bal = beats_of("2 3 2 1 | 2 3 2 1 | 3 5 6 5 | 3 2 1 6, |"
+                   "1 6, 5, 6, | 1 2 3 2 | 5 6 1' 6 | 5 3 2 1") * 2
+    loop = len(bal) * beat
+    mix = Mix(loop + 6)
+    for i, note in enumerate(bal):
+        if note:
+            mix.add(saron(pitch(note, scale, base)), i * beat, 0.3, -0.35)
+            for half in (0, 0.5):
+                mix.add(saron(pitch(note + "'", scale, base)), (i + half) * beat, 0.1, 0.4)
+    colotomic(mix, bal, beat, scale, base, gong_every=8, kenong_at=(1, 3, 5, 7), kempul_at=(2, 6),
+              vel=1.05, gong_f=60.0)
+    for i in range(len(bal)):
+        pos = i % 4
+        t = i * beat
+        mix.add(bedug(56, 1.0 if pos == 0 else 0.75), t, 0.5)
+        if pos in (1, 3):
+            mix.add(bedug(62, 0.7), t + beat * 0.5, 0.36)
+        mix.add(korek(0.9, clicks=6, dur=0.18), t + beat * 0.5, 0.22, 0.2)
+        mix.add(kendang("tak", 0.7), t + beat * 0.25, 0.17, -0.12)
+        mix.add(kendang("tak", 0.55), t + beat * 0.75, 0.14, -0.12)
+        if i % 8 == 6:
+            mix.add(riser(beat * 2, 400, 4500), t, 0.07)
+            for q in (0.0, 0.25, 0.5, 0.75):
+                mix.add(kentongan(840, 0.5), t + beat * q, 0.1, 0.5)
+                mix.add(kendang("tung", 0.8), t + beat * (1 + q), 0.22, -0.1)
+    lead = [("2'", 1), ("3'", 0.5), ("2'", 0.5), ("1'", 1), ("6", 1), ("5", 1), ("6", 1), ("1'", 2),
+            ("3'", 1), ("5'", 1), ("3'", 0.5), ("2'", 0.5), ("1'", 1), ("2'", 1), ("3'", 1), ("2'", 2),
+            ("5'", 1), ("6'", 0.5), ("5'", 0.5), ("3'", 1), ("2'", 1), ("3'", 1), ("5'", 1), ("6'", 2),
+            ("5'", 1), ("3'", 1), ("2'", 0.5), ("3'", 0.5), ("2'", 1), ("1'", 1), ("6", 1), ("1'", 2)]
+    mix.add(melody_line(lead, bpm, scale, base, "slompret"), 0, 0.2, 0.05)
+    mix.add(melody_line(lead, bpm, scale, base, "slompret", octave=1), loop / 2, 0.13, -0.05)
+    return normalize(finish_loop(mix, loop), 0.14)
+
+
+def song_boss_phase2():
+    """Fase kedua Buto Hitam: pola sampak (kenong di setiap ketukan, kempul
+    berselang, gong tiap delapan ketukan), irama tercepat untuk perang di
+    pertunjukan wayang. Dengung naik, slompret meraung."""
+    bpm, scale, base = 156, PELOG, 210.0
+    beat = 60 / bpm
+    bal = beats_of("1 1 1 1 | 3 3 3 3 | 2 2 2 2 | 6, 6, 6, 6, |"
+                   "5, 5, 5, 5, | 6, 6, 6, 6, | 3 3 3 3 | 2 2 1 1") * 2
+    loop = len(bal) * beat
+    mix = Mix(loop + 6)
+    for i, note in enumerate(bal):
+        if note:
+            mix.add(saron(pitch(note, scale, base)), i * beat, 0.3, -0.35)
+            mix.add(bonang(pitch(note + "'", scale, base)), (i + 0.5) * beat, 0.11, 0.45)
+        pos = i % 8
+        mix.add(kenong(pitch(note, scale, base)), i * beat, 0.16, 0.25)
+        if pos % 2 == 1:
+            mix.add(kempul(pitch(note + ",", scale, base)), i * beat, 0.24, -0.25)
+        if pos == 7:
+            mix.add(gong(52.0), i * beat, 0.75, 0.0)
+    for i in range(len(bal)):
+        pos = i % 4
+        t = i * beat
+        mix.add(bedug(48, 1.0), t, 0.55)
+        mix.add(bedug(52, 0.75), t + beat * 0.5, 0.4)
+        for q in (0.25, 0.75):
+            mix.add(korek(0.8, clicks=5, dur=0.14), t + beat * q, 0.17, 0.2)
+        if pos == 3:
+            for q in (0.0, 0.25, 0.5, 0.75):
+                mix.add(kendang("tung", 0.9), t + beat * q, 0.22, -0.12)
+        else:
+            mix.add(kendang("tak", 0.75), t + beat * 0.25, 0.18, -0.12)
+        if i % 16 == 14:
+            mix.add(riser(beat * 2, 300, 5000), t, 0.08)
+    t = t_axis(loop + 2)
+    drone_f = pitch("1,", scale, base) / 2
+    sweep = 1 + 0.06 * (t / (loop + 2))
+    phase = 2 * np.pi * np.cumsum(drone_f * sweep) / SR
+    drone = np.tanh(2.2 * (np.sin(phase) + 0.6 * np.sin(1.5 * phase + 0.7)))
+    drone *= 0.7 + 0.3 * np.sin(2 * np.pi * t / (loop / 4))
+    mix.add(lp(drone, 420), 0, 0.09)
+    lead = [("1'", 1), ("3'", 1), ("2'", 0.5), ("1'", 0.5), ("7", 1), ("6", 2), ("5", 1), ("6", 1),
+            ("1'", 0.5), ("2'", 0.5), ("3'", 1), ("4'", 1), ("3'", 1), ("2'", 2), ("1'", 2),
+            ("5'", 1.5), ("4'", 0.5), ("3'", 1), ("2'", 1), ("3'", 0.5), ("5'", 0.5), ("6'", 1), ("5'", 2),
+            ("3'", 1), ("2'", 1), ("1'", 1), ("7", 1), ("6", 0.5), ("7", 0.5), ("1'", 1), ("1'", 2)]
+    mix.add(melody_line(lead, bpm, scale, base, "slompret"), 0, 0.2, 0.05)
+    mix.add(melody_line(lead, bpm, scale, base, "slompret", octave=1), loop / 2, 0.16, -0.05)
+    return normalize(finish_loop(mix, loop), 0.145)
+
+
 def song_map():
     bpm, scale, base = 96, SLENDRO, 290.0
     beat = 60 / bpm
@@ -733,6 +903,14 @@ def own_rng(seed, fn, *args):
         rng = saved
 
 
+def build_extra_music():
+    """Lagu yang ditambahkan belakangan (masing-masing berderet acak sendiri)."""
+    songs = {"battle_murka": (41, song_battle_murka), "battle_candi": (43, song_battle_candi),
+             "boss2": (47, song_boss_phase2)}
+    for name, (seed, fn) in songs.items():
+        write_ogg(os.path.join(OUT_BGM, name + ".ogg"), own_rng(seed, fn), quality=4)
+
+
 def build_extra_sfx():
     """Efek suara yang ditambahkan belakangan (masing-masing berderet acak sendiri)."""
     extra = {"gong_beri": own_rng(31, gong_beri)}
@@ -763,6 +941,7 @@ def main():
         return
     if "--tambahan" in sys.argv:
         build_extra_sfx()
+        build_extra_music()
         return
     os.makedirs(OUT_BGM, exist_ok=True)
     os.makedirs(OUT_SFX, exist_ok=True)
@@ -785,6 +964,7 @@ def main():
     build_gebrakan()
     build_card_sounds()
     build_extra_sfx()
+    build_extra_music()
 
 
 if __name__ == "__main__":

@@ -24,6 +24,7 @@ stage_number = 6
 chapter = 2
 title_key = "STAGE_6_TITLE"
 enemies = Array[ExtResource("1_k5mlm")]([SubResource("Resource_ea4jj"), SubResource("Resource_rs24f")])
+music = "battle_murka"
 map_position = Vector2(176, 184)
 background = "res://assets/backgrounds/stage_6.png"
 intro_dialog = PackedStringArray("narator|S6_INTRO_1", "buto_hijau|S6_INTRO_2", "eyang|S6_INTRO_3")

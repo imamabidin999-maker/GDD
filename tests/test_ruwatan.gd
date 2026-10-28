@@ -63,6 +63,11 @@ func _run() -> void:
 		"langkah 7: sepasang Buto Murka, Ngamuknya tidak bersamaan")
 	var boss := run.build_stage(7)
 	check(boss.is_boss and boss.music == "boss" and boss.enemies[0].buto_type == EnemyButo.ButoType.HITAM, "langkah 8: Buto Hitam")
+	var tracks: Array[String] = []
+	for i: int in RuwatanRun.STEPS.size():
+		tracks.append(RuwatanRun.music_for(i))
+	check(tracks == ["battle", "battle", "battle", "battle_murka", "battle_murka", "battle", "battle_candi", "boss"],
+		"lagu tiap langkah mengikuti bagian cerita yang setara")
 	check(run.enemy_specs(1)[0].max_hp == roundi(RuwatanRun.LEAD[run.enemy_specs(1)[0].buto_type][0] * RuwatanRun.SECOND_HP_MULT),
 		"battle kedua sedikit lebih alot")
 	var bg_ok := true

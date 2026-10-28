@@ -240,8 +240,13 @@ func _build_stages() -> void:
 	s10.victory_dialog = _with_speakers(s10.victory_dialog, ["buto_hitam", "eyang"])
 	stages.append(s10)
 
+	# Musik: Bagian I lagu battle biasa, Bagian II lagu Buto Murka, babak 9 lagu
+	# Candi Pagebluk, dan babak 10 lagu bos (fase kedua berganti ke "boss2").
+	s9.music = "battle_candi"
 	for stage: StageData in stages:
 		stage.chapter = 1 if stage.stage_number <= 4 else (2 if stage.stage_number <= 8 else 3)
+		if stage.chapter == 2:
+			stage.music = "battle_murka"
 		# Latar digambar khusus untuk tiap tempat (tools/build_backgrounds.py),
 		# jadi warnanya tidak perlu diwarnai lagi.
 		stage.background = "res://assets/backgrounds/stage_%d.png" % stage.stage_number

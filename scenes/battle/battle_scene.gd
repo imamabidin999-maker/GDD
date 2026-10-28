@@ -684,6 +684,8 @@ func _on_phase_changed(phase: int, buto: EnemyButo) -> void:
 	if buto.buto_type == EnemyButo.ButoType.HITAM:
 		_phase_dialog_pending = true
 		_hints.offer("pagebluk")
+		# Fase kedua punya lagunya sendiri: pola sampak yang lebih cepat.
+		AudioManager.play_music("boss2")
 
 
 func _on_enemy_hover(view: UnitView, hovering: bool) -> void:

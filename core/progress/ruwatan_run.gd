@@ -188,10 +188,25 @@ func build_stage(index: int = step) -> StageData:
 	stage.stage_number = 0
 	stage.enemies = enemy_specs(index)
 	stage.is_boss = index >= 0 and index < STEPS.size() and STEPS[index] == Step.BOSS
-	stage.music = "boss" if stage.is_boss else "battle"
+	stage.music = music_for(index)
 	if index >= 0 and index < backgrounds.size() and backgrounds[index] > 0:
 		stage.background = "res://assets/backgrounds/stage_%d.png" % backgrounds[index]
 	return stage
+
+
+## Lagu battle langkah `index`, sama dengan bagian cerita yang setara: battle
+## biasa, Buto Murka, Candi Pagebluk (dua Murka), lalu bos.
+static func music_for(index: int) -> String:
+	if index < 0 or index >= STEPS.size():
+		return "battle"
+	match STEPS[index]:
+		Step.MURKA:
+			return "battle_murka"
+		Step.TWIN_MURKA:
+			return "battle_candi"
+		Step.BOSS:
+			return "boss"
+	return "battle"
 
 
 ## EnemySpec langkah `index` dengan angka dasar (Tingkat Pagebluk dipasang

@@ -9,7 +9,10 @@ const MUSIC := {
 	"menu": "res://assets/audio/bgm/menu.ogg",
 	"map": "res://assets/audio/bgm/map.ogg",
 	"battle": "res://assets/audio/bgm/battle.ogg",
+	"battle_murka": "res://assets/audio/bgm/battle_murka.ogg",
+	"battle_candi": "res://assets/audio/bgm/battle_candi.ogg",
 	"boss": "res://assets/audio/bgm/boss.ogg",
+	"boss2": "res://assets/audio/bgm/boss2.ogg",
 	"victory": "res://assets/audio/bgm/victory.ogg",
 }
 
