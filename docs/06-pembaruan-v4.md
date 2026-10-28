@@ -63,3 +63,13 @@ Sebelumnya semua babak memakai satu lagu battle, kecuali Buto Hitam. Sekarang se
 - Halaman Roro Perot di Pustaka berupa siluet sampai ia ditemui di salah satu kejadiannya. Ia juga punya potret dan warna nama sendiri di kotak dialog untuk dipakai di penutup.
 - Istilah baru: **Cangkriman**, **Bedak dingin**, dan **Pecinan**. Catatan Roro Perot di halaman Istilah Jawa diperbarui (sebelumnya tertulis ia tidak muncul di game), dan ada unsur rekaan baru: *Peran Roro Perot*.
 - Di halaman Pustaka tentang seorang tokoh, nama tokoh itu sendiri tidak ditandai sebagai istilah lagi.
+
+## 5. Persimpangan Jalan
+
+- Sebelumnya, setelah kemenangan pertama di babak 2, 4, 6, dan 8 hanya ada satu kejadian acak. Sekarang Eyang tiba di **persimpangan jalan** dengan dua cabang, masing-masing menuju kejadian yang berbeda.
+- Setiap cabang diberi nama tempat dan petunjuk dari kejadian di ujungnya, tanpa membuka isinya: dentang palu dari jalan ke pandean, wangi kunyit dan kencur dari jalan desa, asap kemenyan dari jalan setapak ke beringin, isak tangis dari pinggir hutan, tawa cekikikan dari pematang sawah, dan seterusnya. Gambar kecil kejadiannya ikut tampil sebagai petunjuk tambahan.
+- Kejadian yang dipilih tercatat sudah dialami. Kejadian di cabang lain belum, jadi bisa muncul lagi di persimpangan berikutnya.
+- Kalau hanya tersisa satu kejadian yang belum dialami, kejadian itu langsung menunggu tanpa persimpangan.
+- Persimpangan yang belum dipilih ikut tersimpan (`pending_paths` di simpanan). Simpanan lama yang masih menyimpan satu kejadian tetap berjalan seperti biasa.
+- **Ruwatan**: kedua langkah kejadian juga berupa persimpangan. Cabang keduanya diundi dengan deret acak terpisah dari seed yang sama, jadi lawan, latar, dan kejadian utama dari Ruwatan yang sedang berjalan tidak berubah setelah pembaruan ini.
+- Penunjuk jalan digambar baru: tiang kayu dengan dua papan arah (`ui/crossroads.png`).

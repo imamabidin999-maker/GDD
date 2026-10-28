@@ -147,6 +147,25 @@ func _run() -> void:
 	var event_line := JourneyEvents.apply("hp:+8", p, rng)
 	check(p.max_hp == 48 and event_line != "", "kejadian bekerja pada profil Ruwatan")
 
+	print("[Cabang jalan Ruwatan]")
+	var forked := RuwatanRun.create(1, 11, _starter())
+	var same_seed := RuwatanRun.create(1, 11, _starter())
+	var forks_ok := forked.alt_events.size() == RuwatanRun.STEPS.size() and forked.alt_events == same_seed.alt_events
+	var all_events: Array[String] = []
+	for i: int in RuwatanRun.STEPS.size():
+		var main: String = forked.events[i]
+		var alt: String = forked.alt_events[i]
+		forks_ok = forks_ok and (alt == "") == (main == "")
+		for id: String in [main, alt]:
+			if id != "":
+				forks_ok = forks_ok and not all_events.has(id)
+				all_events.append(id)
+	check(forks_ok and all_events.size() == 4, "dua langkah kejadian, masing-masing dua cabang yang berbeda, sama untuk seed yang sama")
+	forked.step = 2
+	check(forked.current_paths() == [forked.events[2], forked.alt_events[2]], "langkah kejadian menawarkan dua cabang")
+	forked.step = 0
+	check(forked.current_paths().is_empty(), "langkah battle tidak punya cabang")
+
 	print("[Jalannya Ruwatan]")
 	var r := RuwatanRun.create(1, 11, _starter())
 	var saves := [0]

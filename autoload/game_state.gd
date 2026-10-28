@@ -45,6 +45,8 @@ var blessings: Array[String] = []
 var blessed_stages: Array[int] = []
 ## Kejadian di perjalanan yang menunggu di peta ("" kalau tidak ada).
 var pending_event: String = ""
+## Dua kejadian di persimpangan jalan; pemain memilih satu (lihat choose_path).
+var pending_paths: Array[String] = []
 ## Kejadian yang sudah dialami di petualangan ini (tidak diulang).
 var seen_events: Array[String] = []
 ## Bintang Dongkrek per babak: babak -> bitmask 3 bintang (lihat Challenges).
@@ -124,6 +126,7 @@ func new_game() -> void:
 	blessings.clear()
 	blessed_stages.clear()
 	pending_event = ""
+	pending_paths.clear()
 	seen_events.clear()
 	save_game()
 	progress_changed.emit()
@@ -300,17 +303,35 @@ func change_max_hp(delta: int) -> int:
 const EVENT_STAGES: Array[int] = [2, 4, 6, 8]
 
 
-## Dipanggil setelah berkah kemenangan pertama. Memilih kejadian acak yang
-## belum pernah dialami untuk ditampilkan di peta.
+## Dipanggil setelah berkah kemenangan pertama. Di peta, Eyang tiba di
+## persimpangan jalan: dua kejadian acak yang belum pernah dialami, masing-masing
+## di ujung satu jalan. Kalau hanya tersisa satu, kejadian itu langsung menunggu.
+## Mengembalikan kejadian pertama ("" kalau tidak ada).
 func queue_event_after(stage: int, rng: RandomNumberGenerator) -> String:
-	if not EVENT_STAGES.has(stage) or pending_event != "":
+	if not EVENT_STAGES.has(stage) or pending_event != "" or not pending_paths.is_empty():
 		return ""
-	var id := JourneyEvents.pick(rng, seen_events)
-	if id != "":
-		pending_event = id
-		seen_events.append(id)
-		save_game()
-	return id
+	var first := JourneyEvents.pick(rng, seen_events)
+	if first == "":
+		return ""
+	var second := JourneyEvents.pick(rng, seen_events + [first])
+	if second == "":
+		pending_event = first
+		seen_events.append(first)
+	else:
+		pending_paths.assign([first, second])
+	save_game()
+	return first
+
+
+## Jalan yang dipilih di persimpangan. Kejadian di jalan lain belum dialami,
+## jadi bisa muncul lagi di persimpangan berikutnya.
+func choose_path(id: String) -> void:
+	if not pending_paths.has(id):
+		return
+	pending_paths.clear()
+	pending_event = id
+	seen_events.append(id)
+	save_game()
 
 
 func finish_event() -> void:
@@ -534,6 +555,7 @@ func save_game() -> void:
 	cfg.set_value("progress", "blessings", blessings)
 	cfg.set_value("progress", "blessed_stages", blessed_stages)
 	cfg.set_value("progress", "pending_event", pending_event)
+	cfg.set_value("progress", "pending_paths", pending_paths)
 	cfg.set_value("progress", "seen_events", seen_events)
 	var stars_out := {}
 	for stage: Variant in stage_stars:
@@ -582,6 +604,14 @@ func load_game() -> void:
 	if not JourneyEvents.exists(pending_event):
 		pending_event = ""
 	seen_events.assign(cfg.get_value("progress", "seen_events", []))
+	pending_paths.clear()
+	var paths_in: Variant = cfg.get_value("progress", "pending_paths", [])
+	if paths_in is Array and (paths_in as Array).size() == 2 and pending_event == "":
+		for id: Variant in paths_in:
+			if id is String and JourneyEvents.exists(id) and not seen_events.has(id) and not pending_paths.has(id):
+				pending_paths.append(id)
+		if pending_paths.size() != 2:
+			pending_paths.clear()
 	stage_stars.clear()
 	var stars_in: Variant = cfg.get_value("progress", "stage_stars", {})
 	if stars_in is Dictionary:

@@ -71,6 +71,8 @@ func _ready() -> void:
 	AudioManager.play_music("map")
 	if not GameState.prologue_seen:
 		_play_prologue.call_deferred()
+	elif not GameState.pending_paths.is_empty():
+		_play_crossroads.call_deferred()
 	elif GameState.pending_event != "":
 		_play_event.call_deferred()
 
@@ -309,7 +311,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _overlay.get_child_count() > 0:
 		# Esc menutup overlay paling atas (kecuali dialog cerita).
 		var top := _overlay.get_child(-1)
-		if event.is_action_pressed("pause") and not (top is DialogBox or top is EventPanel or top is DeckPicker):
+		if event.is_action_pressed("pause") and not (top is DialogBox or top is EventPanel or top is DeckPicker or top is CrossroadsPanel):
 			_tooltip.hide_tip()
 			top.queue_free()
 			get_viewport().set_input_as_handled()
@@ -337,6 +339,16 @@ func _play_prologue() -> void:
 	await box.play(_catalog.prologue_dialog)
 	GameState.prologue_seen = true
 	GameState.save_game()
+
+
+# Persimpangan jalan: pemain memilih jalan, lalu kejadian di ujungnya dimulai.
+func _play_crossroads() -> void:
+	var panel := CrossroadsPanel.new()
+	panel.options = GameState.pending_paths.duplicate()
+	_overlay.add_child(panel)
+	var id: String = await panel.chosen
+	GameState.choose_path(id)
+	_play_event()
 
 
 func _play_event() -> void:

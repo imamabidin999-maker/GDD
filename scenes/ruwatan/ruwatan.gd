@@ -411,8 +411,15 @@ func _go() -> void:
 		return
 	if run.current_step() == RuwatanRun.Step.EVENT:
 		AudioManager.play_sfx("click")
+		var event_id := run.current_event()
+		var paths := run.current_paths()
+		if paths.size() >= 2:
+			var crossroads := CrossroadsPanel.new()
+			crossroads.options = paths
+			_overlay.add_child(crossroads)
+			event_id = await crossroads.chosen
 		var panel := EventPanel.new()
-		panel.event_id = run.current_event()
+		panel.event_id = event_id
 		panel.profile = run
 		_overlay.add_child(panel)
 		await panel.done

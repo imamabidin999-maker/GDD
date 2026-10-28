@@ -11,6 +11,7 @@ var _last_reward_already: bool = false
 var _picked_tabuh: int = 0
 var _challenge_panels: int = 0
 var _events_seen: int = 0
+var _forks_seen: int = 0
 
 
 func check(condition: bool, label: String) -> void:
@@ -167,6 +168,13 @@ func _scene_name() -> String:
 # Kejadian di perjalanan di peta: pilih pilihan pertama, pakai pemilih kartu
 # kalau muncul, lalu Lanjut.
 func _handle_event() -> void:
+	# Persimpangan jalan dulu: pilih jalan pertama.
+	var fork := _find_node("CrossroadsPanel")
+	if fork != null:
+		_forks_seen += 1
+		var paths := fork.find_children("*", "Button", true, false)
+		await click((paths[0] as Button).get_global_rect().get_center())
+		await _wait(0.4)
 	var ev := _find_node("EventPanel")
 	if ev == null:
 		return
@@ -270,6 +278,7 @@ func _play_ruwatan(gs: Node) -> void:
 	run.set("hp", 400)
 	var battles := 0
 	var events_before := _events_seen
+	var forks_before := _forks_seen
 	var rewards := 0
 	for guard: int in 30:
 		run = gs.get("ruwatan")
@@ -312,6 +321,7 @@ func _play_ruwatan(gs: Node) -> void:
 	check(run != null and int(run.get("state")) == 1, "Ruwatan berhasil sampai Buto Hitam")
 	print("  %d battle, %d berkah, %d kejadian" % [battles, rewards, _events_seen - events_before])
 	check(battles == 6 and rewards == 5 and _events_seen - events_before == 2, "enam battle, lima berkah, dua kejadian")
+	check(_forks_seen - forks_before == 2, "kedua kejadian Ruwatan didahului persimpangan jalan")
 	await _wait(1.0)
 	check(await click_button(tr("RUWATAN_DONE")), "panel hasil Ruwatan")
 	await _wait(0.6)
@@ -375,9 +385,12 @@ func _run() -> void:
 	await _wait(1.5)
 	check(_scene_name() == "main_menu", "kembali ke menu utama")
 	check(find_button(tr("MENU_CONTINUE")) != null, "menu utama menampilkan Lanjutkan")
-	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "satu berkah untuk setiap babak 1-9")
+	# Kejadian di perjalanan juga bisa memberi berkah, jadi yang dihitung babaknya.
+	check((gs.get("blessed_stages") as Array).size() == _stage_count() - 1 and (gs.get("blessings") as Array).size() >= _stage_count() - 1,
+		"satu berkah untuk setiap babak 1-9")
 	check(_challenge_panels == _stage_count() and gs.call("total_stars") >= _stage_count(), "Hasil Tantangan setiap babak, minimal satu bintang per babak (%d bintang)" % gs.call("total_stars"))
 	check(_events_seen == gs.get("EVENT_STAGES").size() and gs.get("pending_event") == "", "empat kejadian di perjalanan muncul dan selesai")
+	check(_forks_seen == _events_seen and (gs.get("pending_paths") as Array).is_empty(), "setiap kejadian didahului persimpangan jalan")
 	var tabuh_in_deck := 0
 	for spec: String in gs.get("deck"):
 		if Blessings.is_tabuh_spec(spec):
@@ -387,12 +400,13 @@ func _run() -> void:
 	check(tabuh_in_deck >= _picked_tabuh and (gs.get("deck") as Array).size() == 15, "kartu Tabuh masuk ke Jurus lewat pemilih kartu, deck tetap 15")
 
 	print("[Mengulang babak 1]")
+	var blessings_before := (gs.get("blessings") as Array).size()
 	await click_button(tr("MENU_CONTINUE"))
 	await _wait(1.2)
 	check(_scene_name() == "stage_map", "Lanjutkan membuka peta")
 	var replay_won := await _play_stage(1)
 	check(replay_won and _last_reward_already, "babak ulang dimenangkan tanpa berkah baru")
-	check((gs.get("blessings") as Array).size() == _stage_count() - 1, "jumlah berkah tetap")
+	check((gs.get("blessings") as Array).size() == blessings_before, "jumlah berkah tetap")
 	check(_scene_name() == "stage_map", "kembali ke peta")
 
 	await _play_ruwatan(gs)

@@ -25,6 +25,8 @@ const STEPS: Array[Step] = [
 	Step.MURKA, Step.EVENT, Step.TWIN_MURKA, Step.BOSS,
 ]
 const MAX_LEVEL := 10
+## Pengacak seed untuk deret acak cabang jalan kedua.
+const ALT_SEED_MASK := 0x5EED
 const START_HP := 70
 const MIN_MAX_HP := 30
 const HEAL_RATIO := 0.45
@@ -81,6 +83,10 @@ var excluded_blessings: Array = []
 var foes: Array = []
 ## Kejadian tiap langkah ("" kalau bukan langkah kejadian).
 var events: Array[String] = []
+## Kejadian di cabang jalan yang lain untuk setiap langkah kejadian ("" kalau
+## tidak ada). Diundi dengan deret acak terpisah supaya lawan dan latar dari
+## seed yang sama tidak berubah.
+var alt_events: Array[String] = []
 ## Latar tiap langkah (nomor babak cerita, 0 untuk kejadian).
 var backgrounds: Array[int] = []
 
@@ -132,6 +138,18 @@ func current_event() -> String:
 	if is_over() or step >= STEPS.size():
 		return ""
 	return events[step]
+
+
+## Kejadian di dua cabang jalan langkah ini (satu saja kalau cabang lain kosong).
+func current_paths() -> Array[String]:
+	var out: Array[String] = []
+	var main := current_event()
+	if main == "":
+		return out
+	out.append(main)
+	if step < alt_events.size() and alt_events[step] != "":
+		out.append(alt_events[step])
+	return out
 
 
 ## Langkah yang sudah dilewati (8 kalau Ruwatan berhasil).
@@ -306,6 +324,18 @@ func _generate() -> void:
 		if i > 0 and backgrounds[i - 1] > 0 and pool.size() > 1:
 			pool.erase(backgrounds[i - 1])
 		backgrounds.append(int(pool[rng.randi_range(0, pool.size() - 1)]) if not pool.is_empty() else 0)
+	# Cabang jalan kedua: deret acak sendiri, jadi lawan dari seed lama tetap sama.
+	var alt_rng := RandomNumberGenerator.new()
+	alt_rng.seed = seed_value ^ ALT_SEED_MASK
+	alt_events.clear()
+	var taken := picked_events.duplicate()
+	for id: String in events:
+		var alt := ""
+		if id != "":
+			alt = JourneyEvents.pick(alt_rng, taken)
+			if alt != "":
+				taken.append(alt)
+		alt_events.append(alt)
 
 
 func _pick_color(rng: RandomNumberGenerator, avoid: Array) -> EnemyButo.ButoType:

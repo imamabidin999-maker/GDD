@@ -125,7 +125,7 @@ Saat berkah kartu Tabuh dipilih, kamu memilih kartu mana yang diganti. Bintang k
 
 ### Kejadian di perjalanan
 
-Setelah kemenangan pertama di babak 2, 4, 6, dan 8, sebuah kejadian menunggu di peta: Mbok Jamu Gendong, Pande Gamelan, Peronda Desa, Buto Kecil Tersesat, cangkriman Roro Perot, dan lainnya (ada sepuluh). Setiap kejadian punya dua pilihan, misalnya menukar sedikit Nyawa maksimal dengan kartu Tabuh, menempa satu kartu pilihanmu, atau menerima berkah. Kejadian yang sudah dialami tidak muncul lagi di petualangan yang sama.
+Setelah kemenangan pertama di babak 2, 4, 6, dan 8, Eyang tiba di **persimpangan jalan**. Ada dua jalan, masing-masing dengan nama tempat dan petunjuk tentang apa yang menunggu di ujungnya (misalnya "Jalan ke pandean: dentang palu terdengar dari kejauhan"). Pilih satu, lalu kejadiannya dimulai: Mbok Jamu Gendong, Pande Gamelan, Peronda Desa, Buto Kecil Tersesat, cangkriman Roro Perot, dan lainnya (ada sepuluh). Setiap kejadian punya dua pilihan, misalnya menukar sedikit Nyawa maksimal dengan kartu Tabuh, menempa satu kartu pilihanmu, atau menerima berkah. Kejadian yang sudah dialami tidak muncul lagi di petualangan yang sama, tetapi kejadian di jalan yang tidak dipilih masih bisa muncul di persimpangan berikutnya. Langkah kejadian di Ruwatan juga berupa persimpangan.
 
 ### Tantangan dan Bintang Dongkrek
 

@@ -433,6 +433,24 @@ def draw_gong_beri(size: int = 40) -> Image.Image:
     return add_outline(img)
 
 
+def draw_signpost(size: int = 28) -> Image.Image:
+    """Tiang penunjuk jalan dari kayu dengan dua papan: ke kiri dan ke kanan."""
+    img, d = canvas(size, size)
+    d.rectangle([12, 4, 15, 27], fill=WOOD_D)
+    d.line([(13, 5), (13, 26)], fill=WOOD)
+    # papan kiri (lebih tinggi) dan papan kanan
+    d.polygon([(3, 7), (6, 4), (17, 4), (17, 10), (6, 10)], fill=WOOD)
+    d.line([(6, 5), (16, 5)], fill=WOOD_L)
+    d.polygon([(10, 13), (21, 13), (24, 16), (21, 19), (10, 19)], fill=WOOD)
+    d.line([(11, 14), (21, 14)], fill=WOOD_L)
+    # paku emas dan rumput di kaki tiang
+    d.point((14, 7), fill=GOLD_L)
+    d.point((13, 16), fill=GOLD_L)
+    for x, h in ((9, 3), (11, 2), (17, 3), (19, 2)):
+        d.line([(x, 27), (x, 27 - h)], fill=(92, 150, 80, 255))
+    return add_outline(img)
+
+
 # Kartu dasar bernuansa Jawa: keris (Sabet), padupan (Semedi), tameng (Tangkis),
 # dan tombak (Tangkis Balik), dengan palet kayu-perunggu yang sama dengan Tabuh.
 GOLD = (232, 182, 72, 255)
@@ -805,6 +823,7 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_gong_card(), "cards/icon_gong.png")
     save(draw_kenong(), "cards/icon_kenong.png")
     save(draw_gong_beri(), "cards/icon_beri.png")
+    save(draw_signpost(), "ui/crossroads.png")
     print("Ikon kecil:")
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",

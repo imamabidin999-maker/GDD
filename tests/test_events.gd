@@ -112,19 +112,40 @@ func _run() -> void:
 	check(gs.get("max_hp") == hp_before + 5 and (gs.get("blessings") as Array).count("JAMU_BERAS_KENCUR") == 1, "sudah punya: cadangan Nyawa +5")
 	check(JourneyEvents.apply("nothing", gs, rng) == "", "nothing: tidak ada perubahan")
 
-	print("[Antrean kejadian di GameState]")
+	print("[Persimpangan jalan di GameState]")
 	gs.call("new_game")
 	check(gs.call("queue_event_after", 1, rng) == "" and gs.get("pending_event") == "", "babak 1: tidak ada kejadian")
 	var queued: String = gs.call("queue_event_after", 2, rng)
-	check(queued != "" and gs.get("pending_event") == queued, "babak 2: kejadian menunggu")
+	var paths: Array = gs.get("pending_paths")
+	check(queued != "" and paths.size() == 2 and paths.has(queued) and paths[0] != paths[1] and gs.get("pending_event") == "",
+		"babak 2: dua jalan menunggu di persimpangan")
+	check((gs.get("seen_events") as Array).is_empty(), "sebelum memilih, belum ada kejadian yang dialami")
 	gs.call("load_game")
-	check(gs.get("pending_event") == queued and (gs.get("seen_events") as Array).has(queued), "kejadian yang menunggu tersimpan")
+	paths = gs.get("pending_paths")
+	check(paths.size() == 2 and paths.has(queued), "persimpangan yang menunggu tersimpan")
 	check(gs.call("queue_event_after", 4, rng) == "", "selama masih ada yang menunggu, tidak ditimpa")
+	var taken: String = paths[1]
+	var skipped: String = paths[0]
+	gs.call("choose_path", "bukan_jalan")
+	check((gs.get("pending_paths") as Array).size() == 2, "jalan yang tidak ada di persimpangan ditolak")
+	gs.call("choose_path", taken)
+	check(gs.get("pending_event") == taken and (gs.get("pending_paths") as Array).is_empty()
+		and (gs.get("seen_events") as Array) == [taken], "memilih jalan: kejadiannya menunggu dan tercatat")
+	check(not (gs.get("seen_events") as Array).has(skipped), "kejadian di jalan yang tidak dipilih belum dialami")
 	gs.call("finish_event")
 	var second: String = gs.call("queue_event_after", 4, rng)
-	check(second != "" and second != queued, "kejadian berikutnya berbeda")
+	paths = gs.get("pending_paths")
+	check(second != "" and not paths.has(taken), "persimpangan berikutnya tidak mengulang kejadian yang sudah dialami")
+	# Hanya satu kejadian tersisa: langsung menunggu tanpa persimpangan.
 	gs.call("new_game")
-	check(gs.get("pending_event") == "" and (gs.get("seen_events") as Array).is_empty(), "petualangan baru mengosongkan kejadian")
+	var all_but_one := JourneyEvents.ids()
+	var last: String = all_but_one.pop_back()
+	(gs.get("seen_events") as Array).assign(all_but_one)
+	check(gs.call("queue_event_after", 6, rng) == last and gs.get("pending_event") == last and (gs.get("pending_paths") as Array).is_empty(),
+		"tinggal satu kejadian: langsung menunggu tanpa persimpangan")
+	gs.call("new_game")
+	check(gs.get("pending_event") == "" and (gs.get("pending_paths") as Array).is_empty() and (gs.get("seen_events") as Array).is_empty(),
+		"petualangan baru mengosongkan kejadian")
 
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)
