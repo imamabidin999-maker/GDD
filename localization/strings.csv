@@ -690,6 +690,16 @@ ORIGIN_TAG_BUTO,Buto bertopeng dari kisah Dongkrek; warna dan ilmunya rekaan gam
 ORIGIN_TAG_REKAAN,Rekaan untuk game,Made up for the game
 SETTINGS_GLOSSARY,Tandai istilah Jawa,Mark Javanese terms
 SETTINGS_GLOSSARY_TIP,Istilah Jawa di cerita diberi warna. Arahkan kursor ke istilah itu untuk membaca artinya.,Javanese words in the story are colored. Point at one to read what it means.
+CARD_GONG_BERI,Gong Beri,Gong Beri
+CARD_GONG_BERI_SHORT,GONG BERI,GONG BERI
+CARD_GONG_BERI_DESC,"Gong datar tanpa pencu yang bunyinya nyaring berdesing. Semua Buto jadi giris: serangan mereka di giliran berikutnya melemah, dan Tameng mereka pecah.","A flat gong with no boss and a bright, ringing crash. Every Buto is shaken (Giris): their attacks next turn are weaker, and their Block shatters."
+BLESS_TABUH_BERI,Gong Beri,Gong Beri
+BLESS_TABUH_BERI_DESC,Terima kartu Gong Beri (melemahkan serangan semua Buto dan memecah Tameng mereka) dan ganti satu jurusmu.,Gain a Gong Beri card (weakens every Buto's next attack and shatters their Block) in place of one of your cards.
+EFFECT_GIRIS,Semua Buto giris: serangan berikutnya -%d%%,Every Buto shaken: next attacks -%d%%
+EFFECT_SHATTER,Tameng semua Buto pecah,Shatters every Buto's Block
+BATTLE_GIRIS,Giris -%d%%,Giris -%d%%
+BATTLE_SHATTER,Tameng pecah!,Block shattered!
+GIRIS_TIP,Giris: serangan Buto ini di giliran berikutnya berkurang %d%%.,Giris (shaken): this Buto's attacks next turn deal %d%% less damage.
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings
@@ -728,6 +738,7 @@ GLOSS_SIREP,Ajian yang membuat orang tertidur lelap; dalam cerita rakyat sering 
 GLOSS_LARA,Sakit. Di game: racun yang mengurangi Nyawa di akhir setiap giliran Buto dan menembus Tameng.,Sickness. In the game: poison that drains HP at the end of every Buto turn and ignores Block.
 GLOSS_PRAYITNA,"Waspada dan siaga. Di game: saat ada Buto yang siap Ngamuk, Tameng dari kartu bertambah 50%.","Alert and on guard. In the game: when a Buto is about to go Ngamuk, Block from cards is increased by 50%."
 GLOSS_NGAMUK,"Mengamuk, menyerang membabi buta. Di game: Buto yang ketiga titik Amuk-nya penuh beraksi dua kali.",To run amok and lash out blindly. In the game: a Buto whose three Amuk points are full acts twice.
+GLOSS_GIRIS,"Ngeri, sampai ciut nyali. Di game: Buto yang giris karena bunyi Gong Beri serangannya melemah di giliran berikutnya.","Terrified, losing one's nerve. In the game: a Buto shaken by the Gong Beri hits weaker on its next turn."
 GLOSS_MURKA,Sangat marah. Di game: Buto yang sudah kalah lalu dibangkitkan lagi oleh Buto Hitam dengan ilmu yang lebih kuat.,Wrathful. In the game: a defeated Buto raised again by Buto Hitam with a stronger skill.
 GLOSS_BALA,"Pasukan atau bala tentara. Bala dalam tolak bala lain artinya, yaitu bencana. Di game: Buto bayangan yang dipanggil Buto Hitam.","Troops, an army. The bala in tolak bala is a different word that means misfortune. In the game: the shadow Buto summoned by Buto Hitam."
 GLOSS_GEBUG,Memukul keras dengan benda tumpul. Di game: Gebug Raksasa milik Buto Merah dan Gebug Pagebluk milik Buto Hitam.,To club hard with a blunt object. In the game: Buto Merah's Gebug Raksasa and Buto Hitam's Gebug Pagebluk.
@@ -748,6 +759,7 @@ GLOSS_KENTONGAN,Alat bunyi dari bambu atau kayu berlubang yang dipukul sebagai t
 GLOSS_TITIR,"Pukulan kentongan yang cepat dan beruntun, tanda ada bahaya.","A rapid, unbroken beating of the kentongan that warns of danger."
 GLOSS_KENDANG,Gendang yang memimpin cepat-lambatnya irama gamelan. Di game: berkah Kendang Pembuka.,The drum that leads the tempo of a gamelan. In the game: the Kendang Pembuka blessing.
 GLOSS_GONG,Gong besar yang menandai akhir satu putaran gending.,The large gong that closes each cycle of a gamelan piece.
+GLOSS_GONG_BERI,"Gong datar tanpa pencu (tonjolan di tengah) yang sisinya tipis, sehingga bunyinya nyaring dan berdesing. Gong beri masuk ke perangkat Dongkrek belakangan, sebagai perpaduan budaya Jawa, Islam, dan Cina. Di game: kartu Tabuh yang membuat Buto giris.","A flat gong with a thin rim and no central boss, so it rings with a bright, shimmering crash. It joined the Dongkrek ensemble later, as a blend of Javanese, Islamic, and Chinese culture. In the game: the Tabuh card that leaves the Buto shaken (Giris)."
 GLOSS_KENONG,Gong pencon besar yang diletakkan di atas tali dalam kotak kayu. Bunyinya menandai bagian-bagian gending.,A large knobbed gong resting on cords in a wooden frame. It marks the sections of a piece.
 GLOSS_GAMELAN,Ansambel musik tradisional Jawa yang sebagian besar alatnya dipukul.,"The traditional Javanese ensemble, made mostly of struck instruments."
 GLOSS_GENDING,Lagu atau komposisi gamelan.,A gamelan composition.
@@ -790,7 +802,7 @@ ORIGIN_PAGEBLUK_DAN_WANGSIT_TEXT,"Dongkrek lahir sebagai ritual tolak bala ketik
 ORIGIN_BUNYI_DUNG_DAN_KREK_TITLE,Bunyi dung dan krek,The sounds dung and krek
 ORIGIN_BUNYI_DUNG_DAN_KREK_TEXT,"Nama Dongkrek berasal dari bunyi bedug atau kendang (dung) dan korek (krek), alat kayu bergerigi yang digesek. Korek adalah alat musik khas Dongkrek.","The name comes from the sound of the bedug or kendang (dung) and the korek (krek), a serrated wooden instrument that is rasped. The korek is unique to Dongkrek."
 ORIGIN_GONG_KENONG_DAN_KENTONGAN_TITLE,"Gong, kenong, dan kentongan","Gong, kenong, and kentongan"
-ORIGIN_GONG_KENONG_DAN_KENTONGAN_TEXT,"Selain bedug dan korek, pertunjukan Dongkrek kemudian memakai gong, kenong, kentongan, kendang, dan gong beri (sejenis simbal). Di game, semuanya kecuali gong beri menjadi kartu Tabuh atau berkah.","Besides the bedug and korek, Dongkrek later took up the gong, kenong, kentongan, kendang, and gong beri (a kind of cymbal). In the game, all but the gong beri appear as Tabuh cards or blessings."
+ORIGIN_GONG_KENONG_DAN_KENTONGAN_TEXT,"Selain bedug dan korek, pertunjukan Dongkrek kemudian memakai gong, kenong, kentongan, kendang, dan gong beri (gong datar tanpa pencu). Di game, semuanya menjadi kartu Tabuh atau berkah.","Besides the bedug and korek, Dongkrek later took up the gong, kenong, kentongan, kendang, and gong beri (a flat gong with no boss). In the game, all of them appear as Tabuh cards or blessings."
 ORIGIN_PARA_BUTO_BERTOPENG_TITLE,Para Buto bertopeng,The masked Buto
 ORIGIN_PARA_BUTO_BERTOPENG_TEXT,"Pertunjukan Dongkrek menampilkan Buto atau genderuwo bertopeng seram sebagai lambang pagebluk, lalu ditaklukkan Eyang Palang.","A Dongkrek performance features fierce masked Buto, or genderuwo, who stand for the plague and are subdued by Eyang Palang."
 ORIGIN_RORO_AYU_DAN_RORO_PEROT_TITLE,Roro Ayu dan Roro Perot,Roro Ayu and Roro Perot

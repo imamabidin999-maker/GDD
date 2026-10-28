@@ -94,13 +94,15 @@ func _run() -> void:
 		for rank: int in range(1, 4):
 			var data := card("%s:%d" % [family, rank])
 			all_ok = all_ok and data != null and data.is_tabuh() and data.is_base_type() and data.rank == rank
-	check(all_ok, "lima kartu Tabuh, masing-masing bintang 1-3")
+	check(all_ok and Blessings.TABUH_FAMILIES.size() == 6, "enam kartu Tabuh, masing-masing bintang 1-3")
 	check(card("gong:1").ap_cost == 2 and card("serang:1").ap_cost == 1, "Gong butuh 2 Ketukan, kartu lain 1")
 	check(card("bedug:3").hits_all and card("bedug:3").base_power == 12, "Tabuh Bedug bintang 3: 12 ke semua")
 	check(card("kentongan:1").draw == 2 and card("kentongan:3").draw == 3 and card("kentongan:2").shield == 3 and card("kentongan:1").ap_gain == 1,
 		"Kentongan: tarik 2/2/3, Tameng 0/3/5, Ketukan kembali 1")
 	check(card("korek:1").calm_target and is_equal_approx(card("korek:2").moxie_gain, 15.0), "Korek meredam Amuk dan memberi Greget")
 	check(is_equal_approx(card("kenong:2").next_boost, 0.6) and card("kenong:1").ap_cost == 0, "Kenong bintang 2 +60%, tanpa Ketukan")
+	check(is_equal_approx(card("beri:1").giris, 0.25) and is_equal_approx(card("beri:3").giris, 0.5) and card("beri:2").shatter_block \
+		and card("beri:2").ap_cost == 1 and card("beri:2").base_power == 0, "Gong Beri: Giris 25/35/50%, memecah Tameng, 1 Ketukan, tanpa damage")
 
 	print("[Deck dengan kartu Tabuh]")
 	var tabuh_deck: Array[String] = []
@@ -196,6 +198,55 @@ func _run() -> void:
 	f5.bm.request_play_card(0)
 	f5.bm.request_end_turn()
 	check(is_equal_approx(f5.player.next_card_boost, 0.0), "penguat yang tidak terpakai hilang saat giliran berganti")
+
+	print("[Gong Beri: semua Buto giris]")
+	var g1 := make_buto(EnemyButo.ButoType.KUNING, 300)
+	var g2 := make_buto(EnemyButo.ButoType.KUNING, 300)
+	g1.attack_power = 20
+	g2.attack_power = 20
+	var fg := make_fixture([g1, g2] as Array[EnemyUnit])
+	g1.health.gain_block(15)
+	var giris_seen: Array[float] = []
+	g1.giris_changed.connect(func(v: float) -> void: giris_seen.append(v))
+	var beri_acts: Array[PlayCardAction] = []
+	fg.bm.action_presentation_started.connect(func(a: BattleAction) -> void:
+		if a is PlayCardAction:
+			beri_acts.append(a as PlayCardAction))
+	set_hand(fg, ["beri:1"])
+	check(fg.bm.request_play_card(0), "Gong Beri dimainkan")
+	check(g1.attack_power == 15 and g2.attack_power == 15 and is_equal_approx(g1.giris, 0.25), "serangan kedua Buto 20 -> 15 (Giris 25%)")
+	check(g1.health.block == 0 and beri_acts.size() == 1 and beri_acts[0].blocks_shattered == 1, "Tameng 15 milik Buto pecah")
+	check(giris_seen == [0.25], "tampilan diberi tahu Giris 25%")
+	var shown := 0
+	for e: EnemyUnit in fg.enemies:
+		for intent: EnemyIntent in e.get_intents(fg.bm):
+			shown += intent.damage
+	set_hand(fg, ["beri:1"])
+	fg.bm.request_play_card(0)
+	check(g1.attack_power == 15, "Giris tidak bertumpuk: Gong Beri kedua tetap 25%")
+	var hp_before := fg.hero.current_hp
+	fg.bm.request_end_turn()
+	check(hp_before - fg.hero.current_hp == shown, "Eyang menerima serangan yang sudah melemah (%d)" % shown)
+	check(g1.attack_power == 20 and is_equal_approx(g1.giris, 0.0) and giris_seen.back() == 0.0, "giliran pemain berikutnya: serangan kembali 20")
+	set_hand(fg, ["kenong:1", "beri:3"])
+	fg.player.current_ap = 4
+	fg.bm.request_play_card(0)
+	check(is_equal_approx(fg.player.get_card_giris(fg.hand.get_card(0)), 0.7), "Kenong +40% menguatkan Giris 50% -> 70%")
+	fg.bm.request_play_card(0)
+	check(g2.attack_power == 6, "serangan 20 -> 6")
+	fg.bm.request_end_turn()
+	set_hand(fg, ["kenong:3", "beri:3"])
+	fg.player.current_ap = 4
+	fg.bm.request_play_card(0)
+	fg.bm.request_play_card(0)
+	check(is_equal_approx(g2.giris, EnemyUnit.GIRIS_MAX) and g2.attack_power == 5, "Giris paling banyak 75%: serangan 20 -> 5")
+	var gm := make_buto(EnemyButo.ButoType.MERAH, 300)
+	gm.attack_power = 20
+	var fm := make_fixture([gm] as Array[EnemyUnit])
+	gm.apply_giris(0.5)
+	check(gm.get_heavy_damage() == roundi(10 * gm.heavy_multiplier) and gm.get_heavy_damage(true) == roundi(20 * gm.heavy_multiplier),
+		"pratinjau ancang-ancang tetap memakai serangan penuh, karena pukulannya datang setelah Giris hilang")
+	fm.bm.request_end_turn()
 
 	print("[Kartu Tabuh tidak bisa digabung]")
 	var f6 := make_fixture([make_buto(EnemyButo.ButoType.KUNING, 300)] as Array[EnemyUnit])

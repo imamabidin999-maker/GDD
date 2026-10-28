@@ -103,7 +103,7 @@ Kemenangan **pertama** di setiap babak memberi satu berkah: pilih satu dari tiga
 | Jimat Penolak Sirep | Sirep pertama di tiap battle ditangkal | Sekali |
 | Jamu Beras Kencur | Setiap kali menerima Lara, jumlahnya berkurang 1 | Sekali |
 
-| Tabuh Bedug / Kentongan Titir / Korek / Gong / Kenong | Kartu Tabuh itu menggantikan satu kartu pilihanmu | Sekali per jenis |
+| Tabuh Bedug / Kentongan Titir / Korek / Gong / Gong Beri / Kenong | Kartu Tabuh itu menggantikan satu kartu pilihanmu | Sekali per jenis |
 | Laras Gamelan | 2 kartu Tabuh naik satu bintang | Selama masih ada yang bisa naik |
 
 Kenong baru masuk undian setelah 8 Bintang Dongkrek. Berkah yang dimiliki terlihat di panel **Jurus** pada peta.
@@ -118,6 +118,7 @@ Saat berkah kartu Tabuh dipilih, kamu memilih kartu mana yang diganti. Bintang k
 | Kentongan Titir | +1 Ketukan, tarik 2 / 2 / 3 kartu, Tameng 0 / 3 / 5 | 1 |
 | Korek | 4 / 6 / 9 damage, membuyarkan titik Amuk target, Greget +10 / 15 / 20% | 1 |
 | Gong | 18 / 26 / 36 damage | 2 |
+| Gong Beri | Semua Buto **giris**: serangan mereka di giliran Buto berikutnya berkurang 25 / 35 / 50%, dan Tameng mereka pecah | 1 |
 | Kenong | Kartu berikutnya giliran ini +40 / 60 / 80%: damage dan Tameng untuk Sabet dan Tangkis, Greget untuk Semedi | 0 |
 
 ### Kejadian di perjalanan
@@ -145,7 +146,7 @@ Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Sapu Jagad
 
 Selain kisah Dongkrek, tokoh, Buto, cara bermain, dan daftar kartu, Pustaka punya dua halaman untuk belajar:
 
-- **Istilah Jawa**: 81 istilah yang dipakai di game (Greget, Wirama, Prayitna, Sirep, Pagebluk, Korek, Kenong, Sendang, Kebaya, dan lainnya), masing-masing dengan arti aslinya lalu perannya di game. Dikelompokkan menjadi tujuh kelompok, dengan tombol untuk melompat ke tiap kelompok.
+- **Istilah Jawa**: 83 istilah yang dipakai di game (Greget, Wirama, Prayitna, Sirep, Pagebluk, Korek, Kenong, Sendang, Kebaya, dan lainnya), masing-masing dengan arti aslinya lalu perannya di game. Dikelompokkan menjadi tujuh kelompok, dengan tombol untuk melompat ke tiap kelompok.
 - **Asli atau Rekaan**: setiap unsur game diberi tanda asalnya, yaitu **dari kisah Dongkrek** (emas), **dari budaya Jawa** (biru), atau **rekaan untuk game** (ungu), beserta penjelasannya. Tanda yang sama muncul di halaman Kesenian Dongkrek, Eyang Palang, para Buto, Buto Murka, dan Bala.
 
 Isi kedua halaman juga bisa dibaca di `docs/05-istilah-jawa-dan-asli-rekaan.md`.

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/cards/frame_tabuh.png" id="1_phcmc"]
+[ext_resource type="Texture2D" path="res://assets/cards/icon_beri.png" id="2_ebmyr"]
+[ext_resource type="Script" path="res://data/definitions/card_data.gd" id="3_bhqpi"]
+
+[resource]
+script = ExtResource("3_bhqpi")
+id = &"beri_3"
+display_name = "CARD_GONG_BERI"
+card_type = 4
+rank = 3
+giris = 0.5
+shatter_block = true
+icon = ExtResource("2_ebmyr")
+frame = ExtResource("1_phcmc")

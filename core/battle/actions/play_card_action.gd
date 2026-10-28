@@ -20,6 +20,9 @@ var calmed: bool = false
 var calmed_ready: bool = false
 ## Penguat Kenong yang dipakai kartu ini (0 = tidak ada).
 var boost_used: float = 0.0
+## Gong Beri: besar Giris yang dipasang, dan berapa Buto yang Tamengnya pecah.
+var giris_applied: float = 0.0
+var blocks_shattered: int = 0
 
 
 func _init(played_card: CardInstance, target_enemy: EnemyUnit) -> void:
@@ -51,6 +54,14 @@ func _apply(battle: BattleManager) -> void:
 	if data.calm_target and EnemyUnit.is_valid_alive(target):
 		calmed_ready = target.is_ngamuk_ready()
 		calmed = target.calm_amuk()
+	if data.giris > 0.0 or data.shatter_block:
+		giris_applied = player.get_card_giris(card)
+		for enemy: EnemyUnit in battle.get_living_enemies():
+			if giris_applied > 0.0:
+				enemy.apply_giris(giris_applied)
+			if data.shatter_block and enemy.health.block > 0:
+				enemy.health.clear_block()
+				blocks_shattered += 1
 	# Penguat Kenong habis dipakai kartu ini; Kenong memasang penguat baru.
 	if data.next_boost > 0.0:
 		player.next_card_boost = data.next_boost

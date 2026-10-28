@@ -11,9 +11,13 @@ extends Node2D
 
 ## Titik Amuk berubah (0..AMUK_MAX, boleh negatif di awal battle).
 signal amuk_changed(value: int)
+## Giris berubah (0 = tidak giris).
+signal giris_changed(value: float)
 
 ## Jumlah aksi yang mengisi Amuk sampai penuh.
 const AMUK_MAX := 3
+## Batas Giris: serangan paling banyak berkurang sebesar ini.
+const GIRIS_MAX := 0.75
 
 @export var display_name: String = "Buto"
 ## HealthComponent milik Buto ini, biasanya child bernama "Health".
@@ -34,6 +38,12 @@ var amuk: int = 0:
 			return
 		amuk = value
 		amuk_changed.emit(amuk)
+
+## Bagian serangan yang hilang di giliran musuh berikutnya karena bunyi Gong
+## Beri. Semua damage Buto dihitung dari attack_power, jadi attack_power yang
+## diturunkan sementara; nilai aslinya kembali di awal giliran pemain berikutnya.
+var giris: float = 0.0
+var _attack_before_giris: int = -1
 
 
 ## true kalau enemy masih ada (belum di-free) dan HP-nya di atas 0.
@@ -78,6 +88,36 @@ func break_power() -> bool:
 ## sebelum Lara bekerja. Contohnya Pagebluk Merata milik Buto Hitam.
 func get_end_turn_action(_battle: BattleManager) -> BattleAction:
 	return null
+
+
+## Membuat Buto ini giris: serangannya di giliran musuh berikutnya berkurang
+## sebesar `fraction` (paling banyak GIRIS_MAX). Giris tidak bertumpuk; yang
+## berlaku yang terbesar.
+func apply_giris(fraction: float) -> void:
+	fraction = minf(fraction, GIRIS_MAX)
+	if fraction <= giris:
+		return
+	if _attack_before_giris < 0:
+		_attack_before_giris = attack_power
+	giris = fraction
+	attack_power = maxi(1, roundi(_attack_before_giris * (1.0 - giris)))
+	giris_changed.emit(giris)
+
+
+## Serangan tanpa pengaruh Giris. Dipakai untuk pratinjau pukulan yang baru
+## datang setelah giliran Buto berikutnya (ancang-ancang), saat Giris sudah hilang.
+func get_base_attack() -> int:
+	return _attack_before_giris if _attack_before_giris >= 0 else attack_power
+
+
+## Dipanggil BattleManager di awal giliran pemain: serangan kembali seperti semula.
+func clear_giris() -> void:
+	if _attack_before_giris < 0:
+		return
+	attack_power = _attack_before_giris
+	_attack_before_giris = -1
+	giris = 0.0
+	giris_changed.emit(giris)
 
 
 ## Sapu Jagad membuyarkan amukan. Titik negatif (jeda awal) dibiarkan.

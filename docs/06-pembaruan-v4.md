@@ -14,3 +14,16 @@ Catatan untuk rangkaian pembaruan setelah halaman Istilah Jawa dan Asli atau Rek
 - Pengaturan sekarang dua kolom supaya muat, dan ada pilihan baru **Tandai istilah Jawa** (bawaan: menyala) untuk pemain yang ingin teks polos.
 - Daftar bentuk kata ada di `tools/glossary_source.py` (`EXTRA_FORMS`, `ONLY_FORMS`, `JOINT_FORMS`) dan ditulis ke `GlossaryData.FORMS`. Penandanya ada di `ui/common/glossary_text.gd`.
 - Tes memastikan tanda tidak mengubah isi teks yang terbaca di seluruh teks cerita, kejadian, dan petunjuk dalam dua bahasa (sekitar 500 istilah ditandai).
+
+## 2. Kartu Tabuh Gong Beri
+
+- Gong beri adalah alat musik Dongkrek yang belum ada di game. Bentuknya gong datar tanpa pencu (tonjolan di tengah) dengan sisi tipis, jadi bunyinya nyaring dan berdesing. Menurut penelitian tentang musik Dongkrek di Balerejo, Madiun, gong beri dipakai bersama bedug, korek, kenong, kentongan, kendang, dan gong. Alat ini masuk belakangan, sebagai perpaduan budaya Jawa, Islam, dan Cina.
+- Kartunya: **Gong Beri**, 1 Ketukan, tanpa damage. Semua Buto menjadi **giris** (bahasa Jawa: ngeri, ciut nyali), sehingga serangan mereka di giliran Buto berikutnya berkurang 25 / 35 / 50% sesuai bintang. Tameng yang sedang dipakai Buto juga pecah.
+- Giris tidak bertumpuk (yang berlaku yang terbesar) dan paling banyak 75%. Kenong menguatkannya juga: Kenong +40% lalu Gong Beri bintang 3 berarti serangan Buto berkurang 70%.
+- Semua damage Buto dihitung dari serangannya, jadi niat di atas kepala Buto langsung menunjukkan angka yang sudah melemah. Pengecualian: pratinjau ancang-ancang (Gebug Raksasa dan Ajian Lebur Saketi giliran depan) tetap memakai serangan penuh, karena pukulan itu datang setelah giris hilang.
+- Pasangan yang pas: Tameng 10 dari ancang-ancang Buto Merah Murka dan Tameng 15 dari Ajian Buto Hitam bisa dipecah Gong Beri, sehingga semua pukulan sesudahnya ikut menghitung untuk membuyarkan Ajian.
+- Di Buto yang giris muncul ikon bilah dengan panah ungu dan angka persennya. Keterangannya muncul saat ikon atau Buto-nya disorot.
+- Gambar kartu dan bunyinya dibuat baru: gong datar berukir melingkar dengan pemukul berlapis kain merah, dan bunyi gong yang nadanya "mekar" sesaat setelah dipukul. Bunyinya dibuat dengan deret acak sendiri (`build_audio.py --tambahan`), jadi bunyi lain tidak ikut berubah.
+- Didapat dari berkah Roro Ayu (sekali, seperti kartu Tabuh lain). Istilah **Gong beri** dan **Giris** masuk ke halaman Istilah Jawa, dan catatan Asli atau Rekaan tentang alat musik Dongkrek diperbarui.
+- Simulasi 200 kali per babak, sebelum dan sesudah Gong Beri masuk undian berkah: bot cerdas 80% → 78% di babak 9 dan 91% → 92% di babak 10. Bot santai (yang memainkan kartu dari kiri tanpa melihat niat Buto) 45% → 38% dan 35% → 31%. Selisihnya masih dalam batas acak undian berkah, dan wajar kalau bot santai sedikit dirugikan, karena kartu tanpa damage hanya berguna kalau dimainkan pada saat yang tepat.
+- Ruwatan (150 kali per tingkat, bot cerdas): tingkat 1 tetap 78%, tingkat 3 48% → 39%, tingkat 5 36% → 33%, tingkat 7 tetap 25%, tingkat 10 3% → 1%. Sedikit turun karena bot memilih berkah secara acak, jadi kadang menukar kartu serang dengan Gong Beri. Pemain yang memilih sendiri tidak terkena masalah ini, jadi angkanya tidak diubah.

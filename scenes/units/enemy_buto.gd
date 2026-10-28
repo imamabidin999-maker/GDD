@@ -152,8 +152,9 @@ func get_attack_damage() -> int:
 	return attack_power
 
 
-func get_ajian_damage() -> int:
-	return roundi(attack_power * ajian_multiplier)
+## `later`: untuk pratinjau Ajian yang baru dilepas giliran depan (tanpa Giris).
+func get_ajian_damage(later: bool = false) -> int:
+	return roundi((get_base_attack() if later else attack_power) * ajian_multiplier)
 
 
 ## true kalau Ajian sedang disiapkan dan bisa dibuyarkan giliran ini.
@@ -174,8 +175,9 @@ func get_living_bala() -> Array[EnemyUnit]:
 	return living
 
 
-func get_heavy_damage() -> int:
-	return roundi(attack_power * heavy_multiplier)
+## `later`: untuk pratinjau pukulan berat giliran depan (tanpa Giris).
+func get_heavy_damage(later: bool = false) -> int:
+	return roundi((get_base_attack() if later else attack_power) * heavy_multiplier)
 
 
 func get_spit_damage() -> int:
@@ -267,7 +269,7 @@ func _build_intent(battle: BattleManager) -> EnemyIntent:
 		Skill.PLAGUE_STRIKE:
 			return EnemyIntent.new(EnemyIntent.Kind.PLAGUE_STRIKE, get_attack_damage(), plague_poison)
 		Skill.AJIAN_CHARGE:
-			var ajian := EnemyIntent.new(EnemyIntent.Kind.AJIAN_CHARGE, 0, get_ajian_damage())
+			var ajian := EnemyIntent.new(EnemyIntent.Kind.AJIAN_CHARGE, 0, get_ajian_damage(true))
 			ajian.block = ajian_charge_block
 			return ajian
 		Skill.AJIAN:
@@ -279,7 +281,7 @@ func _build_intent(battle: BattleManager) -> EnemyIntent:
 		Skill.POISON_SPIT:
 			return EnemyIntent.new(EnemyIntent.Kind.POISON, get_spit_damage(), poison_stacks)
 		Skill.CHARGE:
-			var charge := EnemyIntent.new(EnemyIntent.Kind.CHARGE, 0, get_heavy_damage())
+			var charge := EnemyIntent.new(EnemyIntent.Kind.CHARGE, 0, get_heavy_damage(true))
 			charge.block = murka_charge_block if murka else 0
 			return charge
 		Skill.HEAVY_STRIKE:

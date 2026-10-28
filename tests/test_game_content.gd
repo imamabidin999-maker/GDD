@@ -99,7 +99,7 @@ func _run() -> void:
 	await process_frame
 
 	print("[CardDB & deck awal]")
-	check((card_db().call("get_all_cards") as Array).size() == 33, "33 kartu (11 keluarga x 3 bintang, termasuk 5 Tabuh)")
+	check((card_db().call("get_all_cards") as Array).size() == 36, "36 kartu (12 keluarga x 3 bintang, termasuk 6 Tabuh)")
 	check((card_db().call("get_recipes") as Array).size() == 3, "3 resep merge")
 	var crimson2: CardData = card_db().call("card_from_spec", "crimson:2")
 	check(crimson2 != null and crimson2.base_power == 17 and not crimson2.is_base_type(), "crimson:2 ditemukan")

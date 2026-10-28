@@ -470,6 +470,7 @@ func _setup_new_player_turn() -> void:
 	player.prayitna = is_any_enemy_ngamuk_ready()
 	deck.fill_hand(hand)
 	for enemy: EnemyUnit in get_living_enemies():
+		enemy.clear_giris() # Giris dari Gong Beri hanya untuk satu giliran Buto
 		enemy.on_player_turn_started(self)
 
 

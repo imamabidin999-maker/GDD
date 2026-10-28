@@ -9,7 +9,7 @@ extends Node2D
 signal clicked(view: UnitView)
 signal hover_changed(view: UnitView, hovering: bool)
 ## Kursor masuk/keluar dari ikon status. `icon`: "intent", "amuk",
-## "bala_shield", "block", "poison", "ajian", atau "prayitna". `at` adalah
+## "bala_shield", "block", "poison", "ajian", "prayitna", atau "giris". `at` adalah
 ## titik tengah atas ikon itu (koordinat layar), tempat tooltip ditaruh.
 signal icon_hovered(view: UnitView, icon: String, hovering: bool, at: Vector2)
 
@@ -63,6 +63,8 @@ var _amuk_row: HBoxContainer
 var _amuk_dots: Array[TextureRect] = []
 var _amuk_pulse: Tween
 var _prayitna_icon: TextureRect
+var _giris_box: HBoxContainer
+var _giris_label: Label
 var _ajian_bar: ProgressBar
 var _ajian_label: Label
 var _bala_shield: TextureRect
@@ -151,6 +153,13 @@ func _build() -> void:
 	_prayitna_icon = UIKit.icon(preload("res://assets/ui/mini_prayitna.png"))
 	_prayitna_icon.visible = false
 	_status_row.add_child(_prayitna_icon)
+	# Giris (hanya Buto): serangan berikutnya melemah karena Gong Beri.
+	_giris_box = UIKit.hbox(0)
+	_giris_box.add_child(UIKit.icon(preload("res://assets/ui/mini_giris.png")))
+	_giris_label = UIKit.small_label("", UIKit.COLOR_PURPLE)
+	_giris_box.add_child(_giris_label)
+	_giris_box.visible = false
+	_status_row.add_child(_giris_box)
 	_block_box.visible = false
 	_poison_box.visible = false
 
@@ -254,6 +263,7 @@ func _build() -> void:
 	_hoverable(_poison_box, "poison")
 	_hoverable(_ajian_label, "ajian")
 	_hoverable(_prayitna_icon, "prayitna")
+	_hoverable(_giris_box, "giris")
 
 	_home = position
 	_start_bob()
@@ -392,6 +402,12 @@ func set_prayitna(on: bool) -> void:
 	_prayitna_icon.visible = on and not _dead
 
 
+## Ikon Giris di samping bar nyawa Buto, dengan persen serangan yang hilang.
+func set_giris(value: float) -> void:
+	_giris_box.visible = value > 0.0 and not _dead
+	_giris_label.text = "-%d%%" % roundi(value * 100.0)
+
+
 func set_intent(intent: EnemyIntent) -> void:
 	var list: Array[EnemyIntent] = [intent]
 	set_intents(list)
@@ -522,6 +538,7 @@ func play_death() -> void:
 	_amuk_row.visible = false
 	_ajian_bar.visible = false
 	_ajian_label.visible = false
+	_giris_box.visible = false
 	set_bala_shield(false)
 	if _aura_tween != null:
 		_aura_tween.kill()

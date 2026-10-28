@@ -46,6 +46,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Lara** | Sakit. Di game: racun yang mengurangi Nyawa di akhir setiap giliran Buto dan menembus Tameng. |
 | **Prayitna** | Waspada dan siaga. Di game: saat ada Buto yang siap Ngamuk, Tameng dari kartu bertambah 50%. |
 | **Ngamuk** | Mengamuk, menyerang membabi buta. Di game: Buto yang ketiga titik Amuk-nya penuh beraksi dua kali. |
+| **Giris** | Ngeri, sampai ciut nyali. Di game: Buto yang giris karena bunyi Gong Beri serangannya melemah di giliran berikutnya. |
 | **Murka** | Sangat marah. Di game: Buto yang sudah kalah lalu dibangkitkan lagi oleh Buto Hitam dengan ilmu yang lebih kuat. |
 | **Bala** | Pasukan atau bala tentara. Bala dalam tolak bala lain artinya, yaitu bencana. Di game: Buto bayangan yang dipanggil Buto Hitam. |
 | **Gebug** | Memukul keras dengan benda tumpul. Di game: Gebug Raksasa milik Buto Merah dan Gebug Pagebluk milik Buto Hitam. |
@@ -76,6 +77,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Titir** | Pukulan kentongan yang cepat dan beruntun, tanda ada bahaya. |
 | **Kendang** | Gendang yang memimpin cepat-lambatnya irama gamelan. Di game: berkah Kendang Pembuka. |
 | **Gong** | Gong besar yang menandai akhir satu putaran gending. |
+| **Gong beri** | Gong datar tanpa pencu (tonjolan di tengah) yang sisinya tipis, sehingga bunyinya nyaring dan berdesing. Gong beri masuk ke perangkat Dongkrek belakangan, sebagai perpaduan budaya Jawa, Islam, dan Cina. Di game: kartu Tabuh yang membuat Buto giris. |
 | **Kenong** | Gong pencon besar yang diletakkan di atas tali dalam kotak kayu. Bunyinya menandai bagian-bagian gending. |
 | **Gamelan** | Ansambel musik tradisional Jawa yang sebagian besar alatnya dipukul. |
 | **Gending** | Lagu atau komposisi gamelan. |
@@ -136,7 +138,7 @@ Game ini terinspirasi dari kisah Dongkrek, tetapi banyak bagiannya dikarang untu
 - **Eyang Palang.** Tokoh dalam cerita asal-usul Dongkrek: Raden Ngabehi Lo Prawirodipuro, yang saat itu menjabat palang di Mejayan. Dalam pertunjukan, dialah orang tua sakti yang menaklukkan para Buto.
 - **Pagebluk dan wangsit.** Dongkrek lahir sebagai ritual tolak bala ketika wabah melanda desa. Menurut cerita, Eyang Palang bersemedi lalu mendapat wangsit untuk mengusir pagebluk dengan tabuhan dan arak-arakan keliling desa.
 - **Bunyi dung dan krek.** Nama Dongkrek berasal dari bunyi bedug atau kendang (dung) dan korek (krek), alat kayu bergerigi yang digesek. Korek adalah alat musik khas Dongkrek.
-- **Gong, kenong, dan kentongan.** Selain bedug dan korek, pertunjukan Dongkrek kemudian memakai gong, kenong, kentongan, kendang, dan gong beri (sejenis simbal). Di game, semuanya kecuali gong beri menjadi kartu Tabuh atau berkah.
+- **Gong, kenong, dan kentongan.** Selain bedug dan korek, pertunjukan Dongkrek kemudian memakai gong, kenong, kentongan, kendang, dan gong beri (gong datar tanpa pencu). Di game, semuanya menjadi kartu Tabuh atau berkah.
 - **Para Buto bertopeng.** Pertunjukan Dongkrek menampilkan Buto atau genderuwo bertopeng seram sebagai lambang pagebluk, lalu ditaklukkan Eyang Palang.
 - **Roro Ayu dan Roro Perot.** Dua topeng perempuan dalam Dongkrek. Roro Ayu berwajah cantik, Roro Perot bermulut miring. Keduanya menggambarkan warga desa yang diincar makhluk jahat.
 
@@ -173,6 +175,7 @@ Game ini terinspirasi dari kisah Dongkrek, tetapi banyak bagiannya dikarang untu
 - [Dongkrek: An Islamic Literature and Artform in Madiun, East Java (Litera, UNY)](https://journal.uny.ac.id/index.php/litera/article/view/26260)
 - [Karakteristik Topeng Dongkrek Sanggar Krido Sakti (Unesa)](https://ejournal.unesa.ac.id/index.php/va/article/view/11561)
 - [Kesenian Dongkrek, Warisan Budaya Tak Benda Indonesia (GNFI)](https://www.goodnewsfromindonesia.id/2023/11/06/kesenian-dongkrek-warisan-budaya-tak-benda-indonesia)
+- [Analisis musik kesenian Dongkrek di Balerejo, Madiun (UNY)](https://journal.student.uny.ac.id/musik/article/download/9819/9473)
 - [Jurnal Dinamika tentang Dongkrek](https://jurnal.dinamika.ac.id/index.php/ArtNouveau/article/download/2031/638)
 - [Gatra (music), Wikipedia](https://en.wikipedia.org/wiki/Gatra_(music))
 - [Mengenal Ajian Inti Lebur Saketi (Kumparan)](https://kumparan.com/dukun-millennial/mengenal-ajian-inti-lebur-saketi-1tJmg4vMdPG)

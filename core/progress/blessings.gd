@@ -27,6 +27,7 @@ enum Kind {
 	TABUH_GONG, ## kartu Gong menggantikan satu kartu
 	TABUH_KENONG, ## kartu Kenong menggantikan satu kartu (perlu 8 Bintang Dongkrek)
 	LARAS_GAMELAN, ## 2 kartu Tabuh naik satu bintang
+	TABUH_BERI, ## kartu Gong Beri menggantikan satu kartu
 }
 
 const MAX_RANK := 3
@@ -44,6 +45,7 @@ const ONCE: Array[Kind] = [
 	Kind.KENDANG_PEMBUKA, Kind.GREGET_LELUHUR, Kind.TAMENG_PUSAKA,
 	Kind.JIMAT_PENOLAK_SIREP, Kind.JAMU_BERAS_KENCUR,
 	Kind.TABUH_BEDUG, Kind.TABUH_KENTONGAN, Kind.TABUH_KOREK, Kind.TABUH_GONG, Kind.TABUH_KENONG,
+	Kind.TABUH_BERI,
 ]
 ## Berkah kartu Tabuh dan keluarga kartunya. Kartu baru masuk dengan bintang 1
 ## dan menggantikan satu kartu pilihan pemain (deck tetap 15 kartu).
@@ -53,8 +55,9 @@ const TABUH_FAMILY := {
 	Kind.TABUH_KOREK: "korek",
 	Kind.TABUH_GONG: "gong",
 	Kind.TABUH_KENONG: "kenong",
+	Kind.TABUH_BERI: "beri",
 }
-const TABUH_FAMILIES: Array[String] = ["bedug", "kentongan", "korek", "gong", "kenong"]
+const TABUH_FAMILIES: Array[String] = ["bedug", "kentongan", "korek", "gong", "beri", "kenong"]
 ## Kartu Tabuh yang baru didapat mendapat bintang kartu yang digantinya
 ## ditambah ini (paling tinggi bintang 3), seperti jurus lama yang ditempa ulang.
 const TABUH_RANK_BONUS := 1
@@ -81,6 +84,7 @@ const TEXT_KEYS := {
 	Kind.TABUH_GONG: "BLESS_TABUH_GONG",
 	Kind.TABUH_KENONG: "BLESS_TABUH_KENONG",
 	Kind.LARAS_GAMELAN: "BLESS_LARAS",
+	Kind.TABUH_BERI: "BLESS_TABUH_BERI",
 }
 
 

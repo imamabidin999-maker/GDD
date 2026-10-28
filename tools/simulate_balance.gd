@@ -369,6 +369,13 @@ func _best_card(bm: BattleManager) -> int:
 			score += 12.0 if target.is_ngamuk_ready() else 3.0 * maxi(target.amuk, 0)
 		if data.next_boost > 0.0 and bm.player.current_ap >= 2:
 			score += data.next_boost * _best_other_damage(bm, i)
+		# Gong Beri: serangan yang dicegah (yang belum tertahan Tameng) dan Tameng Buto yang pecah.
+		var giris := bm.player.get_card_giris(card)
+		if giris > 0.0:
+			score += 1.1 * minf(giris * float(_incoming_damage(bm) - bm.player.poison), float(need))
+		if data.shatter_block:
+			for e: EnemyUnit in bm.get_living_enemies():
+				score += 0.4 * e.health.block
 		score /= maxf(1.0, float(data.ap_cost))
 		if score > best_score:
 			best_score = score

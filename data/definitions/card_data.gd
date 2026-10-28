@@ -18,6 +18,8 @@ extends Resource
 ##   ap_cost     -> Ketukan yang dibutuhkan (Gong: 2)
 ##   next_boost  -> kartu berikutnya giliran ini lebih kuat (Kenong)
 ##   moxie_gain  -> Greget tetap (Korek)
+##   giris       -> serangan semua Buto di giliran berikutnya berkurang (Gong Beri)
+##   shatter_block -> Tameng semua Buto pecah (Gong Beri)
 
 enum CardType {
 	SERANG, ## Merah
@@ -50,6 +52,11 @@ const MAX_RANK: int = 3
 @export_range(0.0, 2.0, 0.05) var next_boost: float = 0.0
 ## Greget tetap dari kartu ini (Korek), di luar Greget dari kartu Semedi.
 @export_range(0.0, 100.0) var moxie_gain: float = 0.0
+## Bagian serangan semua Buto yang hilang di giliran musuh berikutnya, misalnya
+## 0.35 = berkurang 35% (Gong Beri). Lihat EnemyUnit.apply_giris().
+@export_range(0.0, 0.9, 0.05) var giris: float = 0.0
+## Tameng semua Buto pecah saat kartu ini dimainkan (Gong Beri).
+@export var shatter_block: bool = false
 
 @export_group("Tampilan")
 @export var icon: Texture2D

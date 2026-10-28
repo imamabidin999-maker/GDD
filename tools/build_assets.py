@@ -401,6 +401,37 @@ def draw_kenong(size: int = 40) -> Image.Image:
     return add_outline(img)
 
 
+def draw_gong_beri(size: int = 40) -> Image.Image:
+    """Gong beri: gong datar tanpa pencu dan bersisi tipis, digantung pada tali,
+    dengan pemukul berlapis kain dan garis desing di tepinya."""
+    img, d = canvas(size, size)
+    # tali gantungan
+    d.line([(13, 1), (19, 6)], fill=(200, 170, 120, 255))
+    d.line([(25, 1), (19, 6)], fill=(200, 170, 120, 255))
+    d.rectangle([11, 0, 27, 1], fill=WOOD)
+    # garis desing di kanan atas
+    for a, b in (((31, 6), (35, 2)), ((34, 11), (38, 9)), ((35, 16), (39, 16))):
+        d.line([a, b], fill=GOLD_L)
+    # piringan datar: tepi tipis, permukaan berpalu, tanpa tonjolan di tengah
+    cx, cy, r = 19, 21, 15
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=BRONZE_D)
+    d.ellipse([cx - r + 1, cy - r + 1, cx + r - 1, cy + r - 1], fill=BRONZE)
+    for rr, col in ((11, BRONZE_L), (7, BRONZE_D), (4, BRONZE_L)):
+        d.arc([cx - rr, cy - rr, cx + rr, cy + rr], 200, 320, fill=col)
+        d.arc([cx - rr, cy - rr, cx + rr, cy + rr], 20, 140, fill=BRONZE_D if col == BRONZE_L else BRONZE_L)
+    d.arc([cx - r + 2, cy - r + 2, cx + r - 2, cy + r - 2], 195, 285, fill=GOLD_L, width=2)
+    # ukiran naga kecil yang melingkar
+    d.arc([cx - 3, cy - 3, cx + 3, cy + 3], 0, 270, fill=BRONZE_D)
+    d.line([(cx + 3, cy), (cx + 6, cy + 3)], fill=BRONZE_D)
+    d.point((cx - 1, cy - 1), fill=GOLD_L)
+    # pemukul: tangkai kayu dan kepala berlapis kain merah
+    d.line([(37, 38), (30, 31)], fill=WOOD, width=2)
+    d.line([(38, 37), (31, 30)], fill=WOOD_L)
+    d.ellipse([24, 25, 31, 32], fill=(150, 44, 40, 255))
+    d.ellipse([25, 26, 29, 30], fill=(196, 72, 60, 255))
+    return add_outline(img)
+
+
 # Kartu dasar bernuansa Jawa: keris (Sabet), padupan (Semedi), tameng (Tangkis),
 # dan tombak (Tangkis Balik), dengan palet kayu-perunggu yang sama dengan Tabuh.
 GOLD = (232, 182, 72, 255)
@@ -668,6 +699,12 @@ def mini_icon(kind: str) -> Image.Image:
         # Amuk dibuyarkan: api dicoret
         d.polygon([(5, 0), (9, 5), (9, 8), (6, 11), (3, 11), (1, 8), (1, 5), (3, 3), (4, 5)], fill=(150, 90, 70, 255))
         d.line([(0, 11), (11, 0)], fill=(230, 236, 250, 255), width=2)
+    elif kind == "giris":
+        # Giris: serangan Buto melemah (bilah dengan panah ungu ke bawah)
+        d.line([(1, 10), (6, 5)], fill=(220, 226, 238, 255), width=2)
+        d.line([(0, 8), (3, 11)], fill=(232, 182, 72, 255), width=1)
+        d.rectangle([8, 0, 9, 5], fill=(200, 140, 255, 255))
+        d.polygon([(6, 5), (11, 5), (8, 9)], fill=(200, 140, 255, 255))
     elif kind == "boost":
         # kartu berikutnya lebih kuat: panah naik emas
         d.polygon([(5, 0), (10, 5), (7, 5), (7, 11), (3, 11), (3, 5), (0, 5)], fill=(250, 210, 90, 255))
@@ -766,11 +803,12 @@ def build_icons(eye: Image.Image) -> None:
     save(draw_korek(), "cards/icon_korek.png")
     save(draw_gong_card(), "cards/icon_gong.png")
     save(draw_kenong(), "cards/icon_kenong.png")
+    save(draw_gong_beri(), "cards/icon_beri.png")
     print("Ikon kecil:")
     for kind in ("attack", "heavy", "block", "moxie", "drain", "lock", "charge",
                  "poison", "ap", "ap_empty", "heart", "deck", "discard", "chain",
                  "amuk", "amuk_empty", "prayitna", "plague", "ajian", "summon", "stagger",
-                 "bala_shield", "all", "calm", "boost", "star", "star_empty"):
+                 "bala_shield", "all", "calm", "boost", "star", "star_empty", "giris"):
         save(mini_icon(kind), f"ui/mini_{kind}.png")
     for kind in ("kendang", "leluhur", "pusaka", "jimat", "kencur"):
         save(blessing_icon(kind), f"ui/bless_{kind}.png")

@@ -9,6 +9,7 @@ Butuh: numpy, scipy, ffmpeg (encoder libvorbis).
 Pemakaian: python3 tools/build_audio.py
            python3 tools/build_audio.py --gebrakan   (hanya bunyi Sapu Jagad)
            python3 tools/build_audio.py --kartu      (hanya bunyi kartu)
+           python3 tools/build_audio.py --tambahan   (hanya bunyi tambahan, misalnya gong beri)
 """
 import os
 import subprocess
@@ -164,6 +165,28 @@ def gong(f=62.0, vel=1.0, dur=5.5):
     x += 0.05 * np.sin(2 * np.pi * 5.43 * f * t) * np.exp(-t / 0.3)
     x = x * swell + 0.6 * lp(noise(len(t)), 160) * np.exp(-t / 0.04)
     return fade_in(x * vel, 4)
+
+
+def gong_beri(f=176.0, vel=1.0, dur=2.8):
+    """Gong beri: gong datar tanpa pencu. Bunyinya nyaring dan berdesing, dan
+    nada tingginya "mekar" sesaat setelah dipukul seperti tam-tam."""
+    t = t_axis(dur)
+    x = np.zeros_like(t)
+    ratios = [1.0, 1.47, 1.93, 2.36, 2.81, 3.24, 3.73, 4.31, 4.87, 5.52, 6.17, 6.94, 7.61, 8.43, 9.37, 10.6, 11.9, 13.4]
+    for k, r in enumerate(ratios):
+        fk = f * r * (1 + 0.004 * rng.standard_normal())
+        decay = 2.4 / (1 + 0.16 * k)
+        amp = 1.0 / (1 + 0.3 * k)
+        bloom = 1 - np.exp(-t / (0.004 + 0.025 * k))
+        env = np.exp(-t / decay) * bloom
+        x += amp * np.sin(2 * np.pi * fk * t + rng.uniform(0, 2 * np.pi)) * env
+        x += 0.45 * amp * np.sin(2 * np.pi * fk * 1.0065 * t) * env
+    x /= np.max(np.abs(x)) + 1e-9
+    wash = bp(noise(len(t)), 2400, 7800) * (1 - np.exp(-t / 0.1)) * np.exp(-t / 0.8) * 0.3
+    thump = lp(noise(len(t)), 420) * np.exp(-t / 0.018) * 0.9
+    x = x + wash + thump
+    x *= np.minimum(1, (len(t) - np.arange(len(t))) / (0.6 * SR))
+    return fade_in(x * vel, 2)
 
 
 def kempul(f, vel=1.0):
@@ -698,6 +721,29 @@ def card_sounds():
     return s
 
 
+def own_rng(seed, fn, *args):
+    """Membuat bunyi dengan deret acak sendiri, supaya bunyi tambahan tidak
+    menggeser angka acak (dan isi file) bunyi-bunyi yang sudah ada."""
+    global rng
+    saved = rng
+    rng = np.random.default_rng(seed)
+    try:
+        return fn(*args)
+    finally:
+        rng = saved
+
+
+def build_extra_sfx():
+    """Efek suara yang ditambahkan belakangan (masing-masing berderet acak sendiri)."""
+    extra = {"gong_beri": own_rng(31, gong_beri)}
+    for name, data in extra.items():
+        data = np.asarray(data, dtype=np.float64)
+        data = data / (np.max(np.abs(data)) + 1e-9) * 0.8
+        tail = min(len(data), int(0.015 * SR))
+        data[len(data) - tail:] *= np.linspace(1, 0, tail)
+        write_ogg(os.path.join(OUT_SFX, name + ".ogg"), data, quality=5)
+
+
 def build_card_sounds():
     gains = {"card_merge": 0.9, "card_play": 0.85, "card_draw": 0.6, "card_pick": 0.5, "card_place": 0.7, "card_hover": 0.35}
     for name, data in card_sounds().items():
@@ -714,6 +760,9 @@ def main():
         return
     if "--kartu" in sys.argv:
         build_card_sounds()
+        return
+    if "--tambahan" in sys.argv:
+        build_extra_sfx()
         return
     os.makedirs(OUT_BGM, exist_ok=True)
     os.makedirs(OUT_SFX, exist_ok=True)
@@ -735,6 +784,7 @@ def main():
     # Dibuat paling akhir supaya angka acak bunyi-bunyi lain tidak bergeser.
     build_gebrakan()
     build_card_sounds()
+    build_extra_sfx()
 
 
 if __name__ == "__main__":

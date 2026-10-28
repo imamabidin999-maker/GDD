@@ -18,6 +18,7 @@ const SFX := {
 	"korek": "res://assets/audio/sfx/korek.ogg",
 	"kentongan": "res://assets/audio/sfx/kentongan.ogg",
 	"gong": "res://assets/audio/sfx/gong.ogg",
+	"gong_beri": "res://assets/audio/sfx/gong_beri.ogg",
 	"dongkrek": "res://assets/audio/sfx/dongkrek.ogg",
 	"gebrakan": "res://assets/audio/sfx/gebrakan.ogg",
 	"hit": "res://assets/audio/sfx/hit.ogg",

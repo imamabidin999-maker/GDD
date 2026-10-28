@@ -29,6 +29,9 @@ const CARDS := {
 		"ap_cost": 2},
 	"kenong": {"type": CardData.CardType.TABUH, "name": "CARD_KENONG", "stats": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
 		"boost": [0.4, 0.6, 0.8], "ap_cost": 0},
+	# Gong beri: gong datar tanpa pencu. Bunyinya membuat semua Buto giris.
+	"beri": {"type": CardData.CardType.TABUH, "name": "CARD_GONG_BERI", "stats": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+		"giris": [0.25, 0.35, 0.5], "shatter": true},
 }
 
 # Tantangan bintang ke-2 dan ke-3 setiap babak (lihat core/progress/challenges.gd).
@@ -83,6 +86,8 @@ func _build_cards() -> Dictionary:
 			card.draw = info["draw"][i] if info.has("draw") else 0
 			card.next_boost = info["boost"][i] if info.has("boost") else 0.0
 			card.moxie_gain = info["moxie"][i] if info.has("moxie") else 0.0
+			card.giris = info["giris"][i] if info.has("giris") else 0.0
+			card.shatter_block = info.get("shatter", false)
 			card.icon = load("res://assets/cards/icon_%s.png" % family)
 			var frame_name := "tabuh" if card.card_type == CardData.CardType.TABUH else family
 			card.frame = load("res://assets/cards/frame_%s.png" % frame_name)

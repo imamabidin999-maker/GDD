@@ -57,7 +57,7 @@ const BOSS := [370, 15]
 ## Battle kedua dari jenis yang sama (langkah 2 dan 5) sedikit lebih alot.
 const SECOND_HP_MULT := 1.05
 ## Keluarga kartu yang boleh ada di deck simpanan.
-const DECK_FAMILIES: Array[String] = ["serang", "fokus", "taktik", "bedug", "kentongan", "korek", "gong", "kenong"]
+const DECK_FAMILIES: Array[String] = ["serang", "fokus", "taktik", "bedug", "kentongan", "korek", "gong", "beri", "kenong"]
 ## Latar battle yang boleh dipakai tiap langkah (nomor babak cerita).
 const BACKGROUND_POOLS: Array = [[1, 2, 3, 4], [1, 2, 3, 4], [], [5, 6, 7, 8], [5, 6, 7, 8], [], [9], [10]]
 

@@ -14,7 +14,7 @@ signal picked(index: int)
 enum Mode { REPLACE, UPGRADE }
 
 ## Urutan tampil kartu: tiga jurus dasar lalu kartu Tabuh.
-const ORDER: Array[String] = ["serang", "fokus", "taktik", "bedug", "kentongan", "korek", "gong", "kenong"]
+const ORDER: Array[String] = ["serang", "fokus", "taktik", "bedug", "kentongan", "korek", "gong", "beri", "kenong"]
 
 var mode: Mode = Mode.REPLACE
 ## Deck yang ditampilkan (spec "tipe:bintang"). Diisi sebelum masuk tree.

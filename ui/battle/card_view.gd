@@ -22,6 +22,7 @@ const ACCENTS := {
 	"korek": Color(1.0, 0.84, 0.45),
 	"gong": Color(1.0, 0.84, 0.45),
 	"kenong": Color(1.0, 0.84, 0.45),
+	"beri": Color(1.0, 0.84, 0.45),
 }
 
 const MINI_ATTACK := preload("res://assets/ui/mini_attack.png")
@@ -33,6 +34,7 @@ const MINI_ALL := preload("res://assets/ui/mini_all.png")
 const MINI_DECK := preload("res://assets/ui/mini_deck.png")
 const MINI_CALM := preload("res://assets/ui/mini_calm.png")
 const MINI_BOOST := preload("res://assets/ui/mini_boost.png")
+const MINI_GIRIS := preload("res://assets/ui/mini_giris.png")
 
 var card: CardInstance
 ## Moxie yang didapat kalau kartu ini dimainkan (diisi HandView dari PlayerState).
@@ -44,6 +46,8 @@ var moxie_boosted: bool = false
 var shield_value: int = -1
 ## Damage kartu ini sekarang. -1 = pakai nilai dasar. Lebih besar saat Kenong.
 var damage_value: int = -1
+## Giris kartu ini sekarang (Gong Beri). -1 = pakai nilai dasar.
+var giris_value: float = -1.0
 ## Disorot emas kalau bisa digabung dengan tetangganya.
 var mergeable: bool = false:
 	set(value):
@@ -193,6 +197,9 @@ func refresh() -> void:
 		_add_stat(MINI_CALM, "", UIKit.COLOR_TEXT)
 	if data.next_boost > 0.0:
 		_add_stat(MINI_BOOST, "+%d%%" % roundi(data.next_boost * 100.0), UIKit.COLOR_GOLD)
+	var giris := get_giris()
+	if giris > 0.0:
+		_add_stat(MINI_GIRIS, "-%d%%" % roundi(giris * 100.0), Color(0.86, 0.72, 1.0) if giris > data.giris + 0.001 else UIKit.COLOR_PURPLE)
 	var shield := get_shield()
 	if shield > 0:
 		var boosted := shield > data.shield
@@ -224,6 +231,10 @@ func get_shield() -> int:
 
 func get_damage() -> int:
 	return damage_value if damage_value >= 0 else card.data.base_power
+
+
+func get_giris() -> float:
+	return giris_value if giris_value >= 0.0 else card.data.giris
 
 
 func _add_stat(texture: Texture2D, text: String, color: Color) -> void:
@@ -287,6 +298,12 @@ func get_tooltip_bbcode() -> String:
 		lines.append(tr("EFFECT_CALM"))
 	if data.next_boost > 0.0:
 		lines.append(tr("EFFECT_BOOST") % roundi(data.next_boost * 100.0))
+	if get_giris() > 0.0:
+		lines.append(tr("EFFECT_GIRIS") % roundi(get_giris() * 100.0))
+		if get_giris() > data.giris + 0.001:
+			lines.append("[color=#ffc070]%s[/color]" % tr("CARD_BOOST_TIP"))
+	if data.shatter_block:
+		lines.append(tr("EFFECT_SHATTER"))
 	if get_shield() > 0:
 		lines.append(tr("EFFECT_BLOCK") % get_shield())
 		if get_shield() > data.shield:

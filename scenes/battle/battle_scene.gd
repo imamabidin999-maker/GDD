@@ -216,6 +216,7 @@ func _register_buto(buto: EnemyButo, view_scale: float) -> UnitView:
 func _hook_enemy_signals(enemy: EnemyUnit) -> void:
 	var view: UnitView = _enemy_views[enemy]
 	enemy.amuk_changed.connect(view.set_amuk)
+	enemy.giris_changed.connect(view.set_giris)
 	enemy.health.damaged.connect(_on_unit_damaged.bind(enemy.health))
 	enemy.health.damage_blocked.connect(_on_unit_blocked.bind(enemy.health))
 
@@ -453,6 +454,17 @@ func _present_tabuh(action: PlayCardAction) -> void:
 			AudioManager.play_sfx("gong", 0.1, -6.0)
 			_hero_view.play_glow(Color(1.0, 0.85, 0.4))
 			_float_text(tr("BATTLE_KENONG") % roundi(data.next_boost * 100.0), _hero_view.get_top_point(), UIKit.COLOR_GOLD)
+		"beri":
+			AudioManager.play_sfx("gong_beri", 0.03)
+			_screen_flash(Color(0.85, 0.75, 1.0, 0.22))
+			_shake_world(2.0)
+			for enemy: EnemyUnit in _enemies:
+				if enemy.is_alive() and _enemy_views.has(enemy):
+					var view: UnitView = _enemy_views[enemy]
+					view.play_hit(Color(0.8, 0.62, 1.0))
+					_float_text(tr("BATTLE_GIRIS") % roundi(action.giris_applied * 100.0), view.get_top_point(), UIKit.COLOR_PURPLE)
+			if action.blocks_shattered > 0:
+				_float_text(tr("BATTLE_SHATTER"), Vector2(470, 70), UIKit.COLOR_GOLD, true)
 
 
 func _present_ultimate(action: UltimateAction) -> void:
@@ -695,6 +707,8 @@ func _on_enemy_hover(view: UnitView, hovering: bool) -> void:
 				lines.append(_intent_text(intents[0]))
 		if enemy.can_ngamuk:
 			lines.append("[color=#ffb070]%s[/color]" % (tr("AMUK_TIP") % [clampi(enemy.amuk, 0, EnemyUnit.AMUK_MAX), EnemyUnit.AMUK_MAX]))
+		if enemy.giris > 0.0:
+			lines.append("[color=#%s]%s[/color]" % [UIKit.COLOR_PURPLE.to_html(false), tr("GIRIS_TIP") % roundi(enemy.giris * 100.0)])
 		if buto != null and buto.is_ajian_charged():
 			lines.append("[color=#ffd36e]%s[/color]" % (tr("AJIAN_BREAK_TIP") % [buto.ajian_break_threshold, buto.get_ajian_progress(), buto.ajian_break_threshold]))
 		if buto != null and not buto.get_living_bala().is_empty():
@@ -772,6 +786,10 @@ func _icon_tip(view: UnitView, icon: String) -> String:
 			lines.append("[color=#ffd36e]%s[/color]" % (tr("AJIAN_BREAK_TIP") % [maxi(buto.ajian_break_threshold - progress, 0), progress, buto.ajian_break_threshold]))
 		"prayitna":
 			lines.append("[color=#b8ff8c]%s[/color]" % tr("PRAYITNA_TIP"))
+		"giris":
+			if unit == null:
+				return ""
+			lines.append("[color=#%s]%s[/color]" % [UIKit.COLOR_PURPLE.to_html(false), tr("GIRIS_TIP") % roundi(unit.giris * 100.0)])
 	return "\n".join(lines)
 
 

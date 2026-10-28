@@ -318,6 +318,17 @@ func get_card_moxie(card: CardInstance) -> float:
 	return gain
 
 
+## Seberapa besar serangan Buto berkurang karena kartu ini (Gong Beri),
+## termasuk penguat Kenong. Paling banyak EnemyUnit.GIRIS_MAX.
+func get_card_giris(card: CardInstance) -> float:
+	if card == null or card.data.giris <= 0.0:
+		return 0.0
+	var value := card.data.giris
+	if _boost_applies(card):
+		value *= 1.0 + next_card_boost
+	return minf(value, EnemyUnit.GIRIS_MAX)
+
+
 ## Kartu Semedi murni (bukan gabungan). Kenong menguatkan Greget-nya.
 static func is_semedi(card: CardInstance) -> bool:
 	return card != null and not card.is_hybrid() and card.get_type() == CardData.CardType.FOKUS

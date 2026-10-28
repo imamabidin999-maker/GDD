@@ -23,6 +23,7 @@ const BLESS_ICONS := {
 	Blessings.Kind.TABUH_GONG: preload("res://assets/cards/icon_gong.png"),
 	Blessings.Kind.TABUH_KENONG: preload("res://assets/cards/icon_kenong.png"),
 	Blessings.Kind.LARAS_GAMELAN: preload("res://assets/cards/icon_kenong.png"),
+	Blessings.Kind.TABUH_BERI: preload("res://assets/cards/icon_beri.png"),
 }
 
 ## Babak asal berkah. Diisi sebelum panel masuk ke tree.
