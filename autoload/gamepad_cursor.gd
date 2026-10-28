@@ -50,7 +50,9 @@ static func cursor_velocity(stick: Vector2, dpad: Vector2, moving_for: float) ->
 
 func _process(delta: float) -> void:
 	var pads := Input.get_connected_joypads()
-	if pads.is_empty():
+	# Saat pemain sedang di jendela lain, kursor sistem tidak boleh ikut ditarik.
+	if pads.is_empty() or not get_window().has_focus():
+		_moving_for = 0.0
 		return
 	var device: int = pads[0]
 	_scroll(device, delta)
@@ -100,6 +102,8 @@ func _scroll(device: int, delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	var button := event as InputEventJoypadButton
 	if button == null or button.button_index != JOY_BUTTON_A or button.pressed == _held:
+		return
+	if button.pressed and not get_window().has_focus():
 		return
 	_held = button.pressed
 	var viewport := get_viewport()

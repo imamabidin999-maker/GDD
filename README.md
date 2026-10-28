@@ -274,29 +274,29 @@ Baris `ERROR` yang muncul di tes `test_battle_manager` dan `test_deck_hand` mema
 
 ### Keseimbangan
 
-Hasil `simulate_balance.gd` di kesulitan Normal (200 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya, ditambah kejadian di perjalanan setelah babak 2, 4, 6, dan 8 (pilihannya juga acak). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, memilih kartu Tabuh sesuai keadaan, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Sapu Jagad begitu siap. Bonus irama Sapu Jagad tidak ikut dihitung.
+Hasil `simulate_balance.gd` di kesulitan Normal (500 battle per babak). Deck, nyawa, dan berkah bot diambil dari berkah acak di babak-babak sebelumnya, ditambah kejadian di perjalanan setelah babak 2, 4, 6, dan 8 (pilihannya juga acak). Bot "cerdas" menggabung kartu, menggeser kartu supaya bisa digabung, memilih kartu Tabuh sesuai keadaan, menyimpan Greget, membuyarkan Ajian, dan menghabisi Bala lebih dulu. Bot "santai" memainkan kartu dari kiri saja dan langsung memakai Sapu Jagad begitu siap. Bonus irama Sapu Jagad tidak ikut dihitung.
 
 | Babak | Lawan | Menang (cerdas) | Menang (santai) | Lama rata-rata |
 |---|---|---|---|---|
 | 1 | Kuning | 100% | 100% | 3–4 giliran |
 | 2 | Hijau + Kuning | 100% | 100% | 5–6 giliran |
-| 3 | Merah + Hijau | 100% | 97% | 5–6 giliran |
-| 4 | Putih + Merah | 93% | 82% | 7–8 giliran |
-| 5 | Kuning Murka + Hijau | 99% | 82% | 6–7 giliran |
-| 6 | Hijau Murka + Merah | 99% | 73% | 5 giliran |
-| 7 | Merah Murka + Putih | 98% | 81% | 6–7 giliran |
-| 8 | Putih Murka + Kuning | 96% | 84% | 8 giliran |
-| 9 | Keempat Buto Murka | 80% | 45% | 6 giliran |
-| 10 | Buto Hitam | 91% | 35% | 10–11 giliran |
+| 3 | Merah + Hijau | 100% | 96% | 6–7 giliran |
+| 4 | Putih + Merah | 95% | 84% | 7–8 giliran |
+| 5 | Kuning Murka + Hijau | 99% | 76% | 7–8 giliran |
+| 6 | Hijau Murka + Merah | 98% | 62% | 5–6 giliran |
+| 7 | Merah Murka + Putih | 99% | 83% | 6–7 giliran |
+| 8 | Putih Murka + Kuning | 96% | 83% | 8–9 giliran |
+| 9 | Keempat Buto Murka | 75% | 38% | 6 giliran |
+| 10 | Buto Hitam | 90% | 30% | 11 giliran |
 
-Babak 9 dan 10 sengaja paling menuntut siasat. Di babak 9 keempat Buto Murka memakai Nyawa 80–95 dan serangan 7–8 (versi Murka penuh tidak bisa dimenangkan bot sama sekali, jadi dipilih titik tengah). Di babak 10 Buto Hitam bertameng saat menyiapkan Ajian, dan bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala. Di kesulitan Santai bot santai menang 64–100% di setiap babak; di kesulitan Sulit bot cerdas menang 48–100% dan bot santai 11–100%. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
+Babak 9 dan 10 sengaja paling menuntut siasat. Di babak 9 keempat Buto Murka memakai Nyawa 80–95 dan serangan 7–8 (versi Murka penuh tidak bisa dimenangkan bot sama sekali, jadi dipilih titik tengah). Di babak 10 Buto Hitam bertameng saat menyiapkan Ajian, dan bot santai tidak pernah sengaja membuyarkan Ajian atau mengincar Bala. Babak 6 (Buto Hijau Murka bersama Buto Merah) juga cukup berat untuk bot santai. Di kesulitan Santai bot santai menang 66–100% di setiap babak; di kesulitan Sulit bot cerdas menang 40–100% dan bot santai 9–100%. Angka nyawa dan serangan Buto ada di `tools/generate_data.gd`, angka ilmu Buto Hitam dan Bala di `scenes/units/enemy_buto.gd`.
 
 Ruwatan (`mode=ruwatan`, 200 perjalanan per tingkat; berkah dan kejadian dipilih acak, jadi pemain yang memilih dengan cermat akan lebih sering berhasil):
 
 | Tingkat Pagebluk | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Berhasil (cerdas) | 80% | 67% | 46% | 29% | 34% | 40% | 25% | 11% | 9% | 3% |
-| Berhasil (santai) | 17% | 7% | 4% | 1% | 1% | 1% | 0% | 0% | 0% | 0% |
+| Berhasil (cerdas) | 77% | 62% | 42% | 31% | 32% | 31% | 21% | 14% | 8% | 3% |
+| Berhasil (santai) | 15% | 6% | 2% | 1% | 1% | 1% | 1% | 0% | 0% | 0% |
 
 Angka Buto Ruwatan dan aturan tiap tingkat ada di `core/progress/ruwatan_run.gd`. Catatan perancangan lengkap untuk pembaruan ini ada di `docs/04-rancangan-pembaruan-v3.md`.
 

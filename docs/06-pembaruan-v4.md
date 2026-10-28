@@ -131,5 +131,25 @@ Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling
 - Tombol lain langsung terpasang ke aksi battle: **X** akhiri giliran, **Y** Sapu Jagad (juga untuk menabuh irama), **RB** ganti sasaran, **LB** kecepatan 1x/2x, **Start** atau **B** untuk jeda dan kembali. B juga menutup panel Tombol Keyboard.
 - Tombol gamepad tetap dan tidak bisa diganti. Daftarnya tampil di panel Tombol Keyboard, dan mengganti tombol keyboard tidak melepas tombol gamepad.
 - Aksi bawaan Godot (`ui_accept`, `ui_left`, dan seterusnya) tidak lagi membaca gamepad. Tanpa ini, satu tekanan A terhitung dua kali di irama Sapu Jagad, dan D-pad ikut menggeser slider volume yang sedang aktif.
-- Hanya gamepad pertama yang tersambung yang dibaca.
+- Hanya gamepad pertama yang tersambung yang dibaca, dan hanya saat jendela game sedang aktif, supaya kursor tidak ikut tertarik ketika pemain membuka jendela lain.
 - Tesnya ada di `tests/test_keys.gd`: pemetaan tombol, aksi bawaan yang sudah bersih dari gamepad, dan hitungan kecepatan kursor. Fitur ini belum dicoba dengan gamepad sungguhan, jadi rasa kecepatan kursornya masih perlu dicoba langsung.
+
+## 9. Keseimbangan dan Pemeriksaan Akhir
+
+Setelah bagian 1–8 selesai, semua simulasi dijalankan ulang. Angka lengkapnya ada di bagian Keseimbangan di README.
+
+- **Mode cerita, kesulitan Normal (500 battle per babak).** Bot cerdas hampir tidak berubah. Perbandingan versi sebelum Gong Beri dengan versi sekarang di babak 4–8: 93/99/97/99/96% menjadi 95/99/98/99/96%.
+- Bot santai turun di babak 5 (82% → 76%) dan babak 6 (68% → 62%), sedangkan babak 4, 7, dan 8 tetap. Penyebab yang paling mungkin: bot memilih berkah dan kejadian secara acak, jadi Gong Beri (dari berkah atau dari cangkriman Roro Perot) kadang menggantikan kartu serang, lalu dimainkan dari kiri tanpa melihat niat Buto. Bot cerdas, yang membaca niat Buto, tidak dirugikan, jadi angka Buto tidak diubah.
+- Angka 73% untuk bot santai di babak 6 pada tabel lama ternyata kebetulan dari 200 battle. Dengan 500 battle, versi lama pun hanya 68%.
+- Babak 9: bot cerdas 75%, bot santai 38% (sebelumnya 80% dan 45%). Babak 10: 90% dan 30% (sebelumnya 91% dan 35%). Kedua babak ini memang dirancang paling menuntut siasat.
+- **Kesulitan Santai**: bot santai menang 66–100% di setiap babak, bot cerdas 99–100%. **Sulit**: bot cerdas 40–100%, bot santai 9–100%.
+- **Ruwatan (200 perjalanan per tingkat)**: bot cerdas berhasil 77% di tingkat 1, turun bertahap sampai 3% di tingkat 10. Selisihnya dengan angka lama paling banyak 5 poin, kecuali tingkat 6 (40% → 31%). Setelah diulang dengan 600 perjalanan, tingkat 6 versi lama ternyata 33% dan versi sekarang 31%, jadi angka 40% dulu hanya kebetulan.
+- **Tes**: 16 berkas tes dengan 767 cek, semuanya lolos. Termasuk di dalamnya tes kampanye yang menamatkan 10 babak lalu satu Ruwatan dengan klik mouse sungguhan (53 cek).
+
+**Yang masih menunggu pemilik proyek**
+
+- Rupa Roro Perot dan warga di arak-arakan masih rancangan sementara: Roro Perot dibuat dari kisi Roro Ayu, warga berupa siluet. Kalau desain aslinya sudah ada, cukup ganti prosesnya di `tools/roro_sprites.py` dan `tools/build_assets.py`.
+- Gambar beresolusi lebih tinggi harus mengikuti gaya gambar pemilik proyek, jadi tidak dibuat dari skrip.
+- Gamepad baru dicoba lewat tes otomatis, belum dengan gamepad sungguhan.
+- Uji main oleh orang lain, terutama babak 6, 9, dan 10 untuk pemain yang bermain santai.
+- Bunyi gamelan masih disintesis. Kalau ada rekaman tabuhan Dongkrek dari sanggar, rekaman itu bisa menggantikan berkas di `assets/audio/`.
