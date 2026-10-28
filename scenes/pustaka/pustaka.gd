@@ -16,6 +16,8 @@ var _tooltip: GameTooltip
 var _group := ButtonGroup.new()
 var _first_specs := {}
 var _current: String = "dongkrek"
+# Istilah Jawa yang sudah ditandai di halaman ini (lihat GlossaryText).
+var _glossary_used := {}
 
 
 func _ready() -> void:
@@ -110,6 +112,7 @@ func _add_entry(key: String, text: String) -> void:
 func _show(key: String) -> void:
 	_current = key
 	_tooltip_hide()
+	_glossary_used.clear()
 	for child: Node in _content.get_children():
 		child.queue_free()
 	_scroll.scroll_vertical = 0
@@ -250,7 +253,8 @@ func _show_glossary() -> void:
 		for entry: Dictionary in GlossaryData.TERMS:
 			if entry["cat"] == cat:
 				lines.append("[color=#%s]%s[/color]   %s" % [gold, entry["term"], tr(entry["key"])])
-		_paragraph("\n\n".join(lines))
+		# Halaman ini sendiri kamusnya, jadi istilahnya tidak ditandai lagi.
+		_paragraph("\n\n".join(lines), false)
 
 
 ## Unsur-unsur game dan asalnya: kisah Dongkrek, budaya Jawa, atau rekaan.
@@ -332,17 +336,10 @@ func _heading(text: String) -> void:
 	_content.add_child(UIKit.label(text, &"HeaderLabel"))
 
 
-func _paragraph(text: String) -> void:
-	var r := RichTextLabel.new()
-	r.bbcode_enabled = true
-	r.fit_content = true
-	r.scroll_active = false
-	r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	r.custom_minimum_size = Vector2(440, 0)
-	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	r.add_theme_color_override("default_color", UIKit.COLOR_TEXT)
-	UIKit.enlarge(r)
-	r.text = text
+func _paragraph(text: String, glossary: bool = true) -> void:
+	var r := UIKit.rich_text(GlossaryText.mark(text, _glossary_used) if glossary else text, 440)
+	if glossary:
+		GlossaryText.attach(r)
 	_content.add_child(r)
 
 
@@ -364,16 +361,9 @@ func _figure(texture: Texture2D, title: String, facts: Array[String], text: Stri
 		col.add_child(tag)
 	for fact: String in facts:
 		col.add_child(UIKit.label(fact, &"", UIKit.COLOR_GOLD))
-	var r := RichTextLabel.new()
-	r.bbcode_enabled = true
-	r.fit_content = true
-	r.scroll_active = false
-	r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	r.custom_minimum_size = Vector2(270, 0)
-	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	r.add_theme_color_override("default_color", UIKit.COLOR_DIM if silhouette else UIKit.COLOR_TEXT)
-	UIKit.enlarge(r)
-	r.text = text
+	var r := UIKit.rich_text(text if silhouette else GlossaryText.mark(text, _glossary_used), 270,
+		UIKit.COLOR_DIM if silhouette else UIKit.COLOR_TEXT)
+	GlossaryText.attach(r)
 	col.add_child(r)
 	row.add_child(col)
 	_content.add_child(row)

@@ -389,5 +389,64 @@ func _run() -> void:
 	pustaka.queue_free()
 	await process_frame
 
+	print("[Istilah di teks cerita]")
+	var glossary: GDScript = load("res://ui/common/glossary_text.gd")
+	var term_keys := {}
+	for entry: Dictionary in GlossaryData.TERMS:
+		term_keys[entry["key"]] = true
+	var bad_forms: Array[String] = []
+	for form: String in GlossaryData.FORMS:
+		for key: String in GlossaryData.FORMS[form]:
+			if not term_keys.has(key):
+				bad_forms.append(form)
+	check(bad_forms.is_empty(), "semua bentuk kata menunjuk istilah yang ada" + ("" if bad_forms.is_empty() else ": " + str(bad_forms)))
+	var marked: String = glossary.call("mark", "Eyang bersemedi, lalu Eyang menabuh bedug dua kali di Kali Watu.")
+	check(marked.count("[url=gloss:") == 5 and marked.contains("[url=gloss:GLOSS_SEMEDI]bersemedi[/url]") and marked.contains("dua kali") \
+		and marked.contains("[url=gloss:GLOSS_KALI]Kali Watu[/url]"), "kata berimbuhan ditandai, Eyang hanya sekali, dua kali bukan sungai")
+	marked = glossary.call("mark", "Tangkis Balik lalu Tangkis")
+	check(marked.contains("[url=gloss:GLOSS_TANGKIS_BALIK]Tangkis Balik[/url]") and marked.contains("[url=gloss:GLOSS_TANGKIS]Tangkis[/url]"), "frasa terpanjang didahulukan")
+	marked = glossary.call("mark", "Eyang Palang datang.")
+	check(marked.contains("[url=gloss:GLOSS_EYANG|GLOSS_PALANG]Eyang Palang[/url]"), "Eyang Palang menunjuk dua istilah sekaligus")
+	var tip: String = glossary.call("tooltip_text", "gloss:GLOSS_EYANG|GLOSS_PALANG")
+	check(tip.contains("Eyang") and tip.contains(tr("GLOSS_PALANG")), "keterangan berisi nama dan arti kedua istilah")
+	marked = glossary.call("mark", "[color=#ffffff]Buto[/color] [url=x]Buto Sirep[/url] Sirep")
+	check(marked.contains("[color=#ffffff][color=#") and marked.contains("[url=x]Buto Sirep[/url]") and marked.count("gloss:") == 2,
+		"tag BBCode dan tautan yang sudah ada tidak diubah")
+	var used := {}
+	glossary.call("mark", "Buto datang.", used)
+	check(not (glossary.call("mark", "Buto lagi.", used) as String).contains("[url"), "istilah yang sudah ditandai di percakapan tidak ditandai lagi")
+	gs.set("glossary_marks", false)
+	check(glossary.call("mark", "Buto datang.") == "Buto datang.", "tanda istilah bisa dimatikan di Pengaturan")
+	gs.set("glossary_marks", true)
+	# Tanda tidak boleh mengubah teks yang terbaca di cerita, kejadian, dan petunjuk.
+	var probe := RichTextLabel.new()
+	probe.bbcode_enabled = true
+	var csv := FileAccess.open("res://localization/strings.csv", FileAccess.READ)
+	var story_key := RegEx.create_from_string("^(S\\d+_|PROLOGUE|ENDING|TUT|EV_|HINT_|PUSTAKA_)")
+	var story_keys: Array[String] = []
+	while not csv.eof_reached():
+		var row := csv.get_csv_line()
+		if row.size() >= 3 and story_key.search(row[0]) != null:
+			story_keys.append(row[0])
+	var changed: Array[String] = []
+	var total_marks := 0
+	for locale: String in ["id", "en"]:
+		TranslationServer.set_locale(locale)
+		for key: String in story_keys:
+			probe.text = tr(key)
+			var plain := probe.get_parsed_text()
+			var with_marks: String = glossary.call("mark", tr(key))
+			total_marks += with_marks.count("[url=gloss:")
+			probe.text = with_marks
+			if probe.get_parsed_text() != plain:
+				changed.append("%s (%s)" % [key, locale])
+	gs.call("set_locale", "id")
+	probe.free()
+	check(changed.is_empty() and story_keys.size() > 150, "%d teks cerita: tanda tidak mengubah isi yang terbaca" % story_keys.size() + ("" if changed.is_empty() else ": " + str(changed)))
+	check(total_marks > 200, "%d istilah ditandai di seluruh teks cerita" % total_marks)
+	# Musik menu dari Pustaka dihentikan dulu supaya tidak tertinggal saat keluar.
+	root.get_node("AudioManager").call("stop_music")
+	await create_timer(1.0).timeout
+
 	print("\n%d/%d cek lolos" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)

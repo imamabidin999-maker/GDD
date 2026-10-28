@@ -77,6 +77,22 @@ static func enlarge(control: Control) -> void:
 		control.add_theme_font_size_override("font_size", TEXT_LARGE)
 
 
+## Teks BBCode yang tingginya mengikuti isi. `big` memakai huruf 16 piksel.
+static func rich_text(text: String, width: float, color: Color = COLOR_TEXT, big: bool = true) -> RichTextLabel:
+	var r := RichTextLabel.new()
+	r.bbcode_enabled = true
+	r.fit_content = true
+	r.scroll_active = false
+	r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	r.custom_minimum_size = Vector2(width, 0)
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.add_theme_color_override("default_color", color)
+	if big:
+		enlarge(r)
+	r.text = text
+	return r
+
+
 ## Panel yang menutupi seluruh layar dengan warna gelap transparan.
 static func dimmer(alpha: float = 0.6) -> ColorRect:
 	var r := ColorRect.new()

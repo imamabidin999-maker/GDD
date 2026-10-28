@@ -38,6 +38,8 @@ var _name: Label
 var _text: RichTextLabel
 var _hint: Label
 var _panel: PanelContainer
+# Istilah Jawa yang sudah ditandai di percakapan ini (lihat GlossaryText).
+var _glossary_used := {}
 
 
 func _ready() -> void:
@@ -83,7 +85,7 @@ func _ready() -> void:
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	GlossaryText.attach(_text)
 	UIKit.enlarge(_text)
 	col.add_child(_text)
 
@@ -104,6 +106,7 @@ func _ready() -> void:
 func play(lines: PackedStringArray) -> void:
 	_lines = lines
 	_index = 0
+	_glossary_used.clear()
 	if _lines.is_empty():
 		_finish.call_deferred()
 	else:
@@ -120,7 +123,8 @@ func _show_line() -> void:
 	_portrait.texture = PORTRAITS.get(speaker)
 	_name.text = tr("SPEAKER_" + speaker.to_upper())
 	_name.add_theme_color_override("font_color", NAME_COLORS.get(speaker, Color(0.95, 0.55, 0.5)))
-	var body := GameState.fill_keys(tr(key))
+	var body := GlossaryText.mark(GameState.fill_keys(tr(key)), _glossary_used)
+	GlossaryText.hide_tip()
 	if speaker == "narator":
 		body = "[color=#c9cbe0][i]%s[/i][/color]" % body
 	_text.text = body

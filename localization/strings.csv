@@ -681,13 +681,15 @@ KEYNAME_SPACE,Spasi,Space
 KEY_TIP,Tombol: %s,Key: %s
 BATTLE_END_TURN_TIP,Selesai giliranmu. Setelah ini para Buto yang bergerak.,End your turn. The Buto move next.
 PUSTAKA_GLOSSARY,Istilah Jawa,Javanese Terms
-PUSTAKA_GLOSSARY_INTRO,"Arti istilah Jawa yang dipakai di game ini, lalu (kalau ada) perannya dalam permainan. Klik nama kelompok untuk melompat.","What the Javanese words in this game mean, and (where it applies) what they do in play. Click a group to jump to it."
+PUSTAKA_GLOSSARY_INTRO,"Arti istilah Jawa yang dipakai di game ini, lalu (kalau ada) perannya dalam permainan. Di cerita, istilah yang berwarna jingga bisa disorot untuk melihat artinya. Klik nama kelompok untuk melompat.","What the Javanese words in this game mean, and (where it applies) what they do in play. In the story, words colored orange can be pointed at to see their meaning. Click a group to jump to it."
 PUSTAKA_ORIGINS,Asli atau Rekaan,Fact or Fiction
 PUSTAKA_ORIGINS_INTRO,"Game ini terinspirasi dari kisah Dongkrek, tetapi banyak bagiannya dikarang untuk kebutuhan permainan. Di sini setiap unsur diberi tanda asalnya.","This game is inspired by the story of Dongkrek, but much of it was made up for play. Here every element is marked by where it comes from."
 ORIGIN_TAG_DONGKREK,Dari kisah Dongkrek,From the Dongkrek story
 ORIGIN_TAG_EYANG,Tokoh dari kisah Dongkrek,A figure from the Dongkrek story
 ORIGIN_TAG_BUTO,Buto bertopeng dari kisah Dongkrek; warna dan ilmunya rekaan game,Masked Buto from the Dongkrek story; color and skill made up for the game
 ORIGIN_TAG_REKAAN,Rekaan untuk game,Made up for the game
+SETTINGS_GLOSSARY,Tandai istilah Jawa,Mark Javanese terms
+SETTINGS_GLOSSARY_TIP,Istilah Jawa di cerita diberi warna. Arahkan kursor ke istilah itu untuk membaca artinya.,Javanese words in the story are colored. Point at one to read what it means.
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings
@@ -707,6 +709,7 @@ GLOSS_BUTO,"Raksasa dalam wayang dan dongeng Jawa (dari kata buta). Dalam Dongkr
 GLOSS_GENDERUWO,Makhluk halus bertubuh besar dan berbulu dalam kepercayaan Jawa. Topeng Buto di Dongkrek sering disebut topeng genderuwo.,"A large, hairy spirit in Javanese belief. The Buto masks of Dongkrek are often called genderuwo masks."
 GLOSS_PAGEBLUK,"Wabah penyakit yang menyerang banyak orang dalam waktu singkat. Di game: bencana yang dibawa Buto Hitam, juga nama tingkat kesulitan Ruwatan.","An epidemic that strikes many people at once. In the game: the plague brought by Buto Hitam, and the name of the Ruwatan difficulty levels."
 GLOSS_TOLAK_BALA,Doa atau upacara untuk menolak bencana. Dongkrek pada awalnya adalah ritual tolak bala.,A prayer or ritual to ward off disaster. Dongkrek began as one.
+GLOSS_ARAK_ARAKAN,"Iring-iringan orang yang berjalan bersama sambil menabuh, menari, atau membawa sesuatu. Dongkrek pada mulanya diarak keliling desa untuk mengusir pagebluk.","A procession of people walking together while playing music, dancing, or carrying something. Dongkrek was first paraded around the village to drive the plague away."
 GLOSS_RUWATAN,Upacara ruwat untuk membebaskan seseorang atau desa dari nasib buruk. Di game: mode perjalanan acak yang terbuka setelah tamat.,A cleansing ceremony that frees a person or a village from misfortune. In the game: the random journey mode unlocked after the story.
 GLOSS_JURUS,Gerakan atau teknik dalam pencak silat. Di game: kartu-kartu Eyang Palang.,A move or technique in pencak silat. In the game: Eyang Palang's cards.
 GLOSS_SABET,Dari nyabet: memukul dengan mengayunkan tongkat atau cambuk. Di game: kartu serang.,From nyabet: to strike with a swinging stick or whip. In the game: the attack card.

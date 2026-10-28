@@ -22,6 +22,7 @@ Setiap istilah diberi arti aslinya, lalu (kalau ada) perannya di game.
 | **Genderuwo** | Makhluk halus bertubuh besar dan berbulu dalam kepercayaan Jawa. Topeng Buto di Dongkrek sering disebut topeng genderuwo. |
 | **Pagebluk** | Wabah penyakit yang menyerang banyak orang dalam waktu singkat. Di game: bencana yang dibawa Buto Hitam, juga nama tingkat kesulitan Ruwatan. |
 | **Tolak bala** | Doa atau upacara untuk menolak bencana. Dongkrek pada awalnya adalah ritual tolak bala. |
+| **Arak-arakan** | Iring-iringan orang yang berjalan bersama sambil menabuh, menari, atau membawa sesuatu. Dongkrek pada mulanya diarak keliling desa untuk mengusir pagebluk. |
 | **Ruwatan** | Upacara ruwat untuk membebaskan seseorang atau desa dari nasib buruk. Di game: mode perjalanan acak yang terbuka setelah tamat. |
 
 ### Jurus dan pertarungan

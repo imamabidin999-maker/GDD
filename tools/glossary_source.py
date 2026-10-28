@@ -65,6 +65,9 @@ GLOSSARY = [
     ("tokoh", "Tolak bala",
      "Doa atau upacara untuk menolak bencana. Dongkrek pada awalnya adalah ritual tolak bala.",
      "A prayer or ritual to ward off disaster. Dongkrek began as one."),
+    ("tokoh", "Arak-arakan",
+     "Iring-iringan orang yang berjalan bersama sambil menabuh, menari, atau membawa sesuatu. Dongkrek pada mulanya diarak keliling desa untuk mengusir pagebluk.",
+     "A procession of people walking together while playing music, dancing, or carrying something. Dongkrek was first paraded around the village to drive the plague away."),
     ("tokoh", "Ruwatan",
      "Upacara ruwat untuk membebaskan seseorang atau desa dari nasib buruk. Di game: mode perjalanan acak yang terbuka setelah tamat.",
      "A cleansing ceremony that frees a person or a village from misfortune. In the game: the random journey mode unlocked after the story."),
@@ -277,6 +280,36 @@ GLOSSARY = [
      "A batik pattern of four ovals like slices of palm fruit. It decorates the shield on the Tangkis card."),
 ]
 
+# Bentuk kata lain yang ikut ditandai di teks cerita (huruf kecil), misalnya
+# kata berimbuhan seperti bersemedi atau tersirep.
+EXTRA_FORMS = {
+    "Semedi": ["bersemedi"],
+    "Tabuh": ["tabuhan", "tabuhanmu", "tabuhannya", "ditabuh", "menabuh", "penabuh"],
+    "Sirep": ["tersirep", "kusirep", "menyirep", "disirep"],
+    "Ngamuk": ["mengamuk"],
+    "Ronda": ["peronda"],
+    "Ruwatan": ["ruwat"],
+    "Sembur": ["semburan", "semburannya"],
+    "Sabet": ["sabetan"],
+    "Tangkis": ["tangkisan", "menangkis"],
+    "Tempa": ["menempa", "tempaan"],
+    "Arak-arakan": ["diarak", "mengarak"],
+}
+
+# Istilah yang juga kata sehari-hari hanya ditandai di dalam nama tempatnya:
+# kali berarti sungai, tetapi "dua kali" bukan sungai.
+ONLY_FORMS = {
+    "Kali": ["kali watu"],
+    "Alas": ["alas jati peteng"],
+    "Tegal": ["tegal ilalang"],
+    "Pring": ["jembatan pring"],
+}
+
+# Frasa yang menunjuk beberapa istilah sekaligus; artinya ditampilkan berurutan.
+JOINT_FORMS = {
+    "eyang palang": ["Eyang", "Palang"],
+}
+
 # (kunci, nama Indonesia, nama Inggris)
 ORIGIN_KINDS = [
     ("asli", "Dari kisah Dongkrek", "From the Dongkrek story"),
@@ -385,6 +418,28 @@ def origin_key(title_id: str) -> str:
     return "ORIGIN_" + slug(title_id)
 
 
+def forms() -> dict[str, list[str]]:
+    """Bentuk kata di teks (huruf kecil) -> kunci istilah yang dijelaskan."""
+    terms = {term: gloss_key(term) for _cat, term, _i, _e in GLOSSARY}
+    out: dict[str, list[str]] = {}
+
+    def add(form: str, names: list[str]) -> None:
+        assert re.fullmatch(r"[a-z]+(?:[ -][a-z]+)*", form), form
+        assert form not in out, "bentuk ganda: " + form
+        out[form] = [terms[n] for n in names]
+
+    for _cat, term, _i, _e in GLOSSARY:
+        for form in ONLY_FORMS.get(term, [term.lower()]):
+            add(form, [term])
+        for form in EXTRA_FORMS.get(term, []):
+            add(form, [term])
+    for form, names in JOINT_FORMS.items():
+        add(form, names)
+    unknown = (set(EXTRA_FORMS) | set(ONLY_FORMS)) - set(terms)
+    assert not unknown, unknown
+    return out
+
+
 def strings() -> list[tuple[str, str, str]]:
     """Teks dua bahasa untuk tools/strings_source.py."""
     out = []
@@ -415,6 +470,11 @@ def write_gdscript() -> str:
     for cat, term, _i, _e in GLOSSARY:
         lines.append('\t{"cat": "%s", "term": "%s", "key": "%s"},' % (cat, term, gloss_key(term)))
     lines.append("]")
+    lines.append("## Bentuk kata di teks (huruf kecil) -> istilah yang dijelaskan (lihat GlossaryText).")
+    lines.append("const FORMS: Dictionary = {")
+    for form, keys in forms().items():
+        lines.append('\t"%s": [%s],' % (form, ", ".join('"%s"' % k for k in keys)))
+    lines.append("}")
     lines.append("const ORIGIN_KINDS: Array[String] = [%s]" % ", ".join('"%s"' % k for k, _a, _b in ORIGIN_KINDS))
     lines.append("const ORIGINS: Array[Dictionary] = [")
     for kind, title_id, _te, _ti, _tn in ORIGINS:

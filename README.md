@@ -145,10 +145,12 @@ Saat Greget pertama kali penuh, Eyang Palang menjelaskan cara memakai Sapu Jagad
 
 Selain kisah Dongkrek, tokoh, Buto, cara bermain, dan daftar kartu, Pustaka punya dua halaman untuk belajar:
 
-- **Istilah Jawa**: 80 istilah yang dipakai di game (Greget, Wirama, Prayitna, Sirep, Pagebluk, Korek, Kenong, Sendang, Kebaya, dan lainnya), masing-masing dengan arti aslinya lalu perannya di game. Dikelompokkan menjadi tujuh kelompok, dengan tombol untuk melompat ke tiap kelompok.
+- **Istilah Jawa**: 81 istilah yang dipakai di game (Greget, Wirama, Prayitna, Sirep, Pagebluk, Korek, Kenong, Sendang, Kebaya, dan lainnya), masing-masing dengan arti aslinya lalu perannya di game. Dikelompokkan menjadi tujuh kelompok, dengan tombol untuk melompat ke tiap kelompok.
 - **Asli atau Rekaan**: setiap unsur game diberi tanda asalnya, yaitu **dari kisah Dongkrek** (emas), **dari budaya Jawa** (biru), atau **rekaan untuk game** (ungu), beserta penjelasannya. Tanda yang sama muncul di halaman Kesenian Dongkrek, Eyang Palang, para Buto, Buto Murka, dan Bala.
 
 Isi kedua halaman juga bisa dibaca di `docs/05-istilah-jawa-dan-asli-rekaan.md`.
+
+Istilah-istilah itu juga ditandai langsung di teks cerita, panel kejadian, petunjuk battle, dan halaman Pustaka: warnanya jingga dan bergaris bawah, dan artinya muncul saat kursor diarahkan ke situ. Satu istilah hanya ditandai sekali per percakapan. Tanda ini bisa dimatikan lewat **Tandai istilah Jawa** di Pengaturan.
 
 ## Ruwatan
 

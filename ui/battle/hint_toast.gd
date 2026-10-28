@@ -10,7 +10,7 @@ const WIDTH := 330.0
 
 var _queue: Array[String] = []
 var _title: Label
-var _text: Label
+var _text: RichTextLabel
 var _timer: SceneTreeTimer
 var _showing: bool = false
 
@@ -33,9 +33,8 @@ func _ready() -> void:
 	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(_title)
 	head.add_child(UIKit.small_label(tr("HINT_CLOSE"), UIKit.COLOR_DIM))
-	_text = UIKit.label("", &"", UIKit.COLOR_TEXT)
-	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_text.custom_minimum_size = Vector2(WIDTH - 12, 0)
+	_text = UIKit.rich_text("", WIDTH - 12, UIKit.COLOR_TEXT, false)
+	GlossaryText.attach(_text)
 	col.add_child(_text)
 
 
@@ -56,7 +55,8 @@ func _show_next() -> void:
 	_showing = true
 	var id: String = _queue.pop_front()
 	_title.text = tr("HINT_%s_TITLE" % id.to_upper())
-	_text.text = tr("HINT_%s" % id.to_upper())
+	GlossaryText.hide_tip()
+	_text.text = GlossaryText.mark(tr("HINT_%s" % id.to_upper()))
 	size = Vector2(WIDTH, 0)
 	visible = true
 	modulate.a = 0.0

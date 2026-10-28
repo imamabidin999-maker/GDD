@@ -1,8 +1,9 @@
 class_name SettingsPanel
 extends Control
-## Panel pengaturan: bahasa, volume musik & efek suara, layar penuh, tingkat
-## kesulitan cerita, kecepatan battle, petunjuk, irama, dan tombol keyboard.
-## Dipakai di menu utama dan di menu jeda battle.
+## Panel pengaturan: bahasa, volume musik & efek suara, layar penuh, tombol
+## keyboard (kolom kiri), lalu tingkat kesulitan cerita, kecepatan battle,
+## petunjuk, tanda istilah Jawa, dan irama (kolom kanan). Dipakai di menu utama
+## dan di menu jeda battle.
 
 signal closed
 
@@ -28,7 +29,6 @@ func _ready() -> void:
 
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = &"GoldPanel"
-	panel.custom_minimum_size = Vector2(300, 0)
 	add_child(UIKit.center(panel))
 
 	var col := UIKit.vbox(8)
@@ -37,11 +37,10 @@ func _ready() -> void:
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_title)
 
-	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 10)
-	grid.add_theme_constant_override("v_separation", 8)
-	col.add_child(grid)
+	var columns := UIKit.hbox(22)
+	col.add_child(columns)
+	var grid := _grid()
+	columns.add_child(grid)
 
 	_lang_label = UIKit.label("", &"BigLabel")
 	grid.add_child(_lang_label)
@@ -70,6 +69,18 @@ func _ready() -> void:
 	grid.add_child(_full_label)
 	grid.add_child(_checkbox(GameState.fullscreen, func(on: bool) -> void: GameState.set_fullscreen(on)))
 
+	# Daftar tombol keyboard, dan pemain bisa menggantinya.
+	grid.add_child(_text_label("SETTINGS_KEYS"))
+	var keys := UIKit.button(tr("KEYS_OPEN"), 60)
+	keys.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_texts[keys] = "KEYS_OPEN"
+	keys.pressed.connect(func() -> void:
+		AudioManager.play_sfx("click")
+		add_child(ControlsPanel.new()))
+	grid.add_child(keys)
+
+	grid = _grid()
+	columns.add_child(grid)
 	grid.add_child(_text_label("SETTINGS_DIFFICULTY"))
 	var diff_row := UIKit.hbox(4)
 	for i: int in 3:
@@ -100,6 +111,12 @@ func _ready() -> void:
 	grid.add_child(_text_label("SETTINGS_HINTS"))
 	grid.add_child(_checkbox(GameState.hints_enabled, func(on: bool) -> void: GameState.set_hints_enabled(on)))
 
+	var glossary := _text_label("SETTINGS_GLOSSARY")
+	glossary.mouse_filter = Control.MOUSE_FILTER_PASS
+	glossary.tooltip_text = tr("SETTINGS_GLOSSARY_TIP")
+	grid.add_child(glossary)
+	grid.add_child(_checkbox(GameState.glossary_marks, func(on: bool) -> void: GameState.set_glossary_marks(on)))
+
 	grid.add_child(_text_label("SETTINGS_RHYTHM"))
 	var rhythm_row := UIKit.hbox(8)
 	rhythm_row.add_child(_checkbox(GameState.rhythm_enabled, func(on: bool) -> void: GameState.set_rhythm_enabled(on)))
@@ -117,16 +134,6 @@ func _ready() -> void:
 	rhythm_row.add_child(practice)
 	grid.add_child(rhythm_row)
 
-	# Daftar tombol keyboard, dan pemain bisa menggantinya.
-	grid.add_child(_text_label("SETTINGS_KEYS"))
-	var keys := UIKit.button(tr("KEYS_OPEN"), 60)
-	keys.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_texts[keys] = "KEYS_OPEN"
-	keys.pressed.connect(func() -> void:
-		AudioManager.play_sfx("click")
-		add_child(ControlsPanel.new()))
-	grid.add_child(keys)
-
 	_close = UIKit.button("", 120, true)
 	_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_close.pressed.connect(func() -> void:
@@ -135,6 +142,15 @@ func _ready() -> void:
 		queue_free())
 	col.add_child(_close)
 	_refresh_texts()
+
+
+func _grid() -> GridContainer:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 8)
+	grid.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	return grid
 
 
 func _text_label(key: String) -> Label:

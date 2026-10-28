@@ -85,6 +85,8 @@ var seen_hints: Array[String] = []
 var difficulty: int = Difficulty.NORMAL
 ## Permainan irama saat Sapu Jagad dipakai.
 var rhythm_enabled: bool = true
+## Istilah Jawa di teks cerita diberi warna dan bisa disorot (GlossaryText).
+var glossary_marks: bool = true
 ## Tombol keyboard pilihan pemain: {aksi: [kode, kode]} (lihat KeyBindings).
 ## Aksi yang tidak ada di sini memakai tombol bawaan.
 var key_bindings: Dictionary = {}
@@ -361,6 +363,11 @@ func set_hints_enabled(value: bool) -> void:
 	save_game()
 
 
+func set_glossary_marks(value: bool) -> void:
+	glossary_marks = value
+	save_game()
+
+
 ## true kalau petunjuk ini perlu ditampilkan sekarang (belum pernah dan
 ## petunjuk aktif). Langsung dicatat sebagai sudah tampil.
 func take_hint(id: String) -> bool:
@@ -547,6 +554,7 @@ func save_game() -> void:
 	cfg.set_value("settings", "seen_hints", seen_hints)
 	cfg.set_value("settings", "difficulty", difficulty)
 	cfg.set_value("settings", "rhythm_enabled", rhythm_enabled)
+	cfg.set_value("settings", "glossary_marks", glossary_marks)
 	cfg.set_value("settings", "keys", key_bindings)
 	cfg.save(save_path)
 
@@ -604,6 +612,7 @@ func load_game() -> void:
 	seen_hints.assign(cfg.get_value("settings", "seen_hints", []))
 	difficulty = clampi(int(cfg.get_value("settings", "difficulty", Difficulty.NORMAL)), Difficulty.SANTAI, Difficulty.SULIT)
 	rhythm_enabled = bool(cfg.get_value("settings", "rhythm_enabled", true))
+	glossary_marks = bool(cfg.get_value("settings", "glossary_marks", true))
 	key_bindings = KeyBindings.sanitize(cfg.get_value("settings", "keys", {}))
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:

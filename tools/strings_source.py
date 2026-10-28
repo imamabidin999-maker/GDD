@@ -1542,8 +1542,8 @@ STRINGS = [
      "Istilah Jawa",
      "Javanese Terms"),
     ("PUSTAKA_GLOSSARY_INTRO",
-     "Arti istilah Jawa yang dipakai di game ini, lalu (kalau ada) perannya dalam permainan. Klik nama kelompok untuk melompat.",
-     "What the Javanese words in this game mean, and (where it applies) what they do in play. Click a group to jump to it."),
+     "Arti istilah Jawa yang dipakai di game ini, lalu (kalau ada) perannya dalam permainan. Di cerita, istilah yang berwarna jingga bisa disorot untuk melihat artinya. Klik nama kelompok untuk melompat.",
+     "What the Javanese words in this game mean, and (where it applies) what they do in play. In the story, words colored orange can be pointed at to see their meaning. Click a group to jump to it."),
     ("PUSTAKA_ORIGINS",
      "Asli atau Rekaan",
      "Fact or Fiction"),
@@ -1562,6 +1562,12 @@ STRINGS = [
     ("ORIGIN_TAG_REKAAN",
      "Rekaan untuk game",
      "Made up for the game"),
+    ("SETTINGS_GLOSSARY",
+     "Tandai istilah Jawa",
+     "Mark Javanese terms"),
+    ("SETTINGS_GLOSSARY_TIP",
+     "Istilah Jawa di cerita diberi warna. Arahkan kursor ke istilah itu untuk membaca artinya.",
+     "Javanese words in the story are colored. Point at one to read what it means."),
 ]
 
 # Istilah Jawa dan Asli atau Rekaan di Pustaka; isinya di tools/glossary_source.py.

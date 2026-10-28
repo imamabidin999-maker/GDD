@@ -13,6 +13,7 @@ var profile: Object
 var _col: VBoxContainer
 var _buttons: Array[Button] = []
 var _rng := RandomNumberGenerator.new()
+var _glossary_used := {}
 
 
 func _ready() -> void:
@@ -47,9 +48,8 @@ func _ready() -> void:
 	pic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(pic)
-	var text := UIKit.label(tr("EV_%s_TEXT" % id), &"BigLabel", UIKit.COLOR_TEXT)
-	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.custom_minimum_size = Vector2(290, 0)
+	var text := UIKit.rich_text(GlossaryText.mark(tr("EV_%s_TEXT" % id), _glossary_used), 290)
+	GlossaryText.attach(text)
 	row.add_child(text)
 	_col.add_child(row)
 
@@ -77,9 +77,8 @@ func _choose(choice: String) -> void:
 		if line != "":
 			lines.append(line)
 
-	var story := UIKit.label(tr("EV_%s_%s_RESULT" % [event_id.to_upper(), choice.to_upper()]), &"BigLabel", UIKit.COLOR_TEXT)
-	story.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	story.custom_minimum_size = Vector2(360, 0)
+	var story := UIKit.rich_text(GlossaryText.mark(tr("EV_%s_%s_RESULT" % [event_id.to_upper(), choice.to_upper()]), _glossary_used), 360)
+	GlossaryText.attach(story)
 	_col.add_child(story)
 	if not lines.is_empty():
 		var summary := UIKit.label("\n".join(lines), &"", UIKit.COLOR_GOLD)
