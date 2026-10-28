@@ -69,6 +69,12 @@ func _ready() -> void:
 	grid.add_child(_full_label)
 	grid.add_child(_checkbox(GameState.fullscreen, func(on: bool) -> void: GameState.set_fullscreen(on)))
 
+	var large := _text_label("SETTINGS_LARGE_TEXT")
+	large.mouse_filter = Control.MOUSE_FILTER_PASS
+	large.tooltip_text = tr("SETTINGS_LARGE_TEXT_TIP")
+	grid.add_child(large)
+	grid.add_child(_checkbox(GameState.large_text, func(on: bool) -> void: GameState.set_large_text(on)))
+
 	# Daftar tombol keyboard, dan pemain bisa menggantinya.
 	grid.add_child(_text_label("SETTINGS_KEYS"))
 	var keys := UIKit.button(tr("KEYS_OPEN"), 60)

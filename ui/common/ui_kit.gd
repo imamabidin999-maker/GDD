@@ -77,6 +77,19 @@ static func vbox(separation: int = 2) -> VBoxContainer:
 	return v
 
 
+## Pilihan Teks besar di Pengaturan. Dibaca lewat pohon scene, bukan nama
+## autoload, supaya UIKit tetap bisa dipakai tes yang dikompilasi lebih dulu.
+static func large_text() -> bool:
+	var tree := Engine.get_main_loop() as SceneTree
+	var gs := tree.root.get_node_or_null("GameState") if tree != null else null
+	return gs != null and bool(gs.get("large_text"))
+
+
+## Variasi label untuk teks kecil: 8 piksel, atau 16 kalau Teks besar menyala.
+static func small_text_variation() -> StringName:
+	return &"BigLabel" if large_text() else &""
+
+
 ## Huruf 16 piksel untuk teks yang dibaca santai (cerita, Pustaka, kredit).
 static func enlarge(control: Control) -> void:
 	if control is RichTextLabel:
@@ -84,6 +97,15 @@ static func enlarge(control: Control) -> void:
 			control.add_theme_font_size_override(item, TEXT_LARGE)
 	else:
 		control.add_theme_font_size_override("font_size", TEXT_LARGE)
+
+
+## Kebalikan enlarge(): kembali ke ukuran huruf bawaan tema.
+static func shrink(control: Control) -> void:
+	if control is RichTextLabel:
+		for item: String in ["normal_font_size", "bold_font_size", "italics_font_size", "bold_italics_font_size", "mono_font_size"]:
+			control.remove_theme_font_size_override(item)
+	else:
+		control.remove_theme_font_size_override("font_size")
 
 
 ## Teks BBCode yang tingginya mengikuti isi. `big` memakai huruf 16 piksel.

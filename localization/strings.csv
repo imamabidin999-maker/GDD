@@ -689,7 +689,9 @@ ORIGIN_TAG_EYANG,Tokoh dari kisah Dongkrek,A figure from the Dongkrek story
 ORIGIN_TAG_BUTO,Buto bertopeng dari kisah Dongkrek; warna dan ilmunya rekaan game,Masked Buto from the Dongkrek story; color and skill made up for the game
 ORIGIN_TAG_REKAAN,Rekaan untuk game,Made up for the game
 SETTINGS_GLOSSARY,Tandai istilah Jawa,Mark Javanese terms
-SETTINGS_GLOSSARY_TIP,Istilah Jawa di cerita diberi warna. Arahkan kursor ke istilah itu untuk membaca artinya.,Javanese words in the story are colored. Point at one to read what it means.
+SETTINGS_GLOSSARY_TIP,"Istilah Jawa di cerita diberi warna.
+Arahkan kursor ke istilah itu untuk membaca artinya.","Javanese words in the story are colored.
+Point at one to read what it means."
 CARD_GONG_BERI,Gong Beri,Gong Beri
 CARD_GONG_BERI_SHORT,GONG BERI,GONG BERI
 CARD_GONG_BERI_DESC,"Gong datar tanpa pencu yang bunyinya nyaring berdesing. Semua Buto jadi giris: serangan mereka di giliran berikutnya melemah, dan Tameng mereka pecah.","A flat gong with no boss and a bright, ringing crash. Every Buto is shaken (Giris): their attacks next turn are weaker, and their Block shatters."
@@ -788,6 +790,12 @@ RECORDS_HISTORY_EMPTY,Belum ada Ruwatan.,No Ruwatan yet.
 RECORDS_HISTORY_LINE,%s   Tingkat %d   %d/%d langkah,%s   Level %d   %d/%d steps
 RECORDS_RESULT_WON,Berhasil,Cleared
 RECORDS_RESULT_LOST,Gugur,Fell
+SETTINGS_LARGE_TEXT,Teks besar,Large text
+SETTINGS_LARGE_TEXT_TIP,"Keterangan kartu dan Buto, petunjuk, serta catatan kecil
+memakai huruf yang lebih besar.","Card and Buto details, hints, and small notes
+use bigger letters."
+KEYS_GAMEPAD_TITLE,Gamepad,Gamepad
+KEYS_GAMEPAD,"Stik kiri atau D-pad menggerakkan kursor, A untuk klik (tahan untuk menggeser kartu), stik kanan untuk menggulir. B atau Start: jeda. X: akhiri giliran. Y: Sapu Jagad. RB: ganti sasaran. LB: kecepatan 1x/2x.","Left stick or D-pad moves the cursor, A clicks (hold to drag a card), right stick scrolls. B or Start: pause. X: end turn. Y: Sapu Jagad. RB: next target. LB: speed 1x/2x."
 GLOSS_CAT_TOKOH,Tokoh dan kesenian,People and the art
 GLOSS_CAT_JURUS,Jurus dan pertarungan,Moves and battle
 GLOSS_CAT_BERKAH,Berkah,Blessings

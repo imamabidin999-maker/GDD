@@ -4,6 +4,8 @@ extends PanelContainer
 ## disorot. Satu tooltip dipakai bersama oleh seluruh layar.
 
 const MAX_WIDTH := 190.0
+## Lebar saat Teks besar menyala (huruf 16 piksel).
+const MAX_WIDTH_LARGE := 300.0
 
 var _label: RichTextLabel
 
@@ -25,6 +27,12 @@ func _ready() -> void:
 
 ## Menampilkan teks (boleh BBCode) di dekat posisi layar `at`.
 func show_text(text: String, at: Vector2) -> void:
+	var large := UIKit.large_text()
+	if large:
+		UIKit.enlarge(_label)
+	else:
+		UIKit.shrink(_label)
+	_label.custom_minimum_size = Vector2(MAX_WIDTH_LARGE if large else MAX_WIDTH, 0)
 	_label.text = text
 	visible = true
 	reset_size()

@@ -7,6 +7,8 @@ extends PanelContainer
 
 const SHOW_SECONDS := 9.0
 const WIDTH := 330.0
+## Lebar saat Teks besar menyala.
+const WIDTH_LARGE := 440.0
 
 var _queue: Array[String] = []
 var _title: Label
@@ -54,10 +56,20 @@ func _show_next() -> void:
 		return
 	_showing = true
 	var id: String = _queue.pop_front()
+	_title.theme_type_variation = UIKit.small_text_variation()
 	_title.text = tr("HINT_%s_TITLE" % id.to_upper())
 	GlossaryText.hide_tip()
+	var large := UIKit.large_text()
+	var width := WIDTH_LARGE if large else WIDTH
+	if large:
+		UIKit.enlarge(_text)
+	else:
+		UIKit.shrink(_text)
+	custom_minimum_size = Vector2(width, 0)
+	_text.custom_minimum_size = Vector2(width - 12, 0)
+	position.x = (640.0 - width) * 0.5
 	_text.text = GlossaryText.mark(tr("HINT_%s" % id.to_upper()))
-	size = Vector2(WIDTH, 0)
+	size = Vector2(width, 0)
 	visible = true
 	modulate.a = 0.0
 	create_tween().tween_property(self, "modulate:a", 1.0, 0.2)

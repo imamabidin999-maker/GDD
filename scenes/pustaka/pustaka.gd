@@ -238,13 +238,13 @@ func _show_bala() -> void:
 
 func _show_cards() -> void:
 	_heading(tr("PUSTAKA_CARDS"))
-	_content.add_child(UIKit.small_label(tr("PUSTAKA_CARDS_HINT"), UIKit.COLOR_DIM))
+	_content.add_child(_note(tr("PUSTAKA_CARDS_HINT")))
 	# Satu baris per tipe: tiga kartu (bintang 1-3) lalu keterangannya.
 	for family: String in ["serang", "fokus", "taktik"]:
 		_content.add_child(_family_row(family))
 
 	_heading(tr("PUSTAKA_TABUH"))
-	_content.add_child(UIKit.small_label(tr("PUSTAKA_TABUH_HINT"), UIKit.COLOR_DIM))
+	_content.add_child(_note(tr("PUSTAKA_TABUH_HINT")))
 	for family: String in Blessings.TABUH_FAMILIES:
 		_content.add_child(_family_row(family))
 
@@ -386,7 +386,7 @@ func _origin_tag(kinds: Array[String], text: String) -> HBoxContainer:
 		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_child(chip)
-	var label := UIKit.label(text, &"", UIKit.COLOR_TEXT)
+	var label := UIKit.label(text, UIKit.small_text_variation(), UIKit.COLOR_TEXT)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.custom_minimum_size.x = 120
@@ -395,7 +395,7 @@ func _origin_tag(kinds: Array[String], text: String) -> HBoxContainer:
 
 
 func _note(text: String) -> Label:
-	var l := UIKit.label(text, &"", UIKit.COLOR_DIM)
+	var l := UIKit.label(text, UIKit.small_text_variation(), UIKit.COLOR_DIM)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size = Vector2(440, 0)
 	return l
@@ -461,7 +461,7 @@ func _figure(texture: Texture2D, title: String, facts: Array[String], text: Stri
 	if tag != null:
 		col.add_child(tag)
 	for fact: String in facts:
-		col.add_child(UIKit.label(fact, &"", UIKit.COLOR_GOLD))
+		col.add_child(UIKit.label(fact, UIKit.small_text_variation(), UIKit.COLOR_GOLD))
 	var r := UIKit.rich_text(text if silhouette else GlossaryText.mark(text, _glossary_used), 270,
 		UIKit.COLOR_DIM if silhouette else UIKit.COLOR_TEXT)
 	GlossaryText.attach(r)

@@ -81,7 +81,7 @@ func _choose(choice: String) -> void:
 	GlossaryText.attach(story)
 	_col.add_child(story)
 	if not lines.is_empty():
-		var summary := UIKit.label("\n".join(lines), &"", UIKit.COLOR_GOLD)
+		var summary := UIKit.label("\n".join(lines), UIKit.small_text_variation(), UIKit.COLOR_GOLD)
 		summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		summary.custom_minimum_size = Vector2(360, 0)

@@ -46,6 +46,15 @@ func _ready() -> void:
 	columns.add_child(_group("KEYS_GROUP_BATTLE", BATTLE_ACTIONS))
 	columns.add_child(_group("KEYS_GROUP_CARDS", cards))
 
+	# Gamepad: tetap, tidak bisa diubah (lihat GamepadCursor dan KeyBindings.JOYPAD).
+	var pad := UIKit.vbox(1)
+	pad.add_child(UIKit.label(tr("KEYS_GAMEPAD_TITLE"), &"", UIKit.COLOR_GOLD))
+	var pad_text := UIKit.label(tr("KEYS_GAMEPAD"), &"", UIKit.COLOR_TEXT)
+	pad_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	pad_text.custom_minimum_size.x = 460
+	pad.add_child(pad_text)
+	col.add_child(pad)
+
 	_notice = UIKit.label("", &"", UIKit.COLOR_GOLD)
 	_notice.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -148,6 +157,12 @@ func _clear(action: String, slot: int) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# B atau Start di gamepad juga menutup panel (lihat KeyBindings.JOYPAD).
+	if event is InputEventJoypadButton and event.is_action_pressed("pause"):
+		get_viewport().set_input_as_handled()
+		if _waiting_action == "":
+			_close()
+		return
 	var key := event as InputEventKey
 	if key == null or not key.pressed or key.echo:
 		return

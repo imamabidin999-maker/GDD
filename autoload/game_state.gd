@@ -92,6 +92,8 @@ var difficulty: int = Difficulty.NORMAL
 var rhythm_enabled: bool = true
 ## Istilah Jawa di teks cerita diberi warna dan bisa disorot (GlossaryText).
 var glossary_marks: bool = true
+## Keterangan, petunjuk, dan catatan kecil memakai huruf 16 piksel (UIKit.large_text).
+var large_text: bool = false
 ## Tombol keyboard pilihan pemain: {aksi: [kode, kode]} (lihat KeyBindings).
 ## Aksi yang tidak ada di sini memakai tombol bawaan.
 var key_bindings: Dictionary = {}
@@ -415,6 +417,21 @@ func set_glossary_marks(value: bool) -> void:
 	save_game()
 
 
+func set_large_text(value: bool) -> void:
+	large_text = value
+	_apply_text_size()
+	save_game()
+	settings_changed.emit()
+
+
+## Keterangan bawaan Godot (tooltip_text, misalnya di Pengaturan) memakai tipe
+## TooltipLabel di tema, jadi ukurannya diubah langsung di tema proyek.
+func _apply_text_size() -> void:
+	var theme := ThemeDB.get_project_theme()
+	if theme != null:
+		theme.set_font_size("font_size", "TooltipLabel", 16 if large_text else 8)
+
+
 ## true kalau petunjuk ini perlu ditampilkan sekarang (belum pernah dan
 ## petunjuk aktif). Langsung dicatat sebagai sudah tampil.
 func take_hint(id: String) -> bool:
@@ -493,6 +510,7 @@ func apply_settings() -> void:
 	KeyBindings.apply(key_bindings)
 	_set_bus_volume("Music", music_volume)
 	_set_bus_volume("SFX", sfx_volume)
+	_apply_text_size()
 	if DisplayServer.get_name() != "headless":
 		var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
 		if DisplayServer.window_get_mode() != mode:
@@ -606,6 +624,7 @@ func save_game() -> void:
 	cfg.set_value("settings", "difficulty", difficulty)
 	cfg.set_value("settings", "rhythm_enabled", rhythm_enabled)
 	cfg.set_value("settings", "glossary_marks", glossary_marks)
+	cfg.set_value("settings", "large_text", large_text)
 	cfg.set_value("settings", "keys", key_bindings)
 	cfg.save(save_path)
 
@@ -673,6 +692,7 @@ func load_game() -> void:
 	difficulty = clampi(int(cfg.get_value("settings", "difficulty", Difficulty.NORMAL)), Difficulty.SANTAI, Difficulty.SULIT)
 	rhythm_enabled = bool(cfg.get_value("settings", "rhythm_enabled", true))
 	glossary_marks = bool(cfg.get_value("settings", "glossary_marks", true))
+	large_text = bool(cfg.get_value("settings", "large_text", false))
 	key_bindings = KeyBindings.sanitize(cfg.get_value("settings", "keys", {}))
 	var version := int(cfg.get_value("meta", "save_version", 1))
 	if version < 2:

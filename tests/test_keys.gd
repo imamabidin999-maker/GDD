@@ -1,7 +1,8 @@
 extends SceneTree
 ## Tes tombol keyboard: tombol bawaan, mengganti dan mengosongkan tombol,
 ## bentrok antar aksi, Esc yang dikunci, simpanan, panel Tombol Keyboard, dan
-## tombol yang benar-benar menggerakkan battle.
+## tombol yang benar-benar menggerakkan battle. Juga tombol gamepad dan
+## pilihan Teks besar.
 ##   godot --headless -s tests/test_keys.gd
 
 var _failures: int = 0
@@ -37,6 +38,20 @@ func _tap(code: Key) -> void:
 	await process_frame
 	_key(code, false)
 	await process_frame
+
+
+func _pad_bound(action: String, button: JoyButton) -> bool:
+	var e := InputEventJoypadButton.new()
+	e.button_index = button
+	e.pressed = true
+	return InputMap.event_is_action(e, action, true)
+
+
+func _has_pad_events(action: String) -> bool:
+	for ev: InputEvent in InputMap.action_get_events(action):
+		if ev is InputEventJoypadButton or ev is InputEventJoypadMotion:
+			return true
+	return false
 
 
 func _bound(action: String, code: Key) -> bool:
@@ -117,6 +132,30 @@ func _run() -> void:
 	gs.call("reset_keys")
 	check(_bound("ultimate", KEY_Q) and _bound("card_1", KEY_1) and not _bound("ultimate", KEY_G), "Kembalikan bawaan")
 
+	print("[Gamepad]")
+	check(_pad_bound("end_turn", JOY_BUTTON_X) and _pad_bound("ultimate", JOY_BUTTON_Y) and _pad_bound("target_next", JOY_BUTTON_RIGHT_SHOULDER)
+		and _pad_bound("toggle_speed", JOY_BUTTON_LEFT_SHOULDER), "X, Y, RB, dan LB terpasang ke aksi battle")
+	check(_pad_bound("pause", JOY_BUTTON_START) and _pad_bound("pause", JOY_BUTTON_B), "Start dan B untuk jeda")
+	check(not _pad_bound("end_turn", JOY_BUTTON_A) and not _pad_bound("ultimate", JOY_BUTTON_A), "A tidak dipakai aksi (A adalah klik)")
+	gs.call("set_key", "ultimate", 0, KEY_R)
+	check(_pad_bound("ultimate", JOY_BUTTON_Y), "mengganti tombol keyboard tidak melepas tombol gamepad")
+	gs.call("reset_keys")
+	check(not _has_pad_events("ui_accept") and not _has_pad_events("ui_left") and not _has_pad_events("ui_cancel"),
+		"aksi ui_* bawaan tidak membaca gamepad, supaya A tidak terhitung dua kali")
+	var cursor := root.get_node_or_null("GamepadCursor")
+	check(cursor != null, "autoload GamepadCursor terpasang")
+	if cursor != null:
+		var consts: Dictionary = (cursor.get_script() as GDScript).get_script_constant_map()
+		var speed := float(consts["SPEED"])
+		var v := func(stick: Vector2, dpad: Vector2, moving_for: float) -> Vector2:
+			return cursor.call("cursor_velocity", stick, dpad, moving_for)
+		check(v.call(Vector2(0.15, 0.1), Vector2.ZERO, 0.0) == Vector2.ZERO, "stik yang sedikit miring (zona mati) tidak menggerakkan kursor")
+		check((v.call(Vector2(1, 0), Vector2.ZERO, 0.0) as Vector2).is_equal_approx(Vector2(speed, 0)), "stik penuh: %d piksel per detik" % speed)
+		check((v.call(Vector2(0, -1), Vector2.ZERO, 5.0) as Vector2).is_equal_approx(Vector2(0, -speed * float(consts["BOOST_MAX"]))),
+			"setelah bergerak lama kursor makin cepat")
+		check(is_equal_approx((v.call(Vector2.ZERO, Vector2(1, 1), 0.0) as Vector2).length(), float(consts["DPAD_SPEED"])),
+			"D-pad miring tidak lebih cepat dari lurus")
+
 	print("[Panel Tombol Keyboard]")
 	var settings := _new("res://ui/common/settings_panel.gd")
 	root.add_child(settings)
@@ -156,6 +195,36 @@ func _run() -> void:
 	check(not is_instance_valid(panel) and is_instance_valid(settings), "Esc menutup panel tombol saja, Pengaturan tetap terbuka")
 	settings.queue_free()
 	gs.call("reset_keys")
+	await process_frame
+
+	print("[Teks besar]")
+	check(not UIKit.large_text() and UIKit.small_text_variation() == &"", "bawaannya mati: teks kecil 8 piksel")
+	gs.call("set_large_text", true)
+	check(UIKit.large_text() and UIKit.small_text_variation() == &"BigLabel", "dinyalakan: teks kecil jadi 16 piksel")
+	check(ThemeDB.get_project_theme().get_font_size("font_size", "TooltipLabel") == UIKit.TEXT_LARGE, "keterangan bawaan Godot (di Pengaturan) ikut membesar")
+	gs.set("large_text", false)
+	gs.call("load_game")
+	check(bool(gs.get("large_text")), "pilihan Teks besar tersimpan")
+	var tip := GameTooltip.new()
+	root.add_child(tip)
+	tip.show_text("Buto Kuning", Vector2(100, 100))
+	var tip_label: RichTextLabel = tip.get("_label")
+	check(tip_label.custom_minimum_size.x == GameTooltip.MAX_WIDTH_LARGE and tip_label.get_theme_font_size("normal_font_size") == UIKit.TEXT_LARGE,
+		"keterangan kartu dan Buto ikut membesar")
+	gs.call("set_large_text", false)
+	tip.show_text("Buto Kuning", Vector2(100, 100))
+	check(tip_label.custom_minimum_size.x == GameTooltip.MAX_WIDTH and tip_label.get_theme_font_size("normal_font_size") < UIKit.TEXT_LARGE,
+		"dimatikan lagi: kembali kecil")
+	check(ThemeDB.get_project_theme().get_font_size("font_size", "TooltipLabel") == 8, "keterangan bawaan Godot kembali 8 piksel")
+	tip.queue_free()
+	settings = _new("res://ui/common/settings_panel.gd")
+	root.add_child(settings)
+	await process_frame
+	var large_row := false
+	for l: Node in settings.find_children("*", "Label", true, false):
+		large_row = large_row or (l as Label).text == tr("SETTINGS_LARGE_TEXT")
+	check(large_row, "Pengaturan punya pilihan Teks besar")
+	settings.queue_free()
 	await process_frame
 
 	print("[Tombol di battle]")

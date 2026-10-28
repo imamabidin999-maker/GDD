@@ -35,6 +35,15 @@ const DEFAULTS := {
 ## Esc selalu untuk jeda, kembali, dan membatalkan. Slot pertama Jeda tidak
 ## bisa diubah, dan Esc tidak bisa dipasang ke aksi lain.
 const RESERVED := KEY_ESCAPE
+## Tombol gamepad untuk aksi battle (tetap, tidak bisa diubah). Kursor dan
+## klik gamepad diurus autoload GamepadCursor.
+const JOYPAD := {
+	"ultimate": [JOY_BUTTON_Y],
+	"end_turn": [JOY_BUTTON_X],
+	"target_next": [JOY_BUTTON_RIGHT_SHOULDER],
+	"toggle_speed": [JOY_BUTTON_LEFT_SHOULDER],
+	"pause": [JOY_BUTTON_START, JOY_BUTTON_B],
+}
 
 
 static func is_locked(action: String, slot: int) -> bool:
@@ -52,7 +61,7 @@ static func codes(bindings: Dictionary, action: String) -> Array[int]:
 	return out
 
 
-## Memasang semua tombol ke InputMap. Aksi yang belum ada dibuat dulu.
+## Memasang semua tombol (dan tombol gamepad) ke InputMap. Aksi yang belum ada dibuat dulu.
 static func apply(bindings: Dictionary) -> void:
 	for action: String in ACTIONS:
 		if not InputMap.has_action(action):
@@ -63,6 +72,11 @@ static func apply(bindings: Dictionary) -> void:
 				var ev := InputEventKey.new()
 				ev.physical_keycode = code as Key
 				InputMap.action_add_event(action, ev)
+		for button: int in JOYPAD.get(action, []):
+			var pad := InputEventJoypadButton.new()
+			pad.button_index = button as JoyButton
+			pad.device = -1
+			InputMap.action_add_event(action, pad)
 
 
 ## Memasang `code` ke slot `slot` aksi `action`. Tombol yang sama di aksi

@@ -29,6 +29,7 @@ GameState="*res://autoload/game_state.gd"
 CardDB="*res://autoload/card_db.gd"
 SceneRouter="*res://autoload/scene_router.gd"
 AudioManager="*res://autoload/audio_manager.gd"
+GamepadCursor="*res://autoload/gamepad_cursor.gd"
 
 [debug]
 

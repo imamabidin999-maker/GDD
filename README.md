@@ -18,19 +18,19 @@ Pertama kali dibuka, Godot butuh beberapa detik untuk mengimpor gambar dan suara
 
 ## Cara bermain
 
-Seluruh game bisa dimainkan dengan mouse. Keyboard hanya jalan pintas, dan tombolnya bisa diganti di **Pengaturan → Tombol keyboard**. Tabel ini memakai tombol bawaan.
+Seluruh game bisa dimainkan dengan mouse. Keyboard hanya jalan pintas, dan tombolnya bisa diganti di **Pengaturan → Tombol keyboard**. Gamepad juga bisa dipakai: stik kiri atau D-pad menggerakkan kursor, tombol A menjadi klik, dan stik kanan menggulir, jadi semua layar bisa dimainkan dengan gamepad. Tabel ini memakai tombol bawaan.
 
-| Aksi | Mouse | Keyboard |
-|---|---|---|
-| Mainkan kartu | Klik kartu, atau seret ke tubuh Buto | Angka 1–9 (kartu ke-1 sampai ke-9) |
-| Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – |
-| Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – |
-| Pilih target | Klik Buto | Tab (pindah ke Buto berikutnya) |
-| Sapu Jagad | Tombol gong | Q |
-| Menabuh irama Sapu Jagad | Klik kiri | Spasi, Enter, atau tombol Sapu Jagad |
-| Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi |
-| Kecepatan battle 1x / 2x | Tombol 1x di atas | F |
-| Jeda | Tombol II | Esc |
+| Aksi | Mouse | Keyboard | Gamepad |
+|---|---|---|---|
+| Mainkan kartu | Klik kartu, atau seret ke tubuh Buto | Angka 1–9 (kartu ke-1 sampai ke-9) | A pada kartu |
+| Geser kartu (1 ketukan) | Seret kartu ke posisi lain | – | Tahan A sambil menggerakkan kursor |
+| Gabung kartu (gratis) | Klik tombol rantai di antara dua kartu | – | A pada tombol rantai |
+| Pilih target | Klik Buto | Tab (pindah ke Buto berikutnya) | RB |
+| Sapu Jagad | Tombol gong | Q | Y |
+| Menabuh irama Sapu Jagad | Klik kiri | Spasi, Enter, atau tombol Sapu Jagad | A atau Y |
+| Akhiri giliran | Tombol Akhiri Giliran | E atau Spasi | X |
+| Kecepatan battle 1x / 2x | Tombol 1x di atas | F | LB |
+| Jeda | Tombol II | Esc | Start atau B |
 
 Nama tombol pilihanmu tampil di pojok tombol gong, di keterangan saat kursor diarahkan ke tombol HUD, di menu jeda, dan di teks tutorial.
 
@@ -200,8 +200,9 @@ Mode ini terbuka setelah tamat sekali, dari tombol **Ruwatan** di menu utama, da
 - **Musik, Efek Suara, Layar Penuh**.
 - **Kesulitan** mode cerita: Santai (Nyawa Buto −20%, serangan −15%), Normal, atau Sulit (Nyawa dan serangan +15%). Bisa diganti kapan saja.
 - **Kecepatan battle** 1x atau 2x (juga lewat tombol di atas layar battle).
-- **Petunjuk** dan **Irama Sapu Jagad** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Sapu Jagad membuka latihan irama.
-- **Tombol keyboard**: tombol **Atur** membuka daftar semua tombol. Setiap aksi punya dua tombol. Klik kotaknya lalu tekan tombol baru; klik kanan atau Backspace mengosongkan, Esc membatalkan. Kalau tombol itu sudah dipakai aksi lain, tombolnya dipindah dan kamu diberi tahu. Esc selalu untuk jeda dan kembali, jadi tidak bisa dipindah. **Kembalikan bawaan** memulihkan semuanya. Tombol disimpan menurut letaknya di keyboard, jadi tetap pas di keyboard selain QWERTY.
+- **Petunjuk**, **Tandai istilah Jawa**, dan **Irama Sapu Jagad** bisa dinyalakan atau dimatikan. Tombol **Coba** di samping Irama Sapu Jagad membuka latihan irama.
+- **Teks besar**: keterangan kartu dan Buto, arti istilah Jawa, petunjuk battle, petunjuk jalan di persimpangan, ringkasan hasil kejadian, dan catatan kecil di Pustaka memakai huruf 16 piksel (bawaannya 8 piksel).
+- **Tombol keyboard**: tombol **Atur** membuka daftar semua tombol. Setiap aksi punya dua tombol. Klik kotaknya lalu tekan tombol baru; klik kanan atau Backspace mengosongkan, Esc membatalkan. Kalau tombol itu sudah dipakai aksi lain, tombolnya dipindah dan kamu diberi tahu. Esc selalu untuk jeda dan kembali, jadi tidak bisa dipindah. **Kembalikan bawaan** memulihkan semuanya. Tombol disimpan menurut letaknya di keyboard, jadi tetap pas di keyboard selain QWERTY. Tombol gamepad tampil di panel yang sama, tetapi tidak bisa diganti.
 
 Progres tersimpan otomatis.
 
@@ -222,10 +223,12 @@ Versi Web bisa langsung diunggah ke itch.io (pilih "This file will be played in 
 ## Struktur folder
 
 ```
-autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager
+autoload/      GameState (progres & simpanan), CardDB, SceneRouter, AudioManager,
+               GamepadCursor (gamepad sebagai mouse)
 core/          Logika battle (BattleManager, DeckController, HandManager, PlayerState, aksi)
-               dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan),
-               serta tombol keyboard (KeyBindings) dan data Istilah Jawa (GlossaryData)
+               dan progres (berkah, tantangan, kejadian di perjalanan, Ruwatan, catatan
+               permainan), serta tombol keyboard (KeyBindings) dan data Istilah Jawa
+               (GlossaryData)
 data/          Data kartu, resep merge, dan 10 babak (dibuat oleh tools/generate_data.gd)
 scenes/        Menu utama, peta, battle, Ruwatan, Pustaka, ending, dan unit
 ui/            Kartu, tangan, HUD, dialog, pengaturan, panel tombol keyboard, tooltip,

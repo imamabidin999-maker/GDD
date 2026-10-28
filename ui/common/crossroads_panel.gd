@@ -53,8 +53,9 @@ func _ready() -> void:
 
 
 func _path_button(id: String) -> Button:
+	var large := UIKit.large_text()
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(196, 116)
+	b.custom_minimum_size = Vector2(230, 160) if large else Vector2(196, 116)
 	b.focus_mode = Control.FOCUS_NONE
 	var inner := UIKit.vbox(4)
 	inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -73,10 +74,10 @@ func _path_button(id: String) -> Button:
 	var name_label := UIKit.label(tr("EV_%s_PATH" % id.to_upper()), &"BigLabel", UIKit.COLOR_GOLD)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	inner.add_child(name_label)
-	var hint := UIKit.label(tr("EV_%s_HINT" % id.to_upper()), &"", UIKit.COLOR_TEXT)
+	var hint := UIKit.label(tr("EV_%s_HINT" % id.to_upper()), UIKit.small_text_variation(), UIKit.COLOR_TEXT)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(184, 0)
+	hint.custom_minimum_size = Vector2(218 if large else 184, 0)
 	inner.add_child(hint)
 	b.add_child(inner)
 	b.pressed.connect(func() -> void:

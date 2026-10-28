@@ -107,3 +107,29 @@ Menurut kisah asal-usulnya, Dongkrek lahir dari tabuhan dan arak-arakan keliling
 - Tamat hanya dihitung sekali per petualangan, jadi mengulang babak 10 tidak menambah angkanya.
 - Hasil satu Ruwatan bisa dilaporkan lebih dari sekali (saat selesai dan saat ditutup). Riwayat mengenali Ruwatan yang sama dari seed dan tingkatnya, jadi tetap tercatat satu kali.
 - Tesnya ada di `tests/test_records.gd`, dan tes kampanye memeriksa catatan setelah tamat dan setelah Ruwatan.
+
+## 8. Teks Besar dan Gamepad
+
+**Teks besar**
+
+- Pengaturan punya pilihan baru, **Teks besar**. Kalau dinyalakan, teks yang biasanya 8 piksel memakai huruf 16 piksel di tempat-tempat yang banyak dibaca:
+  - keterangan saat kursor diarahkan ke kartu, Buto, ikon, tombol HUD, dan istilah Jawa (kotaknya melebar dari 190 ke 300 piksel), juga keterangan di Pengaturan;
+  - petunjuk battle (kotaknya melebar dari 330 ke 440 piksel);
+  - petunjuk jalan di persimpangan, dan ringkasan hasil kejadian di perjalanan;
+  - catatan kecil di Pustaka: pengantar halaman, keterangan kartu, angka Nyawa dan Serangan Buto, dan tanda asal-usul.
+- Teks cerita, dialog, dan isi Pustaka sudah 16 piksel dari awal, jadi tidak berubah.
+- Angka di HUD, wajah kartu, dan panel Tombol Keyboard tetap kecil. Layar game hanya 640×360, dan bagian-bagian itu akan saling tumpuk kalau hurufnya dua kali lebih besar. Semua angka di sana juga bisa dibaca lebih besar lewat keterangan saat kursor diarahkan.
+- Pilihan ini tersimpan bersama pengaturan lain. Kodenya ada di `UIKit.large_text()` dan `UIKit.small_text_variation()`, jadi layar baru cukup memakai fungsi itu untuk teks kecilnya.
+
+**Gamepad**
+
+- Autoload baru `GamepadCursor` mengubah gamepad menjadi mouse. Karena semua bagian game bisa dimainkan dengan mouse, cara ini langsung berlaku di semua layar: menu, peta, battle, Pustaka, kejadian, sampai arak-arakan.
+  - **Stik kiri** menggerakkan kursor 240 piksel per detik. Setelah didorong setengah detik, kursor makin cepat sampai dua kali lipat, supaya menyeberang layar tidak lama. Stik yang hanya sedikit miring (di bawah 20%) diabaikan.
+  - **D-pad** menggerakkan kursor lebih pelan (120 piksel per detik) untuk membidik dengan tepat.
+  - **A** adalah klik kiri. Tahan A sambil menggerakkan kursor untuk menggeser kartu.
+  - **Stik kanan** menggulir seperti roda mouse, misalnya di Pustaka dan daftar jurus.
+- Tombol lain langsung terpasang ke aksi battle: **X** akhiri giliran, **Y** Sapu Jagad (juga untuk menabuh irama), **RB** ganti sasaran, **LB** kecepatan 1x/2x, **Start** atau **B** untuk jeda dan kembali. B juga menutup panel Tombol Keyboard.
+- Tombol gamepad tetap dan tidak bisa diganti. Daftarnya tampil di panel Tombol Keyboard, dan mengganti tombol keyboard tidak melepas tombol gamepad.
+- Aksi bawaan Godot (`ui_accept`, `ui_left`, dan seterusnya) tidak lagi membaca gamepad. Tanpa ini, satu tekanan A terhitung dua kali di irama Sapu Jagad, dan D-pad ikut menggeser slider volume yang sedang aktif.
+- Hanya gamepad pertama yang tersambung yang dibaca.
+- Tesnya ada di `tests/test_keys.gd`: pemetaan tombol, aksi bawaan yang sudah bersih dari gamepad, dan hitungan kecepatan kursor. Fitur ini belum dicoba dengan gamepad sungguhan, jadi rasa kecepatan kursornya masih perlu dicoba langsung.
